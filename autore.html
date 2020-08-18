@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/http-vue-loader"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <title>Ambiente Autore</title>
+  </head>
+  <body>
+    <div id="app">
+
+      <!--AREA PREVIEW-->
+      <div id="preview">
+          <h1>PREVIEW! :)</h1>
+          <div id="questRender" class="card"
+          :style="{ color: gamedata.css_style.card.textColor, 'font-family': gamedata.css_style.card.textFont, 'font-style': gamedata.css_style.card.textStyle, 'background-color': gamedata.css_style.card.bgColor }">
+            <div>
+              <div class="card-header">
+                <h3>Current main state is {{ previewdata.currentQuest }}!</h3>
+              </div>
+              <div class="card-body" style="position: relative;">
+                <p class="card-text">{{ renderQuest.text }}</p>
+                <p class="card-text">{{ renderQuest.description ? renderQuest.description : "" }}</p>
+                <ul v-if="previewdata.in_mainquest" class="card-text">
+                  <li v-for="clue in getCurrentClues">{{ clue }}</li>
+                </ul>
+
+                <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
+                <div id="gameinput">
+                  <component v-bind:is="currentComponent" :gamedata="renderQuest" :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub"
+      						:options="previewdata.in_mainquest ? getCurrentOptions : renderQuest.options" v-model="previewdata.picked"></component>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p>Current answer is: {{ previewdata.picked }}</p>
+        </div>
+
+    <!--AREA GRAFO-->
+    <div id="questgraph">
+      <h1>GRAPH! :)</h1>
+      <!--QUICK ACCESS/CREATION/REMOVAL-->
+      <div class="row">
+        <div class="col-2">
+          <!--Passaggio da schermata main a sub e viceversa-->
+          <button v-on:click="switchMainSub">Switch to {{ previewdata.in_mainquest ? "sub" : "main" }}!</button>
+          <br>
+          <!--Aggiunta nuovo nodo main/sub-->
+          <button v-on:click="addNode">Add New</button>
+          <button v-on:click="rmNode">Remove Last</button>
+          <!--Accesso rapido alle quest usando v-for buttons-->
+          <!--TODO Chiuderlo in un box con overflow a scorrimento maybe?-->
+          <p>Quick Access:</p>
+          <div v-for="quest in questList">
+            <br>
+            <button v-on:click="changeQuest(quest.number)">{{ quest.number }}</button>
+            <span id="subquestadd" v-if="!previewdata.in_mainquest">
+              <input :name="'sub ' + quest.number" type="checkbox" :checked="previewdata.completedSubs.includes(quest.number)" v-on:click="setCompleted($event,quest.number)">
+              <label :for="'sub ' + quest.number">Set Completed</label>
+            </span>
+          </div>
+        </div>
+        <!--PREV?-->
+        <div class="col-2">
+          <p>PREV</p>
+        </div>
+        <!--CAMPI QUEST ATTUALE-->
+        <div class="col-3">
+          <ul>
+            <!--Quest ID-->
+            <li>Number: {{ renderQuest.number}}</li>
+            <!--Quest OBJECTIVE (subquests only)-->
+            <li v-if="!previewdata.in_mainquest">
+              <label for="objectivefield">Objective: </label>
+              <input name="objectivefield" type="text" v-model="renderQuest.objective">
+            <!--Quest TEXT-->
+            <li>
+              <label for="textfield">Text: </label>
+              <input name="textfield" type="text" v-model="renderQuest.text">
+            </li>
+            <!--Quest AVAILABLE_ON (subquests only)-->
+            <li v-if="!previewdata.in_mainquest">
+              <p>Available on quest:
+              <div v-for="quest in gamedata.mainQuest">
+                <input type="checkbox" :name="'quest' + quest.number" :checked="renderQuest.available_on.includes(quest.number)" v-on:click="setAvailableOn($event,quest.number)">
+                <label for="'quest' + quest.number"> {{ quest.number }}</label>
+              </div>
+            </li>
+            <!--Quest DESCRIPTION-->
+            <li>
+              <label for="descriptionfield">Description: </label>
+              <input name="descriptionfield" type="text" v-model="renderQuest.description">
+            </li>
+            <!--Quest INPUT TYPE-->
+            <li>
+              <p>Input Type:</p>
+              <input type="radio" id="nonechoice" name="typefield" value="" v-model="renderQuest.type">
+              <label for="nonechoice">None</label>
+              <input type="radio" id="choicechoice" name="typefield" value="choice" v-model="renderQuest.type">
+              <label for="choicechoice">Choice</label>
+              <input type="radio" id="texthoice" name="typefield" value="input" v-model="renderQuest.type">
+              <label for="textchoice">Text</label>
+              <input type="radio" id="imgchoice" name="typefield" value="draw" v-model="renderQuest.type">
+              <label for="imgchoice">Image</label>
+              <input type="radio" id="endchoice" name="typefield" value="ending" v-model="renderQuest.type">
+              <label for="imgchoice">Ending</label>
+            </li>
+            <!-- Quest OPTIONS (only if type is choice)-->
+            <li v-if="renderQuest.type == 'choice'">
+              <p>Options:</p>
+              <input v-for="opt in renderQuest.options" v-model="renderQuest.options[renderQuest.options.indexOf(opt)]">
+              <button v-on:click="addRmOptions('add')">Add</button>
+              <button v-on:click="addRmOptions('rm')">Remove</button>
+              <br>
+              <button v-on:click="generateChoiceGotos">Generate Gotos</button>
+            </li>
+            <!-- Quest SUBQUEST REWARDS (main quests only)-->
+            <li v-if="previewdata.in_mainquest">
+              <p>Subquest Rewards</p>
+              <button v-on:click="addSubReward">Add</button>
+              <select name="subquests" ref="subtoadd">
+                <option v-for="sub in getRemainingSubs" :value="sub.number">Number {{ sub.number }}</option>
+              </select>
+              <!--TODO Qua ci starebbe da fare un collapsible per ogni div del v-for ma vi giuro che non ci riesco fml-->
+              <div v-for="sub in renderQuest.subquest_rewards">
+                <ul>
+                  <!--Reward NUMBER-->
+                  <li><p>Number: {{ sub.number }}</p></li>
+                  <li>
+                    <input name="cluefield" type="text" v-model="sub.clue">
+                    <label for="cluefield">Clue: </label>
+                  </li>
+                  <!--Reward ADDED OPTIONS-->
+                  <li>
+                    <p>Added Options:</p>
+                    <input v-for="opt in sub.added_options" v-model="sub.added_options[sub.added_options.indexOf(opt)]">
+                    <button v-on:click="addRmSubAddedOptions('add',renderQuest.subquest_rewards.indexOf(sub))">Add</button>
+                    <button v-on:click="addRmSubAddedOptions('rm',renderQuest.subquest_rewards.indexOf(sub))">Remove</button>
+                  </li>
+                  <!--Reward REMOVED OPTIONS-->
+                  <li>
+                    <p>Removed Options:</p>
+                    <div v-for="opt in renderQuest.options">
+                      <p>{{ opt }}</p>
+                      <input type="checkbox" :name="'opt' + renderQuest.options.indexOf(opt)" :checked="sub.removed_options.includes(opt)"
+                      v-on:click="setRemovedOpt($event,renderQuest.subquest_rewards.indexOf(sub),opt)">
+                      <label :for="'opt' + renderQuest.options.indexOf(opt)">Set removed</label>
+                    </div>
+                  </li>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <!--GOTOS-->
+        <div class="col-2">
+          <!--GOTOS in caso di mainquest-->
+          <div id="goto-management" v-if="previewdata.in_mainquest">
+            <h1>GOTOS</h1>
+            <div v-if="previewdata.in_mainquest">
+              <p>If no choice matches last goto in list will be chosen.</p>
+              <h2>Default Gotos</h2>
+              <div>
+                <div v-for="opt in renderQuest.goto">
+                  <input type="text" v-model="opt[0]">
+                  <select name="quests" v-model="opt[1]">
+                    <option v-for="quest in questList" :value="quest.number">Number {{ quest.number }}</option>
+                  </select>
+                  <!--Removed gotos for subquest_rewards-->
+                  <p>Removed by:</p>
+                  <div v-for="reward in renderQuest.subquest_rewards">
+                    <input type="checkbox" :name="'sub' + renderQuest.subquest_rewards.indexOf(reward)" :checked="reward.removed_goto.includes(opt)"
+                    v-on:click="setRemovedGoto($event,renderQuest.subquest_rewards.indexOf(reward),opt)">
+                    <label :for="'sub' + renderQuest.subquest_rewards.indexOf(reward)">Reward {{ reward.number }}<label>
+                  </div>
+                </div>
+                <button v-on:click="addGoto">Add</button>
+                <button v-on:click="rmGoto">Remove</button>
+              </div>
+              <h2>Added Gotos</h2>
+              <div>
+                <!--getAddedGotos restituisce coppia [indice subquest, goto]-->
+                <div v-for="opt in getAddedGotos">
+                  <input type="text" v-model="renderQuest.subquest_rewards[opt[0]].added_goto[renderQuest.subquest_rewards[opt[0]].added_goto.indexOf(opt[1])][0]">
+                  <select name="quests" v-model="renderQuest.subquest_rewards[opt[0]].added_goto[renderQuest.subquest_rewards[opt[0]].added_goto.indexOf(opt[1])][1]">
+                    <option v-for="quest in questList" :value="quest.number">Number {{ quest.number }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <div id="saveload">
+      <div id="jsonLoader">
+        <p>Json Loader</p>
+        <input type="file" ref="toLoad">
+        <button v-on:click="loadJson">Load Selected JSON</button>
+      </div>
+      <div id="jsonSaver">
+        <p>Json Saver</p>
+        <input type="text" value="myfile.json" ref="fileName">
+        <button v-on:click="saveJson">Download JSON</button>
+      </div>
+    </div>
+  </div>
+</div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="vue_autore.js"></script>
+    <script type="text/javascript" src="utils.js"></script>
+  </body>
+</html>
