@@ -45,6 +45,19 @@ var app = new Vue({
       }
     }
   },
+  created: function (){
+					req = new XMLHttpRequest();
+					req.open("GET", "/json/newquest.json");
+					var _this = this;
+					req.onreadystatechange = function (){
+						if(req.readyState == 4 && req.status == 200){
+						var json = JSON.parse(req.responseText);
+						console.log(json);
+						_this.gamedata = json;
+						}
+					};
+					req.send();
+	},
   methods: {
     changeQuest: function() {
       console.log(`Il valore è: ${questname}`);
