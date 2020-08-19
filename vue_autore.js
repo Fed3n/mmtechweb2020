@@ -116,6 +116,14 @@
           rmGoto: function(){
             this.renderQuest.goto.pop();
           },
+					addRmSolution: function(type){
+						if(type == "add") {
+							this.renderQuest.solution.push("");
+						}
+						else {
+							this.renderQuest.solution.pop();
+						}
+					},
           addRmOptions: function(type){
             if(type == "add") {
               this.renderQuest.options.push("");
@@ -133,13 +141,33 @@
               this.renderQuest.subquest_rewards[n].added_options.pop();
             }
           },
+					addAddedGoto: function(sub){
+						this.renderQuest.subquest_rewards[this.renderQuest.subquest_rewards.indexOf(sub)].added_goto.push(["",0]);
+					},
+					rmAddedGoto: function(sub,goto){
+						reward = this.renderQuest.subquest_rewards[this.renderQuest.subquest_rewards.indexOf(sub)];
+						reward.added_goto.splice(reward.added_goto.indexOf(goto),1);
+					},
           generateChoiceGotos: function(){
-            gotos = [];
-            for(opt of this.renderQuest.options){
-              gotos.push([opt,0]);
-            }
-            this.renderQuest.goto = gotos;
+						var ok = confirm("Generating new gotos for this quest will delete the current ones, do you want to proceed?");
+						if(ok){
+	            gotos = [];
+	            for(opt of this.renderQuest.options){
+	              gotos.push([opt,0]);
+	            }
+	            this.renderQuest.goto = gotos;
+						}
           },
+					generateChoiceSolutions: function(){
+						var ok = confirm("Generating new solutions for this quest will delete the current ones, do you want to proceed?");
+						if(ok){
+	            sols = [];
+	            for(opt of this.renderQuest.options){
+	              sols.push(opt);
+	            }
+	            this.renderQuest.solution = sols;
+						}
+					},
           setCompleted: function(event,n) {
             if(event.target.checked) this.previewdata.completedSubs.push(n);
             else this.previewdata.completedSubs.splice(this.previewdata.completedSubs.indexOf(n),1);
@@ -156,9 +184,13 @@
             if(event.target.checked) this.renderQuest.available_on.push(n);
             else this.renderQuest.available_on.splice(this.renderQuest.available_on.indexOf(n),1);
           },
+					setRequiresSub: function(event,n) {
+						if(event.target.checked) this.renderQuest.requires_sub.push(n);
+            else this.renderQuest.requires_sub.splice(this.renderQuest.requires_sub.indexOf(n),1);
+					},
           addSubReward: function() {
             reward = {
-              "number": this.$refs.subtoadd.value,
+              "number": parseInt(this.$refs.subtoadd.value),
     					"clue": "",
     					"added_options": [],
     					"removed_options": [],
@@ -168,6 +200,9 @@
             this.renderQuest.subquest_rewards.push(reward);
             this.renderQuest.subquest_rewards.sort(questCmp);
           },
+					rmSubReward: function(sub) {
+						this.renderQuest.subquest_rewards.splice(this.renderQuest.subquest_rewards.indexOf(sub),1);
+					},
           loadJson: function(){
             var path = this.$refs.toLoad.files[0];
             console.log(path);
@@ -273,7 +308,7 @@
             return gotos;
           },
           getRemainingSubs: function() {
-            //Qua conto sul fatto che la proprietà number di ogni quest rappresenta il suo indice nella lista
+            //Qua conto sul fatto che la proprietà number di ogni quest rappresenti il suo indice nella lista
             var alreadyIn = [];
             var remaining = [];
             for(sub of this.renderQuest.subquest_rewards)
@@ -282,8 +317,6 @@
               if(!alreadyIn.includes(sub.number))
                 remaining.push(sub);
             }
-            console.log(alreadyIn);
-            console.log(remaining);
             return remaining;
           }
 				}

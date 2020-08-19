@@ -87,6 +87,13 @@
                 <label for="'quest' + quest.number"> {{ quest.number }}</label>
               </div>
             </li>
+            <li v-if="!previewdata.in_mainquest">
+              <p>Requires subquest</p>
+              <div v-for="sub in gamedata.subQuests">
+                <input type="checkbox" :name="'sub' + sub.number" :checked="renderQuest.requires_sub.includes(sub.number)" v-on:click="setRequiresSub($event,sub.number)">
+                <label :for="'quest' + sub.number">{{ sub.number }}</label>
+              </div>
+            </li>
             <!--Quest DESCRIPTION-->
             <li>
               <label for="descriptionfield">Description: </label>
@@ -128,18 +135,18 @@
                   <!--Reward NUMBER-->
                   <li><p>Number: {{ sub.number }}</p></li>
                   <li>
-                    <input name="cluefield" type="text" v-model="sub.clue">
                     <label for="cluefield">Clue: </label>
+                    <input name="cluefield" type="text" v-model="sub.clue">
                   </li>
                   <!--Reward ADDED OPTIONS-->
-                  <li>
+                  <li v-if="renderQuest.type=='choice'">
                     <p>Added Options:</p>
                     <input v-for="opt in sub.added_options" v-model="sub.added_options[sub.added_options.indexOf(opt)]">
                     <button v-on:click="addRmSubAddedOptions('add',renderQuest.subquest_rewards.indexOf(sub))">Add</button>
                     <button v-on:click="addRmSubAddedOptions('rm',renderQuest.subquest_rewards.indexOf(sub))">Remove</button>
                   </li>
                   <!--Reward REMOVED OPTIONS-->
-                  <li>
+                  <li v-if="renderQuest.type=='choice'">
                     <p>Removed Options:</p>
                     <div v-for="opt in renderQuest.options">
                       <p>{{ opt }}</p>
@@ -148,6 +155,20 @@
                       <label :for="'opt' + renderQuest.options.indexOf(opt)">Set removed</label>
                     </div>
                   </li>
+                  <!--Reward ADDED GOTOS-->
+                  <li>
+                    <p>Added Gotos:</p>
+                    <div v-for="goto in sub.added_goto">
+                      <input type="text" v-model="goto[0]">
+                      <select name="quests" v-model="goto[1]">
+                        <option v-for="quest in questList" :value="quest.number">Number {{ quest.number }}</option>
+                      </select>
+                      <button v-on:click="rmAddedGoto(sub,goto)">Remove</button>
+                    </div>
+                    <button v-on:click="addAddedGoto(sub)">Add</button>
+                  </li>
+                </ul>
+                <button v-on:click="rmSubReward(sub)">Remove</button>
               </div>
             </li>
           </ul>
@@ -188,6 +209,14 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div id="solutions-management" v-if="!previewdata.in_mainquest">
+            <h1>SOLUTIONS</h1>
+            <div v-for="sol in renderQuest.solution">
+              <input type="text" v-model="renderQuest.solution[renderQuest.solution.indexOf(sol)]">
+            </div>
+            <button v-on:click="addRmSolution('add')">Add</button>
+            <button v-on:click="addRmSolution('remove')">Remove</button>
           </div>
         </div>
       </div>
