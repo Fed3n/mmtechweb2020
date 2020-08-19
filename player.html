@@ -1,5 +1,6 @@
-<html>
+<html lang="it">
 	<head>
+		<title>Player</title>
 		<meta charset='utf-8'>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -50,7 +51,7 @@
 			:style="{ color: css_style.card.textColor, 'font-family': css_style.card.textFont, 'font-style': css_style.card.textStyle, 'background-color': css_style.card.bgColor }">
 
 				<div class="card-header border-white">
-					<h3 ref="questname" tabindex="-1">Name of Quest {{ currentQuest }}</h3>
+					<h3 id="questname" ref="questname" tabindex="-1">Name of Quest {{ currentQuest }}</h1>
 				</div>
 
 				<div class="card-body border-white">
