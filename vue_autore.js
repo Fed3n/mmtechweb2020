@@ -59,7 +59,6 @@
         },
         methods: {
           changeQuest: function(number){
-            console.log(number);
             if(this.previewdata.in_mainquest) this.previewdata.currentQuest = number;
             else this.previewdata.currentSub = number;
           },
@@ -110,6 +109,116 @@
               }
             }
           },
+					//Rimuove il nodo selezionato dall'mainsay mainquest
+					//Un po' costosa computazionalmente ma l'alternativa è limitarsi al pop per la cancellazione
+					rmMainNode: function(index) {
+						var ok = confirm("Are you sure you want to delete this node? All remaining references to this node will be deleted.");
+						if(ok){
+							var mains = this.gamedata.mainQuest;
+							//Deve restarne almeno una in lista
+							if(mains.length > 1){
+								//Se sto cancellando la quest su cui mi trovo devo prima cambiare schermata o genero errori
+								if(this.previewdata.currentQuest == index){
+									//Se sto cancellando la 0 non è un problema
+									if(index != 0) this.previewdata.currentSub--;
+								}
+								//Bisogna scalare in basso tutti i riferimenti ad indici con indice > index
+								//e cancellare i riferimenti con indice = index
+								//Non sto usando i for each perché mi serve il riferimento diretto all'mainsay per cambiarne i valori...
+								for(i = 0; i < mains.length; i++){
+									if(i != index){
+										//number
+										if(mains[i].number > index) mains[i].number -= 1;
+										//goto
+										for(j = 0; j < mains[i].goto.length; j++){
+											if(mains[i].goto[j][1] == index) {
+												mains[i].goto.splice(j,1);
+												j--;
+											}
+											else if(mains[i].goto[j][1] > index) mains[i].goto[j][1] -= 1;
+										}
+										//sub_rewards
+										for(j = 0; j < mains[i].subquest_rewards.length; j++){
+											//added_goto
+											for(k = 0; k < mains[i].subquest_rewards[j].added_goto.length; k++){
+												if(mains[i].subquest_rewards[j].added_goto[k][1] == index) {
+													mains[i].subquest_rewards[j].added_goto.splice(k,1);
+													k--;
+												}
+												else if(mains[i].subquest_rewards[j].added_goto[k][1] > index) mains[i].subquest_rewards[j].added_goto[k][1] -= 1;
+											}
+											//removed_goto
+											for(k = 0; j < mains[i].subquest_rewards[j].removed_goto.length; k++){
+												if(mains[i].subquest_rewards[j].removed_goto[k] == index){
+													mains[i].subquest_rewards[j].removed_goto.splice(k,1);
+													k--;
+												}
+												else if(mains[i].subquest_rewards[j].removed_goto[k] > index) mains[i].subquest_rewards[j].removed_goto[k] -= 1;
+											}
+										}
+									}
+								}
+								subs = this.gamedata.subQuests;
+								for(i = 0; i < subs.length; i++){
+									for(j = 0; j < subs[i].available_on.length; j++){
+										if(subs[i].available_on[j] == index) {
+											subs[i].available_on.splice(j,1);
+											k--;
+										}
+										else if(subs[i].available_on[j] > index) subs[i].available_on[j] -= 1;
+									}
+								}
+								mains.splice(index,1);
+							}
+							else alert("Cannot have fewer than one quest!");
+						}
+					},
+					//Come sopra ma per le subquests (sono funzioni separate perché controllano elementi diversi)
+					rmSubNode: function(index) {
+						var ok = confirm("Are you sure you want to delete this node? All remaining references to this node will be deleted.");
+						if(ok){
+							var subs = this.gamedata.subQuests;
+							if(subs.length > 1){
+								//Deve restarne almeno una in lista
+								if(subs.length > 1){
+									//Se sto cancellando la quest su cui mi trovo devo prima cambiare schermata o genero errori
+									if(this.previewdata.currentSub == index){
+										//Se sto cancellando la 0 non è un problema
+										if(index != 0) this.previewdata.currentSub--;
+									}
+									//Bisogna scalare in basso tutti i riferimenti ad indici con indice > index
+									//e cancellare i riferimenti con indice = index
+									//Non sto usando i for each perché mi serve il riferimento diretto all'mainsay per cambiarne i valori...
+									for(i = 0; i < subs.length; i++){
+										if(i != index){
+											if(subs[i].number > index) subs[i].number -= 1;
+											//available_on
+											for(j = 0; j < subs[i].available_on.length; j++){
+												if(subs[i].available_on[j] == index){
+													subs[i].available_on.splice(j,1);
+													j--;
+												}
+												else if(subs[i].available_on[j] > index) subs[i].available_on[j] -= 1;
+											}
+										}
+									}
+									//subquest_reward
+									mains = this.gamedata.mainQuest;
+									for(i = 0; i < mains.length; i++){
+										for(j = 0; j < mains[i].subquest_rewards.length; j++){
+											if(mains[i].subquest_rewards[j].number == index){
+												mains[i].subquest_rewards.splice(j,1);
+												j--;
+											}
+											else if(mains[i].subquest_rewards[j].number > index) mains[i].subquest_rewards[j].number -= 1;
+										}
+									}
+								}
+								subs.splice(index,1);
+							}
+							else alert("Cannot have fewer than one quest!");
+						}
+					},
           addGoto: function(){
             this.renderQuest.goto.push(["",0]);
           },
@@ -271,7 +380,7 @@
   								for(opt of reward.added_options)
   									options.push(opt);
   								for(opt of reward.removed_options){
-  									if((index = myIndexOf(options,opt,arrCmp)) != -1)
+  									if((index = myIndexOf(options,opt,mainsCmp)) != -1)
   										options.splice(index,1);
   								}
   							}
@@ -289,7 +398,7 @@
 									//Aggiungo in penultima posizione
 									gotos.splice(gotos.length-1,0,goto);
 								for(goto of reward.removed_goto){
-									if((index = myIndexOf(gotos,goto,arrCmp)) != -1)
+									if((index = myIndexOf(gotos,goto,mainsCmp)) != -1)
 										options.splice(index,1);
 								}
 							}

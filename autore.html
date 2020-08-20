@@ -48,13 +48,13 @@
           <br>
           <!--Aggiunta nuovo nodo main/sub-->
           <button v-on:click="addNode">Add New</button>
-          <button v-on:click="rmNode">Remove Last</button>
           <!--Accesso rapido alle quest usando v-for buttons-->
           <!--TODO Chiuderlo in un box con overflow a scorrimento maybe?-->
           <p>Quick Access:</p>
           <div v-for="quest in questList">
             <br>
             <button v-on:click="changeQuest(quest.number)">{{ quest.number }}</button>
+            <button v-on:click="previewdata.in_mainquest ? rmMainNode(quest.number) : rmSubNode(quest.number)">Delete</button>
             <span id="subquestadd" v-if="!previewdata.in_mainquest">
               <input :name="'sub ' + quest.number" type="checkbox" :checked="previewdata.completedSubs.includes(quest.number)" v-on:click="setCompleted($event,quest.number)">
               <label :for="'sub ' + quest.number">Set Completed</label>
