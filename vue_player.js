@@ -25,6 +25,7 @@ var app = new Vue({
   },
   data: {
     gamedata: pholder,
+    questname: null,
     currentQuest: 0,
     currentSub: 0,
     completedSubs: [],
@@ -47,7 +48,7 @@ var app = new Vue({
   },
   created: function (){
 					req = new XMLHttpRequest();
-					req.open("GET", "/json/newquest.json");
+					req.open("GET", "/json/testing.json");
 					var _this = this;
 					req.onreadystatechange = function (){
 						if(req.readyState == 4 && req.status == 200){
@@ -59,12 +60,15 @@ var app = new Vue({
 					req.send();
 	},
   methods: {
+    testRequest: function() {
+	axios.get('http://localhost:8080/prova').then(response => {
+		console.log("response: " + response)
+	});
+    },
     changeQuest: function() {
       console.log(`Il valore è: ${questname}`);
       if(questname) {
       console.log("dentro");
-      document.getElementById("switch").style.display='block';
-      document.getElementById("questLoader").style.display='none';
       axios
         .get(`/quest${questname}`).then(response =>
         (this.gamedata = response.data))
