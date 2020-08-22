@@ -61,9 +61,9 @@ var app = new Vue({
 	},
   methods: {
     testRequest: function() {
-	axios.get('http://localhost:8080/prova').then(response => {
-		console.log("response: " + response)
-	});
+	     axios.get('http://localhost:8080/prova').then(response => {
+		       console.log("response: " + response)
+	     });
     },
     changeQuest: function() {
       console.log(`Il valore è: ${questname}`);

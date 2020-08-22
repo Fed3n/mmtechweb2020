@@ -48,6 +48,9 @@
           "imginput": httpVueLoader("components/img_input.vue")
         },
         data: {
+							storyName: "",
+							storyList: null,
+							selectedStory: null,
               previewdata: {
                 "currentQuest": 0,
                 "currentSub": 0,
@@ -57,7 +60,46 @@
               },
               gamedata: pholder
         },
+				created: function(){
+					this.updateFs();
+				},
         methods: {
+					updateFs: function(){
+						console.log("Requesting fs update...");
+						var _this = this;
+						axios.get("/story").then(function (res){
+							_this.storyList = res.data;
+						});
+					},
+					getStory: function(){
+						if(this.selectedStory){
+			   			axios.get(`/story${this.selectedStory}`).then((res) => {
+			        	this.gamedata = res.data;
+							})
+			     	}
+					},
+					postStory: function(){
+						data = {
+							storyName: this.storyName,
+							json: this.gamedata
+						}
+						axios.post("/story", data)
+						.then((res) => {
+							console.log("Post successful with response:");
+							console.log(res);
+						});
+					},
+					deleteStory: function(){
+						if(this.selectedStory){
+							data = { params: { storyName: this.selectedStory }};
+							ok = confirm("Are you really sure you want to delete this story from the server?");
+							if(ok){
+								axios.delete("/story", data).then((res) => {
+									console.log("Delete successfully");
+								});
+							}
+						}
+					},
           changeQuest: function(number){
             if(this.previewdata.in_mainquest) this.previewdata.currentQuest = number;
             else this.previewdata.currentSub = number;
@@ -89,25 +131,6 @@
        		};
             if(this.previewdata.in_mainquest) this.gamedata.mainQuest.push(mq);
             else this.gamedata.subQuests.push(sq)
-          },
-          rmNode: function() {
-            var ok = confirm("Are you sure you want to delete the last node?");
-            if(ok){
-              if(this.previewdata.in_mainquest){
-                if(this.gamedata.mainQuest.length > 1) {
-                  if(this.previewdata.currentQuest == this.gamedata.mainQuest.length-1) this.previewdata.currentQuest -= 1;
-                  this.gamedata.mainQuest.pop();
-                }
-                else alert("Cannot have fewer than one quest.")
-              }
-              else{
-                if(this.gamedata.subQuests.length > 1) {
-                  if(this.previewdata.currentSub == this.gamedata.subQuests.length-1) this.previewdata.currentSub -= 1;
-                  this.gamedata.subQuests.pop();
-                }
-                else alert("Cannot have fewer than one quest.")
-              }
-            }
           },
 					//Rimuove il nodo selezionato dall'mainsay mainquest
 					//Un po' costosa computazionalmente ma l'alternativa è limitarsi al pop per la cancellazione

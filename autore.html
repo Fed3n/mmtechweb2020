@@ -4,12 +4,27 @@
     <meta charset="utf-8">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/http-vue-loader"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <title>Ambiente Autore</title>
   </head>
   <body>
     <div id="app">
-
+      <!--AREA DI TEST PER LATO SERVER-->
+      <div id="server-requests">
+        <div>
+          <label for="story-name">Story Name:</label>
+          <input name="story-name" type="text" v-model="storyName">
+          <button v-on:click="postStory">POST</button>
+        </div>
+        <div>
+          <select v-model="selectedStory">
+            <option v-for="story in storyList" :value="story" >{{ story }}</option>
+          </select>
+          <button v-on:click="getStory">GET</button>
+          <button v-on:click="deleteStory">DELETE</button>
+        </div>
+      </div>
       <!--AREA PREVIEW-->
       <div id="preview">
           <h1>PREVIEW! :)</h1>
