@@ -1,5 +1,5 @@
-  //PLACEHOLDER OBJECT//
-			pholder = {
+  //PLACEHOLDER OBJECTS//
+			gamedata_pholder = {
 				      "mainQuest": [
 				            {
 						               "number": 0,
@@ -40,6 +40,13 @@
     					}
 			};
 
+			metadata_pholder = {
+				"name": "",
+				"active": false,
+				"accessible": true,
+				"language": ""
+			};
+
       var app = new Vue({
         el: "#app",
         components: {
@@ -48,9 +55,12 @@
           "imginput": httpVueLoader("components/img_input.vue")
         },
         data: {
-							storyName: "",
 							storyList: null,
-							selectedStory: null,
+							activeStoryList: null,
+							inactiveStoryList: null,
+							selectedStory_saveload: null,
+							selectedStory_active: null,
+							selectedStory_inactive: null,
               previewdata: {
                 "currentQuest": 0,
                 "currentSub": 0,
@@ -58,7 +68,8 @@
                 "in_mainquest": true,
                 "picked": null
               },
-              gamedata: pholder
+              gamedata: gamedata_pholder,
+							metadata: metadata_pholder
         },
 				created: function(){
 					this.updateFs();
@@ -68,37 +79,65 @@
 						console.log("Requesting fs update...");
 						var _this = this;
 						axios.get("/story").then(function (res){
-							_this.storyList = res.data;
+							console.log(res.data);
+							storyList = [];
+							activeStoryList = [];
+							inactiveStoryList = [];
+							for(el of res.data){
+								storyList.push(el.name);
+								if(el.active) activeStoryList.push(el.name);
+								else inactiveStoryList.push(el.name);
+ 							}
+							_this.storyList = storyList;
+							_this.activeStoryList = activeStoryList;
+							_this.inactiveStoryList = inactiveStoryList;
 						});
 					},
 					getStory: function(){
-						if(this.selectedStory){
-			   			axios.get(`/story${this.selectedStory}`).then((res) => {
-			        	this.gamedata = res.data;
+						console.log("getstory");
+						if(this.selectedStory_saveload){
+							var _this = this;
+			   			axios.get(`/story${this.selectedStory_saveload}`).then((res) => {
+			        	_this.gamedata = res.data.json;
+								_this.metadata = res.data.meta;
+								_this.updateFs();
 							})
 			     	}
 					},
 					postStory: function(){
 						data = {
-							storyName: this.storyName,
-							json: this.gamedata
+							storyName: this.metadata.name,
+							json: this.gamedata,
+							meta: this.metadata
 						}
+						var _this = this;
 						axios.post("/story", data)
 						.then((res) => {
-							console.log("Post successful with response:");
+							_this.updateFs();
+							console.log("Post successful with response: ");
 							console.log(res);
 						});
 					},
 					deleteStory: function(){
-						if(this.selectedStory){
-							data = { params: { storyName: this.selectedStory }};
+						if(this.selectedStory_saveload){
+							data = { params: { storyName: this.selectedStory_saveload }};
 							ok = confirm("Are you really sure you want to delete this story from the server?");
 							if(ok){
+								var _this = this;
 								axios.delete("/story", data).then((res) => {
-									console.log("Delete successfully");
+									_this.updateFs();
 								});
 							}
 						}
+					},
+					//TODO
+					uploadImg: function(){
+						var form = new FormData();
+						axios.post("/story/image", imageFile, {
+							headers: {
+								"Content-Type": imageFile.type
+							}
+						})
 					},
           changeQuest: function(number){
             if(this.previewdata.in_mainquest) this.previewdata.currentQuest = number;
@@ -132,7 +171,7 @@
             if(this.previewdata.in_mainquest) this.gamedata.mainQuest.push(mq);
             else this.gamedata.subQuests.push(sq)
           },
-					//Rimuove il nodo selezionato dall'mainsay mainquest
+					//Rimuove il nodo selezionato dall'array mainquest
 					//Un po' costosa computazionalmente ma l'alternativa è limitarsi al pop per la cancellazione
 					rmMainNode: function(index) {
 						var ok = confirm("Are you sure you want to delete this node? All remaining references to this node will be deleted.");

@@ -2,6 +2,7 @@
 <html lang="it">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/http-vue-loader"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -9,24 +10,76 @@
     <title>Ambiente Autore</title>
   </head>
   <body>
-    <div id="app">
-      <!--AREA DI TEST PER LATO SERVER-->
-      <div id="server-requests">
-        <div>
-          <label for="story-name">Story Name:</label>
-          <input name="story-name" type="text" v-model="storyName">
-          <button v-on:click="postStory">POST</button>
+    <div id="app" class="container">
+      <!--AREA DI TEST PER LATO SERVER E CARICAMENTO FILES-->
+      <div class="row">
+        <div id="server-storyinfo" class="col-4">
+          <h2>STORY INFORMATION</h2>
+          <div>
+            <label for="story-name">Story Name:</label>
+            <input name="story-name" type="text" v-model="metadata.name">
+            <br>
+            <label for="activate">Active: </label>
+            <input name="activate" type="checkbox" v-model="metadata.active">
+            <br>
+            <label for="accessibility">Accessible: </label>
+            <input name="accessibility" type="checkbox" v-model="metadata.accessible">
+            <br>
+            <label for="language">Language: </label>
+            <input name="language" type="text" v-model="metadata.language">
+            <br>
+            <button v-on:click="postStory">POST</button>
+          </div>
         </div>
-        <div>
-          <select v-model="selectedStory">
-            <option v-for="story in storyList" :value="story" >{{ story }}</option>
-          </select>
-          <button v-on:click="getStory">GET</button>
-          <button v-on:click="deleteStory">DELETE</button>
+        <div id="server-manage" class="col-4">
+          <h2>SERVER SIDE FS</h2>
+          <!--GET / DELETE IN FS-->
+          <div>
+            <label for="select-saveload">Selected: </label>
+            <select name="select-saveload" v-model="selectedStory_saveload">
+              <option v-for="story in storyList" :value="story">{{ story }}</option>
+            </select>
+            <button v-on:click="getStory">GET</button>
+            <button v-on:click="deleteStory">DELETE</button>
+          </div>
+          <!--STORIE ATTIVE-->
+          <div>
+            <label for="select-active">Active Stories: </label>
+            <select name="select-active" v-model="selectedStory_active">
+              <option v-for="story in activeStoryList" :value="story">{{ story }}</option>
+            </select>
+          </div>
+          <!--STORIE NON ATTIVE-->
+          <div>
+            <label for="select-inactive">Inactive Stories: </label>
+            <select name="select-inactive" v-model="selectedStory_inactive">
+              <option v-for="story in inactiveStoryList" :value="story">{{ story }}</option>
+            </select>
+          </div>
+          <!--IMMAGINI CARICATE-->
+          <div>
+            <!--non ne ho idea please send help-->
+            <label for="img_upload">
+            <input type="file" accept="image/*" name="img_upload" ref="img_upload">
+            <button v-on:click="uploadImg()">UPLOAD</button>
+          </div>
+        </div>
+        <div id="saveload" class="col-4">
+          <h2>SAVE/LOAD FROM LOCAL FS</h2>
+          <div id="jsonLoader">
+            <label for="file-loader">Json Loader</label>
+            <input name="file-loader" type="file" ref="toLoad">
+            <button v-on:click="loadJson">Load JSON</button>
+          </div>
+          <div id="jsonSaver">
+            <label for="file-downloader">Json Saver</label>
+            <input name="file-downloader" type="text" value="myfile.json" ref="fileName">
+            <button v-on:click="saveJson">Download JSON</button>
+          </div>
         </div>
       </div>
       <!--AREA PREVIEW-->
-      <div id="preview">
+      <div id="preview" class="col-6">
           <h1>PREVIEW! :)</h1>
           <div id="questRender" class="card"
           :style="{ color: gamedata.css_style.card.textColor, 'font-family': gamedata.css_style.card.textFont, 'font-style': gamedata.css_style.card.textStyle, 'background-color': gamedata.css_style.card.bgColor }">
@@ -57,7 +110,7 @@
       <h1>GRAPH! :)</h1>
       <!--QUICK ACCESS/CREATION/REMOVAL-->
       <div class="row">
-        <div class="col-2">
+        <div class="col-3">
           <!--Passaggio da schermata main a sub e viceversa-->
           <button v-on:click="switchMainSub">Switch to {{ previewdata.in_mainquest ? "sub" : "main" }}!</button>
           <br>
@@ -81,7 +134,7 @@
           <p>PREV</p>
         </div>
         <!--CAMPI QUEST ATTUALE-->
-        <div class="col-3">
+        <div class="col-4">
           <ul>
             <!--Quest ID-->
             <li>Number: {{ renderQuest.number}}</li>
@@ -189,7 +242,7 @@
           </ul>
         </div>
         <!--GOTOS-->
-        <div class="col-2">
+        <div class="col-3">
           <!--GOTOS in caso di mainquest-->
           <div id="goto-management" v-if="previewdata.in_mainquest">
             <h1>GOTOS</h1>
@@ -235,18 +288,6 @@
           </div>
         </div>
       </div>
-    <div id="saveload">
-      <div id="jsonLoader">
-        <p>Json Loader</p>
-        <input type="file" ref="toLoad">
-        <button v-on:click="loadJson">Load Selected JSON</button>
-      </div>
-      <div id="jsonSaver">
-        <p>Json Saver</p>
-        <input type="text" value="myfile.json" ref="fileName">
-        <button v-on:click="saveJson">Download JSON</button>
-      </div>
-    </div>
   </div>
 </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

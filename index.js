@@ -49,34 +49,57 @@ app.get('/quest:questId', (req, res) => {
 //## AMBIENTE AUTORE ##//
 app.get('/story', (req, res) => {
 	console.log("Getting content of ./story directory...")
-	let load = fs.readdirSync(path.join(__dirname + "/story"));
-	return res.send(load);
+	let entrylist = fs.readdirSync(path.join(__dirname + "/story"));
+	load = [];
+	//Per ogni entry mando oggetto con info
+	for(entry of entrylist){
+		let info = fs.readFileSync(path.join(__dirname + "/story/" + entry + "/info.json"));
+		info = JSON.parse(info);
+		load.push(info);
+	}
+	res.send(load);
 });
 
 app.get('/story:storyName', (req, res) => {
 	var story = req.params.storyName;
-	var dirpath = path.join(__dirname + "/story/" + story + "/" + story + ".json")
+	var jsonpath = path.join(__dirname + "/story/" + story + "/" + story + ".json")
+	var metapath = path.join(__dirname + "/story/" + story + "/" + "info.json")
 	console.log("Getting story " + story);
-	let load = fs.readFileSync(dirpath);
-	let json = JSON.parse(load);
-	console.log(json);
+	let json = fs.readFileSync(jsonpath);
+	json = JSON.parse(json);
+	let meta = fs.readFileSync(metapath);
+	meta = JSON.parse(meta);
+	let load = {
+		json: json,
+		meta: meta
+	};
+	console.log(load);
 	res.setHeader('Content-Type','application/json');
-	return res.json(json);
-})
+	res.json(load);
+});
 
 app.post('/story', (req, res) => {
 	console.log("Posting story :)");
 	var storyName = req.body.storyName;
 	var json = req.body.json;
+	var meta = req.body.meta;
 	var storydir = path.join(__dirname + "/story");
 	var newdir = path.join(storydir + "/" + storyName);
-	console.log(JSON.stringify(json));
-	fs.mkdirSync(path.join(newdir));
+	//Se la directory c'è già non la ricrea
+	fs.mkdirSync(path.join(newdir), { recursive: true });
 	fs.writeFile(path.join(newdir + "/" + storyName + ".json"), JSON.stringify(json), (error) => {
-		if(error) throw error;
-		console.log("Saved story " + storyName);
+		if(error) {
+			console.log("error at json");
+			throw error;
+		}
 	});
-	return res.send(res);
+	fs.writeFile(path.join(newdir + "/" + "info.json"), JSON.stringify(meta), (error) => {
+		if(error) {
+			console.log("error at meta");
+			throw error;
+		}
+	});
+	res.send(":)");
 });
 
 app.delete('/story', (req, res) => {
@@ -87,8 +110,10 @@ app.delete('/story', (req, res) => {
 	fs.rmdir(dir, { recursive: true }, (error) => {
 		if(error) throw error;
 		console.log("Deleted story " + story);
+		res.send(":)");
 	});
 });
+//#######################################################//
 
 app.listen(port, () => {
   console.log(`Listening at http://${host}:${port}`)
