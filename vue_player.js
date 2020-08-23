@@ -117,7 +117,6 @@ var app = new Vue({
       document.getElementById("submit").disabled = true;
       this.picked = null;
       this.$refs.questname.focus();
-      this.$refs.submitfocus.blur();
     },
     submitSub: function() {
       if (this.in_mainquest) return;
@@ -147,7 +146,6 @@ var app = new Vue({
       document.getElementById("submit").disabled = true;
       this.picked = null;
       this.$refs.questname.focus();
-      this.$refs.submitfocus.blur();
     }
   },
   computed: {
