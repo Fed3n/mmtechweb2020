@@ -1,0 +1,5 @@
+# Ignora moduli di node.js
+node_modules/
+
+# Ignora file di sessione di vi
+*.swp
