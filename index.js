@@ -69,7 +69,6 @@ app.get('/story:storyName', (req, res) => {
 		json: json,
 		meta: meta
 	};
-	console.log(load);
 	res.setHeader('Content-Type','application/json');
 	res.json(load);
 });
@@ -85,13 +84,11 @@ app.post('/story', (req, res) => {
 	fs.mkdirSync(newdir, { recursive: true });
 	fs.writeFile(path.join(newdir + "/" + storyName + ".json"), JSON.stringify(json), (error) => {
 		if(error) {
-			console.log("error at json");
 			throw error;
 		}
 	});
 	fs.writeFile(path.join(newdir + "/" + "info.json"), JSON.stringify(meta), (error) => {
 		if(error) {
-			console.log("error at meta");
 			throw error;
 		}
 	});
@@ -110,12 +107,19 @@ app.delete('/story', (req, res) => {
 	});
 });
 
-app.post('/image/:storyDir', (req, res) => {
-	var targetDir = path.join(__dirname + "/story/" + req.params.storyDir + "/images/");
+app.get('/image/:storyName', (req, res) =>{
+	console.log(`Getting content of /story/${req.params.storyName}/images`);
+	var imgdir = path.join(__dirname + `/story/${req.params.storyName}/images/`);
+	let entrylist = fs.readdirSync(imgdir);
+	console.log(entrylist);
+	res.send(entrylist);
+});
+
+app.post('/image/:storyName', (req, res) => {
+	var targetDir = path.join(__dirname + "/story/" + req.params.storyName + "/images/");
 	fs.mkdirSync(targetDir, { recursive: true });
 	fs.writeFile(path.join(targetDir + req.files.image.name), req.files.image.data, (error) => {
-		if(error)
-		throw error;
+		if(error)	throw error;
 	});
 	res.send(":)");
 });

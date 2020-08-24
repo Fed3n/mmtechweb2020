@@ -7,7 +7,7 @@
 
 <script>
 module.exports = {
-  props: ["gamedata", "current", "value"],
+  props: ["gamedata", "current", "value", "metadata"],
   methods: {
     updateAns: function(picked){
       this.$emit('input', picked);

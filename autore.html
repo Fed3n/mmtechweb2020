@@ -35,8 +35,8 @@
           <h2>SERVER SIDE FS</h2>
           <!--GET / DELETE IN FS-->
           <div>
-            <label for="select-saveload">Selected: </label>
-            <select name="select-saveload" ref="selectedStory">
+            <label for="select-story">Selected: </label>
+            <select name="select-story" ref="selectedStory">
               <option v-for="story in storyList" :value="story">{{ story }}</option>
             </select>
             <button v-on:click="getStory">GET</button>
@@ -58,10 +58,18 @@
           </div>
           <!--IMMAGINI CARICATE-->
           <div>
-            <!--non ne ho idea please send help-->
             <label for="img_upload">Upload for selected story: </label>
             <input type="file" accept="image/*" name="img_upload" ref="img_upload">
             <button v-on:click="uploadImg()">UPLOAD</button>
+            <br>
+            <label for="select-image">Images in selected story: </label>
+            <select name="select-image" v-model="selectedImage">
+              <option v-for="imgname in imagesList" :value="imgname">{{ imgname }}</option>
+            </select>
+            <div id="image-preview" class="container">
+              <label for="imgpreview">Preview: </label>
+              <img class="img-fluid" :src="'story/' + metadata.name + '/images/' + selectedImage" :alt="'Preview of ' + selectedImage">
+            </div>
           </div>
         </div>
         <div id="saveload" class="col-4">
@@ -96,7 +104,7 @@
 
                 <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
                 <div id="gameinput">
-                  <component v-bind:is="currentComponent" :gamedata="renderQuest" :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub"
+                  <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub"
       						:options="previewdata.in_mainquest ? getCurrentOptions : renderQuest.options" v-model="previewdata.picked"></component>
                 </div>
               </div>

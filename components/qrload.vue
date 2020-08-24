@@ -15,18 +15,16 @@ module.exports = {
     }
   },
   mounted: function() {
-    console.log("mounting");
     axios
-    .get(`http://localhost:8080/quest`).then(response => {
+    .get(`/quest`).then((response) => {
       this.questlist = response.data;
       for(var i=0; i < this.questlist.length; i++) {
         this.questlist[i] = this.questlist[i].replace(".json", "");
       }
-    })
+    });
     .catch(function error(error){
 	console.log(error);
     });
-    console.log("mounted");
   },
   methods: {
     updateQuest: function(){

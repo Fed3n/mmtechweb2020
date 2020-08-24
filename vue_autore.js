@@ -58,6 +58,8 @@
 							storyList: null,
 							activeStoryList: null,
 							inactiveStoryList: null,
+							imagesList: null,
+							selectedImage: "",
               previewdata: {
                 "currentQuest": 0,
                 "currentSub": 0,
@@ -95,6 +97,7 @@
 			   			axios.get(`/story${this.$refs.selectedStory.value}`).then((res) => {
 			        	_this.gamedata = res.data.json;
 								_this.metadata = res.data.meta;
+								_this.getImagesList();
 								_this.updateFs();
 							})
 			     	}
@@ -138,6 +141,16 @@
 						})
 						.then( (res) => {
 							console.log(res);
+							_this.getImagesList();
+						});
+					},
+					getImagesList: function(){
+						console.log("Getting images list...");
+						var _this = this;
+						axios.get(`/image/${this.metadata.name}`).then( (res) => {
+							console.log("Hi!! :)");
+							console.log(res.data);
+							_this.imagesList = res.data;
 						});
 					},
           changeQuest: function(number){
