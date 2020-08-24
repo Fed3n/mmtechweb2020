@@ -11,6 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
 
+
 app.get('/', (req, res) => {
 	return res.sendFile(path.join(__dirname + "/player.html"));
 });
@@ -19,7 +20,11 @@ app.get('/autore', (req, res) => {
 	return res.sendFile(path.join(__dirname + "/autore.html"));
 });
 
-app.get('/prova', (req,res) => {
+app.get('/valutatore', (req, res) => {
+    return res.sendFile(path.join(__dirname + "/valutatore.html"));
+});
+
+app.get('/prova', (req, res) => {
 	console.log("test request!");
 	return res.send("ciao!!");
 });
@@ -39,6 +44,17 @@ app.get('/quest:questId', (req, res) => {
 	res.setHeader('Content-Type','application/json');
 	console.log("Header set");
 	return res.json(json);
+});
+
+app.post('/players', (req, res) => {
+    var user_path = path.join(__dirname + '/players/' + req.body.user_id);
+    var data = JSON.stringify(req.body);
+    fs.writeFile(user_path, data, err => {
+        if (err) throw err;
+        console.log('dati di gioco salvati');
+    });
+    console.log(req.body);
+    return res.send(":)");
 });
 
 
@@ -123,6 +139,20 @@ app.post('/image/:storyName', (req, res) => {
 	});
 	res.send(":)");
 });
+
+
+//## AMBIENTE VALUTATORE ##//
+app.get('/players/', (req, res) => {
+    var playerIDs = fs.readdirSync(__dirname + '/players/');
+    var players_data = [];
+    for(const player_id of playerIDs){
+        var data = fs.readFileSync(__dirname + '/players/' + player_id);
+        players_data.push(data.toString());
+    }
+    return res.send(players_data);
+});
+
+
 //#######################################################//
 
 app.listen(port, () => {

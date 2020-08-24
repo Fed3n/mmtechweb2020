@@ -20,11 +20,11 @@
 			<!--Nuova navbar!! :)-->
 			<nav class="navbar navbar-expand-md navbar-dark bg-dark">
 				<div class="navbar-brand">Menu
-     			<span class="badge badge-warning" v-if="getSubquests.length > 0" role="alert">Subs!</span>
-     		</div>
+     			    <span class="badge badge-warning" v-if="getSubquests.length > 0" role="alert">Subs!</span>
+     		    </div>
 
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsiblemenu" aria-label="Apri il menu">
-                    <span class="navbar-toggler-icon"></span>git stq
+                    <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="collapsiblemenu">
                     <ul class="navbar-nav" aria-labelledby="quest-menu-button">
@@ -64,7 +64,18 @@
                     </div>
                 </div>
 
-                <div class="card-footer border-white">
+                <!-- TODO "il player mantiene il punteggio di gioco, e in base al punt.finale mostra un messaggio conclusivo diverso" -->
+                <!-- questa e' una bozza -->
+                <div v-if="renderQuest.type == 'ending'">
+                        punteggio: {{ score }} <!-- alla fine sara' nascosto-->
+                        <!-- soglie da prendere in base alla storia -->
+                        <div v-if=     "score < 3000">                 bene!</div>
+                        <div v-else-if="3000 < score && score < 4000"> bravo!</div>
+                        <div v-else>                                   bravissimo!</div>
+                    </div>
+                </div>
+
+                <div v-if="renderQuest.type != 'ending'" class="card-footer border-white">
                     <button id="submit" ref="submitbutton" class="btn-default" v-on:click="in_mainquest? submitMain() : submitSub()">Submit</button>
                 </div>
             </div>

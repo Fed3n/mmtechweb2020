@@ -28,6 +28,8 @@ var app = new Vue({
     "qrload": httpVueLoader("components/qrload.vue")
   },
   data: {
+    user_id: 0,          // TODO lo deve assegnare il server
+    inactive_time: 0,    // in seconds
     gamedata: pholder,
     questname: null,
     currentQuest: 0,
@@ -51,23 +53,51 @@ var app = new Vue({
     }
   },
   created: function (){
-					req = new XMLHttpRequest();
-					req.open("GET", "/json/testing.json");
-					var _this = this;
-					req.onreadystatechange = function (){
-						if(req.readyState == 4 && req.status == 200){
-						var json = JSON.parse(req.responseText);
-						console.log(json);
-						_this.gamedata = json;
-						}
-					};
-					req.send();
-	},
+          req = new XMLHttpRequest();
+          req.open("GET", "/json/testing.json");
+          var _this = this;
+          req.onreadystatechange = function (){
+            if(req.readyState == 4 && req.status == 200){
+            var json = JSON.parse(req.responseText);
+            console.log(json);
+            _this.gamedata = json;
+            }
+          };
+          req.send();
+  },
+  mounted: function() {
+    this.sendUpdatesEvery5Seconds();
+    this.updateInactiveTimeEverySecond();
+  },
   methods: {
+    sendUpdatesEvery5Seconds: function() {
+      let timerId = setInterval(() => {
+        this.sendGameData();
+      }, 5000);
+    },
+    updateInactiveTimeEverySecond: function() {
+      let timerId = setInterval(() => {
+        this.inactive_time++;
+      }, 1000);
+    },
     testRequest: function() {
-	     axios.get('http://localhost:8080/prova').then(response => {
-		       console.log("response: " + response)
-	     });
+       axios.get('http://localhost:8080/prova').then(response => {
+           console.log("response: " + response)
+       });
+    },
+    sendGameData: function(){
+      axios.post('http://localhost:8080/players',
+          {
+            user_id: this.user_id,
+            in_mainquest: this.in_mainquest,
+            currentQuest: this.currentQuest,
+            currentSub: this.currentSub,
+            completedSubs: this.completedSubs,
+            finished: this.renderQuest.type == 'ending',
+            inactive_time: this.inactive_time
+          })
+        .then(response => {console.log(response)})
+        .catch(err => {console.log(err)});
     },
     changeQuest: function() {
       console.log(`Il valore è: ${questname}`);
@@ -100,14 +130,18 @@ var app = new Vue({
           let y = opt[0][1];
           let radius = opt[0][2];
           if(this.picked[0] >= x-radius && this.picked[0] <= x+radius &&
-            this.picked[1] >= y-radius && this.picked[1] <= y+radius){
+             this.picked[1] >= y-radius && this.picked[1] <= y+radius){
               this.currentQuest = opt[1];
+              this.inactive_time = 0;
+              this.sendGameData();
               break;
             }
         }
         //Formato standard che controlla se opt[0] == picked
         else if(opt[0] == this.picked){
           this.currentQuest = opt[1];
+          this.inactive_time = 0;
+          this.sendGameData();
           break;
         }
         //L'opzione di default se non ci sono corrispondenze è sempre l'ultima
@@ -142,6 +176,8 @@ var app = new Vue({
         if (!this.completedSubs.includes(required))
           return;
 
+      this.sendGameData();
+      this.inactive_time = 0;
       this.completedSubs.push(subQuest.number);
       this.in_mainquest = true;
       if(document.getElementById("input")) {
