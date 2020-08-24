@@ -86,7 +86,7 @@ var app = new Vue({
        });
     },
     sendGameData: function(){
-      axios.post('http://localhost:8080/users',
+      axios.post('http://localhost:8080/players',
           {
             user_id: this.user_id,
             in_mainquest: this.in_mainquest,
