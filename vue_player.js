@@ -1,3 +1,7 @@
+window.onload = function(){
+    document.getElementById("questname").focus();
+}
+
 //PLACEHOLDER OBJECT//
 pholder = {
   "mainQuest": [

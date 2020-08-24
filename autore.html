@@ -36,7 +36,7 @@
           <!--GET / DELETE IN FS-->
           <div>
             <label for="select-saveload">Selected: </label>
-            <select name="select-saveload" v-model="selectedStory_saveload">
+            <select name="select-saveload" ref="selectedStory">
               <option v-for="story in storyList" :value="story">{{ story }}</option>
             </select>
             <button v-on:click="getStory">GET</button>
@@ -45,21 +45,21 @@
           <!--STORIE ATTIVE-->
           <div>
             <label for="select-active">Active Stories: </label>
-            <select name="select-active" v-model="selectedStory_active">
+            <select name="select-active" ref="selectedStory_active">
               <option v-for="story in activeStoryList" :value="story">{{ story }}</option>
             </select>
           </div>
           <!--STORIE NON ATTIVE-->
           <div>
             <label for="select-inactive">Inactive Stories: </label>
-            <select name="select-inactive" v-model="selectedStory_inactive">
+            <select name="select-inactive" ref="selectedStory_inactive">
               <option v-for="story in inactiveStoryList" :value="story">{{ story }}</option>
             </select>
           </div>
           <!--IMMAGINI CARICATE-->
           <div>
             <!--non ne ho idea please send help-->
-            <label for="img_upload">
+            <label for="img_upload">Upload for selected story: </label>
             <input type="file" accept="image/*" name="img_upload" ref="img_upload">
             <button v-on:click="uploadImg()">UPLOAD</button>
           </div>

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <label for="input"> Risposta: </label>
     <input ref="texts" type="text" name="prova" id="input" value="" v-on:input="updateAns($event.target.value)">
   </div>
 </template>

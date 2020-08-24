@@ -58,9 +58,6 @@
 							storyList: null,
 							activeStoryList: null,
 							inactiveStoryList: null,
-							selectedStory_saveload: null,
-							selectedStory_active: null,
-							selectedStory_inactive: null,
               previewdata: {
                 "currentQuest": 0,
                 "currentSub": 0,
@@ -79,7 +76,6 @@
 						console.log("Requesting fs update...");
 						var _this = this;
 						axios.get("/story").then(function (res){
-							console.log(res.data);
 							storyList = [];
 							activeStoryList = [];
 							inactiveStoryList = [];
@@ -94,10 +90,9 @@
 						});
 					},
 					getStory: function(){
-						console.log("getstory");
-						if(this.selectedStory_saveload){
+						if(this.$refs.selectedStory.value){
 							var _this = this;
-			   			axios.get(`/story${this.selectedStory_saveload}`).then((res) => {
+			   			axios.get(`/story${this.$refs.selectedStory.value}`).then((res) => {
 			        	_this.gamedata = res.data.json;
 								_this.metadata = res.data.meta;
 								_this.updateFs();
@@ -119,8 +114,8 @@
 						});
 					},
 					deleteStory: function(){
-						if(this.selectedStory_saveload){
-							data = { params: { storyName: this.selectedStory_saveload }};
+						if(this.selectedStory){
+							data = { params: { storyName: this.$refs.selectedStory.value }};
 							ok = confirm("Are you really sure you want to delete this story from the server?");
 							if(ok){
 								var _this = this;
@@ -130,14 +125,20 @@
 							}
 						}
 					},
-					//TODO
 					uploadImg: function(){
+						//Mando come multipart/form-data
 						var form = new FormData();
-						axios.post("/story/image", imageFile, {
+						imageFile = this.$refs.img_upload.files[0];
+						storyDir = this.$refs.selectedStory.value;
+						form.append('image', imageFile);
+						axios.post(`/image/${storyDir}`, form, {
 							headers: {
-								"Content-Type": imageFile.type
+								'Content-Type': 'multipart/form-data'
 							}
 						})
+						.then( (res) => {
+							console.log(res);
+						});
 					},
           changeQuest: function(number){
             if(this.previewdata.in_mainquest) this.previewdata.currentQuest = number;
@@ -376,7 +377,6 @@
 					},
           loadJson: function(){
             var path = this.$refs.toLoad.files[0];
-            console.log(path);
             var fileReader = new FileReader();
             _this = this;
             fileReader.onload = function(event){

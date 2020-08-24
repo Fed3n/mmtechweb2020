@@ -2,18 +2,14 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const app = express();
+const fileUpload = require('express-fileupload')
 const host = "localhost";
 const port = 8080;
 
+app.use(fileUpload());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
-
-app.use(function(req, res, next) {
-	res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
-	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-	next();
-});
 
 app.get('/', (req, res) => {
 	return res.sendFile(path.join(__dirname + "/player.html"));
@@ -86,7 +82,7 @@ app.post('/story', (req, res) => {
 	var storydir = path.join(__dirname + "/story");
 	var newdir = path.join(storydir + "/" + storyName);
 	//Se la directory c'è già non la ricrea
-	fs.mkdirSync(path.join(newdir), { recursive: true });
+	fs.mkdirSync(newdir, { recursive: true });
 	fs.writeFile(path.join(newdir + "/" + storyName + ".json"), JSON.stringify(json), (error) => {
 		if(error) {
 			console.log("error at json");
@@ -112,6 +108,16 @@ app.delete('/story', (req, res) => {
 		console.log("Deleted story " + story);
 		res.send(":)");
 	});
+});
+
+app.post('/image/:storyDir', (req, res) => {
+	var targetDir = path.join(__dirname + "/story/" + req.params.storyDir + "/images/");
+	fs.mkdirSync(targetDir, { recursive: true });
+	fs.writeFile(path.join(targetDir + req.files.image.name), req.files.image.data, (error) => {
+		if(error)
+		throw error;
+	});
+	res.send(":)");
 });
 //#######################################################//
 
