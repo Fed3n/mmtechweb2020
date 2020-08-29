@@ -10,7 +10,7 @@
     <title>Ambiente Autore</title>
   </head>
   <body>
-    <div id="app" class="container">
+    <div id="app" class="container-fluid">
       <!--AREA DI TEST PER LATO SERVER E CARICAMENTO FILES-->
       <div class="row">
         <div id="server-storyinfo" class="col-4">
@@ -105,12 +105,13 @@
                 <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
                 <div id="gameinput">
                   <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub"
-      						:options="previewdata.in_mainquest ? getCurrentOptions : renderQuest.options" v-model="previewdata.picked"></component>
+      						:options="previewdata.in_mainquest ? getCurrentOptions : renderQuest.options" ref="inputComponent" v-model="previewdata.picked"></component>
                 </div>
               </div>
             </div>
           </div>
           <p>Current answer is: {{ previewdata.picked }}</p>
+          <p>{{ previewdata.in_mainquest ? ("This will take you to " + getAnswerGoto) : ("Answer is " + getAnswerCorrectness) }}</p>
         </div>
 
     <!--AREA GRAFO-->
@@ -198,6 +199,19 @@
               <br>
               <button v-on:click="generateChoiceGotos">Generate Gotos</button>
             </li>
+            <!-- Quest CHOOSE IMAGE (only if type is draw)-->
+            <li v-if="renderQuest.type == 'draw'">
+              <label for="select-image">Choose image: </label>
+              <select name="select-image" v-model="renderQuest.image.imguri">
+                <option v-for="imgname in imagesList" :value="imgname">{{ imgname }}</option>
+              </select>
+              <div id="image-preview" class="container">
+                <img class="img-fluid" :src="'story/' + metadata.name + '/images/' + renderQuest.image.imguri" :alt="'Preview of ' + renderQuest.image.imguri">
+              </div>
+              <label for="setImgAlt">Choose alt for image: </label>
+              <input name="setImgAlt" type="text" v-model="renderQuest.image.imgalt">
+              <button v-on:click="setImageAsInput">Set</button>
+            </li>
             <!-- Quest SUBQUEST REWARDS (main quests only)-->
             <li v-if="previewdata.in_mainquest">
               <p>Subquest Rewards</p>
@@ -264,15 +278,22 @@
                     <option v-for="quest in questList" :value="quest.number">Number {{ quest.number }}</option>
                   </select>
                   <!--Removed gotos for subquest_rewards-->
-                  <p>Removed by:</p>
-                  <div v-for="reward in renderQuest.subquest_rewards">
+                  <label for="goto-remove">Removed by:</label>
+                  <div name="goto-remove" v-for="reward in renderQuest.subquest_rewards">
                     <input type="checkbox" :name="'sub' + renderQuest.subquest_rewards.indexOf(reward)" :checked="reward.removed_goto.includes(opt)"
                     v-on:click="setRemovedGoto($event,renderQuest.subquest_rewards.indexOf(reward),opt)">
                     <label :for="'sub' + renderQuest.subquest_rewards.indexOf(reward)">Reward {{ reward.number }}<label>
                   </div>
                 </div>
-                <button v-on:click="addGoto">Add</button>
+                <button v-on:click="addGoto('')">Add empty</button>
                 <button v-on:click="rmGoto">Remove</button>
+                <div v-if="renderQuest.type=='draw'">
+                  <p>Or select a point from the preview and set a radius to generate a goto for your image</p>
+                  <label for="goto-radius">Radius:</label>
+                  <input type="text" v-model="radiusInput">
+                  <p v-if="previewdata.picked">Goto currently set to {{ previewdata.picked }} with radius {{ radiusInput }}.</p>
+                  <button v-on:click="addGoto('image')">Add</button>
+                </div>
               </div>
               <h2>Added Gotos</h2>
               <div>

@@ -27,18 +27,21 @@ module.exports = {
       this.$emit('input', [x,y])
       //Se ho clickato è sempre un responso valido
       if(document.getElementById("submit")) document.getElementById("submit").disabled = false;
+    },
+    updateCanvasImage: function() {
+      var c = this.$refs.imgcanvas;
+      var ctx = c.getContext("2d");
+      var img = new Image();
+      img.src = "story/" + this.metadata.name + "/images/" + this.gamedata.image.imguri;
+      img.alt = this.gamedata.image.imgalt;
+      console.log(img.src + " " + img.alt);
+      img.onload = function() {
+        ctx.drawImage(img,0,0, c.width, c.height);
+      }
     }
   },
   mounted:	function() {
-    var c = this.$refs.imgcanvas;
-    var ctx = c.getContext("2d");
-    var img = new Image();
-    img.src = "story/" + this.metadata.name + "/images/" + this.gamedata.image.imguri;
-    img.alt = this.gamedata.image.imgalt;
-    console.log(img.src + " " + img.alt);
-    img.onload = function() {
-      ctx.drawImage(img,0,0, c.width, c.height);
-    }
+    this.updateCanvasImage();
   }
 }
 </script>

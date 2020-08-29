@@ -59,7 +59,8 @@ app.post('/players', (req, res) => {
 
 
 //## AMBIENTE AUTORE ##//
-app.get('/story', (req, res) => {
+//Prende i file info.json delle storie in cui sono contenuti metadata per la rappresentazione (i.e. nome,accessibilità,etc)
+app.get('/stories', (req, res) => {
 	console.log("Getting content of ./story directory...")
 	let entrylist = fs.readdirSync(path.join(__dirname + "/story"));
 	load = [];
@@ -72,7 +73,7 @@ app.get('/story', (req, res) => {
 	res.send(load);
 });
 
-app.get('/story:storyName', (req, res) => {
+app.get('/stories/:storyName', (req, res) => {
 	var story = req.params.storyName;
 	var jsonpath = path.join(__dirname + "/story/" + story + "/" + story + ".json")
 	var metapath = path.join(__dirname + "/story/" + story + "/" + "info.json")
@@ -89,7 +90,7 @@ app.get('/story:storyName', (req, res) => {
 	res.json(load);
 });
 
-app.post('/story', (req, res) => {
+app.post('/stories', (req, res) => {
 	console.log("Posting story :)");
 	var storyName = req.body.storyName;
 	var json = req.body.json;
@@ -111,7 +112,7 @@ app.post('/story', (req, res) => {
 	res.send(":)");
 });
 
-app.delete('/story', (req, res) => {
+app.delete('/stories', (req, res) => {
 	var story = req.query.storyName;
 	console.log("Deleting story: " + story);
 	var storydir = path.join(__dirname + "/story");
@@ -123,7 +124,7 @@ app.delete('/story', (req, res) => {
 	});
 });
 
-app.get('/image/:storyName', (req, res) =>{
+app.get('/stories/:storyName/images', (req, res) =>{
 	console.log(`Getting content of /story/${req.params.storyName}/images`);
 	var imgdir = path.join(__dirname + `/story/${req.params.storyName}/images/`);
 	let entrylist = fs.readdirSync(imgdir);
@@ -131,7 +132,7 @@ app.get('/image/:storyName', (req, res) =>{
 	res.send(entrylist);
 });
 
-app.post('/image/:storyName', (req, res) => {
+app.post('/stories/:storyName/images', (req, res) => {
 	var targetDir = path.join(__dirname + "/story/" + req.params.storyName + "/images/");
 	fs.mkdirSync(targetDir, { recursive: true });
 	fs.writeFile(path.join(targetDir + req.files.image.name), req.files.image.data, (error) => {

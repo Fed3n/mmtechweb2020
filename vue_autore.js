@@ -7,6 +7,10 @@
 						               "type": "",
 						               "description": "",
 						               "options": [],
+													 "image": {
+														 "imguri": "",
+														 "imgalt": ""
+													 },
 						               "goto": [],
 						               "subquest_rewards": []
 					         }
@@ -60,6 +64,7 @@
 							inactiveStoryList: null,
 							imagesList: null,
 							selectedImage: "",
+							radiusInput: 10,	//valore di default
               previewdata: {
                 "currentQuest": 0,
                 "currentSub": 0,
@@ -77,7 +82,7 @@
 					updateFs: function(){
 						console.log("Requesting fs update...");
 						var _this = this;
-						axios.get("/story").then(function (res){
+						axios.get("/stories").then(function (res){
 							storyList = [];
 							activeStoryList = [];
 							inactiveStoryList = [];
@@ -94,7 +99,7 @@
 					getStory: function(){
 						if(this.$refs.selectedStory.value){
 							var _this = this;
-			   			axios.get(`/story${this.$refs.selectedStory.value}`).then((res) => {
+			   			axios.get(`/stories/${this.$refs.selectedStory.value}`).then((res) => {
 			        	_this.gamedata = res.data.json;
 								_this.metadata = res.data.meta;
 								_this.getImagesList();
@@ -109,7 +114,7 @@
 							meta: this.metadata
 						}
 						var _this = this;
-						axios.post("/story", data)
+						axios.post("/stories", data)
 						.then((res) => {
 							_this.updateFs();
 							console.log("Post successful with response: ");
@@ -122,7 +127,7 @@
 							ok = confirm("Are you really sure you want to delete this story from the server?");
 							if(ok){
 								var _this = this;
-								axios.delete("/story", data).then((res) => {
+								axios.delete("/stories", data).then((res) => {
 									_this.updateFs();
 								});
 							}
@@ -132,9 +137,10 @@
 						//Mando come multipart/form-data
 						var form = new FormData();
 						imageFile = this.$refs.img_upload.files[0];
-						storyDir = this.$refs.selectedStory.value;
+						storyName = this.$refs.selectedStory.value;
 						form.append('image', imageFile);
-						axios.post(`/image/${storyDir}`, form, {
+						var _this = this;
+						axios.post(`/stories/${storyName}/images`, form, {
 							headers: {
 								'Content-Type': 'multipart/form-data'
 							}
@@ -147,15 +153,21 @@
 					getImagesList: function(){
 						console.log("Getting images list...");
 						var _this = this;
-						axios.get(`/image/${this.metadata.name}`).then( (res) => {
+						axios.get(`/stories/${this.metadata.name}/images`).then( (res) => {
 							console.log("Hi!! :)");
 							console.log(res.data);
 							_this.imagesList = res.data;
 						});
 					},
           changeQuest: function(number){
-            if(this.previewdata.in_mainquest) this.previewdata.currentQuest = number;
-            else this.previewdata.currentSub = number;
+            if(this.previewdata.in_mainquest){
+							this.previewdata.currentQuest = number;
+							this.previewdata.picked = null;
+						}
+            else {
+							this.previewdata.currentSub = number;
+							this.previewdata.picked = null;
+						}
           },
           switchMainSub: function() {
             this.previewdata.in_mainquest = !this.previewdata.in_mainquest;
@@ -168,6 +180,10 @@
                    "type": "",
                    "description": "",
                    "options": [],
+									 "image": {
+										 "imguri": "",
+										 "imgalt": ""
+									 },
                    "goto": [],
                    "subquest_rewards": []
            };
@@ -295,8 +311,16 @@
 							else alert("Cannot have fewer than one quest!");
 						}
 					},
-          addGoto: function(){
-            this.renderQuest.goto.push(["",0]);
+          addGoto: function(type){
+						//Il formato di img_input è differente [[x,y,radius],node]
+						if(type == "image"){
+							var ans = [this.previewdata.picked[0], this.previewdata.picked[1], this.radiusInput];
+							this.renderQuest.goto.push([ans,0])
+						}
+						//Un comune goto è in formato [ans,node]
+						else{
+            	this.renderQuest.goto.push(["",0]);
+						}
           },
           rmGoto: function(){
             this.renderQuest.goto.pop();
@@ -387,6 +411,14 @@
           },
 					rmSubReward: function(sub) {
 						this.renderQuest.subquest_rewards.splice(this.renderQuest.subquest_rewards.indexOf(sub),1);
+					},
+					setImageAsInput: function() {
+						if(this.renderQuest.image) {
+							//Update nell'oggetto quest
+							this.renderQuest.image.imageuri = this.selectedImage;
+							//Update del canvas nel component
+							this.$refs.inputComponent.updateCanvasImage();
+						}
 					},
           loadJson: function(){
             var path = this.$refs.toLoad.files[0];
@@ -502,6 +534,36 @@
                 remaining.push(sub);
             }
             return remaining;
-          }
+          },
+				//Se stiamo vedendo la previw di una main quest vediamo dove ci porta la risposta attuale
+				getAnswerGoto: function() {
+					if(!this.previewdata.picked) return "";
+					options = this.getCurrentGotos;
+		      for(opt of options){
+		        //Le risposte del tipo draw hanno un formato diverso e devo assicurarmi di non accedere a null
+		        if(opt[0] && this.gamedata.mainQuest[this.previewdata.currentQuest].type == "draw"){
+		          let x = opt[0][0];
+		          let y = opt[0][1];
+		          let radius = opt[0][2];
+		          if(this.previewdata.picked[0] >= x-radius && this.previewdata.picked[0] <= x+radius &&
+		             this.previewdata.picked[1] >= y-radius && this.previewdata.picked[1] <= y+radius){
+		              return opt[1];
+		            }
+		        }
+		        //Formato standard che controlla se opt[0] == picked
+		        else if(opt[0] == this.previewdata.picked){
+		          return opt[1];
+		        }
+		        //L'opzione di default se non ci sono corrispondenze è sempre l'ultima
+						if(options.indexOf(opt) == options.length-1){
+		          return opt[1];
+		        }
+		      }
+					return "";
+				},
+				getAnswerCorrectness: function(){
+					console.log("hi:)");
+					return "hey";
 				}
+			}
       });

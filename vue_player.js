@@ -2,22 +2,58 @@ window.onload = function(){
     document.getElementById("questname").focus();
 }
 
-//PLACEHOLDER OBJECT//
-pholder = {
-  "mainQuest": [
-    {
-      "number": 0,
-      "text": "",
-      "type": "choice",
-      "description": "",
-      "options": [],
-      "goto": [],
-      "subquest_rewards": []
-    }
-  ],
+//PLACEHOLDER OBJECTS//
+gamedata_pholder = {
+        "mainQuest": [
+              {
+                     "number": 0,
+                     "text": "",
+                     "type": "",
+                     "description": "",
+                     "options": [],
+                     "image": {
+                       "imguri": "",
+                       "imgalt": ""
+                     },
+                     "goto": [],
+                     "subquest_rewards": []
+             }
+        ],
+        "subQuests": [
+          {
+            "number": 0,
+            "objective": "",
+            "available_on": [],
+            "requires_sub": [],
+            "text": "",
+            "type": "",
+            "description": "",
+            "options": [],
+            "solution": []
+          }
+        ],
+        "css_style": {
+          "nav": {
+            "textFont": "",
+            "textColor": "",
+            "textStyle": "",
+            "bgColor": ""
+          },
+          "card": {
+            "textFont": "",
+            "textColor": "",
+            "textStyle": "",
+            "bgColor": ""
+          }
+        }
+};
 
-  "subQuests": []
-}
+    metadata_pholder = {
+      "name": "",
+      "active": false,
+      "accessible": true,
+      "language": ""
+    };
 
 var app = new Vue({
   el: "#app",
@@ -30,7 +66,8 @@ var app = new Vue({
   data: {
     user_id: 0,          // TODO lo deve assegnare il server
     inactive_time: 0,    // in seconds
-    gamedata: pholder,
+    gamedata: gamedata_pholder,
+    metadata: metadata_pholder,
     questname: null,
     currentQuest: 0,
     currentSub: 0,
@@ -80,11 +117,6 @@ var app = new Vue({
         this.inactive_time++;
       }, 1000);
     },
-    testRequest: function() {
-       axios.get('http://localhost:8080/prova').then(response => {
-           console.log("response: " + response)
-       });
-    },
     sendGameData: function(){
       axios.post('http://localhost:8080/players',
           {
@@ -102,10 +134,11 @@ var app = new Vue({
     changeQuest: function() {
       console.log(`Il valore è: ${questname}`);
       if(questname) {
-      console.log("dentro");
-      axios
-        .get(`/quest${questname}`).then(response =>
-        (this.gamedata = response.data))
+        axios
+          .get(`/stories/${questname}`).then(response => {
+            this.gamedata = response.data.json;
+            this.metadata = response.data.meta;
+          });
       }
     },
     changeState: function (state){
@@ -206,8 +239,8 @@ var app = new Vue({
     renderQuest: function() {
       if(this.gamedata == null)
         return null;
-            if(this.in_mainquest) return this.gamedata.mainQuest[this.currentQuest];
-                else return this.gamedata.subQuests[this.currentSub];
+      if(this.in_mainquest) return this.gamedata.mainQuest[this.currentQuest];
+      else return this.gamedata.subQuests[this.currentSub];
     },
     getSubquests: function() {
       var subQuestList = [];

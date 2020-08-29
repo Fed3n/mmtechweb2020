@@ -59,8 +59,8 @@
                     </ul>
                     <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
                     <div id="gameinput">
-                        <component v-bind:is="currentComponent" :gamedata="renderQuest" :current="in_mainquest ? currentQuest : currentSub"
-                        :options="in_mainquest ? getCurrentOptions : renderQuest.options" v-model="picked"></component>
+                        <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :current="in_mainquest ? currentQuest : currentSub"
+                        :options="in_mainquest ? getCurrentOptions : renderQuest.options" ref="inputComponent" v-model="picked"></component>
                     </div>
                 </div>
 
