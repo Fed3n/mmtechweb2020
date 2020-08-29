@@ -1,4 +1,4 @@
-  //PLACEHOLDER OBJECTS//
+ //PLACEHOLDER OBJECTS//
 			gamedata_pholder = {
 				      "mainQuest": [
 				            {
@@ -46,6 +46,9 @@
 				"accessible": true,
 				"language": ""
 			};
+			
+	var qr = new QRCode(document.getElementById("qrcode"),"placeholder");
+	this.qr.clear();
 
       var app = new Vue({
         el: "#app",
@@ -58,8 +61,9 @@
 							storyList: null,
 							activeStoryList: null,
 							inactiveStoryList: null,
-							imagesList: null,
-							selectedImage: "",
+							selectedStory_saveload: null,
+							selectedStory_active: null,
+							selectedStory_inactive: null,
               previewdata: {
                 "currentQuest": 0,
                 "currentSub": 0,
@@ -78,6 +82,7 @@
 						console.log("Requesting fs update...");
 						var _this = this;
 						axios.get("/story").then(function (res){
+							console.log(res.data);
 							storyList = [];
 							activeStoryList = [];
 							inactiveStoryList = [];
@@ -92,12 +97,12 @@
 						});
 					},
 					getStory: function(){
-						if(this.$refs.selectedStory.value){
+						console.log("getstory");
+						if(this.selectedStory_saveload){
 							var _this = this;
-			   			axios.get(`/story${this.$refs.selectedStory.value}`).then((res) => {
+			   			axios.get(`/story${this.selectedStory_saveload}`).then((res) => {
 			        	_this.gamedata = res.data.json;
 								_this.metadata = res.data.meta;
-								_this.getImagesList();
 								_this.updateFs();
 							})
 			     	}
@@ -117,8 +122,8 @@
 						});
 					},
 					deleteStory: function(){
-						if(this.selectedStory){
-							data = { params: { storyName: this.$refs.selectedStory.value }};
+						if(this.selectedStory_saveload){
+							data = { params: { storyName: this.selectedStory_saveload }};
 							ok = confirm("Are you really sure you want to delete this story from the server?");
 							if(ok){
 								var _this = this;
@@ -128,30 +133,14 @@
 							}
 						}
 					},
+					//TODO
 					uploadImg: function(){
-						//Mando come multipart/form-data
 						var form = new FormData();
-						imageFile = this.$refs.img_upload.files[0];
-						storyDir = this.$refs.selectedStory.value;
-						form.append('image', imageFile);
-						axios.post(`/image/${storyDir}`, form, {
+						axios.post("/story/image", imageFile, {
 							headers: {
-								'Content-Type': 'multipart/form-data'
+								"Content-Type": imageFile.type
 							}
 						})
-						.then( (res) => {
-							console.log(res);
-							_this.getImagesList();
-						});
-					},
-					getImagesList: function(){
-						console.log("Getting images list...");
-						var _this = this;
-						axios.get(`/image/${this.metadata.name}`).then( (res) => {
-							console.log("Hi!! :)");
-							console.log(res.data);
-							_this.imagesList = res.data;
-						});
 					},
           changeQuest: function(number){
             if(this.previewdata.in_mainquest) this.previewdata.currentQuest = number;
@@ -390,6 +379,7 @@
 					},
           loadJson: function(){
             var path = this.$refs.toLoad.files[0];
+            console.log(path);
             var fileReader = new FileReader();
             _this = this;
             fileReader.onload = function(event){
@@ -410,7 +400,17 @@
             var createObjectURL = (window.URL || window.webkitURL || {}).createObjectURL || function(){};
             link.href = createObjectURL(blob);
             link.click();
-          }
+		  },
+		  createQR: function(){
+			var qrname = this.$refs.fileName.value.replace(".json","");
+			console.log(`Nome del QR: ${qrname}`);
+			qr.clear();
+			qr.makeCode(qrname);
+			var node = document.getElementById("qrcode");
+			node.href = `${qr._el.getElementsByTagName("img")[0].src}`;
+			node.download = `${qrname}.png`
+			node.click();
+		  }
         },
         computed: {
 					currentComponent: function() {

@@ -6,10 +6,12 @@
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/http-vue-loader"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+	<script src="/qrcode/qrcode.min.js"></script>
+    <link type="module" rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <title>Ambiente Autore</title>
   </head>
   <body>
+</div>
     <div id="app" class="container">
       <!--AREA DI TEST PER LATO SERVER E CARICAMENTO FILES-->
       <div class="row">
@@ -35,8 +37,8 @@
           <h2>SERVER SIDE FS</h2>
           <!--GET / DELETE IN FS-->
           <div>
-            <label for="select-story">Selected: </label>
-            <select name="select-story" ref="selectedStory">
+            <label for="select-saveload">Selected: </label>
+            <select name="select-saveload" v-model="selectedStory_saveload">
               <option v-for="story in storyList" :value="story">{{ story }}</option>
             </select>
             <button v-on:click="getStory">GET</button>
@@ -45,31 +47,23 @@
           <!--STORIE ATTIVE-->
           <div>
             <label for="select-active">Active Stories: </label>
-            <select name="select-active" ref="selectedStory_active">
+            <select name="select-active" v-model="selectedStory_active">
               <option v-for="story in activeStoryList" :value="story">{{ story }}</option>
             </select>
           </div>
           <!--STORIE NON ATTIVE-->
           <div>
             <label for="select-inactive">Inactive Stories: </label>
-            <select name="select-inactive" ref="selectedStory_inactive">
+            <select name="select-inactive" v-model="selectedStory_inactive">
               <option v-for="story in inactiveStoryList" :value="story">{{ story }}</option>
             </select>
           </div>
           <!--IMMAGINI CARICATE-->
           <div>
-            <label for="img_upload">Upload for selected story: </label>
+            <!--non ne ho idea please send help-->
+            <label for="img_upload">
             <input type="file" accept="image/*" name="img_upload" ref="img_upload">
             <button v-on:click="uploadImg()">UPLOAD</button>
-            <br>
-            <label for="select-image">Images in selected story: </label>
-            <select name="select-image" v-model="selectedImage">
-              <option v-for="imgname in imagesList" :value="imgname">{{ imgname }}</option>
-            </select>
-            <div id="image-preview" class="container">
-              <label for="imgpreview">Preview: </label>
-              <img class="img-fluid" :src="'story/' + metadata.name + '/images/' + selectedImage" :alt="'Preview of ' + selectedImage">
-            </div>
           </div>
         </div>
         <div id="saveload" class="col-4">
@@ -83,6 +77,7 @@
             <label for="file-downloader">Json Saver</label>
             <input name="file-downloader" type="text" value="myfile.json" ref="fileName">
             <button v-on:click="saveJson">Download JSON</button>
+			<button v-on:click="createQR">Create QR Code!</button>
           </div>
         </div>
       </div>
@@ -104,7 +99,7 @@
 
                 <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
                 <div id="gameinput">
-                  <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub"
+                  <component v-bind:is="currentComponent" :gamedata="renderQuest" :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub"
       						:options="previewdata.in_mainquest ? getCurrentOptions : renderQuest.options" v-model="previewdata.picked"></component>
                 </div>
               </div>
@@ -296,6 +291,9 @@
           </div>
         </div>
       </div>
+	  <div hidden>
+		<a id="qrcode" href="placeholder" download></a>
+	  </div>
   </div>
 </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

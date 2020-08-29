@@ -7,7 +7,7 @@
 
 <script>
 module.exports = {
-  props: ["gamedata", "current", "value", "metadata"],
+  props: ["gamedata", "current", "value"],
   methods: {
     updateAns: function(event){
       //La prima parte gestisce il disegno sul canvas
@@ -33,7 +33,7 @@ module.exports = {
     var c = this.$refs.imgcanvas;
     var ctx = c.getContext("2d");
     var img = new Image();
-    img.src = "story/" + this.metadata.name + "/images/" + this.gamedata.image.imguri;
+    img.src = this.gamedata.image.imguri;
     img.alt = this.gamedata.image.imgalt;
     console.log(img.src + " " + img.alt);
     img.onload = function() {
