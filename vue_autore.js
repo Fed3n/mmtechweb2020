@@ -122,7 +122,7 @@
 						});
 					},
 					deleteStory: function(){
-						if(this.selectedStory){
+						if(this.$refs.selectedStory.value){
 							data = { params: { storyName: this.$refs.selectedStory.value }};
 							ok = confirm("Are you really sure you want to delete this story from the server?");
 							if(ok){
@@ -172,6 +172,17 @@
           switchMainSub: function() {
             this.previewdata.in_mainquest = !this.previewdata.in_mainquest;
           },
+					resetStory: function() {
+						this.gamedata = gamedata_pholder;
+						this.metadata = metadata_pholder;
+						this.previewdata = {
+							"currentQuest": 0,
+							"currentSub": 0,
+							"completedSubs": [],
+							"in_mainquest": true,
+							"picked": null
+						};
+					},
           addNode: function() {
             num = this.previewdata.in_mainquest ? this.gamedata.mainQuest.length : this.gamedata.subQuests.length;
             mq = {
@@ -377,37 +388,19 @@
 	            this.renderQuest.solution = sols;
 						}
 					},
-          setCompleted: function(event,n) {
-            if(event.target.checked) this.previewdata.completedSubs.push(n);
-            else this.previewdata.completedSubs.splice(this.previewdata.completedSubs.indexOf(n),1);
-          },
-          setRemovedOpt: function(event,index,opt) {
-            if(event.target.checked) this.renderQuest.subquest_rewards[index].removed_options.push(opt);
-            else this.renderQuest.subquest_rewards[index].removed_options.splice(this.renderQuest.subquest_rewards[index].removed_options.indexOf(opt),1);
-          },
-          setRemovedGoto: function(event,index,goto) {
-            if(event.target.checked) this.renderQuest.subquest_rewards[index].removed_goto.push(goto);
-            else this.renderQuest.subquest_rewards[index].removed_goto.splice(this.renderQuest.subquest_rewards[index].removed_goto.indexOf(goto),1);
-          },
-          setAvailableOn: function(event,n) {
-            if(event.target.checked) this.renderQuest.available_on.push(n);
-            else this.renderQuest.available_on.splice(this.renderQuest.available_on.indexOf(n),1);
-          },
-					setRequiresSub: function(event,n) {
-						if(event.target.checked) this.renderQuest.requires_sub.push(n);
-            else this.renderQuest.requires_sub.splice(this.renderQuest.requires_sub.indexOf(n),1);
-					},
           addSubReward: function() {
-            reward = {
-              "number": parseInt(this.$refs.subtoadd.value),
-    					"clue": "",
-    					"added_options": [],
-    					"removed_options": [],
-    					"added_goto": [],
-    					"removed_goto": []
-            }
-            this.renderQuest.subquest_rewards.push(reward);
-            this.renderQuest.subquest_rewards.sort(questCmp);
+						if(this.$refs.subtoadd.value){
+	            reward = {
+	              "number": parseInt(this.$refs.subtoadd.value),
+	    					"clue": "",
+	    					"added_options": [],
+	    					"removed_options": [],
+	    					"added_goto": [],
+	    					"removed_goto": []
+	            }
+	            this.renderQuest.subquest_rewards.push(reward);
+	            this.renderQuest.subquest_rewards.sort(questCmp);
+						}
           },
 					rmSubReward: function(sub) {
 						this.renderQuest.subquest_rewards.splice(this.renderQuest.subquest_rewards.indexOf(sub),1);
@@ -487,8 +480,9 @@
   								for(opt of reward.added_options)
   									options.push(opt);
   								for(opt of reward.removed_options){
-  									if((index = myIndexOf(options,opt,mainsCmp)) != -1)
+  									if((index = options.indexOf(opt)) != -1){
   										options.splice(index,1);
+										}
   								}
   							}
   						}
@@ -505,7 +499,7 @@
 									//Aggiungo in penultima posizione
 									gotos.splice(gotos.length-1,0,goto);
 								for(goto of reward.removed_goto){
-									if((index = myIndexOf(gotos,goto,mainsCmp)) != -1)
+									if((index = myIndexOf(gotos,goto,arrCmp)) != -1)
 										options.splice(index,1);
 								}
 							}
@@ -544,11 +538,10 @@
 		        if(opt[0] && this.gamedata.mainQuest[this.previewdata.currentQuest].type == "draw"){
 		          let x = opt[0][0];
 		          let y = opt[0][1];
-		          let radius = opt[0][2];
-		          if(this.previewdata.picked[0] >= x-radius && this.previewdata.picked[0] <= x+radius &&
-		             this.previewdata.picked[1] >= y-radius && this.previewdata.picked[1] <= y+radius){
-		              return opt[1];
-		            }
+		          let radius = parseInt(opt[0][2]);
+		          if(this.previewdata.picked[0] >= (x-radius) && this.previewdata.picked[0] <= (x+radius) && this.previewdata.picked[1] >= (y-radius) && this.previewdata.picked[1] <= (y+radius)){
+								return(opt[1]);
+							}
 		        }
 		        //Formato standard che controlla se opt[0] == picked
 		        else if(opt[0] == this.previewdata.picked){

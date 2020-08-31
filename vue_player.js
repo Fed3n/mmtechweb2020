@@ -161,7 +161,7 @@ var app = new Vue({
         if(this.gamedata.mainQuest[this.currentQuest].type == "draw"){
           let x = opt[0][0];
           let y = opt[0][1];
-          let radius = opt[0][2];
+          let radius = parseInt(opt[0][2]);
           if(this.picked[0] >= x-radius && this.picked[0] <= x+radius &&
              this.picked[1] >= y-radius && this.picked[1] <= y+radius){
               this.currentQuest = opt[1];
