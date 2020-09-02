@@ -14,8 +14,8 @@ module.exports = {
       ctx = event.target.getContext("2d");
       canvas = this.$refs.imgcanvas;
       ctx.clearRect(0,0,canvas.width,canvas.height);
-      const x = event.clientX-canvas.getBoundingClientRect().x;
-      const y = event.clientY-canvas.getBoundingClientRect().y;
+      const x = parseInt(event.clientX-canvas.getBoundingClientRect().x);
+      const y = parseInt(event.clientY-canvas.getBoundingClientRect().y);
       console.log("Clicked on: " + x + "," + y);
       ctx.font = "12px bold";
       ctx.fillStyle = "white";
