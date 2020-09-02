@@ -89,19 +89,6 @@ var app = new Vue({
       }
     }
   },
-  created: function (){
-          req = new XMLHttpRequest();
-          req.open("GET", "/json/testing.json");
-          var _this = this;
-          req.onreadystatechange = function (){
-            if(req.readyState == 4 && req.status == 200){
-            var json = JSON.parse(req.responseText);
-            console.log(json);
-            _this.gamedata = json;
-            }
-          };
-          req.send();
-  },
   mounted: function() {
     this.sendUpdatesEvery5Seconds();
     this.updateInactiveTimeEverySecond();
@@ -132,13 +119,13 @@ var app = new Vue({
         .catch(err => {console.log(err)});
     },
     changeQuest: function() {
-      console.log(`Il valore è: ${questname}`);
-      if(questname) {
-        axios
-          .get(`/stories/${questname}`).then(response => {
-            this.gamedata = response.data.json;
-            this.metadata = response.data.meta;
-          });
+    if(this.questname) {
+		    axios.get(`/stories/${this.questname}`).then(response => {
+          this.gamedata = response.data.json;
+          this.metadata = response.data.meta;
+        });
+		      this.$refs.questloader.remove();
+		      this.$refs.questrender.removeAttribute("hidden");
       }
     },
     changeState: function (state){
@@ -163,7 +150,7 @@ var app = new Vue({
           let y = opt[0][1];
           let radius = parseInt(opt[0][2]);
           if(this.picked[0] >= x-radius && this.picked[0] <= x+radius &&
-             this.picked[1] >= y-radius && this.picked[1] <= y+radius){
+            this.picked[1] >= y-radius && this.picked[1] <= y+radius){
               this.currentQuest = opt[1];
               this.inactive_time = 0;
               this.sendGameData();
@@ -239,9 +226,12 @@ var app = new Vue({
     renderQuest: function() {
       if(this.gamedata == null)
         return null;
-      if(this.in_mainquest) return this.gamedata.mainQuest[this.currentQuest];
-      else return this.gamedata.subQuests[this.currentSub];
+            if(this.in_mainquest) return this.gamedata.mainQuest[this.currentQuest];
+                else return this.gamedata.subQuests[this.currentSub];
     },
+	prova: function() {
+		console.log($refs.submitbutton);
+	},
     getSubquests: function() {
       var subQuestList = [];
       if(!this.gamedata) return subQuestList;
