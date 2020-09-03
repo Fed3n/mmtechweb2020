@@ -1,78 +1,86 @@
 <html>
-	<head>
-		<meta charset='utf-8'>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-   		<script src="https://unpkg.com/http-vue-loader"></script>
-		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-		<script src="https://unpkg.com/vue-qrcode-reader/dist/VueQrcodeReader.umd.min.js"></script>
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-	</head>
-	<body class="border border-primary h-100">
-		<div id="app">
+    <head>
+        <meta charset='utf-8'>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/http-vue-loader"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://unpkg.com/vue-qrcode-reader/dist/VueQrcodeReader.umd.min.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    </head>
+    <body class="border border-primary h-100">
+        <div id="app">
 
 
-			<div id="questloader" ref="questloader">
-				<h1>QUEST LOADER</h1>
-				<qrload style="height: 400px" :questname="questname"></qrload>
-			</div>
+            <div id="questloader" ref="questloader">
+                <h1>QUEST LOADER</h1>
+                <qrload style="height: 400px" :questname="questname"></qrload>
+            </div>
 
-			<div id="questrender" ref="questrender" hidden>
-				<!--Nuova navbar!! :)-->
-				<nav class="navbar navbar-expand-md navbar-dark bg-dark">
-				<div class="navbar-brand">Menu
-					<span class="badge badge-warning" v-if="getSubquests.length > 0" role="alert">Subs!</span>
-				</div>
+            <div id="questrender" ref="questrender" hidden>
+                <!--Nuova navbar!! :)-->
+                <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+                <div class="navbar-brand">Menu
+                    <span class="badge badge-warning" v-if="getSubquests.length > 0" role="alert">Subs!</span>
+                </div>
 
-				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsiblemenu">
-					<span class="navbar-toggler-icon"></span>
-				</button>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsiblemenu" aria-label="Apri il menu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="collapsiblemenu">
+                    <ul class="navbar-nav" aria-labelledby="quest-menu-button">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="quest-menu-button" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" role="menu" aria-controls="quest-menu-list"><b>Quests</b></a>
+                            <div class="dropdown-menu" id="quest-menu-list">
+                                <a class="dropdown-item" role="menuitem" href="#" v-on:click="goToMainQuest()">MainQuest {{currentQuest}}</a>
+                                <div v-if="getSubquests.length > 0" role="none">
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" role="menuitem" v-for="quest in getSubquests" href="#" v-on:click="goToSubQuest(quest)">Subquest {{quest.number}}: {{quest.objective}}</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" ref="help" href="#" @click="requestHelp">
+                                Chiedi aiuto
+                                <span style="display:none" ref="requestedHelp" class="alert alert-info" role="alert">Aiuto richiesto! Attendi...</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
 
-				<div class="collapse navbar-collapse" id="collapsiblemenu">
-					<ul class="navbar-nav" role="quest-menu" aria-labelledby="quest-menu-button">
-						<li class="nav-item dropdown" role="none">
-							<a class="nav-link dropdown-toggle" id="quest-menu-button" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-controls="quest-menu-list">Quests</a>
-							<div class="dropdown-menu">
-								<a class="dropdown-item" role="quest-menu-item" href="#" v-on:click="goToMainQuest()">MainQuest {{currentQuest}}</a>
-								<div class="dropdown-divider"></div>
-								<a class="dropdown-item" role="quest-menu-item" v-for="quest in getSubquests" href="#" v-on:click="goToSubQuest(quest)">Subquest {{quest.number}}: {{quest.objective}}</a>
-							</div>
-						</li>
-					</ul>
-				</div>
-				</nav>
+        <!--Area quest-->
+        <div ref="questrender" class="card border-white bg-dark" style="position: relative;" aria-live="polite"
+            :style="{ color: css_style.card.textColor, 'font-family': css_style.card.textFont, 'font-style': css_style.card.textStyle, 'background-color': css_style.card.bgColor }">
 
-				<!--Area quest-->
-				<div class="card border-white bg-dark" style="position: relative;" aria-live="polite"
-				:style="{ color: css_style.card.textColor, 'font-family': css_style.card.textFont, 'font-style': css_style.card.textStyle, 'background-color': css_style.card.bgColor }">
+                <div class="card-header border-white">
+                    <h1 id="questname" ref="questname" tabindex="-1">Name of Quest {{ currentQuest }}</h1>
+                </div>
 
-					<div class="card-header border-white">
-						<h3 ref="questname" id="questname" tabindex="-1">Name of Quest {{ currentQuest }}</h3>
-					</div>
+                <div class="card-body border-white">
+                    <p>{{ renderQuest.text }}</p>
+                    <p>{{ renderQuest.description || "" }}</p>
+                    <ul v-if="in_mainquest && getCurrentClues.length > 0">
+                        <li v-for="clue in getCurrentClues">{{ clue }}</li>
+                    </ul>
+                    <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
+                    <div id="gameinput">
+                      <component v-bind:is="currentComponent" :gamedata="renderQuest" :current="in_mainquest ? currentQuest : currentSub"
+                      :options="in_mainquest ? getCurrentOptions : renderQuest.options" v-model="picked"></component>
+                    </div>
+               </div>
 
-					<div class="card-body border-white">
-						<p>{{ renderQuest.text }}</p>
-						<p>{{ renderQuest.description ? renderQuest.description : "" }}</p>
-						<ul v-if="in_mainquest && getCurrentClues.length > 0">
-							<li v-for="clue in getCurrentClues">{{ clue }}</li>
-						</ul>
-						<!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
-						<div id="gameinput">
-							<component v-bind:is="currentComponent" :gamedata="renderQuest" :current="in_mainquest ? currentQuest : currentSub"
-							:options="in_mainquest ? getCurrentOptions : renderQuest.options" v-model="picked"></component>
-						</div>
-					</div>
+                <div v-if="renderQuest.type != 'ending'" class="card-footer border-white">
+                    <button id="submit" ref="submitbutton" class="btn-default" v-on:click="in_mainquest? submitMain() : submitSub()">Submit</button>
+                </div>
 
-					<div class="card-footer border-white">
-						<button id="submit" ref="submitbutton" class="btn-default" v-on:click="in_mainquest? submitMain() : submitSub()">Submit</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-		<script type="text/javascript" src="vue_player.js"></script>
-		<script type="text/javascript" src="utils.js"></script>
-	</body>
+                </div>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="vue_player.js"></script>
+        <script type="text/javascript" src="utils.js"></script>
+    </body>
 </html>
