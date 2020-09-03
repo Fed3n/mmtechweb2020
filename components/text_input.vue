@@ -1,21 +1,33 @@
 <template>
   <div>
     <label for="input"> Risposta: </label>
-    <input ref="texts" type="text" name="prova" id="input" value="" v-on:input="updateAns($event.target.value)">
+    <input ref="texts" type="text" name="prova" id="input" value="" autocomplete="off" :style="inputStyle" v-on:input="updateAns($event.target.value)">
   </div>
 </template>
 
 <script>
 module.exports = {
-  props: ["gamedata", "current", "value", "metadata"],
+  props: ["gamedata", "current", "value", "metadata","styles"],
   methods: {
     updateAns: function(picked){
       this.$emit('input', picked);
       if(document.getElementById("submit")){
         if(picked != "") document.getElementById("submit").disabled = false;
         else document.getElementById("submit").disabled = true;
+        this.$root.upgradeSubmitStyle(document.getElementById("submit").disabled);
       }
     }
+  },
+  computed: {
+  	inputStyle: function() {
+  		return this.styles;
+  	}
   }
 }
 </script>
+
+<style scoped>
+input{
+	max-width: 90vw;
+}
+</style>

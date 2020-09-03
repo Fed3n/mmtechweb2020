@@ -33,19 +33,57 @@ gamedata_pholder = {
           }
         ],
         "css_style": {
-          "nav": {
-            "textFont": "",
-            "textColor": "",
-            "textStyle": "",
-            "bgColor": ""
-          },
-          "card": {
-            "textFont": "",
-            "textColor": "",
-            "textStyle": "",
-            "bgColor": ""
-          }
-        }
+		  "mainStyle": {
+				"font-family": "",
+		    	"font-style": "",
+		    	"font-weight": "",
+		    	"font-size": "",
+		    	"color" : ""		
+		  },
+		  "background": {
+		  		"image": null,
+		  		"url": "",
+		  		"style": {   			
+	  			    "nav": {
+					  	"custom": null,
+					  	"bootstrap": {
+					  		"textColor": "",
+					  		"background": ""
+					  	},
+					  	"customized": {
+					  		"general": {  
+								"background-color": "",
+								"color": ""
+							}, 
+					   }
+				  },
+				  "badge": {
+					"custom": null,
+				  	"bootstrap": {
+				  		"type": ""
+				  	},
+				  	"customized": {
+				  			"background-color": "",
+				  			"border-width": "",
+				   			"border-style": "",
+				   			"border-color": "",
+				   			"color" : ""
+				  	}
+				  },
+				  "card": {
+				  	"custom": null,
+				  	"bootstrap": {
+				  		"textColor": "",
+				  		"background": ""
+				  	},
+				  	"customized": {
+				   			"background-color": "",
+				   			"color": ""
+					}
+				 }
+			  }
+    	  }       
+    }
 };
 
     metadata_pholder = {
@@ -76,24 +114,83 @@ var app = new Vue({
     completedSubs: [],
     in_mainquest: true,
     picked: null,
+    togglerButtonVisible: true,
+    onLink: [],
+    submitStyle: {},
+    mainStyleObject: {},
     css_style: {
-      nav: {
-        textFont: "monospace",
-        textColor: "red",
-        textStyle: "bold",
-        bgColor: "white"
+      mainStyle: {
+    		"font-family": "'Dancing Script', cursive",
+        	"font-style": "normal",
+        	"font-weight": "bold",
+        	"font-size": "25px",
+        	"color" : "rgba(60,60,60,1)"			//se non si vuole specificare le proprietà globalmente inserire ""
       },
-      card: {
-        textFont: "Comic Sans",
-        textColor: "black",
-        textStyle: "",
-        bgColor: "white"
-      }
+      background: {
+      		image: true,
+      		url: "url('notebook.png') no-repeat center center fixed",
+      		style: {   			
+  			    nav: {
+				  	custom: true,
+				  	bootstrap: {
+				  		textColor: "navbar-light",
+				  		background: "bg-light"
+				  	},
+				  	customized: {
+				  		general: {  
+							"background-color": "grey",
+							"color": "red"
+						}, 
+				   }
+			  },
+			  badge: {
+				custom: false,
+			  	bootstrap: {
+			  		type: "badge-warning"
+			  	},
+			  	customized: {
+			  			"background-color": "rgba(122,232,14,0.8)",
+			  			"border-width": "3px",
+			   			"border-style": "dotted",
+			   			"border-color": "blue",
+			   			"color" : "red"
+			  	}
+			  },
+			  card: {
+			  	custom: true,
+			  	bootstrap: {
+			  		textColor: "text-info",
+			  		background: "bg-light"
+			  	},
+			  	customized: {
+			   			"background-color": "white",
+			   			"color": "white"
+				}
+			 }
+    	  }
+      }       
     }
   },
-  mounted: function() {
-    this.sendUpdatesEvery5Seconds();
-    this.trackTimeEverySecond();
+  created: function (){
+    //adding the background image
+    var temp = this.css_style.background;
+    if (temp.image){
+	  	document.getElementsByTagName("body")[0].style.background = temp["url"];
+	 	document.getElementsByTagName("body")[0].style.webkitBackgroundSize = "cover";
+	 	document.getElementsByTagName("body")[0].style.mozBackgroundSize = "cover";
+		document.getElementsByTagName("body")[0].style.oBackgroundSize = "cover";
+	 	document.getElementsByTagName("body")[0].style.backgroundSize =  "cover";
+  	}
+  	//creating mainStyleObject
+  	var starting_obj = this.css_style.mainStyle;
+  	var ending_obj = {};
+  	Object.entries(starting_obj).forEach( entry => {
+		const[key,value] = entry;
+		if (value != "")
+			ending_obj[key] = value; 
+	});
+	this.mainStyleObject = ending_obj;
+	this.upgradeSubmitStyle();
   },
   methods: {
     requestHelp: function() {
@@ -185,6 +282,7 @@ var app = new Vue({
         document.getElementById("input").value = "";
       }
       document.getElementById("submit").disabled = true;
+      this.upgradeSubmitStyle(true);  
       this.picked = null;
       this.$refs.questname.focus();
     },
@@ -216,9 +314,95 @@ var app = new Vue({
         document.getElementById("input").value = "";
       }
       document.getElementById("submit").disabled = true;
+      this.upgradeSubmitStyle(true);  
       this.picked = null;
       this.$refs.questname.focus();
-    }
+    },
+    //method that returns if navbar button is visible
+    buttonChangedVisibility: function(isVisible, entry) {   
+      	this.togglerButtonVisible = isVisible
+    },
+    menuLinkEvent: function(num,bool) {
+		this.onLink = new Array(this.getSubquests.length+1);
+		this.onLink.fill(false);
+		this.onLink[num] = bool;
+	},
+	menuLinkStyle: function(num) {
+		var styles = {};
+		if (!this.css_style.background.image){
+			if (!this.css_style.background.style.nav.custom){
+				//adding text color property
+				//predefined style used in addition to bootstrap navbar style
+				if (!this.mainStyleObject["color"])
+					if (color = this.css_style.background.style.nav.bootstrap.textColor == "navbar-light")
+						styles = Object.assign(styles,bootstrap_menu_color_dark_text);
+					else if (this.css_style.background.style.nav.bootstrap.textColor == "navbar-dark")
+						styles = Object.assign(styles,bootstrap_menu_color_light_text);
+					else
+						console.log(`error in JSON compilation: bootstrap navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
+				styles = Object.assign(styles,this.mainStyleObject);
+				//adding background color property
+				if (this.onLink[num]){
+					if (this.css_style.background.style.nav.bootstrap.background != "bg-light")
+						styles = Object.assign(styles,{ "background-color": bootstrap_menu_links_light_background});
+					else 
+						styles = Object.assign(styles,{ "background-color": bootstrap_menu_links_background});
+				}
+			}
+			else {
+				//adding text color property
+				styles = Object.assign(styles, { "color" : this.css_style.background.style.nav.customized.general["color"] } );
+				styles = Object.assign(styles,this.mainStyleObject);
+				//adding background color property
+				if (this.onLink[num])
+					if (this.css_style.background.style.nav.customized.general["background-color"] == "white")
+							styles = Object.assign(styles,{ "background-color": menu_links_white_background });					
+						else 
+							styles = Object.assign(styles,{ "background-color": menu_links });
+			}
+		}
+		else {
+			styles = Object.assign(styles, { "color" : defaul_image_menu_links_text_color } );
+			styles = Object.assign(styles,this.mainStyleObject);
+			//adding background color property
+			if (this.onLink[num])
+				styles = Object.assign(styles,{ "background-color": default_image_menu_links_hover_backgroud_color });
+		}
+		//used for menu responsivness
+		if (this.togglerButtonVisible)
+			styles = Object.assign(styles,{ "white-space": "normal" });
+		else
+			styles = Object.assign(styles,{ "white-space": "normal" },{ "max-width": "65vw" });																		
+		return styles;
+	},
+	upgradeSubmitStyle: function(disabled){
+		styles = {};
+		//if the card uses bootstrap the related style is in the Object submitBootstrapStyle 
+		if (!this.css_style.background.image){
+			if (this.css_style.background.style.card.custom){
+				styles = Object.assign(styles, { "color" : this.css_style.background.style.card.customized["color"] } );	
+				styles = Object.assign(styles,this.mainStyleObject);													
+			}
+			else {
+				styles = Object.assign(styles,this.mainStyleObject);
+				styles = Object.assign(styles, { "color" : this.mainStyleObject["color"]+"!important" } );			//used in order to overwrite bootstrap text color				
+			}
+		}
+		else {
+			styles = Object.assign(styles,this.mainStyleObject);
+		}
+		//adding responsive style																
+		if (!disabled)																	
+			styles = Object.assign(styles,submit_button_style);
+		else {
+			styles = Object.assign(styles,submit_button_style_disabled);
+			var temp = this.css_style.background.style.card;
+			if (!this.css_style.background.image)
+				if ((temp.custom && temp.customized["background-color"] == "black") || (!temp.custom && temp.bootstrap.background == "bg-dark"))
+					 styles = Object.assign(styles, { "border" : submit_button_border });
+		}	
+		this.submitStyle = styles;	
+	}
   },
   computed: {
     currentComponent: function() {
@@ -241,9 +425,6 @@ var app = new Vue({
             if(this.in_mainquest) return this.gamedata.mainQuest[this.currentQuest];
                 else return this.gamedata.subQuests[this.currentSub];
     },
-  prova: function() {
-    console.log($refs.submitbutton);
-  },
     getSubquests: function() {
       var subQuestList = [];
       if(!this.gamedata) return subQuestList;
@@ -296,6 +477,245 @@ var app = new Vue({
         }
       }
       return gotos;
-    }
+    },
+    //styleObjects
+	navbarBootstrapStyle: function() {
+		var temp = this.css_style.background.style.nav.bootstrap;
+		if (!this.css_style.background.image)
+			if (!this.css_style.background.style.nav.custom)					
+				return (temp.textColor+" "+temp.background);
+			else 
+				return "";
+		else {
+			console.log("errore in JSON compiling: cannot use bootstrap's navbar when background image is set");
+			return "";	
+		}
+	},
+	navbarStyle: function() {
+		var styles = {};
+		if (!this.css_style.background.image){
+			if (this.css_style.background.style.nav.custom)			
+				styles = Object.assign(styles,this.css_style.background.style.nav.customized.general);
+		}
+		return styles;
+	},
+	badgeBootstrapStyle: function() {
+		var temp = this.css_style.background.style.badge.bootstrap;
+		if (!this.css_style.background.style.badge.custom)
+			return temp.type;
+		else {
+			return "";
+		}
+	},
+	badgeStyle: function() {
+		var styles = {}
+		var temp = this.css_style.background.style.badge.customized;
+		if (this.css_style.background.style.badge.custom)
+			styles = Object.assign(styles,temp);
+		return styles;
+	},
+	togglerButtonStyle: function() {
+		var buttonColor;
+		if (!this.css_style.background.image){
+			if (this.css_style.background.style.nav.custom){
+				if (this.mainStyleObject["color"])
+					buttonColor = this.mainStyleObject["color"];
+				else
+					buttonColor = this.css_style.background.style.nav.customized.general["color"];
+				return `url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='${buttonColor}' stroke-width='${togglerbutton_default_linesWidth}' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") `;
+			}
+			else
+				return "";
+		}
+		else {
+			if (buttonColor = this.mainStyleObject["color"])
+				;
+			else
+				buttonColor = image_default_togglerButton_color;
+			return `url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='${buttonColor}' stroke-width='${togglerbutton_default_linesWidth}' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") `;
+		}
+	},
+	toggleButtonContainer: function() {
+		if (!this.css_style.background.image){
+			if (this.css_style.background.style.nav.custom){
+				var borderColor;
+				if (this.mainStyleObject["color"])
+					borderColor = this.mainStyleObject["color"];
+				else
+					borderColor = this.css_style.background.style.nav.customized.general["color"];
+				return { "border-color" : borderColor };
+			}
+			else 
+				return "";
+		}
+		else {
+			var borderColor = image_default_togglerButton_border_color;
+			if (this.mainStyleObject["color"])
+				borderColor = this.mainStyleObject["color"];
+			return { "border-color" : borderColor };
+		}	
+	},
+	menuStyle: function() {
+		var styles = {};
+		if (!this.css_style.background.image){
+			if (!this.css_style.background.style.nav.custom){
+				if (this.togglerButtonVisible)
+					//predefined style used in addition to bootstrap navbar style
+					styles = Object.assign(styles,{ "background-color": bootstrap_menu_background});
+				else{
+					var color = "";
+					if (color = this.css_style.background.style.nav.bootstrap.textColor == "navbar-light")
+						styles = Object.assign(styles,bootstrap_menu_border_color_dark_text);
+					else if (this.css_style.background.style.nav.bootstrap.textColor == "navbar-dark")
+						styles = Object.assign(styles,bootstrap_menu_border_color_light_text);
+					else
+						console.log(`error in JSON compiling: bootstrap's navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
+					//overwrite occasional mainstyle
+					if (this.mainStyleObject["color"])
+						styles = Object.assign(styles, { "border-color": this.mainStyleObject["color"] } );
+				}
+			} else {
+				var temp = this.css_style.background.style.nav.customized.general;
+				if (this.togglerButtonVisible)
+					styles = Object.assign(styles,{ "background-color": menu_background});
+				else {
+					styles = Object.assign(styles,{ "background-color": temp["background-color"] });	
+					styles = Object.assign(styles,{ "border-color": temp["color"] });
+					//overwrite occasional mainstyle
+					if (this.mainStyleObject["color"])
+						styles = Object.assign(styles,{ "border-color" : this.mainStyleObject["color"] }); 			
+				}
+			}
+		}
+		else {
+			if (this.togglerButtonVisible)
+				//predefined style used in addition to bootstrap navbar style
+				styles = Object.assign(styles,{ "background-color": menu_background});
+			else{
+				styles = Object.assign(styles,menu_backgroundImage);
+				styles = Object.assign(styles,{ "border": default_image_menu_border });
+				if (this.mainStyleObject["color"])							
+					styles = Object.assign(styles,{ "border-color": this.mainStyleObject["color"] });	 
+			}
+		}
+		if (!this.togglerButtonVisible)
+			styles = Object.assign(styles,{ "width": "max-content" });
+		return styles;
+	},
+	dividerStyle: function() {
+		var styles = {};
+		if (!this.css_style.background.image){
+			if (!this.css_style.background.style.nav.custom)
+				//if the bootstrap class is "navbar-light" the text will be dark
+				if (this.css_style.background.style.nav.bootstrap.textColor == "navbar-light")
+					styles = Object.assign(styles,{ "border-color" : bootstrap_menu_divider_dark }); 
+				else
+					styles = Object.assign(styles,{ "border-color" : bootstrap_menu_divider_light }); 
+			else {
+				var temp = this.css_style.background.style.nav.customized.general;
+				styles = Object.assign(styles,{ "border-color" : temp["color"] }); 
+			}
+			//overwrite occasional mainstyle
+			if (this.mainStyleObject["color"])
+				styles = Object.assign(styles,{ "border-color" : this.mainStyleObject["color"] }); 	
+		}
+		else {
+			styles = Object.assign(styles, { "border-color" : default_image_divider_color } ); 
+			if (this.mainStyleObject["color"])
+				styles = Object.assign(styles,{ "border-color" : this.mainStyleObject["color"] } ); 
+		}
+		return styles;
+	},
+	menuBootstrapStyle: function() {
+		if (!this.css_style.background.image){
+			if (!this.css_style.background.style.nav.custom){
+				var temp = this.css_style.background.style.nav.bootstrap;
+				if (!this.togglerButtonVisible)
+					return temp.background;
+				else
+					return "";
+			} else
+				return "";
+		}
+		else{
+			console.log("errore in JSON compiling: cannot use bootstrap's navbar when background image is set");
+			return "";	
+		}
+	},	
+	cardBootstrapStyle: function() {
+		if (!this.css_style.background.image){
+			var temp = this.css_style.background.style.card.bootstrap;
+			if (!this.css_style.background.style.card.custom)
+				return (temp.textColor+" "+temp.background);
+			else {
+				return "";
+			}	
+		}
+		else{
+			console.log("errore in JSON compiling: cannot use bootstrap's navbar when background image is set");
+			return "";	
+		}
+	},
+	cardStyle: function() {
+		var	styles = {};
+		if (!this.css_style.background.image){
+			var temp = this.css_style.background.style.card.customized;
+			if (this.css_style.background.style.card.custom)
+				styles = Object.assign(styles,temp);
+		}
+		else
+			styles = Object.assign(styles,{ "background" : "transparent" });
+		return styles;
+	},
+	submitBootstrapStyle: function() {
+		if (!this.css_style.background.image)
+			if (!this.css_style.background.style.card.custom)
+				return this.css_style.background.style.card.bootstrap.textColor;
+	},
+	cardLimitStyle: function() {
+		var styles = {};
+		if (!this.css_style.background.image){
+			styles = Object.assign(styles,card_headerFooter);
+			var temp = this.css_style.background.style.card;
+			if ((!temp.custom && temp.bootstrap.background == "bg-dark") || (temp.custom && temp.customized["background-color"] == "black"))
+					styles = Object.assign(styles,bootstrap_card_headerFooter_black_background);     
+		}
+		//stylistic choices lead us not to add this feature if there is a background image
+		return styles;
+	},
+	navbarBrandStyle: function() { 
+		return this.mainStyleObject;
+	},
+	questsStyle: function() {
+		var styles = {};
+		if (this.css_style.background.image) {
+			styles = Object.assign(styles, { "color" : default_image_text_color } ); 
+			styles = Object.assign(styles,this.mainStyleObject); 
+		}
+		else 
+			if (!this.css_style.background.style.nav.custom)	
+				styles = Object.assign(styles,this.mainStyleObject); 
+			else {
+				styles = Object.assign(styles, { "color" : this.css_style.background.style.nav.customized.general["color"] } );
+				styles = Object.assign(styles,this.mainStyleObject);
+			}
+		return styles;
+	},
+	removePredefinedStylesCard: function() {
+			return this.mainStyleObject;
+	},	
+	componentStyle: function() {		
+		var styles = {}
+		if (this.currentComponent == "choiceinput")
+			;
+        if (this.currentComponent == "textinput")
+        	style = Object.assign(styles,this.mainStyleObject,input_backgroundImage);
+        	if (!this.css_style.background.image)
+				if (!this.mainStyleObject["color"]) 							
+					styles = Object.assign(styles, { "color" : "inherit" } );	        	
+        if (this.currentComponent == "imginput")
+	       ;
+        return styles;
+	}
   }
 });
