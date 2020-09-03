@@ -65,7 +65,9 @@ var app = new Vue({
   },
   data: {
     user_id: 0,          // TODO lo deve assegnare il server
-    inactive_time: 0,    // in seconds
+    time_played: 0,
+    time_inactive: 0,    // entrambe in secondi
+    requested_help: false,
     gamedata: gamedata_pholder,
     metadata: metadata_pholder,
     questname: null,
@@ -91,17 +93,25 @@ var app = new Vue({
   },
   mounted: function() {
     this.sendUpdatesEvery5Seconds();
-    this.updateInactiveTimeEverySecond();
+    this.trackTimeEverySecond();
   },
   methods: {
+    requestHelp: function() {
+      this.$refs.requestedHelp.style.display = "inline";
+      this.$refs.help.classList.add("disabled");
+      this.requested_help = true;
+      // manda richiesta aiuto
+      // quando la soddisfera', sara' da mettere display = "none"
+    },
     sendUpdatesEvery5Seconds: function() {
       let timerId = setInterval(() => {
         this.sendGameData();
       }, 5000);
     },
-    updateInactiveTimeEverySecond: function() {
+    trackTimeEverySecond: function() {
       let timerId = setInterval(() => {
-        this.inactive_time++;
+        this.time_played++;
+        this.time_inactive++;
       }, 1000);
     },
     sendGameData: function(){
@@ -112,20 +122,22 @@ var app = new Vue({
             currentQuest: this.currentQuest,
             currentSub: this.currentSub,
             completedSubs: this.completedSubs,
+            requested_help: this.requested_help,
             finished: this.renderQuest.type == 'ending',
-            inactive_time: this.inactive_time
+            time_inactive: this.time_inactive,
+            time_played: this.time_played
           })
         .then(response => {console.log(response)})
         .catch(err => {console.log(err)});
     },
     changeQuest: function() {
     if(this.questname) {
-		    axios.get(`/stories/${this.questname}`).then(response => {
+        axios.get(`/stories/${this.questname}`).then(response => {
           this.gamedata = response.data.json;
           this.metadata = response.data.meta;
         });
-		      this.$refs.questloader.remove();
-		      this.$refs.questrender.removeAttribute("hidden");
+          this.$refs.questloader.remove();
+          this.$refs.questrender.removeAttribute("hidden");
       }
     },
     changeState: function (state){
@@ -152,7 +164,7 @@ var app = new Vue({
           if(this.picked[0] >= x-radius && this.picked[0] <= x+radius &&
             this.picked[1] >= y-radius && this.picked[1] <= y+radius){
               this.currentQuest = opt[1];
-              this.inactive_time = 0;
+              this.time_inactive = 0;
               this.sendGameData();
               break;
             }
@@ -160,7 +172,7 @@ var app = new Vue({
         //Formato standard che controlla se opt[0] == picked
         else if(opt[0] == this.picked){
           this.currentQuest = opt[1];
-          this.inactive_time = 0;
+          this.time_inactive = 0;
           this.sendGameData();
           break;
         }
@@ -197,7 +209,7 @@ var app = new Vue({
           return;
 
       this.sendGameData();
-      this.inactive_time = 0;
+      this.time_inactive = 0;
       this.completedSubs.push(subQuest.number);
       this.in_mainquest = true;
       if(document.getElementById("input")) {
@@ -229,9 +241,9 @@ var app = new Vue({
             if(this.in_mainquest) return this.gamedata.mainQuest[this.currentQuest];
                 else return this.gamedata.subQuests[this.currentSub];
     },
-	prova: function() {
-		console.log($refs.submitbutton);
-	},
+  prova: function() {
+    console.log($refs.submitbutton);
+  },
     getSubquests: function() {
       var subQuestList = [];
       if(!this.gamedata) return subQuestList;
@@ -286,4 +298,4 @@ var app = new Vue({
       return gotos;
     }
   }
-  });
+});
