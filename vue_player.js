@@ -192,6 +192,10 @@ var app = new Vue({
 	this.mainStyleObject = ending_obj;
 	this.upgradeSubmitStyle();
   },
+  mounted: function() {
+      this.sendUpdatesEvery5Seconds();
+      this.trackTimeEverySecond();
+  },
   methods: {
     requestHelp: function() {
       this.$refs.requestedHelp.style.display = "inline";
