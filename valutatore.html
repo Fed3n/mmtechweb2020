@@ -20,6 +20,19 @@
         </div>
       </div>
 
+      <div v-if="players_data.length > 0" class="container border overflow-auto" id="chat">
+        <ul class="pagination pagination-sm">
+          <li class="page-item"><a class="page-link" href="#" v-for="player in players_data" v-on:click="switchIndex(players_data.indexOf(player))">{{ player.id }}</a></li>
+        </ul>
+        <div v-for="msg in players_data[chatIndex].chat">
+          {{ msg.sender }} says: {{ msg.text }}
+        </div>
+        <form class="btn-group" v-on:submit.prevent>
+          <input type="text" v-model="chatMsg">
+          <button class="btn btn-success" v-on:click="sendChatMsg">Send</button>
+        </form>
+      </div>
+      
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
