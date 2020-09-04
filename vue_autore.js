@@ -3,6 +3,7 @@
 				      "mainQuest": [
 				            {
 						               "number": 0,
+													 "title": "",
 						               "text": "",
 						               "type": "",
 						               "description": "",
@@ -18,13 +19,17 @@
 				      "subQuests": [
                 {
             			"number": 0,
+									"title": "",
             			"objective": "",
             			"available_on": [],
             			"requires_sub": [],
             			"text": "",
             			"type": "",
             			"description": "",
-            			"options": [],
+									"image": {
+										"imguri": "",
+										"imgalt": ""
+									},
             			"solution": []
             		}
               ],
@@ -73,12 +78,17 @@
                 "picked": null
               },
               gamedata: gamedata_pholder,
-							metadata: metadata_pholder
+							metadata: metadata_pholder,
+							questClipboard: {
+								"main": null,
+								"sub": null
+							}
         },
 				created: function(){
 					this.updateFs();
 				},
         methods: {
+					//SERVER INTERACTION METHODS//
 					updateFs: function(){
 						console.log("Requesting fs update...");
 						var _this = this;
@@ -159,6 +169,7 @@
 							_this.imagesList = res.data;
 						});
 					},
+					//////////////////////////////////
           changeQuest: function(number){
             if(this.previewdata.in_mainquest){
 							this.previewdata.currentQuest = number;
@@ -169,6 +180,18 @@
 							this.previewdata.picked = null;
 						}
           },
+					jumpToQuest: function(type,number){
+						if(type == "main"){
+							this.previewdata.in_mainquest = true;
+							this.previewdata.currentQuest = number;
+							this.previewdata.picked = null;
+						}
+            else {
+							this.previewdata.in_mainquest = false;
+							this.previewdata.currentSub = number;
+							this.previewdata.picked = null;
+						}
+					},
           switchMainSub: function() {
             this.previewdata.in_mainquest = !this.previewdata.in_mainquest;
           },
@@ -212,6 +235,27 @@
             if(this.previewdata.in_mainquest) this.gamedata.mainQuest.push(mq);
             else this.gamedata.subQuests.push(sq)
           },
+					copyStory: function() {
+						if(this.previewdata.in_mainquest) this.questClipboard.main = this.renderQuest;
+						else this.questClipboard.sub = this.renderQuest;
+					},
+					pasteStory: function() {
+						num = this.previewdata.in_mainquest ? this.gamedata.mainQuest.length : this.gamedata.subQuests.length;
+						if(this.previewdata.in_mainquest){
+							if(this.questClipboard.main) {
+								var quest = Object.assign({}, this.renderQuest)
+								quest.number = num;
+								this.gamedata.mainQuest.push(quest);
+							}
+						}
+						else{
+							if(this.questClipboard.sub) {
+								var quest = Object.assign({}, this.renderQuest)
+								quest.number = num;
+								this.gamedata.subQuests.push(quest);
+							}
+						}
+					},
 					//Rimuove il nodo selezionato dall'array mainquest
 					//Un po' costosa computazionalmente ma l'alternativa è limitarsi al pop per la cancellazione
 					rmMainNode: function(index) {
@@ -336,13 +380,18 @@
           rmGoto: function(){
             this.renderQuest.goto.pop();
           },
-					addRmSolution: function(type){
-						if(type == "add") {
-							this.renderQuest.solution.push("");
+					addSolution: function(type){
+						if(type == "image"){
+							var ans = [this.previewdata.picked[0], this.previewdata.picked[1], this.radiusInput];
+							this.renderQuest.solution.push(ans)
 						}
 						else {
-							this.renderQuest.solution.pop();
+							this.renderQuest.solution.push("");
 						}
+					},
+					rmSolution: function(sol){
+						index = this.renderQuest.solution.indexOf(sol);
+						this.renderQuest.solution.splice(index,1);
 					},
           addRmOptions: function(type){
             if(type == "add") {
@@ -529,6 +578,22 @@
             }
             return remaining;
           },
+					//Cerco i prev iterando su tutte le quest e cercando nei goto e subquest_reward sperando non sia troppo pesante
+					getPrevNodes: function() {
+						current = this.renderQuest.number;
+						prev = new Set();
+						for(quest of this.gamedata.mainQuest){
+							for(goto of quest.goto){
+								if(goto[1] == current) prev.add(quest.number);
+							}
+							for(reward of quest.subquest_rewards){
+								for(goto of reward.added_goto){
+									if(goto[1] == current) prev.add(quest.number);
+								}
+							}
+						}
+						return prev;
+					},
 				//Se stiamo vedendo la previw di una main quest vediamo dove ci porta la risposta attuale
 				getAnswerGoto: function() {
 					if(!this.previewdata.picked) return "";
