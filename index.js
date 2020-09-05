@@ -7,6 +7,8 @@ const fileUpload = require('express-fileupload')
 const host = "localhost";
 const port = 8080;
 
+var players_data = {};
+
 var uid_generator = 0;
 
 app.use(fileUpload());
@@ -34,40 +36,45 @@ app.get('/valutatore', (req, res) => {
 
 
 //## PLAYER ##//
-app.get('/uid', (req, res) => {
+app.get('/uid', (req, res) => { // da cambiare in POST
     uid_generator++;
+    players_data[uid_generator] = {};
     return res.send(uid_generator.toString());
 });
-app.get('/quest', (req, res) => {
-    console.log('Richiesta lista di files');
-    let load = fs.readdirSync('quest');
-    load.forEach(file => { console.log(file); });
-    return res.send(load);
+
+app.patch('/players/:player_id', (req, res) => {
+    var id = req.params.player_id;
+    if(players_data[id]){
+      for (let key in req.body)
+          players_data[id][key] = req.body[key];
+            return res.send(":)");
+    }
+    else {
+      return res.status(404).send({ error: "Couldn't find id"});
+    }
 });
 
-app.get('/quest:questId', (req, res) => {
-    console.log(`Richiesto json ${req.params.questId}!`);
-    let load = fs.readFileSync(`quest/${req.params.questId}.json`);
-    let json = JSON.parse(load);
-    console.log(json);
-    res.setHeader('Content-Type','application/json');
-    console.log("Header set");
-    return res.json(json);
-});
-
-app.post('/players', (req, res) => {
-    var user_path = path.join(__dirname + '/players/' + req.body.user_id);
-    var data = JSON.stringify(req.body);
-    fs.writeFile(user_path, data, err => {
-        if (err) throw err;
-        console.log('dati di gioco salvati');
-    });
-    console.log(req.body);
+app.patch('/players/', (req, res) => {
+    for(let id in req.body){
+        for(let key in req.body[id]){
+        players_data[id][key] = req.body[id][key];
+      }
+    }
+    console.log('Modifiche del valutatore: ', req.body);
     return res.send(":)");
 });
 
+app.get('/players/', (req, res) => {
+    if(req.query.id){
+        res.send(players_data[req.query.id]);
+    }
+    else {
+        res.send(players_data);
+    }
+});
 
-//## AMBIENTE AUTORE ##//
+
+//## STORIE ##//
 //Prende i file info.json delle storie in cui sono contenuti metadata per la rappresentazione (i.e. nome,accessibilità,etc)
 app.get('/stories', (req, res) => {
     console.log("Getting content of ./story directory...")
@@ -149,19 +156,6 @@ app.post('/stories/:storyName/images', (req, res) => {
     });
     res.send(":)");
 });
-
-
-//## AMBIENTE VALUTATORE ##//
-app.get('/players/', (req, res) => {
-    var playerIDs = fs.readdirSync(__dirname + '/players/');
-    var players_data = [];
-    for(const player_id of playerIDs){
-        var data = fs.readFileSync(__dirname + '/players/' + player_id);
-        players_data.push(data.toString());
-    }
-    return res.send(players_data);
-});
-
 
 //#######################################################//
 

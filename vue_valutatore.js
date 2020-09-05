@@ -1,24 +1,34 @@
 var app = new Vue({
   el: "#app",
   data: {
-    players_data: []
+    players_data: {},
+    players_data_changing: {}
   },
   mounted: function() {
-    this.getUpdatesEvery5Seconds();
+    this.updatesEvery5Seconds();
   },
   destroyed: function() {
-    players_data = [];
+    players_data = {};
   },
   methods: {
-    getUpdatesEvery5Seconds: function() {
+    updatesEvery5Seconds: function() {
       let timerId = setInterval(() => {
-        this.getCurrentPlayers();
+        this.patchPlayersData();
+        this.getPlayersData();
       }, 5000);
     },
-    getCurrentPlayers: function() {
+    getPlayersData: function() {
       axios.get("http://localhost:8080/players/").then(response => {
-        this.players_data = (response.data).map(el => JSON.parse(el));
+        this.players_data = response.data;
       });
+    },
+    patchPlayersData: function() {
+        axios.patch('http://localhost:8080/players/', this.players_data_changing)
+            .catch(err => {console.log(err)});
+    },
+    sendHelp: function(id) {
+        this.players_data_changing[id] = this.players_data_changing[id] || {};
+        this.players_data_changing[id].help_requested = true;
     }
   }
 });
