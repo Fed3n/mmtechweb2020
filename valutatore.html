@@ -31,13 +31,13 @@
 
       <div class="container border" id="chat">
         <div class="btn-group p-2">
-          <button class="btn btn-outline-secondary" v-for="(chat,id) in players_chat" v-on:click="switchIndex(id)">{{ id }}</button>
+          <button class="btn btn-outline-secondary" v-for="(chat,id) in players_chat" :class="chat_notify[id] ? 'btn-warning' : ''" v-on:click="switchIndex(id)">{{ id }}</button>
         </div>
         <div v-if="players_chat[current_chat_id]" v-for="msg in players_chat[current_chat_id]">
           {{ msg.sender }} scrive: {{ msg.text }}
         </div>
-        <form class="btn-group" v-on:submit.prevent>
-          <input type="text" v-model="chat_msg">
+        <form class="btn-group" v-if="players_chat[current_chat_id]" v-on:submit.prevent>
+          <input type="text" v-model="chat_msg[current_chat_id]">
           <button class="btn btn-success" v-on:click="sendChatMsg">Send</button>
         </form>
       </div>
