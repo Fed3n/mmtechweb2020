@@ -65,8 +65,8 @@ app.patch('/players/', (req, res) => {
 });
 
 app.get('/players/', (req, res) => {
-    if(req.query.id){
-        res.send(players_data[req.query.id]);
+    if(req.query.user_id){
+        res.send(players_data[req.query.user_id]);
     }
     else {
         res.send(players_data);
