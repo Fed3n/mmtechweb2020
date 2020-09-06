@@ -107,8 +107,7 @@ var app = new Vue({
     time_inactive: 0,    // entrambe in secondi
     requested_help: false,
     chat: [],
-    chatMsg: "",
-    newMsgs: [],
+    chat_msg: "",
     gamedata: gamedata_pholder,
     metadata: metadata_pholder,
     questname: null,
@@ -194,6 +193,9 @@ var app = new Vue({
 	});
 	this.mainStyleObject = ending_obj;
 	this.upgradeSubmitStyle();
+  axios.get('/uid').then(res => {
+      this.user_id = res.data;
+    });
   },
   mounted: function() {
       this.sendUpdatesEvery5Seconds();
@@ -209,7 +211,8 @@ var app = new Vue({
     },
     sendUpdatesEvery5Seconds: function() {
       let timerId = setInterval(() => {
-        this.sendGameData();
+        //this.sendGameData();
+        this.getCurrentChats();
       }, 5000);
     },
     trackTimeEverySecond: function() {
@@ -230,19 +233,30 @@ var app = new Vue({
             finished: this.renderQuest.type == 'ending',
             time_inactive: this.time_inactive,
             time_played: this.time_played,
-            newMsgs: this.newMsgs
+            newPlayerMsgs: this.newPlayerMsgs
           })
-        .then(response => {console.log(response)})
+        .then(response => {
+          console.log(response);
+        })
         .catch(err => {console.log(err)});
     },
     sendChatMsg: function() {
-      msg = {
-        sender: this.user_id,
-        text: this.chatMsg
-      };
-      this.chat.push(msg);
-      this.newMsgs.push(msg);
-      this.chatMsg = "";
+      if(this.chat_msg){
+        msg = {
+          sender: `utente_${this.user_id}`,
+          text: this.chat_msg
+        };
+        axios.post(`chat/${this.user_id}`, msg)
+        .then(() => { console.log("sent message successfully :)")});
+        this.chat.push(msg);
+        this.chat_msg = "";
+      }
+    },
+    getCurrentChats: function() {
+      axios.get("/chat", {params: {user_id: this.user_id}}).then(response => {
+        console.log(response.data);
+        this.chat = response.data;
+      });
     },
     changeQuest: function() {
     if(this.questname) {

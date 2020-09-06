@@ -80,10 +80,10 @@
        </div>
        <div class="container border overflow-auto" id="chat">
          <div v-for="msg in chat">
-           {{ msg.sender }} says: {{ msg.text }}
+           {{ msg.sender }} scrive: {{ msg.text }}
          </div>
          <form class="btn-group" v-on:submit.prevent>
-           <input type="text" v-model="chatMsg">
+           <input type="text" v-model="chat_msg">
            <button class="btn btn-success" v-on:click="sendChatMsg">Send</button>
          </form>
        </div>
