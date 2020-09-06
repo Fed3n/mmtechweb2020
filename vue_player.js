@@ -105,7 +105,10 @@ var app = new Vue({
     user_id: 0,          // TODO lo deve assegnare il server
     time_played: 0,
     time_inactive: 0,    // entrambe in secondi
-    requested_help: false,
+    help_requested: false,
+    help_sent: false,
+    help_received: false,
+    help_message: "",
     chat: [],
     chat_msg: "",
     gamedata: gamedata_pholder,
@@ -174,6 +177,9 @@ var app = new Vue({
     }
   },
   created: function (){
+    axios.get('/uid').then(res => {
+      this.user_id = res.data;
+    });
     //adding the background image
     var temp = this.css_style.background;
     if (temp.image){
@@ -193,25 +199,25 @@ var app = new Vue({
 	});
 	this.mainStyleObject = ending_obj;
 	this.upgradeSubmitStyle();
-  axios.get('/uid').then(res => {
-      this.user_id = res.data;
-    });
   },
   mounted: function() {
-      this.sendUpdatesEvery5Seconds();
+      this.updatesEvery5Seconds();
       this.trackTimeEverySecond();
   },
   methods: {
     requestHelp: function() {
-      this.$refs.requestedHelp.style.display = "inline";
-      this.$refs.help.classList.add("disabled");
-      this.requested_help = true;
+      if (!this.help_msg) {
+        this.$refs.requestedHelp.style.display = "inline";
+        this.$refs.help.classList.add("disabled");
+        this.help_requested = true;
+      }
       // manda richiesta aiuto
       // quando la soddisfera', sara' da mettere display = "none"
     },
-    sendUpdatesEvery5Seconds: function() {
+    updatesEvery5Seconds: function() {
       let timerId = setInterval(() => {
-        //this.sendGameData();
+        this.sendGameData();
+        this.getGameData();
         this.getCurrentChats();
       }, 5000);
     },
@@ -222,14 +228,15 @@ var app = new Vue({
       }, 1000);
     },
     sendGameData: function(){
-      axios.post('http://localhost:8080/players',
+      axios.patch(`/players/${this.user_id}`,
           {
             user_id: this.user_id,
             in_mainquest: this.in_mainquest,
             currentQuest: this.currentQuest,
             currentSub: this.currentSub,
             completedSubs: this.completedSubs,
-            requested_help: this.requested_help,
+            help_requested: this.help_requested,
+            help_received: this.help_received,
             finished: this.renderQuest.type == 'ending',
             time_inactive: this.time_inactive,
             time_played: this.time_played,
@@ -239,6 +246,12 @@ var app = new Vue({
           console.log(response);
         })
         .catch(err => {console.log(err)});
+    },
+    getGameData: function() {
+      axios.get(`/players/?${this.user_id}`).then(response => {
+        for (let key in response.data)
+          this[key] = response.data[key];
+      }).catch(err => console.log(err));
     },
     sendChatMsg: function() {
       if(this.chat_msg){

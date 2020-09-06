@@ -46,11 +46,11 @@ app.get('/uid', (req, res) => { // da cambiare in POST
 });
 
 app.patch('/players/:player_id', (req, res) => {
-  	var id = req.params.player_id;
+    var id = req.params.player_id;
     if(players_data[id]){
       for (let key in req.body)
           players_data[id][key] = req.body[key];
-      		return res.send(":)");
+            return res.send(":)");
     }
     else {
       return res.status(404).send({ error: "Couldn't find id"});
@@ -59,11 +59,11 @@ app.patch('/players/:player_id', (req, res) => {
 
 app.patch('/players/', (req, res) => {
     for(let id in req.body){
-    	for(let key in req.body[id]){
-       	players_data[id][key] = req.body[id][key];
+        for(let key in req.body[id]){
+        players_data[id][key] = req.body[id][key];
       }
     }
-    console.log(req.body);
+    console.log('Modifiche del valutatore: ', req.body);
     return res.send(":)");
 });
 

@@ -2,42 +2,28 @@ var app = new Vue({
   el: "#app",
   data: {
     players_data: {},
-    players_chat2: {
-      "12": [
-        {sender: "Fede", text: "Ciao"},
-        {sender: "Fede", text: "come stai?"}
-      ],
-      "26": [
-        {sender: "Thom", text: "Hey"},
-        {sender: "Thom", text: "mi puoi aiutare?"}
-      ]
-    },
+    players_data_changing: {},
     players_chat: {},
     current_chat_id: null,
     chat_msg: ""
   },
   mounted: function() {
-    this.getUpdatesEvery5Seconds();
+    this.updatesEvery5Seconds();
   },
   destroyed: function() {
-    players_data = [];
+    players_data = {};
   },
   methods: {
-    getUpdatesEvery5Seconds: function() {
+    updatesEvery5Seconds: function() {
       let timerId = setInterval(() => {
-        //this.getCurrentPlayers();
+        this.patchPlayersData();
+        this.getPlayersData();
         this.getCurrentChats();
       }, 5000);
     },
-    getCurrentPlayers: function() {
+    getPlayersData: function() {
       axios.get("http://localhost:8080/players/").then(response => {
-        this.players_data = (response.data).map(el => JSON.parse(el));
-        for(i = 0; i < this.players_data.length; i++){
-          for(msg of this.players_data[i].newPlayerMsgs){
-            this.players_data[i].chat.push(msg);
-          }
-          this.players_data[i].newMsgs = [];
-        }
+        this.players_data = response.data;
       });
     },
     switchIndex: function(id){
@@ -59,11 +45,20 @@ var app = new Vue({
     },
     getCurrentChats: function() {
       axios.get("/chat").then(response => {
+        console.log(response.data);
         var chats = response.data;
         for(let id in chats){
           this.$set(this.players_chat, id, chats[id]);
         }
       });
+    },
+    patchPlayersData: function() {
+        axios.patch('http://localhost:8080/players/', this.players_data_changing)
+            .catch(err => {console.log(err)});
+    },
+    sendHelp: function(id) {
+        this.players_data_changing[id] = this.players_data_changing[id] || {};
+        this.players_data_changing[id].help_requested = true;
     }
   }
 });
