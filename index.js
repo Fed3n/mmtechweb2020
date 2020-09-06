@@ -5,7 +5,7 @@ const path = require('path');
 const app = express();
 const fileUpload = require('express-fileupload')
 const host = "localhost";
-const port = 8080;
+const port = 8000;
 
 var players_data = {};
 var players_chat = {};
