@@ -8,14 +8,16 @@
         <script src="https://unpkg.com/vue-qrcode-reader/dist/VueQrcodeReader.umd.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
    		<script src="https://unpkg.com/vue-observe-visibility/dist/vue-observe-visibility.min.js"></script>
-
-   		<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
-
+   		
+   		<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet"> 
+		
+		<link href="external.css" rel="stylesheet"> 
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+<style>
+</style>
     </head>
     <body class="border border-primary h-100">
-        <div id="app">
-
+        <div id="app" :style="loadImage">
 
             <div id="questloader" ref="questloader">
                 <h1>QUEST LOADER</h1>
@@ -37,7 +39,7 @@
                     <ul class="navbar-nav" aria-labelledby="quest-menu-button">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="quest-menu-button" href="#" data-toggle="dropdown" :style="questsStyle" role="button" aria-haspopup="true" role="menu" aria-controls="quest-menu-list">Quests</a>
-                            <div class="dropdown-menu" id="quest-menu-list" :class="menuBootstrapStyle" :style="menuStyle">
+                            <div class="dropdown-menu" id="quest-menu-list" :class="menuBootstrapStyle" :style="menuStyle" style="margin-bottom: 10px">
                                 <a class="dropdown-item" :style="menuLinkStyle(0)" v-on:mouseover="menuLinkEvent(0,true)" v-on:mouseleave="menuLinkEvent(0,false)" role="menuitem" href="#" v-on:click="goToMainQuest()">MainQuest {{currentQuest}}</a>
                                 <div v-if="getSubquests.length > 0" role="none">
                                     <div class="dropdown-divider" :style="dividerStyle"></div>
@@ -46,9 +48,9 @@
                             </div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" ref="help" href="#" @click="requestHelp">
-                                Chiedi aiuto
-                                <span style="display:none" ref="requestedHelp" class="alert alert-info" role="alert">Aiuto richiesto! Attendi...</span>
+                            <a id="helpAlertContainer" class="nav-link" ref="help" href="#" @click="requestHelp" :style="helpAlertContainerStyle">
+                               	Chiedi aiuto
+                                <span ref="requestedHelp" class="alert" role="alert" :class="helpAlertBootstrapStyle" :style="helpAlertStyle" style="display:none; margin-left: 10px; margin-bottom: -10px;  white-space: nowrap;">Aiuto richiesto! Attendi...</span>
                             </a>
                         </li>
                     </ul>
@@ -58,7 +60,7 @@
         <!--Area quest-->
         <div ref="questrender" class="card" style="position: relative;"  :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
             <div class="card-header" :style="cardLimitStyle">
-                <h1 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">Name of Quest {{ currentQuest }}</h1>
+                <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">Name of Quest {{ currentQuest }}</h3>
             </div>
             <div class="card-body" :style="removePredefinedStylesCard">
                 <p>{{ renderQuest.text }}</p>
