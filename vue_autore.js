@@ -61,7 +61,8 @@
         components: {
           "choiceinput": httpVueLoader("components/choice_input.vue"),
           "textinput": httpVueLoader("components/text_input.vue"),
-          "imginput": httpVueLoader("components/img_input.vue")
+          "imginput": httpVueLoader("components/img_input.vue"),
+					"keyboardinput": httpVueLoader("components/keyboard_input.vue")
         },
         data: {
 							storyList: null,
@@ -499,6 +500,7 @@
 			 			if (type == "choice") return "choiceinput";
 			  		else if (type == "input") return "textinput";
 						else if (type == "draw") return "imginput";
+						else if (type == "keys") return "keyboardinput";
 						else return "";
 					},
           questList: function() {
@@ -594,9 +596,9 @@
 						}
 						return prev;
 					},
-				//Se stiamo vedendo la previw di una main quest vediamo dove ci porta la risposta attuale
+				//Se stiamo vedendo la preview di una main quest vediamo dove ci porta la risposta attuale
 				getAnswerGoto: function() {
-					if(!this.previewdata.picked) return "";
+					if(!this.previewdata.picked || this.getCurrentGotos.length <= 0) return "";
 					options = this.getCurrentGotos;
 		      for(opt of options){
 		        //Le risposte del tipo draw hanno un formato diverso e devo assicurarmi di non accedere a null
