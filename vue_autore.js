@@ -488,16 +488,15 @@
             link.href = createObjectURL(blob);
             link.click();
           },
-	  createQR: function(){
-	   console.og("ciao sono qui");
-	    var qrname = this.$refs.fileName.value.replace('.json','');
-	    qr.clear();
-	    qr.makeCode(qrname);
-	    var node = document.getElementById("qrcode");
-	    node.href = `${qr._el.getElementsByTagName("img")[0].src}`;
-	    node.download = `${qrname}.png`;
-	    node.click();
-	  }
+		  createQR: function(){
+			var qrname = this.$refs.fileName.value.replace('.json','');
+			qr.clear();
+			qr.makeCode(qrname);
+			var node = this.$refs.qrcode;
+			node.href = `${qr._el.getElementsByTagName("img")[0].src}`;
+			node.download = `${qrname}.png`;
+			node.click();
+		  }
         },
         computed: {
 					currentComponent: function() {

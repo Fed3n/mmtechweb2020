@@ -63,7 +63,7 @@
             <label for="file-downloader">Json Saver</label>
             <input name="file-downloader" type="text" value="myfile.json" ref="fileName">
             <button v-on:click="saveJson">Download JSON</button>
-	    <button v-on:clock="createQR">Create QR Code!</button>
+			<button v-on:click="createQR">Create QR Code!</button>
           </div>
         </div>
       </div>
@@ -418,10 +418,10 @@
                 </div>
               </div>
             </div>
+			<a hidden ref="qrcode" id="qrcode" href="placeholder" download></a>
             <!--FINE OBJECT EDITOR-->
           </div>
         </div>
-	<div hidden><a id="qrcode" href="placeholder" download></a></div>
       </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

@@ -57,11 +57,12 @@ var input_backgroundImage = {
 
 //default image settings
 //default setting of all this "default image styles" is "black" or "white" depending on the darkness of the image
-var image_default_togglerButton_color = "black";
-var image_default_togglerButton_border_color = "black";
+var default_image_togglerButton_color = "black";
+var default_image_togglerButton_border_color = "black";
 var default_image_text_color = "black";
 var default_image_divider_color = "black";
-var defaul_image_menu_links_text_color = "black";
+var default_image_menu_links_text_color = "black";
 var default_image_menu_links_hover_backgroud_color = menu_links;  
 var default_image_menu_border = "1px solid black";
+var defaul_image_alert_color = "black";
 
