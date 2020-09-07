@@ -6,6 +6,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/http-vue-loader"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="qrcode.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <title>Ambiente Autore</title>
   </head>
@@ -62,6 +63,7 @@
             <label for="file-downloader">Json Saver</label>
             <input name="file-downloader" type="text" value="myfile.json" ref="fileName">
             <button v-on:click="saveJson">Download JSON</button>
+	    <button v-on:clock="createQR">Create QR Code!</button>
           </div>
         </div>
       </div>
@@ -419,6 +421,7 @@
             <!--FINE OBJECT EDITOR-->
           </div>
         </div>
+	<div hidden><a id="qrcode" href="placeholder" download></a></div>
       </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
