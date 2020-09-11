@@ -467,7 +467,10 @@ var app = new Vue({
       if (type == "choice") return "choiceinput";
         else if (type == "input") return "textinput";
         else if (type == "draw") return "imginput";
-      else return "";
+      else {
+			document.getElementById("submit").disabled = false;
+			return ""	
+		};
     },
     renderQuest: function() {
       if(this.gamedata == null)

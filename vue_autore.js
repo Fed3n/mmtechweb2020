@@ -1,52 +1,103 @@
   //PLACEHOLDER OBJECTS//
 			gamedata_pholder = {
-				      "mainQuest": [
-				            {
-						               "number": 0,
-													 "title": "",
-						               "text": "",
-						               "type": "",
-						               "description": "",
-						               "options": [],
-													 "image": {
-														 "imguri": "",
-														 "imgalt": ""
-													 },
-						               "goto": [],
-						               "subquest_rewards": []
-					         }
-				      ],
-				      "subQuests": [
+		      "mainQuest": [
+      			  {
+	               "number": 0,
+								 "title": "",
+	               "text": "",
+	               "type": "",
+	               "description": "",
+	               "options": [],
+								 "image": {
+									 "imguri": "",
+									 "imgalt": ""
+								 },
+	               "goto": [],
+	               "subquest_rewards": []
+			         }
+		      ],
+		      "subQuests": [
                 {
-            			"number": 0,
-									"title": "",
-            			"objective": "",
-            			"available_on": [],
-            			"requires_sub": [],
-            			"text": "",
-            			"type": "",
-            			"description": "",
-									"image": {
-										"imguri": "",
-										"imgalt": ""
-									},
-            			"solution": []
-            		}
+        			"number": 0,
+								"title": "",
+        			"objective": "",
+        			"available_on": [],
+        			"requires_sub": [],
+        			"text": "",
+        			"type": "",
+        			"description": "",
+								"image": {
+									"imguri": "",
+									"imgalt": ""
+								},
+        			"solution": []
+        		}
               ],
-              "css_style": {
-    						"nav": {
-    							"textFont": "",
-    							"textColor": "",
-    							"textStyle": "",
-    							"bgColor": ""
-    						},
-    						"card": {
-    							"textFont": "",
-    							"textColor": "",
-    							"textStyle": "",
-    							"bgColor": ""
-    						}
-    					}
+               "css_style": {
+				  "mainStyle": {
+						"font-family": "",
+						"font-style": "",
+						"font-weight": "",
+						"font-size": "",
+						"color" : ""
+				  },
+				  "background": {
+				  		"image": null,
+				  		"url": "",
+				  		"style": {
+			  			    "nav": {
+							  	"custom": null,
+							  	"bootstrap": {
+							  		"textColor": "",
+							  		"background": ""
+							  	},
+							  	"customized": {
+							  		"general": {
+										"background-color": "",
+										"color": ""
+									},
+							   }
+						  },
+						  "badge": {
+							"custom": null,
+						  	"bootstrap": {
+						  		"type": ""
+						  	},
+						  	"customized": {
+						  			"background-color": "",
+						  			"border-width": "",
+						   			"border-style": "",
+						   			"border-color": "",
+						   			"color" : ""
+						  	}
+						  },
+						  "alert": {
+							"custom": null,
+						  	"bootstrap": {
+						  		"type": ""
+						  	},
+						  	"customized": {
+						  			"background-color": "",
+						  			"border-width": "",
+						   			"border-style": "",
+						   			"border-color": "",
+						   			"color" : ""
+						  	}
+						  },
+						  "card": {
+						  	"custom": null,
+						  	"bootstrap": {
+						  		"textColor": "",
+						  		"background": ""
+						  	},
+						  	"customized": {
+						   			"background-color": "",
+						   			"color": ""
+							}
+						 }
+					  }
+					}
+				}
 			};
 			metadata_pholder = {
 				"name": "",
@@ -66,12 +117,12 @@
           "imginput": httpVueLoader("components/img_input.vue")
         },
         data: {
-							storyList: null,
-							activeStoryList: null,
-							inactiveStoryList: null,
-							imagesList: null,
-							selectedImage: "",
-							radiusInput: 10,	//valore di default
+			storyList: null,
+			activeStoryList: null,
+			inactiveStoryList: null,
+			imagesList: null,
+			selectedImage: "",
+			radiusInput: 10,	//valore di default
               previewdata: {
                 "currentQuest": 0,
                 "currentSub": 0,
@@ -80,15 +131,129 @@
                 "picked": null
               },
               gamedata: gamedata_pholder,
-							metadata: metadata_pholder,
-							questClipboard: {
-								"main": null,
-								"sub": null
-							}
-        },
-				created: function(){
-					this.updateFs();
+				metadata: metadata_pholder,
+				questClipboard: {
+					"main": null,
+					"sub": null
 				},
+				
+				//temporary -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+				temporary_object: {
+					textColor: "",
+					background: ""
+				},
+				
+				//temporary ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				 questname: null,
+			
+							
+							
+							
+							
+				
+				togglerButtonVisible: true,
+			    onLink: [],
+			    submitStyleObject: {},				
+				
+				
+				
+				
+				
+			   css_style: {
+					  mainStyle: {
+							"font-family": "'Dancing Script', cursive",
+							"font-style": "normal",
+							"font-weight": "bold",
+							"font-size": "20px",
+							"color" : "rgba(60,60,60,1)"			
+					  },
+					  background: {
+					  		image: false,
+					  		url: "url('notebook.png')",
+					  		style: {
+				  			    nav: {
+								  	custom: true,
+								  	bootstrap: {
+								  		textColor: "navbar-dark",
+								  		background: "bg-primary"
+								  	},
+								  	customized: {
+								  		general: {
+											"background-color": "grey",
+											"color": "red"
+										},
+								   }
+							  },
+							  badge: {
+								custom: false,
+							  	bootstrap: {
+							  		type: "badge-warning"
+							  	},
+							  	customized: {
+							  			"background-color": "rgba(122,232,14,0.8)",
+							  			"border-width": "3px",
+							   			"border-style": "dotted",
+							   			"border-color": "blue",
+							   			"color" : "red"
+							  	}
+							  },
+							  alert: {
+								custom: false,
+							  	bootstrap: {
+							  		type: "alert-warning"
+							  	},
+							  	customized: {
+							  			"background-color": "rgba(122,232,14,0.8)",
+							  			"border-width": "3px",
+							   			"border-style": "dotted",
+							   			"border-color": "blue",
+							   			"color" : "red"
+							   	}
+							  },
+							  card: {
+							  	custom: true,
+							  	bootstrap: {
+							  		textColor: "text-info",
+							  		background: "bg-warning"
+							  	},
+							  	customized: {
+							   			"background-color": "white",
+							   			"color": "white"
+								}
+							 }
+						  }
+					}
+				}
+			 
+        },
+		created: function(){
+			this.updateFs();
+			
+			
+			
+			
+			
+			
+			
+			this.upgradeSubmitStyle(false);
+			
+			
+			
+			
+			
+			
+			
+		},
         methods: {
 					//SERVER INTERACTION METHODS//
 					updateFs: function(){
@@ -172,28 +337,30 @@
 						});
 					},
 					//////////////////////////////////
-          changeQuest: function(number){
-            if(this.previewdata.in_mainquest){
-							this.previewdata.currentQuest = number;
-							this.previewdata.picked = null;
-						}
-            else {
-							this.previewdata.currentSub = number;
-							this.previewdata.picked = null;
-						}
+          changeQuest: function(number,goto_main) {
+          	if (goto_main) {
+          		this.previewdata.in_mainquest = true;
+          		this.previewdata.currentQuest = number;
+          		this.previewdata.picked = null;
+          	}
+          	else {
+          		this.previewdata.in_mainquest = false;
+          		this.previewdata.currentSub = number;
+          		this.previewdata.picked = null;
+          	}          	
           },
-					jumpToQuest: function(type,number){
-						if(type == "main"){
-							this.previewdata.in_mainquest = true;
-							this.previewdata.currentQuest = number;
-							this.previewdata.picked = null;
-						}
-            else {
-							this.previewdata.in_mainquest = false;
-							this.previewdata.currentSub = number;
-							this.previewdata.picked = null;
-						}
-					},
+		jumpToQuest: function(type,number){
+			if(type == "main"){
+				this.previewdata.in_mainquest = true;
+				this.previewdata.currentQuest = number;
+				this.previewdata.picked = null;
+			}
+		else {
+				this.previewdata.in_mainquest = false;
+				this.previewdata.currentSub = number;
+				this.previewdata.picked = null;
+			}
+		},
           switchMainSub: function() {
             this.previewdata.in_mainquest = !this.previewdata.in_mainquest;
           },
@@ -496,76 +663,218 @@
 			node.download = `${qrname}.png`;
 			node.click();
 		  }
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+	,	  
+	requestHelp: function() {
+      if (!this.help_msg) {
+        this.$refs.requestedHelp.style.display = "inline-block";
+        this.$refs.help.classList.add("disabled");
+        this.help_requested = true;
+      }
+      // manda richiesta aiuto
+      // quando la soddisfera', sara' da mettere display = "none"
+    }	 
+		   
+	,		  
+	goToSubQuest: function (quest){
+      this.currentSub = quest.number;
+      this.previewdata.in_mainquest = false;
+      this.$refs.questname.focus();
+    },
+    goToMainQuest: function(){
+      this.previewdata.in_mainquest = true;
+      this.$refs.questname.focus();
+    },
+    submitMain: function() {
+      options = this.getCurrentGotos;
+      for(opt of options){
+        //Le risposte del tipo draw hanno un formato diverso
+        if(this.gamedata.mainQuest[this.previewdata.currentQuest].type == "draw"){
+          let x = opt[0][0];
+          let y = opt[0][1];
+          let radius = parseInt(opt[0][2]);
+          if(this.previewdata.picked[0] >= x-radius && this.previewdata.picked[0] <= x+radius &&
+            this.previewdata.picked[1] >= y-radius && this.previewdata.picked[1] <= y+radius){
+              this.previewdata.currentQuest = opt[1];
+              break;
+            }
+        }
+        //Formato standard che controlla se opt[0] == picked
+        else if(opt[0] == this.previewdata.picked){
+          this.previewdata.currentQuest = opt[1];
+          break;
+        }
+        //L'opzione di default se non ci sono corrispondenze è sempre l'ultima
+        if(options.indexOf(opt) == options.length-1){
+          this.previewdata.currentQuest = opt[1];
+        }
+      }
+      if(document.getElementById("input")) {
+        document.getElementById("input").value = "";
+      }
+      document.getElementById("submit").disabled = true;
+      this.upgradeSubmitStyle(true);
+      this.previewdata.picked = null;
+      this.$refs.questname.focus();
+    },
+    submitSub: function() {
+      if (this.previewdata.in_mainquest) return;
+      let wrong_answer = true;
+      let subQuest = this.gamedata.subQuests[this.previewdata.currentSub];
+      if (subQuest.type == "input") {
+        for (let accepted of subQuest.solution)
+          if (this.previewdata.picked == accepted)
+            wrong_answer = false;
+          }
+      else if (subQuest.type == "choice") {
+        if (this.previewdata.picked == subQuest.solution)
+          wrong_answer = false;
+        }
+      if (wrong_answer) return;
+
+      // devo aver completato le subquest necessarie richieste
+      for (let required of subQuest.requires_sub)
+        if (!this.previewdata.completedSubs.includes(required))
+          return;
+
+      this.previewdata.completedSubs.push(subQuest.number);
+      this.previewdata.in_mainquest = true;
+      if(document.getElementById("input")) {
+        document.getElementById("input").value = "";
+      }
+      document.getElementById("submit").disabled = true;
+      this.upgradeSubmitStyle(true);
+      this.previewdata.picked = null;
+      this.$refs.questname.focus();
+    }
+		  
+		  
+		  
+		  
+		  
+		  
+		  ,
+	overwriteMainStyle: function(styles){
+    	var main_style = this.css_style.mainStyle;
+	  	var main_style_cleaned = {};
+	  	Object.entries(main_style).forEach( entry => {
+			const[key,value] = entry;
+			if (value != "")
+				main_style_cleaned[key] = value; 
+		});
+		return Object.assign(styles,main_style_cleaned);
+		},
+		menuLinkEvent: function(num,bool) {
+			this.onLink = new Array(this.getSubquests.length+1);
+			this.onLink.fill(false);
+			this.onLink[num] = bool;
+		},
+		menuLinkStyle: function(num) {
+			var styles = {};
+			if (!this.css_style.background.image){
+				if (!this.css_style.background.style.nav.custom){
+					//adding text color property
+					//predefined style used in addition to bootstrap navbar style
+					if (!this.css_style.mainStyle["color"])
+						if (color = this.css_style.background.style.nav.bootstrap.textColor == "navbar-light")
+							styles = Object.assign(styles,bootstrap_menu_color_dark_text);
+						else if (this.css_style.background.style.nav.bootstrap.textColor == "navbar-dark")
+							styles = Object.assign(styles,bootstrap_menu_color_light_text);
+						else
+							console.log(`error in JSON compilation: bootstrap navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
+					styles = this.overwriteMainStyle(styles);
+					//adding background color property
+					if (this.onLink[num]){
+						if (this.css_style.background.style.nav.bootstrap.background != "bg-light")
+							styles = Object.assign(styles,{ "background-color": bootstrap_menu_links_light_background});
+						else 
+							styles = Object.assign(styles,{ "background-color": bootstrap_menu_links_background});
+					}
+				}
+				else {
+					//adding text color property
+					styles = Object.assign(styles, { "color" : this.css_style.background.style.nav.customized.general["color"] } );
+					styles = this.overwriteMainStyle(styles);
+					//adding background color property
+					if (this.onLink[num])
+						if (this.css_style.background.style.nav.customized.general["background-color"] == "white")
+								styles = Object.assign(styles,{ "background-color": menu_links_white_background });					
+							else 
+								styles = Object.assign(styles,{ "background-color": menu_links });
+				}
+			}
+			else {
+				styles = Object.assign(styles, { "color" : default_image_menu_links_text_color } );
+				styles = this.overwriteMainStyle(styles);
+				//adding background color property
+				if (this.onLink[num])
+					styles = Object.assign(styles,{ "background-color": default_image_menu_links_hover_backgroud_color });
+			}
+			//used for menu responsivness
+			if (this.togglerButtonVisible)
+				styles = Object.assign(styles,{ "white-space": "normal" });
+			else
+				styles = Object.assign(styles,{ "white-space": "normal" },{ "max-width": "65vw" });																	
+			return styles;
+		},
+		upgradeSubmitStyle: function(disabled){
+			styles = {};																									
+			if (!disabled)																	
+				styles = Object.assign(styles,submit_button_style);
+			else {
+				styles = Object.assign(styles,submit_button_style_disabled);
+				var temp = this.css_style.background.style.card;
+				if (!this.css_style.background.image)
+					if ((temp.custom && temp.customized["background-color"] == "black") || (!temp.custom && temp.bootstrap.background == "bg-dark"))
+						 styles = Object.assign(styles, { "border" : submit_button_border });
+			}	
+			this.submitStyleObject = styles;	
+		}
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+	
+		  
+		  
+		  
+		  
+		  
         },
         computed: {
-					currentComponent: function() {
-						if(this.gamedata == null)
-			    	    return "";
-						var type;
-			  	  if(this.previewdata.in_mainquest)
-			    	    type = this.gamedata.mainQuest[this.previewdata.currentQuest].type;
-			  		else
-			   				type = this.gamedata.subQuests[this.previewdata.currentSub].type;
+        
+        
+        
+        
+						
+        
+        
+        
 
-			 			if (type == "choice") return "choiceinput";
-			  		else if (type == "input") return "textinput";
-						else if (type == "draw") return "imginput";
-						else return "";
-					},
           questList: function() {
             if(this.previewdata.in_mainquest) return this.gamedata.mainQuest;
             else return this.gamedata.subQuests;
           },
-          renderQuest: function() {
-						if(this.gamedata == null)
-						      return null;
-        		if(this.previewdata.in_mainquest) return this.gamedata.mainQuest[this.previewdata.currentQuest];
-            else return this.gamedata.subQuests[this.previewdata.currentSub];
-          },
-          getCurrentClues: function() {
-						clues = [];
-						for(reward of this.renderQuest.subquest_rewards){
-							if(this.previewdata.completedSubs.includes(reward.number))
-								clues.push(reward.clue);
-						}
-						return clues;
-					},
-					getCurrentOptions: function() {
-            if(this.renderQuest.options){
-  						options = [];
-  						for(opt of this.renderQuest.options)
-  							options.push(opt);
-  						for(reward of this.renderQuest.subquest_rewards){
-  							if(this.previewdata.completedSubs.includes(reward.number)){
-  								for(opt of reward.added_options)
-  									options.push(opt);
-  								for(opt of reward.removed_options){
-  									if((index = options.indexOf(opt)) != -1){
-  										options.splice(index,1);
-										}
-  								}
-  							}
-  						}
-            }
-						return options;
-					},
-					getCurrentGotos: function() {
-						gotos = [];
-						for(goto of this.renderQuest.goto)
-							gotos.push(goto);
-						for(reward of this.renderQuest.subquest_rewards){
-							if(this.previewdata.completedSubs.includes(reward.number)){
-								for(goto of reward.added_goto)
-									//Aggiungo in penultima posizione
-									gotos.splice(gotos.length-1,0,goto);
-								for(goto of reward.removed_goto){
-									if((index = myIndexOf(gotos,goto,arrCmp)) != -1)
-										options.splice(index,1);
-								}
-							}
-						}
-						return gotos;
-					},
           //Restituisco una coppia [index,goto], l'index serve per accedere al v-model
           getAddedGotos: function() {
             gotos = [];
@@ -589,50 +898,494 @@
             }
             return remaining;
           },
-					//Cerco i prev iterando su tutte le quest e cercando nei goto e subquest_reward sperando non sia troppo pesante
-					getPrevNodes: function() {
-						current = this.renderQuest.number;
-						prev = new Set();
-						for(quest of this.gamedata.mainQuest){
-							for(goto of quest.goto){
-								if(goto[1] == current) prev.add(quest.number);
-							}
-							for(reward of quest.subquest_rewards){
-								for(goto of reward.added_goto){
-									if(goto[1] == current) prev.add(quest.number);
-								}
-							}
+			//Cerco i prev iterando su tutte le quest e cercando nei goto e subquest_reward sperando non sia troppo pesante
+			getPrevNodes: function() {
+				current = this.renderQuest.number;
+				prev = new Set();
+				for(quest of this.gamedata.mainQuest){
+					for(goto of quest.goto){
+						if(goto[1] == current) prev.add(quest.number);
+					}
+					for(reward of quest.subquest_rewards){
+						for(goto of reward.added_goto){
+							if(goto[1] == current) prev.add(quest.number);
 						}
-						return prev;
-					},
-				//Se stiamo vedendo la previw di una main quest vediamo dove ci porta la risposta attuale
-				getAnswerGoto: function() {
-					if(!this.previewdata.picked) return "";
-					options = this.getCurrentGotos;
-		      for(opt of options){
-		        //Le risposte del tipo draw hanno un formato diverso e devo assicurarmi di non accedere a null
-		        if(opt[0] && this.gamedata.mainQuest[this.previewdata.currentQuest].type == "draw"){
-		          let x = opt[0][0];
-		          let y = opt[0][1];
-		          let radius = parseInt(opt[0][2]);
-		          if(this.previewdata.picked[0] >= (x-radius) && this.previewdata.picked[0] <= (x+radius) && this.previewdata.picked[1] >= (y-radius) && this.previewdata.picked[1] <= (y+radius)){
-								return(opt[1]);
+					}
+				}
+				return prev;
+			},
+			//Se stiamo vedendo la previw di una main quest vediamo dove ci porta la risposta attuale
+			getAnswerGoto: function() {
+				if(!this.previewdata.picked) return "";
+				options = this.getCurrentGotos;
+			for(opt of options){
+			//Le risposte del tipo draw hanno un formato diverso e devo assicurarmi di non accedere a null
+			if(opt[0] && this.gamedata.mainQuest[this.previewdata.currentQuest].type == "draw"){
+			  let x = opt[0][0];
+			  let y = opt[0][1];
+			  let radius = parseInt(opt[0][2]);
+			  if(this.previewdata.picked[0] >= (x-radius) && this.previewdata.picked[0] <= (x+radius) && this.previewdata.picked[1] >= (y-radius) && this.previewdata.picked[1] <= (y+radius)){
+							return(opt[1]);
+						}
+			}
+			//Formato standard che controlla se opt[0] == picked
+			else if(opt[0] == this.previewdata.picked){
+			  return opt[1];
+			}
+			//L'opzione di default se non ci sono corrispondenze è sempre l'ultima
+					if(options.indexOf(opt) == options.length-1){
+			  return opt[1];
+			}
+			}
+				return "";
+			},
+			getAnswerCorrectness: function(){
+				console.log("hi:)");
+				return "hey";
+			}
+	
+
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+	,		
+	currentComponent: function() {
+		if(this.gamedata == null)
+		return "";
+		var type;
+	  	  if(this.previewdata.in_mainquest)
+			    type = this.gamedata.mainQuest[this.previewdata.currentQuest].type;
+	  		else
+	   				type = this.gamedata.subQuests[this.previewdata.currentSub].type;
+
+	 			if (type == "choice") return "choiceinput";
+	  		else if (type == "input") return "textinput";
+				else if (type == "draw") return "imginput";
+			else {
+				if (document.getElementById("submit"))
+					document.getElementById("submit").disabled = false;
+				return ""	
+			};
+    },
+    renderQuest: function() {
+      if(this.gamedata == null)
+        return null;
+           if(this.previewdata.in_mainquest) return this.gamedata.mainQuest[this.previewdata.currentQuest];
+            else return this.gamedata.subQuests[this.previewdata.currentSub];
+    },
+    getSubquests: function() {
+      var subQuestList = [];
+      if(!this.gamedata) return subQuestList;
+      for(sub of this.gamedata.subQuests){
+        if (!this.previewdata.completedSubs.includes(sub.number) && sub.available_on.includes(this.previewdata.currentQuest)
+          && sub.requires_sub.every( val => this.previewdata.completedSubs.includes(val) ))
+              subQuestList.push(sub);
+            }
+            return subQuestList;
+    },
+	getCurrentClues: function() {
+		clues = [];
+		for(reward of this.renderQuest.subquest_rewards){
+			if(this.previewdata.completedSubs.includes(reward.number))
+				clues.push(reward.clue);
+		}
+		return clues;
+	},
+	getCurrentOptions: function() {
+		if(this.renderQuest.options){
+			options = [];
+			for(opt of this.renderQuest.options)
+				options.push(opt);
+			for(reward of this.renderQuest.subquest_rewards){
+				if(this.previewdata.completedSubs.includes(reward.number)){
+					for(opt of reward.added_options)
+						options.push(opt);
+					for(opt of reward.removed_options){
+						if((index = options.indexOf(opt)) != -1){
+							options.splice(index,1);
 							}
-		        }
-		        //Formato standard che controlla se opt[0] == picked
-		        else if(opt[0] == this.previewdata.picked){
-		          return opt[1];
-		        }
-		        //L'opzione di default se non ci sono corrispondenze è sempre l'ultima
-						if(options.indexOf(opt) == options.length-1){
-		          return opt[1];
-		        }
-		      }
-					return "";
-				},
-				getAnswerCorrectness: function(){
-					console.log("hi:)");
-					return "hey";
+					}
 				}
 			}
+		}
+		return options;
+	},
+	getCurrentGotos: function() {
+		gotos = [];
+		for(goto of this.renderQuest.goto)
+			gotos.push(goto);
+		for(reward of this.renderQuest.subquest_rewards){
+			if(this.previewdata.completedSubs.includes(reward.number)){
+				for(goto of reward.added_goto)
+					//Aggiungo in penultima posizione
+					gotos.splice(gotos.length-1,0,goto);
+				for(goto of reward.removed_goto){
+					if((index = myIndexOf(gotos,goto,arrCmp)) != -1)
+						options.splice(index,1);
+				}
+			}
+		}
+		return gotos;
+	},
+
+			
+			
+			
+			
+			
+			
+			
+			
+					
+			//styleObjects
+			loadImage: function(){
+				var styles = {};
+				var temp = this.css_style.background;
+				if (temp.image){
+					styles = Object.assign(styles, { "background-image" : temp["url"], "background-position" : "center center" } );
+				 	document.getElementById("preview").style.webkitBackgroundSize = "cover";
+				 	document.getElementById("preview").style.mozBackgroundSize = "cover";
+					document.getElementById("preview").style.oBackgroundSize = "cover";
+				 	document.getElementById("preview").style.backgroundSize =  "cover";
+			  	} 
+			  	else {
+			  		styles = Object.assign(styles, { "background-image" : "none" } );
+			  	}
+			return styles;
+			},
+			navbarBootstrapStyle: function() {
+				var temp = this.css_style.background.style.nav.bootstrap;
+				if (!this.css_style.background.image)
+					if (!this.css_style.background.style.nav.custom)					
+						return (temp.textColor+" "+temp.background);
+					else
+						return "";
+				else {
+					console.log("errore in JSON compiling: cannot use bootstrap's navbar when background image is set");
+					return "";
+				}
+			},
+			navbarStyle: function() {
+				var styles = {};
+				if (!this.css_style.background.image){
+					if (this.css_style.background.style.nav.custom)
+						styles = Object.assign(styles,this.css_style.background.style.nav.customized.general);
+				}
+				return styles;
+			},
+			badgeBootstrapStyle: function() {
+				var temp = this.css_style.background.style.badge.bootstrap;
+				if (!this.css_style.background.style.badge.custom)
+					return temp.type;
+				else
+					return "";
+			},
+			badgeStyle: function() {
+				var styles = {}
+				var temp = this.css_style.background.style.badge.customized;
+				if (this.css_style.background.style.badge.custom)
+					styles = Object.assign(styles,temp);
+				return styles;
+			},
+			helpAlertBootstrapStyle: function() {
+				var temp = this.css_style.background.style.alert.bootstrap;
+				if (!this.css_style.background.style.alert.custom)
+					return temp.type;
+				else
+					return "";
+			},
+			helpAlertStyle: function() {
+				var styles = {}
+				var temp = this.css_style.background.style.alert.customized;
+				if (this.css_style.background.style.alert.custom)
+					styles = Object.assign(styles,temp);
+				//apply mainstyle in any case 
+				styles = this.overwriteMainStyle(styles);
+				if (!this.togglerButtonVisible)
+					styles = Object.assign(styles, { "margin-top" : "-10px" } );
+				return styles;
+			},
+			helpAlertContainerStyle: function() {
+				var styles = {};
+				if (!this.css_style.background.image) {
+					if (!this.css_style.background.style.nav.custom){
+						var temp = this.css_style.background.style.nav.bootstrap.textColor;
+						if (temp == "navbar-light")
+							styles = Object.assign(styles, { "color" : "black" } );
+						else if (temp == "navbar-dark")
+							styles = Object.assign(styles, { "color" : "white" } );
+						else
+							console.log(`error in JSON compiling: bootstrap's navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
+					}
+					else {
+						var temp = this.css_style.background.style.nav.customized.general;
+						styles = Object.assign(styles, { "color" : temp["color"] } );
+					}
+				} else
+					styles = Object.assign(styles, { "color" : defaul_image_alert_color } );
+				styles = this.overwriteMainStyle(styles);
+				if (this.togglerButtonVisible)
+					styles = Object.assign(styles, { "margin-top" : "-10px" } );
+				return styles;
+			},
+			togglerButtonStyle: function() {
+				var buttonColor;
+				if (!this.css_style.background.image){
+					if (this.css_style.background.style.nav.custom){
+						if (this.css_style.mainStyle["color"])
+							buttonColor = this.css_style.mainStyle["color"];
+						else
+							buttonColor = this.css_style.background.style.nav.customized.general["color"];
+						return `url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='${buttonColor}' stroke-width='${togglerbutton_default_linesWidth}' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") `;
+					}
+					else
+						return "";
+				}
+				else {
+					if (buttonColor = this.css_style.mainStyle["color"])
+						;
+					else
+						buttonColor = default_image_togglerButton_color;
+					return `url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='${buttonColor}' stroke-width='${togglerbutton_default_linesWidth}' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") `;
+				}
+			},
+			toggleButtonContainer: function() {
+				if (!this.css_style.background.image){
+					if (this.css_style.background.style.nav.custom){
+						var borderColor;
+						if (this.css_style.mainStyle["color"])
+							borderColor = this.css_style.mainStyle["color"];
+						else
+							borderColor = this.css_style.background.style.nav.customized.general["color"];
+						return { "border-color" : borderColor };
+					}
+					else
+						return "";
+				}
+				else {
+					var borderColor = default_image_togglerButton_border_color;
+					if (this.css_style.mainStyle["color"])
+						borderColor = this.css_style.mainStyle["color"];
+					return { "border-color" : borderColor };
+				}	
+			},
+			menuStyle: function() {
+				var styles = {};
+				if (!this.css_style.background.image){
+					if (!this.css_style.background.style.nav.custom){
+						if (this.togglerButtonVisible)
+							//predefined style used in addition to bootstrap navbar style
+							styles = Object.assign(styles,{ "background-color": bootstrap_menu_background});
+						else{
+							var color = "";
+							if (color = this.css_style.background.style.nav.bootstrap.textColor == "navbar-light")
+								styles = Object.assign(styles,bootstrap_menu_border_color_dark_text);
+							else if (this.css_style.background.style.nav.bootstrap.textColor == "navbar-dark")
+								styles = Object.assign(styles,bootstrap_menu_border_color_light_text);
+							else
+								console.log(`error in JSON compiling: bootstrap's navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
+							//overwrite occasional mainstyle
+							if (this.css_style.mainStyle["color"])
+								styles = Object.assign(styles, { "border-color": this.css_style.mainStyle["color"] } );
+						}
+					} else {
+						var temp = this.css_style.background.style.nav.customized.general;
+						if (this.togglerButtonVisible)
+							styles = Object.assign(styles,{ "background-color": menu_background});
+						else {
+							styles = Object.assign(styles,{ "background-color": temp["background-color"] });
+							styles = Object.assign(styles,{ "border-color": temp["color"] });
+							//overwrite occasional mainstyle
+							if (this.css_style.mainStyle["color"])
+								styles = Object.assign(styles,{ "border-color" : this.css_style.mainStyle["color"] }); 			
+						}
+					}
+				}
+				else {
+					if (this.togglerButtonVisible)
+						//predefined style used in addition to bootstrap navbar style
+						styles = Object.assign(styles,{ "background-color": menu_background});
+					else{
+						if (document.getElementById("submit").style.backdropFilter !== ""){
+							console.log("ci siamo");
+							document.getElementById("quest-menu-list").style.background = this.css_style.background["url"];
+							document.getElementById("quest-menu-list").style.mozBackgroundSize = "cover";
+							document.getElementById("quest-menu-list").style.backgroundSize =  "cover";
+						}
+						else
+							styles = Object.assign(styles,menu_backgroundImage);
+						styles = Object.assign(styles,{ "border": default_image_menu_border });
+						if (this.css_style.mainStyle["color"])							
+							styles = Object.assign(styles,{ "border-color": this.css_style.mainStyle["color"] });	 
+					}
+				}
+				if (!this.togglerButtonVisible)
+					styles = Object.assign(styles,{ "width": "max-content" });
+				return styles;
+			},
+			dividerStyle: function() {
+				var styles = {};
+				if (!this.css_style.background.image){
+					if (!this.css_style.background.style.nav.custom)
+						//if the bootstrap class is "navbar-light" the text will be dark
+						if (this.css_style.background.style.nav.bootstrap.textColor == "navbar-light")
+							styles = Object.assign(styles,{ "border-color" : bootstrap_menu_divider_dark });
+						else
+							styles = Object.assign(styles,{ "border-color" : bootstrap_menu_divider_light });
+					else {
+						var temp = this.css_style.background.style.nav.customized.general;
+						styles = Object.assign(styles,{ "border-color" : temp["color"] });
+					}
+					//overwrite occasional mainstyle
+					if (this.css_style.mainStyle["color"])
+						styles = Object.assign(styles,{ "border-color" : this.css_style.mainStyle["color"] }); 	
+				}
+				else {
+					styles = Object.assign(styles, { "border-color" : default_image_divider_color } ); 
+					if (this.css_style.mainStyle["color"])
+						styles = Object.assign(styles,{ "border-color" : this.css_style.mainStyle["color"] } ); 
+				}
+				return styles;
+			},
+			menuBootstrapStyle: function() {
+				if (!this.css_style.background.image){
+					if (!this.css_style.background.style.nav.custom){
+						var temp = this.css_style.background.style.nav.bootstrap;
+						if (!this.togglerButtonVisible)
+							return temp.background;
+						else
+							return "";
+					} else
+						return "";
+				}
+				else{
+					console.log("errore in JSON compiling: cannot use bootstrap's navbar when background image is set");
+					return "";
+				}
+			},
+			cardBootstrapStyle: function() {
+				if (!this.css_style.background.image){
+					var temp = this.css_style.background.style.card.bootstrap;
+					if (!this.css_style.background.style.card.custom)
+						return (temp.textColor+" "+temp.background);
+					else {
+						return "";
+					}
+				}
+				else{
+					console.log("errore in JSON compiling: cannot use bootstrap's navbar when background image is set");
+					return "";
+				}
+			},
+			cardStyle: function() {
+				var	styles = {};
+				if (!this.css_style.background.image){
+					var temp = this.css_style.background.style.card.customized;
+					if (this.css_style.background.style.card.custom)
+						styles = Object.assign(styles,temp);
+				}
+				else
+					styles = Object.assign(styles,{ "background" : "transparent" });
+				return styles;
+			},
+			submitBootstrapStyle: function() {
+				if (!this.css_style.background.image)
+					if (!this.css_style.background.style.card.custom)
+						return this.css_style.background.style.card.bootstrap.textColor;
+			},
+			submitStyle: function() {
+				styles = {};
+				//if the card uses bootstrap the related style is in the Object submitBootstrapStyle 
+				if (!this.css_style.background.image)
+					if (this.css_style.background.style.card.custom)
+						styles = Object.assign(styles, { "color" : this.css_style.background.style.card.customized["color"] } );			
+				styles = Object.assign(styles, this.submitStyleObject);
+				styles = this.overwriteMainStyle(styles);
+				if (this.css_style.mainStyle["color"] || !this.css_style.background.style.card.custom)
+					styles = Object.assign(styles, { "color" : this.css_style.mainStyle["color"]+"!important" } );			//used in order to overwrite bootstrap text color				
+				return styles;
+			},
+			cardLimitStyle: function() {
+				var styles = {};
+				if (!this.css_style.background.image){
+					styles = Object.assign(styles,card_headerFooter);
+					var temp = this.css_style.background.style.card;
+					if ((!temp.custom && temp.bootstrap.background == "bg-dark") || (temp.custom && temp.customized["background-color"] == "black"))
+							styles = Object.assign(styles,bootstrap_card_headerFooter_black_background);
+				}
+				//stylistic choices lead us not to add this feature if there is a background image
+				return styles;
+			},
+			navbarBrandStyle: function() { 
+				return this.overwriteMainStyle({});  
+			},
+			questsStyle: function() {
+				var styles = {};
+				if (this.css_style.background.image) {
+					styles = Object.assign(styles, { "color" : default_image_text_color } ); 
+					styles = this.overwriteMainStyle(styles);
+				}
+				else 
+					if (!this.css_style.background.style.nav.custom)	
+						styles = this.overwriteMainStyle(styles);
+					else {
+						styles = Object.assign(styles, { "color" : this.css_style.background.style.nav.customized.general["color"] } );
+						styles = this.overwriteMainStyle(styles);
+					}
+				return styles;
+			},
+			removePredefinedStylesCard: function() {
+					return this.overwriteMainStyle({});  
+			},	
+			componentStyle: function() {		
+				var styles = {}
+				if (this.currentComponent == "choiceinput")
+					;
+				if (this.currentComponent == "textinput")
+					style = this.overwriteMainStyle(styles);
+					style = Object.assign(styles,input_backgroundImage);
+					if (!this.css_style.background.image)
+						if (!this.css_style.mainStyle["color"]) 							
+							styles = Object.assign(styles, { "color" : "inherit" } );	        	
+				if (this.currentComponent == "imginput")
+				   ;
+				return styles;
+			}
+			
+			
+		  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		}
       });
