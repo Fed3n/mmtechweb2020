@@ -66,3 +66,26 @@ var default_image_menu_links_hover_backgroud_color = menu_links;
 var default_image_menu_border = "1px solid black";
 var defaul_image_alert_color = "black";
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -115,8 +115,8 @@
               <label for="questlistcontainer">Quick Access:</label>
               <div name="questlistcontainer" class="container border-top p-2 mx-25 overflow-auto">
                 <div v-for="quest in questList" class="btn-group container-fluid pb-1">
-                  <button class="btn" data-toggle="tooltip" :title="quest.title" v-on:click="changeQuest(quest.number)">{{ quest.number }}</button>
-                  <button class="btn btn-danger" v-on:click="previewdata.in_mainquest ? rmMainNode(quest.number) : rmSubNode(quest.number)">Cancella</button>
+                  <button class="btn" data-toggle="tooltip" :title="quest.title" v-on:click="previewdata.in_mainquest ? jumpToQuest('main',quest.number) : jumpToQuest('sub',quest.number)">{{ quest.number }}</button>
+                  <button class="btn btn-danger" v-on:click="previewdata.in_mainquest ? rmMainNode(quest.number) : rmSubNode(quest.number)">Delete</button>
                   <span class="col form-check ml-1" id="subquestadd" v-if="!previewdata.in_mainquest">
                     <input class="form-check-input" :name="'sub ' + quest.number" type="checkbox" :value="quest.number" v-model="previewdata.completedSubs">
                     <label class="form-check-label" :for="'sub ' + quest.number">Completata</label>
@@ -126,39 +126,77 @@
             </div>
           </div>
           <!--PREVIEW E OBJECT EDITOR-->
-          <div class="col-md-10">
+          <div class="col-10">
             <!--PREVIEW-->
-            <div id="preview" class="container pt-3 pb-3 row border-bottom">
-                <div id="questRender" class="card col"
-                :style="{ color: gamedata.css_style.card.textColor, 'font-family': gamedata.css_style.card.textFont, 'font-style': gamedata.css_style.card.textStyle,
-                 'background-color': gamedata.css_style.card.bgColor }">
-                  <div>
-                    <div class="card-header">
-                      <h3>Current main state is {{ previewdata.currentQuest }}!</h3>
-                    </div>
-                    <div class="card-body" style="position: relative;">
-                      <p class="card-text">{{ renderQuest.text }}</p>
-                      <p class="card-text">{{ renderQuest.description ? renderQuest.description : "" }}</p>
-                      <ul v-if="previewdata.in_mainquest" class="card-text">
-                        <li v-for="clue in getCurrentClues">{{ clue }}</li>
-                      </ul>
+            <div id="preview-container" class="container pt-3 pb-3 row border-bottom">
+    			 <div id="preview" class="col-8" :style="loadImage">
 
-                      <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
-                      <div id="gameinput">
-                        <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub"
-            						:options="previewdata.in_mainquest ? getCurrentOptions : renderQuest.options" ref="inputComponent" v-model="previewdata.picked"></component>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col">
-                  <p>La risposta attuale è: {{ previewdata.picked }}</p>
-                  <button class="btn btn-secondary" v-if="previewdata.picked && renderQuest.goto.length > 0" data-toggle="tooltip" :title="previewdata.in_mainquest ? gamedata.mainQuest[getAnswerGoto].title : ''"
-                  v-on:click="jumpToQuest('main',getAnswerGoto)" :disabled="!previewdata.in_mainquest">
-                    {{ previewdata.in_mainquest ? ("La risposta ti porterà a " + getAnswerGoto) : ("La risposta è " + getAnswerCorrectness) }}
-                  </button>
-                </div>
-            </div>
+				    <nav class="navbar" :class="navbarBootstrapStyle" :style="navbarStyle">  <!-- add "navbar-expand" for pc visualization -->
+				        <div class="navbar-brand" :style="navbarBrandStyle">Menu
+				            <span class="badge" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert">Subs!</span>
+				        </div>
+				        <button class="navbar-toggler"  type="button" data-toggle="collapse" data-target="#collapsiblemenu" :style="toggleButtonContainer" aria-label="Apri il menu">
+							<span class="navbar-toggler-icon" :style="{ 'background-image': togglerButtonStyle }"></span>							<!-- v-observe-visibility="buttonChangedVisibility" -->
+						</button>
+
+				        <div class="collapse navbar-collapse" id="collapsiblemenu">
+				            <ul class="navbar-nav" aria-labelledby="quest-menu-button">
+				                <li class="nav-item dropdown">
+				                    <a class="nav-link dropdown-toggle" id="quest-menu-button" href="#" data-toggle="dropdown" :style="questsStyle" role="button" aria-haspopup="true" role="menu" aria-controls="quest-menu-list">Quests</a>
+				                    <div class="dropdown-menu" id="quest-menu-list" :class="menuBootstrapStyle" :style="menuStyle" style="margin-bottom: 10px">
+				                        <a class="dropdown-item" :style="menuLinkStyle(0)" v-on:mouseover="menuLinkEvent(0,true)" v-on:mouseleave="menuLinkEvent(0,false)" role="menuitem" href="#" v-on:click="changeQuest(previewdata.currentQuest,true)">MainQuest {{ previewdata.currentQuest }}</a>
+				                        <div v-if="getSubquests.length > 0" role="none">
+				                            <div class="dropdown-divider" :style="dividerStyle"></div>
+				                            <a class="dropdown-item" role="menuitem" :style="menuLinkStyle(index+1)" v-on:mouseover="menuLinkEvent(index+1,true)" v-on:mouseleave="menuLinkEvent(index+1,false)" v-for="(quest,index) in getSubquests" href="#" v-on:click="changeQuest(quest.number,false)">Subquest {{quest.number}}: {{quest.objective}}</a>
+				                        </div>
+				                    </div>
+				                </li>
+				                <li class="nav-item">
+				                    <a id="helpAlertContainer" class="nav-link" ref="help" href="#" @click="requestHelp" :style="helpAlertContainerStyle">
+				                       	Chiedi aiuto
+				                        <span ref="requestedHelp" class="alert" role="alert" :class="helpAlertBootstrapStyle" :style="helpAlertStyle" style="display:none; margin-left: 10px; margin-bottom: -10px;  white-space: nowrap;">Aiuto richiesto! Attendi...</span>
+				                    </a>
+				                </li>
+				            </ul>
+				        </div>
+				    </nav>
+
+					<!--Area quest-->
+					<div ref="questrender" class="card" style="position: relative;"  :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
+						<div class="card-header" :style="cardLimitStyle">
+						    <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">Name of Quest {{ previewdata.currentQuest }}</h3>
+						</div>
+						<div class="card-body" :style="removePredefinedStylesCard">
+						    <p>{{ renderQuest.text }}</p>
+						    <p>{{ renderQuest.description || "" }}</p>
+						    <ul v-if="previewdata.in_mainquest && getCurrentClues.length > 0">
+						        <li v-for="clue in getCurrentClues">{{ clue }}</li>
+						    </ul>
+						    <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
+						    <div id="gameinput">
+						      <component v-bind:is="currentComponent" :gamedata="renderQuest" :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub"
+						      :options="previewdata.in_mainquest ? getCurrentOptions : renderQuest.options" v-model="previewdata.picked" :styles="componentStyle"></component>
+						    </div>
+						</div>
+
+						<div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
+						    <button id="submit" ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :style="submitStyle" v-on:click="previewdata.in_mainquest? submitMain() : submitSub()">Submit</button>
+						</div>
+				    </div>
+
+			    </div>
+
+
+			    <div class="col">
+					  <p>Current answer is: {{ previewdata.picked }}</p>
+					  <button class="btn btn-secondary" v-if="previewdata.picked" data-toggle="tooltip" :title="previewdata.in_mainquest ? gamedata.mainQuest[getAnswerGoto].title : ''"
+					  v-on:click="jumpToQuest('main',getAnswerGoto)" :disabled="!previewdata.in_mainquest">
+					    {{ previewdata.in_mainquest ? ("This will take you to " + getAnswerGoto) : ("Answer is " + getAnswerCorrectness) }}
+					  </button>
+			    </div>
+		  </div>
+		</div>
+     </div>
             <!--FINE PREVIEW-->
             <!--OBJECT EDITOR-->
             <div id="questgraph" class="container-fluid pt-3 row">
@@ -427,6 +465,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+	 <script type="text/javascript" src="style_consts.js"></script>
     <script type="text/javascript" src="vue_autore.js"></script>
     <script type="text/javascript" src="utils.js"></script>
   </body>
