@@ -1,42 +1,71 @@
+//##NODE/EXPRESS MODULES##//
 const express = require('express');
+const http = require('http');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
+const nocache = require('nocache');
+const fileUpload = require('express-fileupload');
 const app = express();
-const fileUpload = require('express-fileupload')
+
+//##HOST SETTINGS##//
+const serverOpened = false;
 const host = "localhost";
+const openhost = "site181991.tw.cs.unibo.it";
 const port = 8000;
 
+//##PLACEHOLDERS##//
 var players_data = {};
 var players_chat = {};
-
 var uid_generator = 0;
 
+//##EXPRESS MIDDLEWARE AND OPTIONS##
 app.use(fileUpload());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
+app.use(nocache());
 
+//Enable CORS
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
 
+//Enable the req.protocol to read and set the HTTP/S protocol properly
+app.enable('trust proxy');
+
+//##MAIN PAGES RESPONSES##//
 app.get('/', (req, res) => {
-    return res.sendFile(path.join(__dirname + "/player.html"));
+	if((req.protocol == "https" && serverOpened == true) || (serverOpened == false)) {
+		return res.sendFile(path.join(__dirname + "/player.html"));
+	} else if(req.protocol != "https" && serverOpened == true) {
+		res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+		res.end();
+	}
 });
 
 app.get('/autore', (req, res) => {
-    return res.sendFile(path.join(__dirname + "/autore.html"));
+	if((req.protocol == "https" && serverOpened == true) || (serverOpened == false)) {
+                return res.sendFile(path.join(__dirname + "/autore.html"));
+        } else if(req.protocol != "https" && serverOpened == true) {
+                res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+                res.end();
+        }
 });
 
 app.get('/valutatore', (req, res) => {
-    return res.sendFile(path.join(__dirname + "/valutatore.html"));
+	if((req.protocol == "https" && serverOpened == true) || (serverOpened == false)) {
+                return res.sendFile(path.join(__dirname + "/valutatore.html"));
+        } else if(req.protocol != "https" && serverOpened == true) {
+                res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+                res.end();
+        }
 });
 
 
-//## PLAYER ##//
+//##PLAYER RESOURCES##//
 app.get('/uid', (req, res) => { // da cambiare in POST
     uid_generator++;
     console.log(`New user: ${uid_generator}`);
@@ -97,7 +126,7 @@ app.get('/chat/', (req,res) => {
   }
 });
 
-//## STORIE ##//
+//Stories Resources
 //Prende i file info.json delle storie in cui sono contenuti metadata per la rappresentazione (i.e. nome,accessibilità,etc)
 app.get('/stories', (req, res) => {
     console.log("Getting content of ./story directory...")
@@ -180,44 +209,9 @@ app.post('/stories/:storyName/images', (req, res) => {
     res.send(":)");
 });
 
-//##STILI##//
-
-app.get('/styles/keyboards', (req, res) => {
-    let dir = path.join(__dirname + "/styles/keyboards/");
-    let entrylist = fs.readdirSync(dir);
-    for(let i = 0; i < entrylist.length; i++){
-      entrylist[i].replace(/.json$/g,"");
-    }
-    return res.send(entrylist);
-});
-
-app.get('/styles/keyboards/:keyName', (req, res) => {
-    let jsonpath = path.join(__dirname + "/styles/keyboards/" + req.params.keyName + ".json");
-    let json = fs.readFileSync(jsonpath);
-    let load = JSON.parse(json);
-    res.setHeader('Content-Type','application/json');
-    res.json(load);
-});
-
-app.post('/styles/keyboards/', (req, res) => {
-    let target = path.join(__dirname + "/styles/keyboards/" + req.body.name + ".json");
-    let json = req.body.json;
-    fs.writeFile(target, JSON.stringify(json), (error) => {
-        if(error) {
-            throw error;
-        }
-    });
-    res.send(":)");
-});
-
-app.delete('/styles/keyboards/', (req, res) => {
-    let target = path.join(__dirname + "/styles/keyboards/" + req.query.styleName + ".json");
-    fs.unlinkSync(target);
-    res.send(":)");
-});
-
 //#######################################################//
 
-app.listen(port, () => {
-  console.log(`Listening at http://${host}:${port}`)
+//Server Start
+app.listen(port, (req, res) => {
+  console.log(`Listening at ${serverOpened ? 'https' : 'http'}://${serverOpened ? openhost : host}:${port}`)
 });
