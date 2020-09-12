@@ -47,7 +47,7 @@ app.patch('/players/:player_id', (req, res) => {
     if(players_data[id]){
       for (let key in req.body)
           players_data[id][key] = req.body[key];
-            return res.send(":)");
+            return res.send(':)');
     }
     else {
       return res.status(404).send({ error: "Couldn't find id"});

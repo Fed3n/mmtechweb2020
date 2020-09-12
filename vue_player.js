@@ -204,18 +204,18 @@ var app = new Vue({
   },
   methods: {
     requestHelp: function() {
-      if (!this.help_msg) {
+      if (!this.help_message) {
         this.$refs.requestedHelp.style.display = "inline";
         this.$refs.help.classList.add("disabled");
         this.help_requested = true;
       }
-      // manda richiesta aiuto
-      // quando la soddisfera', sara' da mettere display = "none"
     },
     updatesEvery5Seconds: function() {
       let timerId = setInterval(() => {
         this.sendGameData();
         this.getGameData();
+        if(this.help_received)
+          this.$refs.requestedHelp.style.display = "none";
       }, 5000);
     },
     trackTimeEverySecond: function() {
@@ -238,7 +238,7 @@ var app = new Vue({
             time_inactive: this.time_inactive,
             time_played: this.time_played
           })
-        .then(response => {console.log(response)})
+        .then(res => {console.log(res)})
         .catch(err => {console.log(err)});
     },
     getGameData: function() {
@@ -271,10 +271,18 @@ var app = new Vue({
       this.currentSub = quest.number;
       this.in_mainquest = false;
       this.$refs.questname.focus();
+      this.$refs.help.classList.remove("disabled");
+      this.help_message = "";
+      this.help_received = false;
+      this.sendGameData();
     },
     goToMainQuest: function(){
       this.in_mainquest = true;
       this.$refs.questname.focus();
+      this.$refs.help.classList.remove("disabled");
+      this.help_message = "";
+      this.help_received = false;
+      this.sendGameData();
     },
     submitMain: function() {
       options = this.getCurrentGotos;
@@ -289,6 +297,9 @@ var app = new Vue({
             this.picked[1] >= y-radius && this.picked[1] <= y+radius){
               this.currentQuest = opt[1];
               this.time_inactive = 0;
+              this.$refs.help.classList.remove("disabled");
+              this.help_message = "";
+              this.help_received = false;
               this.sendGameData();
               break;
             }
@@ -297,6 +308,9 @@ var app = new Vue({
         else if(opt[0] == this.picked){
           this.currentQuest = opt[1];
           this.time_inactive = 0;
+          this.$refs.help.classList.remove("disabled");
+          this.help_message = "";
+          this.help_received = false;
           this.sendGameData();
           break;
         }
@@ -333,9 +347,11 @@ var app = new Vue({
         if (!this.completedSubs.includes(required))
           return;
 
-      this.sendGameData();
       this.time_inactive = 0;
       this.completedSubs.push(subQuest.number);
+      this.$refs.help.classList.remove("disabled");
+      this.help_message = "";
+      this.help_received = false;
       this.in_mainquest = true;
       if(document.getElementById("input")) {
         document.getElementById("input").value = "";
@@ -344,6 +360,7 @@ var app = new Vue({
       this.upgradeSubmitStyle(true);
       this.picked = null;
       this.$refs.questname.focus();
+      this.sendGameData();
     },
     //method that returns if navbar button is visible
     buttonChangedVisibility: function(isVisible, entry) {
