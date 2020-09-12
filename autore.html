@@ -116,7 +116,7 @@
               <div name="questlistcontainer" class="container border-top p-2 mx-25 overflow-auto">
                 <div v-for="quest in questList" class="btn-group container-fluid pb-1">
                   <button class="btn" data-toggle="tooltip" :title="quest.title" v-on:click="previewdata.in_mainquest ? jumpToQuest('main',quest.number) : jumpToQuest('sub',quest.number)">{{ quest.number }}</button>
-                  <button class="btn btn-danger" v-on:click="previewdata.in_mainquest ? rmMainNode(quest.number) : rmSubNode(quest.number)">Delete</button>
+                  <button class="btn btn-danger" v-on:click="previewdata.in_mainquest ? rmMainNode(quest.number) : rmSubNode(quest.number)">Cancella</button>
                   <span class="col form-check ml-1" id="subquestadd" v-if="!previewdata.in_mainquest">
                     <input class="form-check-input" :name="'sub ' + quest.number" type="checkbox" :value="quest.number" v-model="previewdata.completedSubs">
                     <label class="form-check-label" :for="'sub ' + quest.number">Completata</label>
@@ -270,8 +270,12 @@
                     <label for="choicechoice" class="form-check-label">Scelta</label>
                   </div>
                   <div class="form-check form-check-inline">
-                    <input type="radio" id="texthoice" class="form-check-input" name="typefield" value="input" v-model="renderQuest.type">
+                    <input type="radio" id="textchoice" class="form-check-input" name="typefield" value="input" v-model="renderQuest.type">
                     <label for="textchoice" class="form-check-label">Testo</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input type="radio" id="keyboardchoice" class="form-check-input" name="typefield" value="keys" v-model="renderQuest.type">
+                    <label for="keyboardchoice" class="form-check-label">Tastiera</label>
                   </div>
                   <div class="form-check form-check-inline">
                     <input type="radio" id="imgchoice" class="form-check-input" name="typefield" value="draw" v-model="renderQuest.type">
@@ -313,13 +317,125 @@
                     </div>
                     <button class="btn btn-outline-secondary" v-on:click="setImageAsInput">Set</button>
                   </div>
+                  <!-- Quest CUSTOMIZE KEYBOARD (only if type is keys)-->
+                  <div v-if="renderQuest.type == 'keys'">
+                    <div class="row">
+                      <div name="button-customize" class="col-md-8 border-right">
+                        <label for="keybutton-customize" class="mb-1">Personalizza Bottoni</label>
+                        <div class="form-inline mb-1">
+                          <label class="mr-2" for="keys">Tasti</label>
+                          <textarea class="form-control mr-2" v-model="renderQuest.key_style.keys"></textarea>
+                        </div>
+                        <div class="row mb-1">
+                          <label class="mr-2 col-3" for="btn-width">Larghezza</label>
+                          <input class="form-control col-2" type="number" step="0.1" min="0" v-model="renderQuest.key_style.width">
+                          <label class="mr-2 col-3" for="btn-width">Altezza</label>
+                          <input class="form-control col-2" type="number" step="0.1" min="0" v-model="renderQuest.key_style.height">
+                        </div>
+                        <div class="mb-1">
+                          <div class="row mb-1">
+                            <label class="mr-2 col-3" for="textfont">Font</label>
+                            <input name="textfont" class="form-control col-3" type="text" v-model="renderQuest.key_style.text_font">
+                            <label class="mr-2 col-3" for="textcolor">Colore</label>
+                            <input name="textcolor" type="color" v-model="renderQuest.key_style.text_color">
+                          </div>
+                          <div class="row">
+                            <label class="mr-2 col-3" for="textsize">Dimensione</label>
+                            <input name="textsize" class="form-control col-2" type="number" step="1" min="0" v-model="renderQuest.key_style.text_size">
+                            <div class="col-6">
+                              <label class="col-4" for="bold">Grassetto</label>
+                              <input name="bold" type="checkbox" v-model="renderQuest.key_style.bold">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row mb-1">
+                          <label for="bgcolor" class="col-3">Colore Sfondo</label>
+                          <input name="bgcolor" type="color" v-model="renderQuest.key_style.bg_color">
+                        </div>
+                        <div class="row mb1">
+                          <label for="bordercolor" class="col-3">Colore Bordo</label>
+                          <input name="bordercolor" type="color" v-model="renderQuest.key_style.border_color">
+                          <label for="bordersize" class="col-3">Spessore Bordo</label>
+                          <input name="bordersize" class="form-control col-2" type="number" step="1" min="0" v-model="renderQuest.key_style.border_size">
+                        </div>
+                        <div class="row mb1">
+                          <label for="borderrad" class="col-3">Raggio Bordo</label>
+                          <input name="borderrad" class="form-control col-2" type="number" step="1" min="0" v-model="renderQuest.key_style.radius">
+                          <label for="margin" class="col-3">Margine</label>
+                          <input name="margin" class="form-control col-2" type="number" step="0.1" min="0" v-model="renderQuest.key_style.margin">
+                        </div>
+                        <div class="row">
+                          <label class="col-3" for="shadow">Ombreggiatura</label>
+                          <input name="shadow" type="checkbox" v-model="renderQuest.key_style.shadow">
+                        </div>
+                        <div class="form-group row">
+                          <label for="animation" class="col-3">Animazione</label>
+                          <select name="animation" class="col-3" v-model="renderQuest.key_style.animation">
+                            <option value="">None</option>
+                            <option value="press">Pressione</option>
+                            <option value="flash">Flash</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div id="keyscreen-customize" class="col-md-4">
+                        <label class="mb-1">Personalizza prompt</label>
+                        <div class="row mb-1">
+                          <label for="screenfont" class="col-4">Font</label>
+                          <input name="screenfont" class="col-6 form-control" type="text" v-model="renderQuest.key_style.screen_font">
+                        </div>
+                        <div class="row mb-1">
+                          <label for="screencolor" class="col-4">Colore Font</label>
+                          <input name="screencolor" type="color" v-model="renderQuest.key_style.screen_color">
+                        </div>
+                        <div class="row mb-1">
+                          <label for="" class="col-4">Grassetto</label>
+                          <input type="checkbox" v-model="renderQuest.key_style.screen_bold">
+                        </div>
+                        <div class="row mb-1">
+                          <label for="" class="col-4">Colore Sfondo</label>
+                          <input type="color" v-model="renderQuest.key_style.screen_bg">
+                        </div>
+                        <div class="row mb-1">
+                          <label for="" class="col-4">Colore Bordo</label>
+                          <input type="color" v-model="renderQuest.key_style.screen_border_color">
+                        </div>
+                        <div class="row mb-1">
+                          <label for="" class="col-4">Spessore Bordo</label>
+                          <input class="col-4" type="number" step="1" min="0" v-model="renderQuest.key_style.screen_border_size">
+                        </div>
+                        <div class="row mb-1">
+                          <label for="" class="col-4">Lunghezza</label>
+                          <input class="col-4" type="number" step="0.1" min="0" v-model="renderQuest.key_style.screen_length">
+                        </div>
+                      </div>
+                    </div>
+                    <div id="saveload-keystyle" class="row">
+                      <div class="col-md-6">
+                        <label for="select-keystyle">Stili Salvati</label>
+                        <select name="select-keystyle" ref="select_key_style">
+                          <option v-for="style in keyStylesList" :value="style">{{ style }}</option>
+                        </select>
+                        <div class="btn btn-group">
+                          <button class="btn btn-success" v-on:click="getKeyStyle">GET</button>
+                          <button class="btn btn-danger" v-on:click="deleteKeyStyle">DELETE</button>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="name_keystyle">Salva come:</label>
+                        <input name="name_keystyle" type="text" ref="key_style_name">
+                        <div class="btn btn-group">
+                          <button class="btn btn-danger" v-on:click="saveKeyStyle">SAVE</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   <!-- Quest SUBQUEST REWARDS (main quests only)-->
                   <label for="subrewardfield" v-if="previewdata.in_mainquest">Ricompense per le Subquest</label>
                   <div name="subrewardfield" v-if="previewdata.in_mainquest">
                     <div class="btn-group">
                       <button class="btn btn-outline-primary" v-on:click="addSubReward">Aggiungi</button>
                       <select name="subquests" class="form-control" ref="subtoadd">
-                        <option v-for="sub in getRemainingSubs" :value="sub.number">NUmero {{ sub.number }}</option>
+                        <option v-for="sub in getRemainingSubs" :value="sub.number">Numero {{ sub.number }}</option>
                       </select>
                     </div>
                     <div v-for="sub in renderQuest.subquest_rewards" class="container-fluid pt-1">

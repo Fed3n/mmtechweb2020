@@ -1,37 +1,42 @@
   //PLACEHOLDER OBJECTS//
 			gamedata_pholder = {
 		      "mainQuest": [
-      			  {
-	               "number": 0,
-								 "title": "",
-	               "text": "",
-	               "type": "",
-	               "description": "",
-	               "options": [],
-								 "image": {
-									 "imguri": "",
-									 "imgalt": ""
-								 },
-	               "goto": [],
-	               "subquest_rewards": []
-			         }
+						{
+									 "number": 0,
+									 "text": "",
+									 "type": "",
+									 "description": "",
+									 "options": [],
+									 "image": {
+										 "imguri": "",
+										 "imgalt": ""
+									 },
+									 "key_style": {
+										 "keys": ""
+									 },
+									 "goto": [],
+									 "subquest_rewards": []
+					 }
 		      ],
 		      "subQuests": [
-                {
-        			"number": 0,
-								"title": "",
-        			"objective": "",
-        			"available_on": [],
-        			"requires_sub": [],
-        			"text": "",
-        			"type": "",
-        			"description": "",
-								"image": {
-									"imguri": "",
-									"imgalt": ""
-								},
-        			"solution": []
-        		}
+						{
+							"number": 0,
+							"objective": "",
+							"available_on": [],
+							"requires_sub": [],
+							"text": "",
+							"type": "",
+							"description": "",
+							"options": [],
+						"image": {
+							"imguri": "",
+							"imgalt": ""
+						},
+						"key_style": {
+							"keys": ""
+						},
+							"solution": []
+						}
               ],
                "css_style": {
 				  "mainStyle": {
@@ -121,8 +126,10 @@
 			storyList: null,
 			activeStoryList: null,
 			inactiveStoryList: null,
+			keyStylesList: null,
 			imagesList: null,
 			selectedImage: "",
+			custom_keys: "",
 			radiusInput: 10,	//valore di default
               previewdata: {
                 "currentQuest": 0,
@@ -260,6 +267,7 @@
 					updateFs: function(){
 						console.log("Requesting fs update...");
 						var _this = this;
+						//Storie
 						axios.get("/stories").then(function (res){
 							storyList = [];
 							activeStoryList = [];
@@ -272,6 +280,10 @@
 							_this.storyList = storyList;
 							_this.activeStoryList = activeStoryList;
 							_this.inactiveStoryList = inactiveStoryList;
+						});
+						//Keyboard styles
+						axios.get("/styles/keyboards").then(function (res){
+							_this.keyStylesList = res.data;
 						});
 					},
 					getStory: function(){
@@ -313,11 +325,11 @@
 					},
 					uploadImg: function(){
 						//Mando come multipart/form-data
-						var form = new FormData();
-						imageFile = this.$refs.img_upload.files[0];
-						storyName = this.$refs.selectedStory.value;
+						let form = new FormData();
+						let imageFile = this.$refs.img_upload.files[0];
+						let storyName = this.$refs.selectedStory.value;
 						form.append('image', imageFile);
-						var _this = this;
+						let _this = this;
 						axios.post(`/stories/${storyName}/images`, form, {
 							headers: {
 								'Content-Type': 'multipart/form-data'
@@ -330,13 +342,39 @@
 					},
 					getImagesList: function(){
 						console.log("Getting images list...");
-						var _this = this;
+						let _this = this;
 						axios.get(`/stories/${this.metadata.name}/images`).then( (res) => {
 							console.log("Hi!! :)");
 							console.log(res.data);
 							_this.imagesList = res.data;
 						});
 					},
+					getKeyStyle: function(){
+						let _this = this;
+						axios.get(`/styles/keyboards/${this.$refs.select_key_style.value}`).then( res => {
+							this.renderQuest.key_style = res.data;
+						});
+					},
+					saveKeyStyle: function(){
+						let load = {
+							name: this.$refs.key_style_name.value,
+							json: this.renderQuest.key_style
+						};
+						let _this = this;
+						axios.post('/styles/keyboards', load)
+						.then( res => {
+							_this.updateFs();
+						});
+					},
+					deleteKeyStyle: function(){
+						let _this = this;
+						axios.delete('/styles/keyboards', { params: { name: this.$refs.select_key_style.value }} )
+						.then( res => {
+							_this.updateFs();
+						});
+					},
+					//########################################//
+
 					jumpToQuest: function(type,number){
 						if(type == "main"){
 							this.previewdata.in_mainquest = true;
@@ -375,6 +413,9 @@
 										 "imguri": "",
 										 "imgalt": ""
 									 },
+									 "key_style": {
+										 "keys": ""
+									 },
                    "goto": [],
                    "subquest_rewards": []
            };
@@ -387,6 +428,13 @@
        			"type": "",
        			"description": "",
        			"options": [],
+						"image": {
+							"imguri": "",
+							"imgalt": ""
+						},
+						"key_style": {
+							"keys": ""
+						},
        			"solution": []
        		};
             if(this.previewdata.in_mainquest) this.gamedata.mainQuest.push(mq);
