@@ -12,6 +12,7 @@
   <body>
 
     <div id="app">
+
       <div id="players-status">
         <h1>Giocatori Attivi</h1>
         <div v-for="player in players_data">
@@ -27,6 +28,20 @@
             <div v-else class="badge badge-success">Ha finito!</div>
         </div>
       </div>
+
+      <div class="container border" id="chat">
+        <div class="btn-group p-2">
+          <button class="btn btn-outline-secondary" v-for="(chat,id) in players_chat" :class="chat_notify[id] ? 'btn-warning' : ''" v-on:click="switchIndex(id)">{{ id }}</button>
+        </div>
+        <div v-if="players_chat[current_chat_id]" v-for="msg in players_chat[current_chat_id]">
+          {{ msg.sender }} scrive: {{ msg.text }}
+        </div>
+        <form class="btn-group" v-if="players_chat[current_chat_id]" v-on:submit.prevent>
+          <input type="text" v-model="chat_msg[current_chat_id]">
+          <button class="btn btn-success" v-on:click="sendChatMsg">Send</button>
+        </form>
+      </div>
+
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

@@ -5,9 +5,10 @@ const path = require('path');
 const app = express();
 const fileUpload = require('express-fileupload')
 const host = "localhost";
-const port = 8080;
+const port = 8000;
 
 var players_data = {};
+var players_chat = {};
 
 var uid_generator = 0;
 
@@ -38,7 +39,9 @@ app.get('/valutatore', (req, res) => {
 //## PLAYER ##//
 app.get('/uid', (req, res) => { // da cambiare in POST
     uid_generator++;
-    players_data[uid_generator] = {};
+    console.log(`New user: ${uid_generator}`);
+  	players_data[uid_generator] = {};
+    players_chat[uid_generator] = [];
     return res.send(uid_generator.toString());
 });
 
@@ -47,7 +50,7 @@ app.patch('/players/:player_id', (req, res) => {
     if(players_data[id]){
       for (let key in req.body)
           players_data[id][key] = req.body[key];
-            return res.send(':)');
+            return res.send(":)");
     }
     else {
       return res.status(404).send({ error: "Couldn't find id"});
@@ -65,14 +68,34 @@ app.patch('/players/', (req, res) => {
 });
 
 app.get('/players/', (req, res) => {
-    if(req.query.user_id){
-        res.send(players_data[req.query.user_id]);
+    if(req.query.id){
+    	return res.send(players_data[req.query.id]);
     }
-    else {
-        res.send(players_data);
+  	else {
+    	return res.send(players_data);
     }
 });
 
+//## CHAT ##//
+//Manda un messaggio da pushare sulla chat del server dello specifico player_id
+app.post('/chat/:player_id/', (req,res) => {
+  if(players_chat[req.params.player_id]){
+    players_chat[req.params.player_id].push(req.body);
+    return res.send(":)");
+  }
+  else {
+    return res.status(404).send("Could not find player id.");
+  }
+});
+
+app.get('/chat/', (req,res) => {
+  if(req.query.user_id){
+    return res.send(players_chat[req.query.user_id]);
+  }
+  else {
+    return res.send(players_chat);
+  }
+});
 
 //## STORIE ##//
 //Prende i file info.json delle storie in cui sono contenuti metadata per la rappresentazione (i.e. nome,accessibilità,etc)
@@ -154,6 +177,42 @@ app.post('/stories/:storyName/images', (req, res) => {
     fs.writeFile(path.join(targetDir + req.files.image.name), req.files.image.data, (error) => {
         if(error)   throw error;
     });
+    res.send(":)");
+});
+
+//##STILI##//
+
+app.get('/styles/keyboards', (req, res) => {
+    let dir = path.join(__dirname + "/styles/keyboards/");
+    let entrylist = fs.readdirSync(dir);
+    for(let i = 0; i < entrylist.length; i++){
+      entrylist[i].replace(/.json$/g,"");
+    }
+    return res.send(entrylist);
+});
+
+app.get('/styles/keyboards/:keyName', (req, res) => {
+    let jsonpath = path.join(__dirname + "/styles/keyboards/" + req.params.keyName + ".json");
+    let json = fs.readFileSync(jsonpath);
+    let load = JSON.parse(json);
+    res.setHeader('Content-Type','application/json');
+    res.json(load);
+});
+
+app.post('/styles/keyboards/', (req, res) => {
+    let target = path.join(__dirname + "/styles/keyboards/" + req.body.name + ".json");
+    let json = req.body.json;
+    fs.writeFile(target, JSON.stringify(json), (error) => {
+        if(error) {
+            throw error;
+        }
+    });
+    res.send(":)");
+});
+
+app.delete('/styles/keyboards/', (req, res) => {
+    let target = path.join(__dirname + "/styles/keyboards/" + req.query.styleName + ".json");
+    fs.unlinkSync(target);
     res.send(":)");
 });
 

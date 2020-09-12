@@ -17,12 +17,13 @@ module.exports = {
       const x = parseInt(event.clientX-canvas.getBoundingClientRect().x);
       const y = parseInt(event.clientY-canvas.getBoundingClientRect().y);
       console.log("Clicked on: " + x + "," + y);
-      ctx.font = "12px bold";
+      ctx.font = "20px bold";
       ctx.fillStyle = "white";
-      ctx.shadowColor = "red";
+      ctx.shadowColor = "black";
       ctx.shadowBlur = 1;
-      ctx.lineWidth = 5;
-      ctx.fillText("x", x, y);
+      ctx.lineWidth = 12;
+      //+-10 per centrare verso il cursore
+      ctx.fillText("O", x-10, y+10);
       //La seconda parte manda la risposta
       this.$emit('input', [x,y])
       //Se ho clickato è sempre un responso valido
