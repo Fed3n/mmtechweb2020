@@ -224,7 +224,7 @@ var app = new Vue({
         this.sendGameData();
         this.getGameData();
         this.getCurrentChats();
-        if(this.help_received)
+        if(this.currentComponent && this.help_received)
           this.$refs.requestedHelp.style.display = "none";
       }, 5000);
     },
@@ -258,7 +258,7 @@ var app = new Vue({
         for (let key in response.data) {
           this[key] = response.data[key];
         }
-        if (this.help_sent && this.help_message !== "") {
+        if (this.help_message === "") {
           console.log(this.help_message);
           this.help_received = true;
           this.help_requested = false;
