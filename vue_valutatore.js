@@ -23,7 +23,7 @@ var app = new Vue({
       }, 5000);
     },
     getPlayersData: function() {
-      axios.get("http://localhost:8080/players/").then(response => {
+      axios.get("/players/").then(response => {
         console.log(response.data);
         this.players_data = response.data;
         for (let id in this.players_data) {
@@ -73,7 +73,7 @@ var app = new Vue({
       });
     },
     patchPlayersData: function() {
-        axios.patch('http://localhost:8080/players/', this.players_data_changing)
+        axios.patch('/players/', this.players_data_changing)
             .then(res => {
               this.players_data_changing = {};
             })
