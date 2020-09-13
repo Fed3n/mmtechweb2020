@@ -1,4 +1,4 @@
-<html>
+<html lang="it">
     <head>
         <meta charset='utf-8'>
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,10 +8,10 @@
         <script src="https://unpkg.com/vue-qrcode-reader/dist/VueQrcodeReader.umd.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
    		<script src="https://unpkg.com/vue-observe-visibility/dist/vue-observe-visibility.min.js"></script>
-   		
-   		<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet"> 
-		
-		<link href="external.css" rel="stylesheet"> 
+
+   		<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+
+		<link href="external.css" rel="stylesheet">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 <style>
 </style>
@@ -70,8 +70,8 @@
                 </ul>
                 <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
                 <div id="gameinput">
-                  <component v-bind:is="currentComponent" :gamedata="renderQuest" :current="in_mainquest ? currentQuest : currentSub"
-                  :options="in_mainquest ? getCurrentOptions : renderQuest.options" v-model="picked" :styles="componentStyle"></component>
+                  <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :current="in_mainquest ? currentQuest : currentSub"
+                  :options="in_mainquest ? getCurrentOptions : renderQuest.options" v-model="picked" ref="inputComponent" :styles="componentStyle"></component>
                 </div>
             </div>
 

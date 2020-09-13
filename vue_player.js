@@ -112,6 +112,7 @@ var app = new Vue({
     "choiceinput": httpVueLoader("components/choice_input.vue"),
     "textinput": httpVueLoader("components/text_input.vue"),
     "imginput": httpVueLoader("components/img_input.vue"),
+    "keyboardinput": httpVueLoader("components/keyboard_input.vue"),
     "qrload": httpVueLoader("components/qrload.vue")
   },
   data: {
@@ -374,7 +375,7 @@ var app = new Vue({
 	  	Object.entries(main_style).forEach( entry => {
 			const[key,value] = entry;
 			if (value != "")
-				main_style_cleaned[key] = value; 
+				main_style_cleaned[key] = value;
 		});
 		return Object.assign(styles,main_style_cleaned);
     },
@@ -405,7 +406,7 @@ var app = new Vue({
 				if (this.onLink[num]){
 					if (this.css_style.background.style.nav.bootstrap.background != "bg-light")
 						styles = Object.assign(styles,{ "background-color": bootstrap_menu_links_light_background});
-					else 
+					else
 						styles = Object.assign(styles,{ "background-color": bootstrap_menu_links_background});
 				}
 			}
@@ -416,8 +417,8 @@ var app = new Vue({
 				//adding background color property
 				if (this.onLink[num])
 					if (this.css_style.background.style.nav.customized.general["background-color"] == "white")
-							styles = Object.assign(styles,{ "background-color": menu_links_white_background });					
-						else 
+							styles = Object.assign(styles,{ "background-color": menu_links_white_background });
+						else
 							styles = Object.assign(styles,{ "background-color": menu_links });
 			}
 		}
@@ -432,17 +433,17 @@ var app = new Vue({
 		if (this.togglerButtonVisible)
 			styles = Object.assign(styles,{ "white-space": "normal" });
 		else
-			styles = Object.assign(styles,{ "white-space": "normal" },{ "max-width": "65vw" });																	
+			styles = Object.assign(styles,{ "white-space": "normal" },{ "max-width": "65vw" });
 		return styles;
 	},
 	upgradeSubmitStyle: function(disabled){
 		styles = {};
-		//if the card uses bootstrap the related style is in the Object submitBootstrapStyle 
+		//if the card uses bootstrap the related style is in the Object submitBootstrapStyle
 		if (!this.css_style.background.image)
 			if (this.css_style.background.style.card.custom)
-				styles = Object.assign(styles, { "color" : this.css_style.background.style.card.customized["color"] } );												
-		//adding responsive style																
-		if (!disabled)																	
+				styles = Object.assign(styles, { "color" : this.css_style.background.style.card.customized["color"] } );
+		//adding responsive style
+		if (!disabled)
 			styles = Object.assign(styles,submit_button_style);
 		else {
 			styles = Object.assign(styles,submit_button_style_disabled);
@@ -450,27 +451,18 @@ var app = new Vue({
 			if (!this.css_style.background.image)
 				if ((temp.custom && temp.customized["background-color"] == "black") || (!temp.custom && temp.bootstrap.background == "bg-dark"))
 					 styles = Object.assign(styles, { "border" : submit_button_border });
-		}	
-		this.submitStyleObject = styles;	
+		}
+		this.submitStyleObject = styles;
 	}
   },
   computed: {
     currentComponent: function() {
-      if(this.gamedata == null)
-            return "";
-      var type;
-        if(this.in_mainquest)
-            type = this.gamedata.mainQuest[this.currentQuest].type;
-        else
-          type = this.gamedata.subQuests[this.currentSub].type;
-
+      var type = this.renderQuest.type;
       if (type == "choice") return "choiceinput";
-        else if (type == "input") return "textinput";
-        else if (type == "draw") return "imginput";
-      else {
-			document.getElementById("submit").disabled = false;
-			return ""	
-		};
+      else if (type == "input") return "textinput";
+      else if (type == "draw") return "imginput";
+      else if (type == "keys") return "keyboardinput";
+      else return "";
     },
     renderQuest: function() {
       if(this.gamedata == null)
@@ -540,7 +532,7 @@ var app = new Vue({
 		 	document.getElementsByTagName("body")[0].style.mozBackgroundSize = "cover";
 			document.getElementsByTagName("body")[0].style.oBackgroundSize = "cover";
 		 	document.getElementsByTagName("body")[0].style.backgroundSize =  "cover";
-	  	} 
+	  	}
 	  	else {
 	  		document.getElementsByTagName("body")[0].style.background = "none";
 	  	}
@@ -548,7 +540,7 @@ var app = new Vue({
 	navbarBootstrapStyle: function() {
 		var temp = this.css_style.background.style.nav.bootstrap;
 		if (!this.css_style.background.image)
-			if (!this.css_style.background.style.nav.custom)					
+			if (!this.css_style.background.style.nav.custom)
 				return (temp.textColor+" "+temp.background);
 			else
 				return "";
@@ -591,7 +583,7 @@ var app = new Vue({
 		var temp = this.css_style.background.style.alert.customized;
 		if (this.css_style.background.style.alert.custom)
 			styles = Object.assign(styles,temp);
-		//apply mainstyle in any case 
+		//apply mainstyle in any case
 		styles = this.overwriteMainStyle(styles);
 		if (!this.togglerButtonVisible)
 			styles = Object.assign(styles, { "margin-top" : "-10px" } );
@@ -659,7 +651,7 @@ var app = new Vue({
 			if (this.css_style.mainStyle["color"])
 				borderColor = this.css_style.mainStyle["color"];
 			return { "border-color" : borderColor };
-		}	
+		}
 	},
 	menuStyle: function() {
 		var styles = {};
@@ -689,7 +681,7 @@ var app = new Vue({
 					styles = Object.assign(styles,{ "border-color": temp["color"] });
 					//overwrite occasional mainstyle
 					if (this.css_style.mainStyle["color"])
-						styles = Object.assign(styles,{ "border-color" : this.css_style.mainStyle["color"] }); 			
+						styles = Object.assign(styles,{ "border-color" : this.css_style.mainStyle["color"] });
 				}
 			}
 		}
@@ -707,8 +699,8 @@ var app = new Vue({
 				else
 					styles = Object.assign(styles,menu_backgroundImage);
 				styles = Object.assign(styles,{ "border": default_image_menu_border });
-				if (this.css_style.mainStyle["color"])							
-					styles = Object.assign(styles,{ "border-color": this.css_style.mainStyle["color"] });	 
+				if (this.css_style.mainStyle["color"])
+					styles = Object.assign(styles,{ "border-color": this.css_style.mainStyle["color"] });
 			}
 		}
 		if (!this.togglerButtonVisible)
@@ -730,12 +722,12 @@ var app = new Vue({
 			}
 			//overwrite occasional mainstyle
 			if (this.css_style.mainStyle["color"])
-				styles = Object.assign(styles,{ "border-color" : this.css_style.mainStyle["color"] }); 	
+				styles = Object.assign(styles,{ "border-color" : this.css_style.mainStyle["color"] });
 		}
 		else {
-			styles = Object.assign(styles, { "border-color" : default_image_divider_color } ); 
+			styles = Object.assign(styles, { "border-color" : default_image_divider_color } );
 			if (this.css_style.mainStyle["color"])
-				styles = Object.assign(styles,{ "border-color" : this.css_style.mainStyle["color"] } ); 
+				styles = Object.assign(styles,{ "border-color" : this.css_style.mainStyle["color"] } );
 		}
 		return styles;
 	},
@@ -790,7 +782,7 @@ var app = new Vue({
 		styles = Object.assign(styles, this.submitStyleObject);
 		styles = this.overwriteMainStyle(styles);
 		if (this.css_style.mainStyle["color"] || !this.css_style.background.style.card.custom)
-			styles = Object.assign(styles, { "color" : this.css_style.mainStyle["color"]+"!important" } );			//used in order to overwrite bootstrap text color				
+			styles = Object.assign(styles, { "color" : this.css_style.mainStyle["color"]+"!important" } );			//used in order to overwrite bootstrap text color
 		return styles;
 	},
 	cardLimitStyle: function() {
@@ -804,17 +796,17 @@ var app = new Vue({
 		//stylistic choices lead us not to add this feature if there is a background image
 		return styles;
 	},
-	navbarBrandStyle: function() { 
-		return this.overwriteMainStyle({});  
+	navbarBrandStyle: function() {
+		return this.overwriteMainStyle({});
 	},
 	questsStyle: function() {
 		var styles = {};
 		if (this.css_style.background.image) {
-			styles = Object.assign(styles, { "color" : default_image_text_color } ); 
+			styles = Object.assign(styles, { "color" : default_image_text_color } );
 			styles = this.overwriteMainStyle(styles);
 		}
-		else 
-			if (!this.css_style.background.style.nav.custom)	
+		else
+			if (!this.css_style.background.style.nav.custom)
 				styles = this.overwriteMainStyle(styles);
 			else {
 				styles = Object.assign(styles, { "color" : this.css_style.background.style.nav.customized.general["color"] } );
@@ -823,9 +815,9 @@ var app = new Vue({
 		return styles;
 	},
 	removePredefinedStylesCard: function() {
-			return this.overwriteMainStyle({});  
-	},	
-	componentStyle: function() {		
+			return this.overwriteMainStyle({});
+	},
+	componentStyle: function() {
 		var styles = {}
 		if (this.currentComponent == "choiceinput")
 			;
@@ -833,8 +825,8 @@ var app = new Vue({
         	style = this.overwriteMainStyle(styles);
         	style = Object.assign(styles,input_backgroundImage);
         	if (!this.css_style.background.image)
-				if (!this.css_style.mainStyle["color"]) 							
-					styles = Object.assign(styles, { "color" : "inherit" } );	        	
+				if (!this.css_style.mainStyle["color"])
+					styles = Object.assign(styles, { "color" : "inherit" } );
         if (this.currentComponent == "imginput")
 	       ;
         return styles;
