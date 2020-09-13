@@ -77,7 +77,7 @@ app.get('/valutatore', (req, res) => {
 app.get('/uid', (req, res) => { // da cambiare in POST
     uid_generator++;
     console.log(`New user: ${uid_generator}`);
-  	players_data[uid_generator] = {};
+    players_data[uid_generator] = {};
     players_chat[uid_generator] = [];
     return res.send(uid_generator.toString());
 });
@@ -105,11 +105,11 @@ app.patch('/players/', (req, res) => {
 });
 
 app.get('/players/', (req, res) => {
-    if(req.query.id){
-    	return res.send(players_data[req.query.id]);
+    if(req.query.user_id){
+        return res.send(players_data[req.query.user_id]);
     }
-  	else {
-    	return res.send(players_data);
+    else {
+        return res.send(players_data);
     }
 });
 
