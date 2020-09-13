@@ -209,6 +209,42 @@ app.post('/stories/:storyName/images', (req, res) => {
     res.send(":)");
 });
 
+//##STILI##//
+
+app.get('/styles/keyboards', (req, res) => {
+    let dir = path.join(__dirname + "/styles/keyboards/");
+    let entrylist = fs.readdirSync(dir);
+    for(let i = 0; i < entrylist.length; i++){
+      entrylist[i].replace(/.json$/g,"");
+    }
+    return res.send(entrylist);
+});
+
+app.get('/styles/keyboards/:keyName', (req, res) => {
+    let jsonpath = path.join(__dirname + "/styles/keyboards/" + req.params.keyName + ".json");
+    let json = fs.readFileSync(jsonpath);
+    let load = JSON.parse(json);
+    res.setHeader('Content-Type','application/json');
+    res.json(load);
+});
+
+app.post('/styles/keyboards/', (req, res) => {
+    let target = path.join(__dirname + "/styles/keyboards/" + req.body.name + ".json");
+    let json = req.body.json;
+    fs.writeFile(target, JSON.stringify(json), (error) => {
+        if(error) {
+            throw error;
+        }
+    });
+    res.send(":)");
+});
+
+app.delete('/styles/keyboards/', (req, res) => {
+    let target = path.join(__dirname + "/styles/keyboards/" + req.query.styleName + ".json");
+    fs.unlinkSync(target);
+    res.send(":)");
+});
+
 //#######################################################//
 
 //Server Start
