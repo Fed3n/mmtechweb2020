@@ -235,9 +235,6 @@ var app = new Vue({
         this.time_inactive++;
       }, 1000);
     },
-	submitAction: function() {
-		console.log(this.$refs);
-	},
     sendGameData: function(){
       axios.patch(`/players/${this.user_id}`,
           {
@@ -365,6 +362,8 @@ var app = new Vue({
       this.$refs.questname.focus();
     },
     submitSub: function() {
+	  this.$refs.inputForm.reset();
+      this.$refs.submitbutton.disabled = true;
       if (this.in_mainquest) return;
       let wrong_answer = true;
       let subQuest = this.gamedata.subQuests[this.currentSub];
@@ -390,8 +389,6 @@ var app = new Vue({
       this.help_message = "";
       this.help_received = false;
       this.in_mainquest = true;
-      this.$refs.inputForm.reset();
-      this.$refs.submitbutton.disabled = true;
       this.upgradeSubmitStyle(true);
       this.picked = null;
       this.$refs.questname.focus();
