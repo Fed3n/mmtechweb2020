@@ -59,7 +59,7 @@
                 <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">Name of Quest {{ currentQuest }}</h3>
             </div>
             <div class="card-body" :style="removePredefinedStylesCard">
-				<form ref="inputForm" v-on:submit.prevent">
+				<form ref="inputForm" v-on:submit.prevent>
 					<p>{{ renderQuest.text }}</p>
 					<p>{{ renderQuest.description || "" }}</p>
 					<ul v-if="in_mainquest && getCurrentClues.length > 0">
