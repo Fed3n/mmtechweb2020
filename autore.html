@@ -82,7 +82,7 @@
             <div id="server-storyinfo" class="row container-fluid pt-2 pb-2 border-bottom">
                 <div class="col form-group">
                     <label for="story-name">Nome della Storia</label>
-                    <input name="story-name" class="form-control" type="text" v-model="metadata.name">
+                    <input name="story-name" class="form-control" type="text" v-model="metadata.name" ref="storyName">
                 </div>
                 <div class="col form-check">
                     <label for="activate" class="form-check-label"><input name="activate" class="form-check-input" type="checkbox" v-model="metadata.active">

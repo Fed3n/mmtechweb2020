@@ -59,17 +59,19 @@
                 <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">Name of Quest {{ currentQuest }}</h3>
             </div>
             <div class="card-body" :style="removePredefinedStylesCard">
-                <p>{{ renderQuest.text }}</p>
-                <p>{{ renderQuest.description || "" }}</p>
-                <ul v-if="in_mainquest && getCurrentClues.length > 0">
-                    <li v-for="clue in getCurrentClues">{{ clue }}</li>
-                </ul>
-                <div v-if="help_received && help_message">Hint: {{help_message}}</div>
-                <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
-                <div id="gameinput">
-                  <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :current="in_mainquest ? currentQuest : currentSub"
-                  :options="in_mainquest ? getCurrentOptions : renderQuest.options" v-model="picked" ref="inputComponent" :styles="componentStyle"></component>
-                </div>
+				<form ref="inputForm" v-on:submit.prevent">
+					<p>{{ renderQuest.text }}</p>
+					<p>{{ renderQuest.description || "" }}</p>
+					<ul v-if="in_mainquest && getCurrentClues.length > 0">
+						<li v-for="clue in getCurrentClues">{{ clue }}</li>
+					</ul>
+					<div v-if="help_received && help_message">Hint: {{help_message}}</div>
+					<!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
+					<div id="gameinput">
+					  <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :current="in_mainquest ? currentQuest : currentSub"
+					  :options="in_mainquest ? getCurrentOptions : renderQuest.options" v-model="picked" ref="inputComponent" :styles="componentStyle"></component>
+					</div>
+				</form>
             </div>
 
             <div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">

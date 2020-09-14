@@ -651,8 +651,9 @@
           },
           createQR: function() {
                   var qrname = this.$refs.fileName.value.replace('.json', '');
+				  var qrcontent = this.$refs.storyName.value.replace('.json','');
                   qr.clear();
-                  qr.makeCode(qrname);
+                  qr.makeCode(qrcontent);
                   var node = this.$refs.qrcode;
                   node.href = `${qr._el.getElementsByTagName("img")[0].src}`;
                   node.download = `${qrname}.png`;
