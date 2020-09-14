@@ -136,11 +136,15 @@
           },
           gamedata: gamedata_pholder,
           metadata: metadata_pholder,
+          bootstrapConsts: bootstrapConstsExternal,
           questClipboard: {
               "main": null,
               "sub": null
           },
           questname: null,
+          mainStyleColor: true,
+          currentMainStyleColor: "rgb(0,0,0)",
+          mobileView: true,
           togglerButtonVisible: true,
           onLink: [],
           submitStyleObject: {},
@@ -213,7 +217,7 @@
       },
       created: function() {
           this.updateFs();
-          this.upgradeSubmitStyle(false);
+          //this.upgradeSubmitStyle(false);  //-------	CONTROLLA SE SERVE -----------------------------------------
       },
       methods: {
           //SERVER INTERACTION METHODS//
@@ -349,6 +353,9 @@
                   this.previewdata.currentSub = number;
                   this.previewdata.picked = null;
               }
+          },
+          switchView: function(){
+          	this.mobileView = !this.mobileView;
           },
           switchMainSub: function() {
               this.previewdata.in_mainquest = !this.previewdata.in_mainquest;
@@ -730,6 +737,18 @@
                   this.previewdata.picked = null;
                   this.$refs.questname.focus();
           },
+          //style functions
+          fontSize: function(event) {
+				this.css_style.mainStyle["font-size"] = event.target.value+"px";
+		},
+		editMainColor: function(event){
+		console.log("checked: ",this.mainStyleColor);
+		console.log("colore: ",this.currentMainStyleColor);
+			if (this.mainStyleColor)
+				this.css_style.mainStyle['color'] = this.currentMainStyleColor;
+			else
+				this.css_style.mainStyle['color'] = "";
+		},
           overwriteMainStyle: function(styles) {
               var main_style = this.css_style.mainStyle;
               var main_style_cleaned = {};
@@ -989,17 +1008,20 @@
               return styles;
           },
           navbarBootstrapStyle: function() {
-              var temp = this.css_style.background.style.nav.bootstrap;
-              if (!this.css_style.background.image)
-                  if (!this.css_style.background.style.nav.custom)
-                      return (temp.textColor + " " + temp.background);
-                  else
-                      return "";
-              else {
-                  console.log("errore in JSON compiling: cannot use bootstrap's navbar when background image is set");
-                  return "";
-              }
-          },
+				var classes = "";
+				var temp = this.css_style.background.style.nav.bootstrap;
+				if (!this.css_style.background.image) {
+					if (!this.css_style.background.style.nav.custom)
+						classes = classes+temp.textColor+" "+temp.background;
+					else
+							;
+				 }
+				else
+					console.log("errore in JSON compiling: cannot use bootstrap's navbar when background image is set");
+				if (!this.mobileView)
+					classes = classes+" navbar-expand";
+				return classes;
+			},
           navbarStyle: function() {
               var styles = {};
               if (!this.css_style.background.image) {
