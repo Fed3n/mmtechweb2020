@@ -217,7 +217,7 @@
       },
       created: function() {
           this.updateFs();
-          //this.upgradeSubmitStyle(false);  //-------	CONTROLLA SE SERVE -----------------------------------------
+          this.upgradeSubmitStyle(false);
       },
       methods: {
           //SERVER INTERACTION METHODS//
@@ -739,16 +739,16 @@
           },
           //style functions
           fontSize: function(event) {
-				this.css_style.mainStyle["font-size"] = event.target.value+"px";
-		},
-		editMainColor: function(event){
-		console.log("checked: ",this.mainStyleColor);
-		console.log("colore: ",this.currentMainStyleColor);
-			if (this.mainStyleColor)
-				this.css_style.mainStyle['color'] = this.currentMainStyleColor;
-			else
-				this.css_style.mainStyle['color'] = "";
-		},
+							this.css_style.mainStyle["font-size"] = event.target.value+"px";
+					},
+					editMainColor: function(event){
+					console.log("checked: ",this.mainStyleColor);
+					console.log("colore: ",this.currentMainStyleColor);
+						if (this.mainStyleColor)
+							this.css_style.mainStyle['color'] = this.currentMainStyleColor;
+						else
+							this.css_style.mainStyle['color'] = "";
+					},
           overwriteMainStyle: function(styles) {
               var main_style = this.css_style.mainStyle;
               var main_style_cleaned = {};
@@ -1008,20 +1008,20 @@
               return styles;
           },
           navbarBootstrapStyle: function() {
-				var classes = "";
-				var temp = this.css_style.background.style.nav.bootstrap;
-				if (!this.css_style.background.image) {
-					if (!this.css_style.background.style.nav.custom)
-						classes = classes+temp.textColor+" "+temp.background;
-					else
-							;
-				 }
-				else
-					console.log("errore in JSON compiling: cannot use bootstrap's navbar when background image is set");
-				if (!this.mobileView)
-					classes = classes+" navbar-expand";
-				return classes;
-			},
+						var classes = "";
+						var temp = this.css_style.background.style.nav.bootstrap;
+						if (!this.css_style.background.image) {
+							if (!this.css_style.background.style.nav.custom)
+								classes = classes+temp.textColor+" "+temp.background;
+							else
+									;
+						 }
+						else
+							console.log("errore in JSON compiling: cannot use bootstrap's navbar when background image is set");
+					if (!this.mobileView)
+						classes = classes+" navbar-expand";
+					return classes;
+					},
           navbarStyle: function() {
               var styles = {};
               if (!this.css_style.background.image) {
