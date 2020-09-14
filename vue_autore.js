@@ -140,94 +140,74 @@
               "main": null,
               "sub": null
           },
-
-          //temporary -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-          temporary_object: {
-              textColor: "",
-              background: ""
-          },
-
-          //temporary ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
           questname: null,
-
-
-
-
           togglerButtonVisible: true,
           onLink: [],
           submitStyleObject: {},
-
-
-
-
           css_style: {
-              mainStyle: {
-                  "font-family": "'Dancing Script', cursive",
-                  "font-style": "normal",
-                  "font-weight": "bold",
-                  "font-size": "20px",
-                  "color": "rgba(60,60,60,1)"
-              },
-              background: {
-                  image: false,
-                  url: "url('notebook.png')",
-                  style: {
-                      nav: {
-                          custom: true,
-                          bootstrap: {
-                              textColor: "navbar-dark",
-                              background: "bg-primary"
-                          },
-                          customized: {
-                              general: {
-                                  "background-color": "grey",
-                                  "color": "red"
-                              },
-                          }
-                      },
-                      badge: {
-                          custom: false,
-                          bootstrap: {
-                              type: "badge-warning"
-                          },
-                          customized: {
-                              "background-color": "rgba(122,232,14,0.8)",
-                              "border-width": "3px",
-                              "border-style": "dotted",
-                              "border-color": "blue",
-                              "color": "red"
-                          }
-                      },
-                      alert: {
-                          custom: false,
-                          bootstrap: {
-                              type: "alert-warning"
-                          },
-                          customized: {
-                              "background-color": "rgba(122,232,14,0.8)",
-                              "border-width": "3px",
-                              "border-style": "dotted",
-                              "border-color": "blue",
-                              "color": "red"
-                          }
-                      },
-                      card: {
-                          custom: true,
-                          bootstrap: {
-                              textColor: "text-info",
-                              background: "bg-warning"
-                          },
-                          customized: {
-                              "background-color": "white",
-                              "color": "white"
-                          }
-                      }
-                  }
-              }
+		        mainStyle: {
+	            "font-family": "'Dancing Script', cursive",
+	            "font-style": "normal",
+	            "font-weight": "bold",
+	            "font-size": "20px",
+	            "color": "rgba(60,60,60,1)"
+		        },
+            background: {
+                image: false,
+                url: "url('notebook.png')",
+                style: {
+                    nav: {
+                        custom: true,
+                        bootstrap: {
+                            textColor: "navbar-dark",
+                            background: "bg-primary"
+                        },
+                        customized: {
+                            general: {
+                                "background-color": "grey",
+                                "color": "red"
+                            },
+                        }
+                    },
+                    badge: {
+                        custom: false,
+                        bootstrap: {
+                            type: "badge-warning"
+                        },
+                        customized: {
+                            "background-color": "rgba(122,232,14,0.8)",
+                            "border-width": "3px",
+                            "border-style": "dotted",
+                            "border-color": "blue",
+                            "color": "red"
+                        }
+                    },
+                    alert: {
+                        custom: false,
+                        bootstrap: {
+                            type: "alert-warning"
+                        },
+                        customized: {
+                            "background-color": "rgba(122,232,14,0.8)",
+                            "border-width": "3px",
+                            "border-style": "dotted",
+                            "border-color": "blue",
+                            "color": "red"
+                        }
+                    },
+                    card: {
+                        custom: true,
+                        bootstrap: {
+                            textColor: "text-info",
+                            background: "bg-warning"
+                        },
+                        customized: {
+                            "background-color": "white",
+                            "color": "white"
+                        }
+                    }
+                }
+             }
           }
 
       },
@@ -670,12 +650,7 @@
                   node.href = `${qr._el.getElementsByTagName("img")[0].src}`;
                   node.download = `${qrname}.png`;
                   node.click();
-              }
-
-
-
-
-              ,
+          },
           requestHelp: function() {
                   if (!this.help_msg) {
                       this.$refs.requestedHelp.style.display = "inline-block";
@@ -684,9 +659,7 @@
                   }
                   // manda richiesta aiuto
                   // quando la soddisfera', sara' da mettere display = "none"
-              }
-
-              ,
+          },
           goToSubQuest: function(quest) {
               this.currentSub = quest.number;
               this.previewdata.in_mainquest = false;
@@ -756,12 +729,7 @@
                   this.upgradeSubmitStyle(true);
                   this.previewdata.picked = null;
                   this.$refs.questname.focus();
-              }
-
-
-
-
-              ,
+          },
           overwriteMainStyle: function(styles) {
               var main_style = this.css_style.mainStyle;
               var main_style_cleaned = {};
