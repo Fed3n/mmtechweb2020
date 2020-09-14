@@ -235,6 +235,9 @@ var app = new Vue({
         this.time_inactive++;
       }, 1000);
     },
+	submitAction: function() {
+		console.log(this.$refs);
+	},
     sendGameData: function(){
       axios.patch(`/players/${this.user_id}`,
           {
@@ -298,6 +301,9 @@ var app = new Vue({
       this.currentQuest = state;
     },
     goToSubQuest: function (quest){
+	  this.picked = null;
+	  this.$refs.inputForm.reset();
+	  this.$refs.submitbutton.disabled = true;
       this.currentSub = quest.number;
       this.in_mainquest = false;
       this.$refs.questname.focus();
@@ -307,6 +313,9 @@ var app = new Vue({
       this.sendGameData();
     },
     goToMainQuest: function(){
+	  this.picked = null;
+	  this.$refs.inputForm.reset();
+	  this.$refs.submitbutton.disabled = true;
       this.in_mainquest = true;
       this.$refs.questname.focus();
       this.$refs.help.classList.remove("disabled");
@@ -349,10 +358,8 @@ var app = new Vue({
           this.currentQuest = opt[1];
         }
       }
-      if(document.getElementById("input")) {
-        document.getElementById("input").value = "";
-      }
-      document.getElementById("submit").disabled = true;
+      this.$refs.inputForm.reset();
+      this.$refs.submitbutton.disabled = true;
       this.upgradeSubmitStyle(true);
       this.picked = null;
       this.$refs.questname.focus();
@@ -383,10 +390,8 @@ var app = new Vue({
       this.help_message = "";
       this.help_received = false;
       this.in_mainquest = true;
-      if(document.getElementById("input")) {
-        document.getElementById("input").value = "";
-      }
-      document.getElementById("submit").disabled = true;
+      this.$refs.inputForm.reset();
+      this.$refs.submitbutton.disabled = true;
       this.upgradeSubmitStyle(true);
       this.picked = null;
       this.$refs.questname.focus();

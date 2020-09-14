@@ -66,6 +66,24 @@ var default_image_menu_links_hover_backgroud_color = menu_links;
 var default_image_menu_border = "1px solid black";
 var defaul_image_alert_color = "black";
 
+//author objects
+var bootstrapConstsExternal = {
+			navTextColors: [
+				{ name: "bianco", value: "navbar-dark" },
+				{ name: "nero", value: "navbar-light" }
+			],
+			navBackgroundColors: [
+				{ name: "nero", value: "bg-dark" },
+				{ name: "bianco", value: "bg-white" },
+				{ name: "blu", value: "bg-primary" },
+				{ name: "grigio", value: "bg-secondary" },
+				{ name: "verde", value: "bg-success" },
+				{ name: "rosso", value: "bg-danger" },
+				{ name: "arancione", value: "bg-warning" },
+				{ name: "verdeacqua", value: "bg-info" },
+				{ name: "panna", value: "bg-light" }				
+			]
+		};
 
 
 

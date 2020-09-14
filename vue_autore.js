@@ -150,98 +150,82 @@
           },
           gamedata: gamedata_pholder,
           metadata: metadata_pholder,
+          bootstrapConsts: bootstrapConstsExternal,
           questClipboard: {
               "main": null,
               "sub": null
           },
-
-          //temporary -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-          temporary_object: {
-              textColor: "",
-              background: ""
-          },
-
-          //temporary ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
           questname: null,
-
-
-
-
+          mainStyleColor: true,
+          currentMainStyleColor: "rgb(0,0,0)",
+          mobileView: true,
           togglerButtonVisible: true,
           onLink: [],
           submitStyleObject: {},
-
-
-
-
           css_style: {
-              mainStyle: {
-                  "font-family": "'Dancing Script', cursive",
-                  "font-style": "normal",
-                  "font-weight": "bold",
-                  "font-size": "20px",
-                  "color": "rgba(60,60,60,1)"
-              },
-              background: {
-                  image: false,
-                  url: "url('notebook.png')",
-                  style: {
-                      nav: {
-                          custom: true,
-                          bootstrap: {
-                              textColor: "navbar-dark",
-                              background: "bg-primary"
-                          },
-                          customized: {
-                              general: {
-                                  "background-color": "grey",
-                                  "color": "red"
-                              },
-                          }
-                      },
-                      badge: {
-                          custom: false,
-                          bootstrap: {
-                              type: "badge-warning"
-                          },
-                          customized: {
-                              "background-color": "rgba(122,232,14,0.8)",
-                              "border-width": "3px",
-                              "border-style": "dotted",
-                              "border-color": "blue",
-                              "color": "red"
-                          }
-                      },
-                      alert: {
-                          custom: false,
-                          bootstrap: {
-                              type: "alert-warning"
-                          },
-                          customized: {
-                              "background-color": "rgba(122,232,14,0.8)",
-                              "border-width": "3px",
-                              "border-style": "dotted",
-                              "border-color": "blue",
-                              "color": "red"
-                          }
-                      },
-                      card: {
-                          custom: true,
-                          bootstrap: {
-                              textColor: "text-info",
-                              background: "bg-warning"
-                          },
-                          customized: {
-                              "background-color": "white",
-                              "color": "white"
-                          }
-                      }
-                  }
-              }
+		        mainStyle: {
+	            "font-family": "'Dancing Script', cursive",
+	            "font-style": "normal",
+	            "font-weight": "bold",
+	            "font-size": "20px",
+	            "color": "rgba(60,60,60,1)"
+		        },
+            background: {
+                image: false,
+                url: "url('notebook.png')",
+                style: {
+                    nav: {
+                        custom: true,
+                        bootstrap: {
+                            textColor: "navbar-dark",
+                            background: "bg-primary"
+                        },
+                        customized: {
+                            general: {
+                                "background-color": "grey",
+                                "color": "red"
+                            },
+                        }
+                    },
+                    badge: {
+                        custom: false,
+                        bootstrap: {
+                            type: "badge-warning"
+                        },
+                        customized: {
+                            "background-color": "rgba(122,232,14,0.8)",
+                            "border-width": "3px",
+                            "border-style": "dotted",
+                            "border-color": "blue",
+                            "color": "red"
+                        }
+                    },
+                    alert: {
+                        custom: false,
+                        bootstrap: {
+                            type: "alert-warning"
+                        },
+                        customized: {
+                            "background-color": "rgba(122,232,14,0.8)",
+                            "border-width": "3px",
+                            "border-style": "dotted",
+                            "border-color": "blue",
+                            "color": "red"
+                        }
+                    },
+                    card: {
+                        custom: true,
+                        bootstrap: {
+                            textColor: "text-info",
+                            background: "bg-warning"
+                        },
+                        customized: {
+                            "background-color": "white",
+                            "color": "white"
+                        }
+                    }
+                }
+             }
           }
 
       },
@@ -412,6 +396,9 @@
                   this.previewdata.currentSub = number;
                   this.previewdata.picked = null;
               }
+          },
+          switchView: function(){
+          	this.mobileView = !this.mobileView;
           },
           switchMainSub: function() {
               this.previewdata.in_mainquest = !this.previewdata.in_mainquest;
@@ -717,18 +704,14 @@
           },
           createQR: function() {
                   var qrname = this.$refs.fileName.value.replace('.json', '');
+				  var qrcontent = this.$refs.storyName.value.replace('.json','');
                   qr.clear();
-                  qr.makeCode(qrname);
+                  qr.makeCode(qrcontent);
                   var node = this.$refs.qrcode;
                   node.href = `${qr._el.getElementsByTagName("img")[0].src}`;
                   node.download = `${qrname}.png`;
                   node.click();
-              }
-
-
-
-
-              ,
+          },
           requestHelp: function() {
                   if (!this.help_msg) {
                       this.$refs.requestedHelp.style.display = "inline-block";
@@ -737,9 +720,7 @@
                   }
                   // manda richiesta aiuto
                   // quando la soddisfera', sara' da mettere display = "none"
-              }
-
-              ,
+          },
           goToSubQuest: function(quest) {
               this.currentSub = quest.number;
               this.previewdata.in_mainquest = false;
@@ -809,12 +790,19 @@
                   this.upgradeSubmitStyle(true);
                   this.previewdata.picked = null;
                   this.$refs.questname.focus();
-              }
-
-
-
-
-              ,
+          },
+          //style functions
+          fontSize: function(event) {
+							this.css_style.mainStyle["font-size"] = event.target.value+"px";
+					},
+					editMainColor: function(event){
+					console.log("checked: ",this.mainStyleColor);
+					console.log("colore: ",this.currentMainStyleColor);
+						if (this.mainStyleColor)
+							this.css_style.mainStyle['color'] = this.currentMainStyleColor;
+						else
+							this.css_style.mainStyle['color'] = "";
+					},
           overwriteMainStyle: function(styles) {
               var main_style = this.css_style.mainStyle;
               var main_style_cleaned = {};
@@ -1077,17 +1065,20 @@
               return styles;
           },
           navbarBootstrapStyle: function() {
-              var temp = this.css_style.background.style.nav.bootstrap;
-              if (!this.css_style.background.image)
-                  if (!this.css_style.background.style.nav.custom)
-                      return (temp.textColor + " " + temp.background);
-                  else
-                      return "";
-              else {
-                  console.log("errore in JSON compiling: cannot use bootstrap's navbar when background image is set");
-                  return "";
-              }
-          },
+						var classes = "";
+						var temp = this.css_style.background.style.nav.bootstrap;
+						if (!this.css_style.background.image) {
+							if (!this.css_style.background.style.nav.custom)
+								classes = classes+temp.textColor+" "+temp.background;
+							else
+									;
+						 }
+						else
+							console.log("errore in JSON compiling: cannot use bootstrap's navbar when background image is set");
+					if (!this.mobileView)
+						classes = classes+" navbar-expand";
+					return classes;
+					},
           navbarStyle: function() {
               var styles = {};
               if (!this.css_style.background.image) {
