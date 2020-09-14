@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div id="custom-keyboard">
-      <p :style="textStyle">{{ text }}</p>
-      <div v-for="row in genKeyboard">
+    <p :style="textStyle" tabindex=-1 aria-live="polite" aria-label="codice inserito">{{ text }}</p>
+    <div id="custom-keyboard" role="grid">
+      <div v-for="(row,index) in genKeyboard" :aria-label="'riga'+index">
         <div id="button-line">
           <span v-for="key in row">
             <button v-if="key.startsWith('!!')" class="input-button" :class="keyboardAnim" :style="keyboardStyle(key)" v-on:click="delValue">{{ key.substring(2,key.length) }}</button>
@@ -20,30 +20,7 @@ module.exports = {
   data: function() {
     return {
       text: "",
-      key_style2: {
-        //keys: [["1","2","3"],["4","5","6"],["7","8","9"],["_","0","_"],["!!X","_","!!DEL"]],
-        keys: "1,2,3;4,5,6;7,8,9;_,0,_;!!X,_,!!DEL",
-        width: "3",
-        height: "2",
-        text_size: "",
-        text_color: "white",
-        bold: true,
-        bg_color: "grey",
-        border_color: "",
-        border_size: "",
-        margin: "0.2",
-        radius: "",
-        shadow: true,
-        animation: "press",
-        screen_font: "Courier",
-        screen_color: "white",
-        screen_bold: false,
-        screen_bg: "black",
-        screen_border_color: "",
-        screen_border_size: "",
-        screen_length: "10"
-      }
-    }
+     }
   },
   methods: {
     emitValue: function(value) {
