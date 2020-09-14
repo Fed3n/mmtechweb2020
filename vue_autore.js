@@ -2,6 +2,7 @@
   gamedata_pholder = {
       "mainQuest": [{
           "number": 0,
+          "title": "",
           "text": "",
           "type": "",
           "description": "",
@@ -9,6 +10,11 @@
           "image": {
               "imguri": "",
               "imgalt": ""
+          },
+          "media": {
+              "type": "",
+              "uri": "",
+              "alt": ""
           },
           "key_style": {
               "keys": ""
@@ -18,6 +24,7 @@
       }],
       "subQuests": [{
           "number": 0,
+          "title": "",
           "available_on": [],
           "requires_sub": [],
           "text": "",
@@ -27,6 +34,11 @@
           "image": {
               "imguri": "",
               "imgalt": ""
+          },
+          "media": {
+              "type": "",
+              "uri": "",
+              "alt": ""
           },
           "key_style": {
               "keys": ""
@@ -118,13 +130,15 @@
           "keyboardinput": httpVueLoader("components/keyboard_input.vue")
       },
       data: {
-          loadedStory: "Storia_Vuota",
+          loadedStory: "",
           storyList: null,
           activeStoryList: null,
           inactiveStoryList: null,
           keyStylesList: null,
           imagesList: null,
+          vidsList: null,
           selectedImage: "",
+          selectedVideo: "",
           custom_keys: "",
           radiusInput: 10, //valore di default
           previewdata: {
@@ -266,8 +280,11 @@
                       _this.gamedata = res.data.json;
                       _this.metadata = res.data.meta;
                       _this.getImagesList();
+                      _this.getVideosList();
                       this.loadedStory = this.$refs.selectedStory.value;
                       _this.updateFs();
+                      _this.selectedImage = "";
+                      _this.selectedVideo = "";
                   })
               }
           },
@@ -292,7 +309,7 @@
                           storyName: this.$refs.selectedStory.value
                       }
                   };
-                  ok = confirm("Are you really sure you want to delete this story from the server?");
+                  ok = confirm("Sei davvero sicuro di voler rimuovere questa storia dal server?");
                   if (ok) {
                       var _this = this;
                       axios.delete("/stories", data).then((res) => {
@@ -302,11 +319,11 @@
               }
           },
           uploadImg: function() {
-              if(this.$refs.img_upload.files[0]){
+              if(this.$refs.img_upload.files[0] && this.loadedStory){
                   //Mando come multipart/form-data
                   let form = new FormData();
                   let imageFile = this.$refs.img_upload.files[0];
-                  let storyName = this.$refs.selectedStory.value;
+                  let storyName = this.loadedStory;
                   form.append('image', imageFile);
                   let _this = this;
                   axios.post(`/stories/${storyName}/images`, form, {
@@ -324,9 +341,35 @@
               console.log("Getting images list...");
               let _this = this;
               axios.get(`/stories/${this.metadata.name}/images`).then((res) => {
-                  console.log("Hi!! :)");
                   console.log(res.data);
                   _this.imagesList = res.data;
+              });
+          },
+          uploadVid: function() {
+              if(this.$refs.vid_upload.files[0] && this.loadedStory){
+                  //Mando come multipart/form-data
+                  let form = new FormData();
+                  let videoFile = this.$refs.vid_upload.files[0];
+                  let storyName = this.loadedStory;
+                  form.append('video', videoFile);
+                  let _this = this;
+                  axios.post(`/stories/${storyName}/videos`, form, {
+                          headers: {
+                              'Content-Type': 'multipart/form-data'
+                          }
+                      })
+                      .then((res) => {
+                          console.log(res);
+                          _this.getVideosList();
+                      });
+              }
+          },
+          getVideosList: function() {
+              console.log("Getting videos list...");
+              let _this = this;
+              axios.get(`/stories/${this.metadata.name}/videos`).then((res) => {
+                  console.log(res.data);
+                  _this.vidsList = res.data;
               });
           },
           getKeyStyle: function() {
@@ -396,6 +439,11 @@
                       "imguri": "",
                       "imgalt": ""
                   },
+                  "media": {
+                      "type": "",
+                      "uri": "",
+                      "alt": ""
+                  },
                   "key_style": {
                       "keys": ""
                   },
@@ -413,6 +461,11 @@
                   "image": {
                       "imguri": "",
                       "imgalt": ""
+                  },
+                  "media": {
+                      "type": "",
+                      "uri": "",
+                      "alt": ""
                   },
                   "key_style": {
                       "keys": ""
@@ -445,7 +498,7 @@
           //Rimuove il nodo selezionato dall'array mainquest
           //Un po' costosa computazionalmente ma l'alternativa è limitarsi al pop per la cancellazione
           rmMainNode: function(index) {
-              var ok = confirm("Are you sure you want to delete this node? All remaining references to this node will be deleted.");
+              var ok = confirm("Sei sicuro di voler cancellare questo nodo? Tutti i riferimenti ad esso rimamnenti saranno cancellati.");
               if (ok) {
                   var mains = this.gamedata.mainQuest;
                   //Deve restarne almeno una in lista
@@ -498,12 +551,12 @@
                           }
                       }
                       mains.splice(index, 1);
-                  } else alert("Cannot have fewer than one quest!");
+                  } else alert("Non puoi avere meno di una quest!");
               }
           },
           //Come sopra ma per le subquests (sono funzioni separate perché controllano elementi diversi)
           rmSubNode: function(index) {
-              var ok = confirm("Are you sure you want to delete this node? All remaining references to this node will be deleted.");
+              var ok = confirm("Sei sicuro di voler cancellare questo nodo? Tutti i riferimenti ad esso rimamnenti saranno cancellati.");
               if (ok) {
                   var subs = this.gamedata.subQuests;
                   if (subs.length > 1) {
@@ -541,7 +594,7 @@
                           }
                       }
                       subs.splice(index, 1);
-                  } else alert("Cannot have fewer than one quest!");
+                  } else alert("Non puoi avere meno di una quest!");
               }
           },
           addGoto: function(type) {
@@ -593,7 +646,7 @@
               reward.added_goto.splice(reward.added_goto.indexOf(goto), 1);
           },
           generateChoiceGotos: function() {
-              var ok = confirm("Generating new gotos for this quest will delete the current ones, do you want to proceed?");
+              var ok = confirm("Generare nuovi Goto per il nodo corrente cancellerà tutti i precedenti. Vuoi proseguire?");
               if (ok) {
                   gotos = [];
                   for (opt of this.renderQuest.options) {
@@ -603,7 +656,7 @@
               }
           },
           generateChoiceSolutions: function() {
-              var ok = confirm("Generating new solutions for this quest will delete the current ones, do you want to proceed?");
+              var ok = confirm("Generare nuove Soluzioni per il nodo corrente cancellerà tutte le precedenti. Vuoi proseguire?");
               if (ok) {
                   sols = [];
                   for (opt of this.renderQuest.options) {
@@ -999,6 +1052,9 @@
                   }
               }
               return gotos;
+          },
+          getMediaSrc: function() {
+            return ("story/" + this.metadata.name + (this.renderQuest.media.type=="image" ? "/images/" : "/videos/") + this.renderQuest.media.uri);
           },
           //styleObjects
           loadImage: function() {

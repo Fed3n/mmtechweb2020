@@ -16,9 +16,14 @@
     <div id="app" class="container-fluid mb-4">
         <!--COLLASSABILE DI MENU SERVER/FILES-->
         <div class="jumbotron jumbotron-fluid bg-info text-light">
-            <h1>Ambiente Autore</h1>
-            <p>Crea e gestisci le tue storie di M&M!</p>
-            <h2 class="border-top">Storia corrente: {{ loadedStory }}</h2>
+            <div class="container-fluid">
+                <h1>Ambiente Autore</h1>
+                <p>Crea e gestisci le tue storie di M&M!</p>
+            </div>
+            <div class="container-fluid border-top">
+                <h2>Storia caricata: {{ loadedStory ? loadedStory : "Carica una storia!"}}</h2>
+                <p v-if="!loadedStory">Posta (POST) e carica (GET) una nuova storia per accedere alle funzioni di upload.</p>
+            </div>
         </div>
         <button class="btn btn-block btn-info" type="button" data-toggle="collapse" data-target="#managedata">AREA DATI</button>
         <div id="managedata" class="row container-fluid collapse p-3">
@@ -37,10 +42,10 @@
                     </div>
                 </div>
                 <!--IMMAGINI CARICATE-->
-                <div class="row">
+                <div id="uploadimages" class="row border-top mt-2">
                     <div class="col-md-4">
                         <div class="form-group mb-2">
-                            <label for="img_upload">Upload per la storia corrente: </label>
+                            <label for="img_upload">Upload immagine per la storia corrente: </label>
                             <input class="form-control-file" type="file" accept="image/*" name="img_upload" ref="img_upload">
                         </div>
                         <button class="btn btn-primary" v-on:click="uploadImg()">UPLOAD</button>
@@ -52,7 +57,28 @@
                                 <option v-for="imgname in imagesList" :value="imgname">{{ imgname }}</option>
                             </select>
                             <div id="image-preview" v-if="selectedImage" class="container-fluid mt-2">
-                                <img class="img-thumbnail" :src="'story/' + metadata.name + '/images/' + selectedImage" :alt="'Preview of ' + selectedImage">
+                                <img class="img-thumbnail" width="60%" :src="'story/' + metadata.name + '/images/' + selectedImage" :alt="'Preview of ' + selectedImage">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--VIDEO CARICATI-->
+                <div id="uploadvideos" class="row border-top mt-2">
+                    <div class="col-md-4">
+                        <div class="form-group mb-2">
+                            <label for="vid_upload">Upload video per la storia corrente: </label>
+                            <input class="form-control-file" type="file" accept="video/*" name="vid_upload" ref="vid_upload">
+                        </div>
+                        <button class="btn btn-primary" v-on:click="uploadVid()">UPLOAD</button>
+                    </div>
+                    <div class="col-md-4">
+                        <div class=" row form-group mb-2">
+                            <label for="select-video">Video nella storia corrente: </label>
+                            <select name="select-video" class="form-control" v-model="selectedVideo">
+                                <option v-for="vidname in vidsList" :value="vidname">{{ vidname }}</option>
+                            </select>
+                            <div id="video-preview" v-if="selectedVideo" class="container-fluid mt-2">
+                                <video width="60%" controls :src="'story/' + metadata.name + '/videos/' + selectedVideo">Preview of {{ selectedVideo }}</video>
                             </div>
                         </div>
                     </div>
@@ -198,7 +224,9 @@
                         <!--Area quest-->
                         <div ref="questrender" class="card" style="position: relative;" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
                             <div class="card-header" :style="cardLimitStyle">
-                                <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">Name of Quest {{ previewdata.currentQuest }}</h3>
+                                <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">
+                                    {{previewdata.in_mainquest ? "Quest" : "Subquest"}} {{ previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub }}: {{ renderQuest.title || "no_name" }}
+                                </h3>
                             </div>
                             <div class="card-body" :style="removePredefinedStylesCard">
                                 <p>{{ renderQuest.text }}</p>
@@ -212,8 +240,16 @@
                                     :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub" :options="previewdata.in_mainquest ? getCurrentOptions : renderQuest.options" 
                                     v-model="previewdata.picked" ref="inputComponent" :styles="componentStyle"></component>
                                 </div>
+                                <!--EVENTUALI MEDIA-->
+                                <div v-if="renderQuest.media">
+                                    <img v-if="renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
+                                    <div v-if="renderQuest.media.type=='video'">
+                                        <video width="40%" height="30%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
+                                        </video>
+                                    </div>
+                                </div>    
                             </div>
-
+                            <!-- TASTO SUBMIT -->
                             <div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
                                 <button id="submit" ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :style="submitStyle" 
                                 v-on:click="previewdata.in_mainquest? submitMain() : submitSub()">Submit</button>
@@ -237,35 +273,36 @@
                     <!--PREV-->
                     <div class="col-md-2 border-right pt-2 pb-2">
                         <h2 class="bg-info text-light">Nodi Precedenti</h2>
-                        <button class="btn btn-secondary btn-block" data-toggle="tooltip" :title="gamedata.mainQuest[prev].title" v-for="prev in getPrevNodes" v-on:click="jumpToQuest('main',prev)">
+                        <button class="btn btn-secondary btn-block" v-for="prev in previewdata.in_mainquest ? getPrevNodes : renderQuest.requires_sub" 
+                        data-toggle="tooltip" :title="gamedata.mainQuest[prev].title" v-on:click="jumpToQuest('main',prev)">
                             {{ prev }}
                         </button>
                     </div>
                     <!--CAMPI QUEST ATTUALE-->
                     <div class="col-md-6 border-right pt-2 pb-2">
                         <!--Quest ID-->
-                        <div class="form-group row">
+                        <div class="form-group row mb-2">
                             <label for="numberfield" class="col-md-2 col-form-label">Numero</label>
                             <div class="col-md-10">
                                 <input name="numberfield" type="text" readyonly class="form-control-plaintext" :value="renderQuest.number">
                             </div>
                         </div>
                         <!--Quest TITLE-->
-                        <div class="form-group row">
+                        <div class="form-group row mb-2">
                             <label for="titlefield" class="col-md-2 col-form-label">Titolo</label>
                             <div class="col-md-10">
                                 <input name="titlefield" type="text" class="form-control" v-model="renderQuest.title">
                             </div>
                         </div>
                         <!--Quest OBJECTIVE (subquests only)-->
-                        <div class="form-group row" v-if="!previewdata.in_mainquest">
+                        <div class="form-group row mb-2" v-if="!previewdata.in_mainquest">
                             <label for="objectivefield" class="col-md-2 col-form-label">Obiettivo</label>
                             <div class="col-md-10">
                                 <input name="objectivefield" class="form-control" type="text" v-model="renderQuest.objective">
                             </div>
                         </div>
                         <!--Quest TEXT-->
-                        <div class="form-group row">
+                        <div class="form-group row mb-2">
                             <label for="textfield" class="col-md-2 col-form-label">Testo</label>
                             <div class="col-md-10">
                                 <textarea name="textfield" class="form-control" type="text" v-model="renderQuest.text"></textarea>
@@ -288,7 +325,7 @@
                             </div>
                         </div>
                         <!--Quest DESCRIPTION-->
-                        <div class="form-group row">
+                        <div class="form-group row mb-2">
                             <label for="descriptionfield" class="col-md-2 col-form-label">Descrizione</label>
                             <div class="col-md-10">
                                 <textarea name="descriptionfield" class="form-control" type="text" v-model="renderQuest.description"></textarea>
@@ -320,6 +357,34 @@
                             <div class="form-check form-check-inline" v-if="previewdata.in_mainquest">
                                 <input type="radio" id="endchoice" class="form-check-input" name="typefield" value="ending" v-model="renderQuest.type">
                                 <label for="endchoice" class="form-check-label">Finale</label>
+                            </div>
+                        </div>
+                        <!--Quest INSERT MEDIA-->
+                        <label name="mediafield" class="mt-2">Inserisci Media</label>
+                        <div v-if="renderQuest.media" name="mediafield">
+                            <div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" id="media-type-image" name="choose-media" value="" v-model="renderQuest.media.type">
+                                    <label class="form-check-input" for="media-type-image">Nessuno</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" id="media-type-image" name="choose-media" value="image" v-model="renderQuest.media.type">
+                                    <label class="form-check-input" for="media-type-image">Immagine</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" id="media-type-video" name="choose-media" value="video" v-model="renderQuest.media.type">
+                                    <label class="form-check-input" for="media-type-video">Video</label>
+                                </div>
+                            </div>
+                            <div v-if="renderQuest.media.type">
+                                <label for="select-media">Seleziona il media da utilizzare</label>
+                                <select v-model="renderQuest.media.uri">
+                                    <option v-for="opt in (renderQuest.media.type=='image' ? imagesList : vidsList)" :value="opt">{{ opt }}</option>
+                                </select>
+                                <div class="form-group row">
+                                    <label for="media-alt">Descrizione:</label>
+                                    <input name="media-alt" type="text" v-model="renderQuest.media.alt">
+                                </div>
                             </div>
                         </div>
                         <!-- Quest OPTIONS (only if type is choice)-->
@@ -359,34 +424,34 @@
                                 <div class="col-9 border-top text-center">
                                     <label class="font-weight-bold text-info">Personalizza la Tastiera</label>
                                 </div>
-                                <div name="button-customize" class="col-md-6 border-right m-1">
+                                <div name="button-customize" class="col-lg-6 border-right m-1">
                                     <label for="keybutton-customize" class="font-weight-bold text-info mb-2">Personalizza Bottoni</label>
                                     <div class="form-group mb-3">
                                         <label class="mr-2" for="keys">Tasti</label>
                                         <textarea class="form-control mr-2" v-model="renderQuest.key_style.keys"></textarea>
                                     </div>
                                     <div class="form-group row mb-3">
-                                        <div class="col-md-4">
+                                        <div class="col-lg-4">
                                             <label for="btn-width">Larghezza</label>
                                             <input class="form-control" type="number" step="0.1" min="0" v-model="renderQuest.key_style.width">
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-lg-4">
                                             <label for="btn-width">Altezza</label>
                                             <input class="form-control" type="number" step="0.1" min="0" v-model="renderQuest.key_style.height">
                                         </div>
                                     </div>
                                     <div class="form-group row mb-3">
-                                        <div class="col-md-4">
+                                        <div class="col-lg-4">
                                             <label for="textfont">Font</label>
                                             <input name="textfont" class="form-control" type="text" v-model="renderQuest.key_style.text_font">
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-lg-4">
                                             <label for="textcolor">Colore</label>
                                             <input name="textcolor" type="color" v-model="renderQuest.key_style.text_color">
                                         </div>
                                     </div>
                                     <div class="form-group row mb-3">
-                                        <div class="col-md-4">
+                                        <div class="col-lg-4">
                                             <label for="textsize">Dimensione</label>
                                             <input name="textsize" class="form-control" type="number" step="1" min="0" v-model="renderQuest.key_style.text_size">
                                         </div>
@@ -402,27 +467,27 @@
                                         <input name="bgcolor" type="color" v-model="renderQuest.key_style.bg_color">
                                     </div>
                                     <div class="form-group row mb-3">
-                                        <div class="col-md-4">
+                                        <div class="col-lg-4">
                                             <label for="bordercolor">Colore Bordo</label>
                                             <input name="bordercolor" type="color" v-model="renderQuest.key_style.border_color">
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-lg-4">
                                             <label for="bordersize" >Spessore Bordo</label>
                                             <input name="bordersize" class="form-control" type="number" step="1" min="0" v-model="renderQuest.key_style.border_size">
                                         </div>
                                     </div>
                                     <div class="form-group row mb-3">
-                                        <div class="col-md-4">
+                                        <div class="col-lg-4">
                                             <label for="borderrad" >Raggio Bordo</label>
                                             <input name="borderrad" class="form-control" type="number" step="1" min="0" v-model="renderQuest.key_style.radius">
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-lg-4">
                                             <label for="margin">Margine</label>
                                             <input name="margin" class="form-control" type="number" step="0.1" min="0" v-model="renderQuest.key_style.margin">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <div class="form-check col-md-4">
+                                        <div class="form-check col-lg-4">
                                         <label for="shadow" class="form-check-label">
                                             <input name="shadow" class="form-check-input" type="checkbox" v-model="renderQuest.key_style.shadow">
                                             Ombreggiatura
@@ -430,7 +495,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <div class="col-md-6">
+                                        <div class="col-lg-6">
                                             <label for="animation">Animazione</label>
                                             <select name="animation" class="form-control" v-model="renderQuest.key_style.animation">
                                                 <option value="">None</option>
@@ -440,15 +505,15 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div id="keyscreen-customize" class="col-md-4 m-1">
+                                <div id="keyscreen-customize" class="col-lg-4 m-1">
                                     <label class="mb-2 font-weight-bold text-info">Personalizza prompt</label>
                                     <div class="form-group row mb-3">
                                         <label for="screenfont">Font</label>
                                         <input name="screenfont" class="form-control" type="text" v-model="renderQuest.key_style.screen_font">
                                     </div>
                                     <div class="form-group row mb-3">
-                                        <div class="col-md-4"><label for="screencolor">Colore Font</label></div>
-                                        <div class="col-md-2"><input name="screencolor" type="color" v-model="renderQuest.key_style.screen_color"></div>
+                                        <div class="col-lg-4"><label for="screencolor">Colore Font</label></div>
+                                        <div class="col-lg-2"><input name="screencolor" type="color" v-model="renderQuest.key_style.screen_color"></div>
                                     </div>
                                     <div class="form-group form-check mb-3">
                                         <label for="screenbold" class="form-check-label">
@@ -457,20 +522,20 @@
                                         </label>
                                     </div>
                                     <div class="form-group row mb-3">
-                                        <div class="col-md-4"><label for="screenbg">Colore Sfondo</label></div>
-                                        <div class="col-md-2"><input name="screenbg" type="color" v-model="renderQuest.key_style.screen_bg"></div>
+                                        <div class="col-lg-4"><label for="screenbg">Colore Sfondo</label></div>
+                                        <div class="col-lg-2"><input name="screenbg" type="color" v-model="renderQuest.key_style.screen_bg"></div>
                                     </div>
                                     <div class="form-group row mb-3">
-                                        <div class="col-md-4"><label for="screenbordercolor">Colore Bordo</label></div>
-                                        <div class="col-md-2"><input name="screenbordercolor" type="color" v-model="renderQuest.key_style.screen_border_color"></div>
+                                        <div class="col-lg-4"><label for="screenbordercolor">Colore Bordo</label></div>
+                                        <div class="col-lg-2"><input name="screenbordercolor" type="color" v-model="renderQuest.key_style.screen_border_color"></div>
                                     </div>
                                     <div class="form-group row mb-3">
-                                        <div class="col-md-4"><label for="screenborder">Spessore Bordo</label></div>
-                                        <div class="col-md-3"><input type="number" step="1" min="0" v-model="renderQuest.key_style.screen_border_size"></div>
+                                        <div class="col-lg-4"><label for="screenborder">Spessore Bordo</label></div>
+                                        <div class="col-lg-3"><input type="number" step="1" min="0" v-model="renderQuest.key_style.screen_border_size"></div>
                                     </div>
                                     <div class="form-group row mb-3">
-                                        <div class="col-md-4"><label for="screenlength">Lunghezza</label></div>
-                                        <div class="col-md-3"><input name="screenlength" type="number" step="0.1" min="0" v-model="renderQuest.key_style.screen_length"></div>
+                                        <div class="col-lg-4"><label for="screenlength">Lunghezza</label></div>
+                                        <div class="col-lg-3"><input name="screenlength" type="number" step="0.1" min="0" v-model="renderQuest.key_style.screen_length"></div>
                                     </div>
                                 </div>
                             </div>
@@ -489,7 +554,7 @@
                                     <label for="name_keystyle">Salva come:</label>
                                     <input name="name_keystyle" type="text" ref="key_style_name">
                                     <div class="btn btn-group">
-                                        <button class="btn btn-danger" v-on:click="saveKeyStyle">SAVE</button>
+                                        <button class="btn btn-primary" v-on:click="saveKeyStyle">SAVE</button>
                                     </div>
                                 </div>
                             </div>

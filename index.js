@@ -185,6 +185,8 @@ app.post('/stories', (req, res) => {
             throw error;
         }
     });
+    fs.mkdirSync(path.join(newdir+"/images"), {recursive: true});
+    fs.mkdirSync(path.join(newdir+"/videos"), {recursive: true});
     res.send(":)");
 });
 
@@ -216,6 +218,24 @@ app.post('/stories/:storyName/images', (req, res) => {
     });
     res.send(":)");
 });
+
+app.get('/stories/:storyName/videos', (req, res) =>{
+    console.log(`Getting content of /story/${req.params.storyName}/videos`);
+    var viddir = path.join(__dirname + `/story/${req.params.storyName}/videos/`);
+    let entrylist = fs.readdirSync(viddir);
+    console.log(entrylist);
+    res.send(entrylist);
+});
+
+app.post('/stories/:storyName/videos', (req, res) => {
+    var targetDir = path.join(__dirname + "/story/" + req.params.storyName + "/videos/");
+    fs.mkdirSync(targetDir, { recursive: true });
+    fs.writeFile(path.join(targetDir + req.files.video.name), req.files.video.data, (error) => {
+        if(error)   throw error;
+    });
+    res.send(":)");
+});
+
 
 //##STILI##//
 
