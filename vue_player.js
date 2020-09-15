@@ -548,6 +548,9 @@ var app = new Vue({
       }
       return gotos;
     },
+    getMediaSrc: function() {
+        return ("story/" + this.metadata.name + (this.renderQuest.media.type=="image" ? "/images/" : "/videos/") + this.renderQuest.media.uri);
+    },
     //styleObjects
     loadImage: function(){
       var temp = this.css_style.background;
