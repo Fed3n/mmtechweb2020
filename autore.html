@@ -10,7 +10,6 @@
     <script src="https://unpkg.com/vue-observe-visibility/dist/vue-observe-visibility.min.js"></script>
     <script src="qrcode.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <link rel="stylesheet" href="resolutions.css">
     <title>Ambiente Autore</title>
 </head>
 
@@ -174,8 +173,8 @@
       					<div id="stylepanel" class="row container-fluid collapse p-3 border-bottom">
       						<div class="row container-fluid">
         						<!-- IMMAGINE O SFONDO -->
-      							<div id="backgroundStyle" class="col-6 mb-6">
-      									<div class="btn-group container-fluid">
+      							<div id="backgroundStyle" class="col-6">
+      									<div class="btn-group container-fluid mb-3">
       						        <button class="btn btn-light" v-on:click="css_style.background.image = true" :disabled="css_style.background.image">Immagine</button>
       						        <button class="btn btn-light" v-on:click="css_style.background.image = false" :disabled="!css_style.background.image">Colore</button>
                   			</div>
@@ -323,7 +322,7 @@
                                     <div class="form-group row pl-3 my-0 mb-1">
                                       <label for="borderWidthBadgeCustom" class="col-6 pt-1">Spessore del Bordo</label>
                                       <div class="col-6">
-                                        <input name="borderWidthBadgeCustom" type="number" step="1" min="1" value="3" @change="borderSize">
+                                        <input name="borderWidthBadgeCustom" type="number" step="1" min="1" value="3" @change="badgeBorderSize">
                                       </div>
                                     </div>
                                     <div class="form-group row pl-3 my-0">
@@ -336,7 +335,7 @@
                                       <label class="col pt-2">Tipo di Bordo</label>
                                       <div class="col">
                                         <select class="form-control" name="borderStyleBadgeCustom" v-model="css_style.background.style.badge.customized['border-style']">
-                                          <option v-for="styles in bootstrapConsts.badgeBorderStyles" :value="styles.value">{{ styles.name }}</option>
+                                          <option v-for="styles in bootstrapConsts.badgeAlertBorderStyles" :value="styles.value">{{ styles.name }}</option>
                                         </select>
                                       </div>
                                     </div>
@@ -348,17 +347,69 @@
                                 </div>
                               </div>
                             </div>
-
-
+                            <!-- ALERT -->
+                            <div class="panel panel-default">
+                              <div class="panel-heading py-2 border-bottom">
+                                <div class="panel-title" data-toggle="collapse" data-parent="#setColorBackground" href="#alertStyleEditor" @click="styleMenuCollapse">
+                                  <label>Etichetta aiuto richiesto</label>
+                                </div>
+                              </div>
+                              <div id="alertStyleEditor" class="panel-collapse collapse stylepanelcollapse">
+                                <div class="panel-body border-bottom mt-2">
+                                  <!-- tipologia predefinita -->
+                                  <div v-if="!css_style.background.style.alert.custom">
+                                    <div class="form-group row pl-4 my-0">
+                                      <label class="col col-form-label">Tipologia</label>
+                                      <div class="col">
+                                        <select class="form-control" name="alertBootstrapEditor" v-model="css_style.background.style.alert.bootstrap.type">
+                                          <option v-for="styles in bootstrapConsts.alertColors" :value="styles.value">{{ styles.name }}</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <!-- stile personalizzato -->
+                                  <div v-if="css_style.background.style.alert.custom">
+                                    <div class="form-group row pl-3 my-0">
+                                      <label for="textColorAlertCustom" class="col-6">Colore del Testo</label>
+                                      <div class="col-6">
+                                        <input name="textColorAlertCustom" type="color" v-model="css_style.background.style.alert.customized['color']">
+                                      </div>
+                                    </div>
+                                    <div class="form-group row pl-3 my-0">
+                                      <label for="backgroundColorAlertCustom" class="col-6">Colore di Sfondo</label>
+                                      <div class="col-6">
+                                        <input name="backgroundColorAlertCustom" type="color" v-model="css_style.background.style.alert.customized['background-color']">
+                                      </div>
+                                    </div>
+                                    <div class="form-group row pl-3 my-0 mb-1">
+                                      <label for="borderWidthAlertCustom" class="col-6 pt-1">Spessore del Bordo</label>
+                                      <div class="col-6">
+                                        <input name="borderWidthAlertCustom" type="number" step="1" min="1" value="3" @change="alertBorderSize">
+                                      </div>
+                                    </div>
+                                    <div class="form-group row pl-3 my-0">
+                                      <label for="borderColorAlertCustom" class="col-6">Colore del Bordo</label>
+                                      <div class="col-6">
+                                        <input name="borderColorAlertCustom" type="color" v-model="css_style.background.style.alert.customized['border-color']">
+                                      </div>
+                                    </div>
+                                    <div class="form-group row pl-3 my-0">
+                                      <label class="col pt-2">Tipo di Bordo</label>
+                                      <div class="col">
+                                        <select class="form-control" name="borderStyleAlertCustom" v-model="css_style.background.style.alert.customized['border-style']">
+                                          <option v-for="styles in bootstrapConsts.badgeAlertBorderStyles" :value="styles.value">{{ styles.name }}</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="container-fluid text-center mb-0 mt-2">
+                                    <label for="alertCheckbox">Personalizza</label>
+                                    <input id="alertCheckbox" type="checkbox" v-model="css_style.background.style.alert.custom">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
-
-
-
-
-
-
-
-
                   			</div>
       							</div>
       							<!-- STILI GLOBALI DEL TESTO -->
@@ -394,18 +445,18 @@
       										</div>
       									</div>
       									<div class="form-group row">
-      										  <label for="fontColorField" class="col-md-4 col-form-label">Colore del Testo</label>
+      										  <label class="col-md-4">Colore del Testo</label>
       				              <div class="col-md-2">
-      												<input id="fontColorField" type="color" v-model="currentMainStyleColor" @change="editMainColor">
+      												<input type="color" v-model="currentMainStyleColor" @change="editMainColor">
       											</div>
       											<div class="col-md-3">
       												<label for="applyMainColor">Applica</label>
       												<input id="applyMainColor" type="checkbox" v-model="mainStyleColor" @change="editMainColor">
       											</div>
-      											<div class="col-md-3">
-      												<label v-if="mainStyleColor && !css_style.background.image" for="applyMainColor" style="font-size: 15px">Verranno sovrascritti tutti gli altri colori del testo</label>
-      											</div>
       								  </div>
+                        <div class="row p-0 m-0 ml-6">
+                          <label v-if="mainStyleColor && !css_style.background.image" for="applyMainColor" style="font-size: 15px">Verranno sovrascritti tutti gli altri colori del testo</label>
+                        </div>
       							</div>
     		          </div>
                 </div>
@@ -952,8 +1003,8 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <script type="text/javascript" src="style_consts.js"></script>
-    <script type="text/javascript" src="vue_autore.js"></script>
     <script type="text/javascript" src="utils.js"></script>
+    <script type="text/javascript" src="vue_autore.js"></script>
 </body>
 
 </html>
