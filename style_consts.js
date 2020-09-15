@@ -94,7 +94,18 @@ var bootstrapConstsExternal = {
 				{ name: "verdeacqua", value: "badge-info" },
 				{ name: "trasparente", value: "badge-white" }
 			],
-			badgeBorderStyles: [
+			alertColors: [
+				{ name: "bianco", value: "alert-light" },
+				{ name: "blu", value: "alert-primary" },
+				{ name: "grigio", value: "alert-secondary" },
+				{ name: "grigio scuro", value: "alert-dark" },
+				{ name: "verde", value: "alert-success" },
+				{ name: "rosso", value: "alert-danger" },
+				{ name: "arancione", value: "alert-warning" },
+				{ name: "verdeacqua", value: "alert-info" },
+				{ name: "stile sottostante", value: "alert-white" }
+			],
+			badgeAlertBorderStyles: [
 				{ name: "normale", value: "solid" },
 				{ name: "doppio", value: "double" },
 				{ name: "tratteggiato", value: "dashed" },

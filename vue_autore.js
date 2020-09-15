@@ -795,17 +795,17 @@
                   this.$refs.questname.focus();
           },
           styleMenuCollapse: function(){
-             // console.log(this.$refs.stylepanelcollapse);
-             // this.$refs.stylepanelcollapse.collapse = "hide";
-             //DA FARE CON VUE -----------------------------------------------------------------------------------------------------------------------------------------------
              $('.stylepanelcollapse').collapse('hide');
           },
           //style functions
           fontSize: function(event) {
-							this.css_style.mainStyle["font-size"] = event.target.value+"px";
+						this.css_style.mainStyle["font-size"] = event.target.value+"px";
 					},
-          borderSize: function(event){
+          badgeBorderSize: function(event){
 							this.css_style.background.style.badge.customized['border-width']= event.target.value+"px";
+          },
+          alertBorderSize: function(event){
+              this.css_style.background.style.alert.customized['border-width']= event.target.value+"px";
 					},
 					editMainColor: function(event){
 						if (this.mainStyleColor)
