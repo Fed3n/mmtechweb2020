@@ -798,6 +798,10 @@
              $('.stylepanelcollapse').collapse('hide');
           },
           //style functions
+          setImage: function(event){
+            console.log("caricamento");
+            this.css_style.background.url = "url(story/" + this.metadata.name + "/images/" + event.target.value + ")";
+          },
           fontSize: function(event) {
 						this.css_style.mainStyle["font-size"] = event.target.value+"px";
 					},
@@ -1081,9 +1085,9 @@
           //modifica la dimensione della preview
           previewMode: function() {
               if (this.mobileView)
-                return "col-4";
+                return "col-md-4";
               else
-                return "col-6";
+                return "col-md-6";
           },
           //oggetti presenti anche nel player
           navbarBootstrapStyle: function() {
