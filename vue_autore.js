@@ -796,8 +796,6 @@
 							this.css_style.mainStyle["font-size"] = event.target.value+"px";
 					},
 					editMainColor: function(event){
-					console.log("checked: ",this.mainStyleColor);
-					console.log("colore: ",this.currentMainStyleColor);
 						if (this.mainStyleColor)
 							this.css_style.mainStyle['color'] = this.currentMainStyleColor;
 						else
@@ -812,6 +810,10 @@
                       main_style_cleaned[key] = value;
               });
               return Object.assign(styles, main_style_cleaned);
+          },
+          //method that returns if navbar button is visible
+          buttonChangedVisibility: function(isVisible, entry) {
+              this.togglerButtonVisible = isVisible
           },
           menuLinkEvent: function(num, bool) {
               this.onLink = new Array(this.getSubquests.length + 1);
@@ -1044,7 +1046,7 @@
           getMediaSrc: function() {
             return ("story/" + this.metadata.name + (this.renderQuest.media.type=="image" ? "/images/" : "/videos/") + this.renderQuest.media.uri);
           },
-          //styleObjects
+          //STYLEOBJECTS
           loadImage: function() {
               var styles = {};
               var temp = this.css_style.background;
@@ -1064,6 +1066,14 @@
               }
               return styles;
           },
+          //modifica la dimensione della preview
+          previewMode: function() {
+              if (this.mobileView)
+                return "col-4";
+              else
+                return "col-6";
+          },
+          //oggetti presenti anche nel player
           navbarBootstrapStyle: function() {
 						var classes = "";
 						var temp = this.css_style.background.style.nav.bootstrap;

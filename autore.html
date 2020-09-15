@@ -201,7 +201,7 @@
     															<label class="col col-form-label">Colore di Sfondo</label>
     															<div class="col">
     																<select class="form-control" name="navigationBarStyle" v-model="css_style.background.style.nav.bootstrap.background">
-    																	<option v-for="styles in bootstrapConsts.navBackgroundColors" :value="styles.value">{{ styles.name }}</option>
+    																	<option v-for="styles in bootstrapConsts.navCardBackgroundColors" :value="styles.value">{{ styles.name }}</option>
     																</select>
     															</div>
     														</div>
@@ -243,7 +243,7 @@
                                   <label class="col col-form-label">Colore di Sfondo</label>
                                   <div class="col">
                                     <select class="form-control" name="cardBackgroundStyle" v-model="css_style.background.style.card.bootstrap.background">
-                                      <option v-for="styles in bootstrapConsts.cardBackgroundColors" :value="styles.value">{{ styles.name }}</option>
+                                      <option v-for="styles in bootstrapConsts.navCardBackgroundColors" :value="styles.value">{{ styles.name }}</option>
                                     </select>
                                   </div>
                                 </div>
@@ -324,15 +324,15 @@
     		          </div>
                 </div>
                 <!--PREVIEW-->
-                <div id="preview-container" class="container pt-3 pb-3 row border-bottom">
-                    <div id="preview" class="col-md-6" :style="loadImage">
+                <div id="preview-container" class="container-fluid py-3 row border-bottom">
+                    <div id="preview" :class="previewMode" :style="loadImage">
 
                         <nav class="navbar" :class="navbarBootstrapStyle" :style="navbarStyle">
                             <!-- add "navbar-expand" for pc visualization -->
                             <div class="navbar-brand" :style="navbarBrandStyle">Menu
                                 <span class="badge" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert">Subs!</span>
                             </div>
-                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsiblemenu" :style="toggleButtonContainer" aria-label="Apri il menu">
+                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsiblemenu" :style="toggleButtonContainer" v-observe-visibility="buttonChangedVisibility" aria-label="Apri il menu">
                                 <span class="navbar-toggler-icon" :style="{ 'background-image': togglerButtonStyle }"></span> <!-- v-observe-visibility="buttonChangedVisibility" -->
                             </button>
 
@@ -390,7 +390,7 @@
                                         <video width="40%" height="30%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
                                         </video>
                                     </div>
-                                </div>    
+                                </div>
                             </div>
                             <!-- TASTO SUBMIT -->
                             <div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
@@ -400,7 +400,7 @@
                         </div>
 
                     </div>
-                    <div id="current-answer" v-if="previewdata.picked" class="col-6">
+                    <div id="current-answer" v-if="previewdata.picked" class="col-4" style="word-wrap:break-word;">
                         <p>Risposta corrente: {{ previewdata.picked }}</p>
                         <button class="btn btn-secondary" v-if="renderQuest.goto.length > 0" data-toggle="tooltip"
                         :title="previewdata.in_mainquest ? gamedata.mainQuest[getAnswerGoto].title : ''" v-on:click="jumpToQuest('main',getAnswerGoto)" :disabled="!previewdata.in_mainquest">
@@ -420,7 +420,7 @@
                     <!--PREV-->
                     <div class="col-md-2 border-right pt-2 pb-2">
                         <h2 class="bg-info text-light">Nodi Precedenti</h2>
-                        <button class="btn btn-secondary btn-block" v-for="prev in previewdata.in_mainquest ? getPrevNodes : renderQuest.requires_sub" 
+                        <button class="btn btn-secondary btn-block" v-for="prev in previewdata.in_mainquest ? getPrevNodes : renderQuest.requires_sub"
                         data-toggle="tooltip" :title="gamedata.mainQuest[prev].title" v-on:click="jumpToQuest('main',prev)">
                             {{ prev }}
                         </button>

@@ -72,7 +72,7 @@ var bootstrapConstsExternal = {
 				{ name: "bianco", value: "navbar-dark" },
 				{ name: "nero", value: "navbar-light" }
 			],
-			navBackgroundColors: [
+			navCardBackgroundColors: [
 				{ name: "nero", value: "bg-dark" },
 				{ name: "bianco", value: "bg-white" },
 				{ name: "blu", value: "bg-primary" },
@@ -94,15 +94,4 @@ var bootstrapConstsExternal = {
 				{ name: "verdeacqua", value: "text-info" },
 				{ name: "panna", value: "text-light" }
 			],
-			cardBackgroundColors: [
-				{ name: "nero", value: "bg-dark" },
-				{ name: "bianco", value: "bg-white" },
-				{ name: "blu", value: "bg-primary" },
-				{ name: "grigio", value: "bg-secondary" },
-				{ name: "verde", value: "bg-success" },
-				{ name: "rosso", value: "bg-danger" },
-				{ name: "arancione", value: "bg-warning" },
-				{ name: "verdeacqua", value: "bg-info" },
-				{ name: "panna", value: "bg-light" }
-			]
 		};
