@@ -72,17 +72,6 @@ var bootstrapConstsExternal = {
 				{ name: "bianco", value: "navbar-dark" },
 				{ name: "nero", value: "navbar-light" }
 			],
-			navCardBackgroundColors: [
-				{ name: "nero", value: "bg-dark" },
-				{ name: "bianco", value: "bg-white" },
-				{ name: "blu", value: "bg-primary" },
-				{ name: "grigio", value: "bg-secondary" },
-				{ name: "verde", value: "bg-success" },
-				{ name: "rosso", value: "bg-danger" },
-				{ name: "arancione", value: "bg-warning" },
-				{ name: "verdeacqua", value: "bg-info" },
-				{ name: "panna", value: "bg-light" }
-			],
 			cardTextColors: [
 				{ name: "nero", value: "text-dark" },
 				{ name: "bianco", value: "text-white" },
@@ -93,5 +82,34 @@ var bootstrapConstsExternal = {
 				{ name: "arancione", value: "text-warning" },
 				{ name: "verdeacqua", value: "text-info" },
 				{ name: "panna", value: "text-light" }
+			],
+			badgeColors: [
+				{ name: "nero", value: "badge-dark" },
+				{ name: "bianco", value: "badge-light" },
+				{ name: "blu", value: "badge-primary" },
+				{ name: "grigio", value: "badge-secondary" },
+				{ name: "verde", value: "badge-success" },
+				{ name: "rosso", value: "badge-danger" },
+				{ name: "arancione", value: "badge-warning" },
+				{ name: "verdeacqua", value: "badge-info" },
+				{ name: "trasparente", value: "badge-white" }
+			],
+			badgeBorderStyles: [
+				{ name: "normale", value: "solid" },
+				{ name: "doppio", value: "double" },
+				{ name: "tratteggiato", value: "dashed" },
+				{ name: "punteggiato", value: "dotted" },
+				{ name: "assente", value: "none" }
+			],
+			navCardBackgroundColors: [
+				{ name: "nero", value: "bg-dark" },
+				{ name: "bianco", value: "bg-white" },
+				{ name: "blu", value: "bg-primary" },
+				{ name: "grigio", value: "bg-secondary" },
+				{ name: "verde", value: "bg-success" },
+				{ name: "rosso", value: "bg-danger" },
+				{ name: "arancione", value: "bg-warning" },
+				{ name: "verdeacqua", value: "bg-info" },
+				{ name: "panna", value: "bg-light" }
 			],
 		};

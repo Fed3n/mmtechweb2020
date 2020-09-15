@@ -800,6 +800,9 @@
           fontSize: function(event) {
 							this.css_style.mainStyle["font-size"] = event.target.value+"px";
 					},
+          borderSize: function(event){
+							this.css_style.background.style.badge.customized['border-width']= event.target.value+"px";
+					},
 					editMainColor: function(event){
 						if (this.mainStyleColor)
 							this.css_style.mainStyle['color'] = this.currentMainStyleColor;

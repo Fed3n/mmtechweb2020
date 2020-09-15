@@ -186,13 +186,10 @@
                 					<!-- scelgi lo sfondo dei componenti -->
                           <div v-if="!css_style.background.image" id="setColorBackground" class="panel-group">
                             <!-- NAVBAR -->
-                  					<!-- ##div class="mt-3 border-bottom"-->
                             <div class="panel panel-default">
-                              <!-- ##label for="navigationBar">Barra di Navigazione</label-->
                               <div class="panel-heading py-2 border-bottom">
-                                <div class="panel-title">
-                                  <!-- PROVA A METTERE TUTTO NEL LABEL E NON NELL'H4 _______________________________________________________________________________________________________________________ -->
-                                  <label data-toggle="collapse" data-parent="#setColorBackground" href="#navigationBarEditor" @click="styleMenuCollapse">Barra di Navigazione</label>
+                                <div class="panel-title" data-toggle="collapse" data-parent="#setColorBackground" href="#navigationBarEditor" @click="styleMenuCollapse">
+                                  <label>Barra di Navigazione</label>
                                 </div>
                               </div>
                               <div id="navigationBarEditor" class="panel-collapse collapse stylepanelcollapse">
@@ -239,13 +236,10 @@
                               </div>
                             </div>
                             <!-- CARD -->
-                            <!-- ##div class="mt-3 border-bottom"-->
                             <div class="panel panel-default">
-                              <!-- ##label for="cardStyleEditor">Corpo Centrale</label -->
                               <div class="panel-heading py-2 border-bottom">
-                                <div class="panel-title">
-                                  <!-- PROVA A METTERE TUTTO NEL LABEL E NON NELL'H4 _______________________________________________________________________________________________________________________ -->
-                                  <label data-toggle="collapse" data-parent="#setColorBackground" href="#cardStyleEditor" @click="styleMenuCollapse">Corpo Centrale</label>
+                                <div class="panel-title" data-toggle="collapse" data-parent="#setColorBackground" href="#cardStyleEditor" @click="styleMenuCollapse">
+                                  <label>Corpo Centrale</label>
                                 </div>
                               </div>
                               <div id="cardStyleEditor" class="panel-collapse collapse stylepanelcollapse">
@@ -291,6 +285,68 @@
                                 </div>
                               </div>
                             </div>
+                            <!-- BADGE -->
+                            <div class="panel panel-default">
+                              <div class="panel-heading py-2 border-bottom">
+                                <div class="panel-title" data-toggle="collapse" data-parent="#setColorBackground" href="#badgeStyleEditor" @click="styleMenuCollapse">
+                                  <label>Etichetta obiettivi secondari disponibili</label>
+                                </div>
+                              </div>
+                              <div id="badgeStyleEditor" class="panel-collapse collapse stylepanelcollapse">
+                                <div class="panel-body border-bottom mt-2">
+                                  <!-- tipologia predefinita -->
+                                  <div v-if="!css_style.background.style.badge.custom">
+                                    <div class="form-group row pl-4 my-0">
+                                      <label class="col col-form-label">Tipologia</label>
+                                      <div class="col">
+                                        <select class="form-control" name="badgeBootstrapEditor" v-model="css_style.background.style.badge.bootstrap.type">
+                                          <option v-for="styles in bootstrapConsts.badgeColors" :value="styles.value">{{ styles.name }}</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <!-- stile personalizzato -->
+                                  <div v-if="css_style.background.style.badge.custom">
+                                    <div class="form-group row pl-3 my-0">
+                                      <label for="textColorBadgeCustom" class="col-6">Colore del Testo</label>
+                                      <div class="col-6">
+                                        <input name="textColorBadgeCustom" type="color" v-model="css_style.background.style.badge.customized['color']">
+                                      </div>
+                                    </div>
+                                    <div class="form-group row pl-3 my-0">
+                                      <label for="backgroundColorBadgeCustom" class="col-6">Colore di Sfondo</label>
+                                      <div class="col-6">
+                                        <input name="backgroundColorBadgeCustom" type="color" v-model="css_style.background.style.badge.customized['background-color']">
+                                      </div>
+                                    </div>
+                                    <div class="form-group row pl-3 my-0 mb-1">
+                                      <label for="borderWidthBadgeCustom" class="col-6 pt-1">Spessore del Bordo</label>
+                                      <div class="col-6">
+                                        <input name="borderWidthBadgeCustom" type="number" step="1" min="1" value="3" @change="borderSize">
+                                      </div>
+                                    </div>
+                                    <div class="form-group row pl-3 my-0">
+                                      <label for="borderColorBadgeCustom" class="col-6">Colore del Bordo</label>
+                                      <div class="col-6">
+                                        <input name="borderColorBadgeCustom" type="color" v-model="css_style.background.style.badge.customized['border-color']">
+                                      </div>
+                                    </div>
+                                    <div class="form-group row pl-3 my-0">
+                                      <label class="col pt-2">Tipo di Bordo</label>
+                                      <div class="col">
+                                        <select class="form-control" name="borderStyleBadgeCustom" v-model="css_style.background.style.badge.customized['border-style']">
+                                          <option v-for="styles in bootstrapConsts.badgeBorderStyles" :value="styles.value">{{ styles.name }}</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="container-fluid text-center mb-0 mt-2">
+                                    <label for="badgeCheckbox">Personalizza</label>
+                                    <input id="badgeCheckbox" type="checkbox" v-model="css_style.background.style.badge.custom">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
 
 
                           </div>
@@ -298,22 +354,7 @@
 
 
 
-    <div class="container">
-      <div class="panel-group" id="mini">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h4 class="panel-title">
-              <label data-toggle="collapse" data-parent="#mini" href="#collapse1" @click="styleMenuCollapse">Collapsible Group 1</label>
-            </h4>
-          </div>
-          <div id="collapse1" class="panel-collapse collapse in stylepanelcollapse">
-            <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div>
-          </div>
-        </div>
-      </div>
-    </div>
+
 
 
 
