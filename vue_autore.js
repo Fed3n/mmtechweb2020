@@ -234,6 +234,22 @@
           this.upgradeSubmitStyle(false);
       },
       methods: {
+          resetData: function() {
+              this.loadedStory = "";
+              this.selectedImage = "";
+              this.selectedVideo = "";
+              this.gamedata = gamedata_pholder;
+              this.metadata = metadata_pholder;
+              this.previewdata = {
+                  "currentQuest": 0,
+                  "currentSub": 0,
+                  "completedSubs": [],
+                  "in_mainquest": true,
+                  "picked": null
+              };
+              this.custom_keys = "";
+              this.radiusInput = 10; 
+          },
           //SERVER INTERACTION METHODS//
           updateFs: function() {
               console.log("Requesting fs update...");
@@ -261,14 +277,13 @@
               if (this.$refs.selectedStory.value) {
                   var _this = this;
                   axios.get(`/stories/${this.$refs.selectedStory.value}`).then((res) => {
+                      _this.resetData();
                       _this.gamedata = res.data.json;
                       _this.metadata = res.data.meta;
                       _this.getImagesList();
                       _this.getVideosList();
                       this.loadedStory = this.$refs.selectedStory.value;
                       _this.updateFs();
-                      _this.selectedImage = "";
-                      _this.selectedVideo = "";
                   })
               }
           },
@@ -402,17 +417,6 @@
           },
           switchMainSub: function() {
               this.previewdata.in_mainquest = !this.previewdata.in_mainquest;
-          },
-          resetStory: function() {
-              this.gamedata = gamedata_pholder;
-              this.metadata = metadata_pholder;
-              this.previewdata = {
-                  "currentQuest": 0,
-                  "currentSub": 0,
-                  "completedSubs": [],
-                  "in_mainquest": true,
-                  "picked": null
-              };
           },
           addNode: function() {
               num = this.previewdata.in_mainquest ? this.gamedata.mainQuest.length : this.gamedata.subQuests.length;

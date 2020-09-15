@@ -9,6 +9,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="qrcode.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="resolutions.css">
     <title>Ambiente Autore</title>
 </head>
 
@@ -126,7 +127,7 @@
                 </div>
                 <div class="btn-group">
                     <button class="col btn btn-info" v-on:click="postStory">POST</button>
-                    <button class="col btn btn-secondary" v-on:click="resetStory">NEW</button>
+                    <button class="col btn btn-secondary" v-on:click="resetData">NEW</button>
                 </div>
             </div>
         </div>
@@ -167,7 +168,7 @@
             <!--PREVIEW E OBJECT EDITOR-->
             <div class="col-10">
                 <!--MODIFICA STILI-->
-                <button class="btn btn-block btn-primary" type="button" data-toggle="collapse" data-target="#stylepanel">MODIFICA LO STILE</button>
+                <button class="btn btn-block btn-info" type="button" data-toggle="collapse" data-target="#stylepanel">MODIFICA LO STILE</button>
                 <!-- stili principali -->
       					<div id="stylepanel" class="row container-fluid collapse p-3 border-bottom">
       						<div class="row container-fluid">
@@ -323,7 +324,8 @@
                         <div ref="questrender" class="card" style="position: relative;" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
                             <div class="card-header" :style="cardLimitStyle">
                                 <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">
-                                    {{previewdata.in_mainquest ? "Quest" : "Subquest"}} {{ previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub }}: {{ renderQuest.title || "no_name" }}
+                                    {{previewdata.in_mainquest ? "Quest" : "Subquest"}} 
+                                    {{ previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub }}: {{ renderQuest.title || "no_name" }}
                                 </h3>
                             </div>
                             <div class="card-body" :style="removePredefinedStylesCard">
@@ -355,18 +357,20 @@
                         </div>
 
                     </div>
-                    <div id="current-answer" v-if="previewdata.picked" class="col-6">
-                        <p>Risposta corrente: {{ previewdata.picked }}</p>
-                        <button class="btn btn-secondary" v-if="renderQuest.goto.length > 0" data-toggle="tooltip"
-                        :title="previewdata.in_mainquest ? gamedata.mainQuest[getAnswerGoto].title : ''" v-on:click="jumpToQuest('main',getAnswerGoto)" :disabled="!previewdata.in_mainquest">
-                            {{ previewdata.in_mainquest ? ("This will take you to " + getAnswerGoto) : ("Answer is " + getAnswerCorrectness) }}
-                        </button>
-                    </div>
-                    <div class="col-2">
-						          <div class="btn-group">
-                       <button class="col btn btn-warning" v-on:click="switchView">PC</button>
-                       <button class="col btn btn-danger" v-on:click="switchView">MOBILE</button>
-                      </div>
+                    <div id="preview-options" class="col-md-6 row">
+                        <div id="current-answer" v-if="previewdata.picked" class="col-md-6 overflow-auto">
+                            <p>Risposta corrente: {{ previewdata.picked }}</p>
+                            <button class="btn btn-secondary" v-if="renderQuest.goto.length > 0" data-toggle="tooltip"
+                            :title="previewdata.in_mainquest ? gamedata.mainQuest[getAnswerGoto].title : ''" v-on:click="jumpToQuest('main',getAnswerGoto)" :disabled="!previewdata.in_mainquest">
+                                {{ previewdata.in_mainquest ? ("Questa risposta porterà a " + getAnswerGoto) : ("La risposta è " + getAnswerCorrectness) }}
+                            </button>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="btn-group">
+                                <button class="col btn btn-warning" v-on:click="switchView">PC</button>
+                                <button class="col btn btn-danger" v-on:click="switchView">MOBILE</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!--FINE PREVIEW-->
@@ -521,123 +525,125 @@
                             <button class="btn btn-outline-secondary" v-on:click="setImageAsInput">Set</button>
                         </div>
                         <!-- Quest CUSTOMIZE KEYBOARD (only if type is keys)-->
-                        <div v-if="renderQuest.type == 'keys'">
+                        <div v-if="renderQuest.type == 'keys'" class="border-top border-bottom p-2 m-2">
                             <div class="row">
-                                <div class="col-9 border-top text-center">
-                                    <label class="font-weight-bold text-info">Personalizza la Tastiera</label>
+                                <div class="col-9 text-center m-1">
+                                    <button class="btn btn-outline-info" data-target="#key-customization" data-toggle="collapse">Personalizza la Tastiera</button>
                                 </div>
-                                <div name="button-customize" class="col-lg-6 border-right m-1">
-                                    <label for="keybutton-customize" class="font-weight-bold text-info mb-2">Personalizza Bottoni</label>
-                                    <div class="form-group mb-3">
-                                        <label class="mr-2" for="keys">Tasti</label>
-                                        <textarea class="form-control mr-2" v-model="renderQuest.key_style.keys"></textarea>
+                                <div id="key-customization" class="collapse row p-2">
+                                    <div name="button-customize" class="col-lg-6 border-right m-1">
+                                        <label for="keybutton-customize" class="font-weight-bold text-info mb-2">Personalizza Bottoni</label>
+                                        <div class="form-group mb-3">
+                                            <label class="mr-2" for="keys">Tasti</label>
+                                            <textarea class="form-control mr-2" v-model="renderQuest.key_style.keys"></textarea>
+                                        </div>
+                                        <div class="form-group row mb-3">
+                                            <div class="col-lg-4">
+                                                <label for="btn-width">Larghezza</label>
+                                                <input class="form-control" type="number" step="0.1" min="0" v-model="renderQuest.key_style.width">
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <label for="btn-width">Altezza</label>
+                                                <input class="form-control" type="number" step="0.1" min="0" v-model="renderQuest.key_style.height">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-3">
+                                            <div class="col-lg-4">
+                                                <label for="textfont">Font</label>
+                                                <input name="textfont" class="form-control" type="text" v-model="renderQuest.key_style.text_font">
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <label for="textcolor">Colore</label>
+                                                <input name="textcolor" type="color" v-model="renderQuest.key_style.text_color">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-3">
+                                            <div class="col-lg-4">
+                                                <label for="textsize">Dimensione</label>
+                                                <input name="textsize" class="form-control" type="number" step="1" min="0" v-model="renderQuest.key_style.text_size">
+                                            </div>
+                                            <div class="form-check">
+                                                <label for="bold" class="form-check-label">
+                                                    <input name="bold" class="form-check-input" type="checkbox" v-model="renderQuest.key_style.bold">
+                                                    Grassetto
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-3">
+                                            <label for="bgcolor" class="col-md-3">Colore Sfondo</label>
+                                            <input name="bgcolor" type="color" v-model="renderQuest.key_style.bg_color">
+                                        </div>
+                                        <div class="form-group row mb-3">
+                                            <div class="col-lg-4">
+                                                <label for="bordercolor">Colore Bordo</label>
+                                                <input name="bordercolor" type="color" v-model="renderQuest.key_style.border_color">
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <label for="bordersize" >Spessore Bordo</label>
+                                                <input name="bordersize" class="form-control" type="number" step="1" min="0" v-model="renderQuest.key_style.border_size">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-3">
+                                            <div class="col-lg-4">
+                                                <label for="borderrad" >Raggio Bordo</label>
+                                                <input name="borderrad" class="form-control" type="number" step="1" min="0" v-model="renderQuest.key_style.radius">
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <label for="margin">Margine</label>
+                                                <input name="margin" class="form-control" type="number" step="0.1" min="0" v-model="renderQuest.key_style.margin">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="form-check col-lg-4">
+                                            <label for="shadow" class="form-check-label">
+                                                <input name="shadow" class="form-check-input" type="checkbox" v-model="renderQuest.key_style.shadow">
+                                                Ombreggiatura
+                                            </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-lg-6">
+                                                <label for="animation">Animazione</label>
+                                                <select name="animation" class="form-control" v-model="renderQuest.key_style.animation">
+                                                    <option value="">None</option>
+                                                    <option value="press">Pressione</option>
+                                                    <option value="flash">Flash</option>
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="form-group row mb-3">
-                                        <div class="col-lg-4">
-                                            <label for="btn-width">Larghezza</label>
-                                            <input class="form-control" type="number" step="0.1" min="0" v-model="renderQuest.key_style.width">
+                                    <div id="keyscreen-customize" class="col-lg-4 m-1">
+                                        <label class="mb-2 font-weight-bold text-info">Personalizza prompt</label>
+                                        <div class="form-group row mb-3">
+                                            <label for="screenfont">Font</label>
+                                            <input name="screenfont" class="form-control" type="text" v-model="renderQuest.key_style.screen_font">
                                         </div>
-                                        <div class="col-lg-4">
-                                            <label for="btn-width">Altezza</label>
-                                            <input class="form-control" type="number" step="0.1" min="0" v-model="renderQuest.key_style.height">
+                                        <div class="form-group row mb-3">
+                                            <div class="col-lg-4"><label for="screencolor">Colore Font</label></div>
+                                            <div class="col-lg-2"><input name="screencolor" type="color" v-model="renderQuest.key_style.screen_color"></div>
                                         </div>
-                                    </div>
-                                    <div class="form-group row mb-3">
-                                        <div class="col-lg-4">
-                                            <label for="textfont">Font</label>
-                                            <input name="textfont" class="form-control" type="text" v-model="renderQuest.key_style.text_font">
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <label for="textcolor">Colore</label>
-                                            <input name="textcolor" type="color" v-model="renderQuest.key_style.text_color">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row mb-3">
-                                        <div class="col-lg-4">
-                                            <label for="textsize">Dimensione</label>
-                                            <input name="textsize" class="form-control" type="number" step="1" min="0" v-model="renderQuest.key_style.text_size">
-                                        </div>
-                                        <div class="form-check">
-                                            <label for="bold" class="form-check-label">
-                                                <input name="bold" class="form-check-input" type="checkbox" v-model="renderQuest.key_style.bold">
-                                                Grassetto
+                                        <div class="form-group form-check mb-3">
+                                            <label for="screenbold" class="form-check-label">
+                                            <input name="screenbold" class="form-check-input" type="checkbox" v-model="renderQuest.key_style.screen_bold">
+                                            Grassetto
                                             </label>
                                         </div>
-                                    </div>
-                                    <div class="form-group row mb-3">
-                                        <label for="bgcolor" class="col-md-3">Colore Sfondo</label>
-                                        <input name="bgcolor" type="color" v-model="renderQuest.key_style.bg_color">
-                                    </div>
-                                    <div class="form-group row mb-3">
-                                        <div class="col-lg-4">
-                                            <label for="bordercolor">Colore Bordo</label>
-                                            <input name="bordercolor" type="color" v-model="renderQuest.key_style.border_color">
+                                        <div class="form-group row mb-3">
+                                            <div class="col-lg-4"><label for="screenbg">Colore Sfondo</label></div>
+                                            <div class="col-lg-2"><input name="screenbg" type="color" v-model="renderQuest.key_style.screen_bg"></div>
                                         </div>
-                                        <div class="col-lg-4">
-                                            <label for="bordersize" >Spessore Bordo</label>
-                                            <input name="bordersize" class="form-control" type="number" step="1" min="0" v-model="renderQuest.key_style.border_size">
+                                        <div class="form-group row mb-3">
+                                            <div class="col-lg-4"><label for="screenbordercolor">Colore Bordo</label></div>
+                                            <div class="col-lg-2"><input name="screenbordercolor" type="color" v-model="renderQuest.key_style.screen_border_color"></div>
                                         </div>
-                                    </div>
-                                    <div class="form-group row mb-3">
-                                        <div class="col-lg-4">
-                                            <label for="borderrad" >Raggio Bordo</label>
-                                            <input name="borderrad" class="form-control" type="number" step="1" min="0" v-model="renderQuest.key_style.radius">
+                                        <div class="form-group row mb-3">
+                                            <div class="col-lg-4"><label for="screenborder">Spessore Bordo</label></div>
+                                            <div class="col-lg-3"><input type="number" step="1" min="0" v-model="renderQuest.key_style.screen_border_size"></div>
                                         </div>
-                                        <div class="col-lg-4">
-                                            <label for="margin">Margine</label>
-                                            <input name="margin" class="form-control" type="number" step="0.1" min="0" v-model="renderQuest.key_style.margin">
+                                        <div class="form-group row mb-3">
+                                            <div class="col-lg-4"><label for="screenlength">Lunghezza</label></div>
+                                            <div class="col-lg-3"><input name="screenlength" type="number" step="0.1" min="0" v-model="renderQuest.key_style.screen_length"></div>
                                         </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="form-check col-lg-4">
-                                        <label for="shadow" class="form-check-label">
-                                            <input name="shadow" class="form-check-input" type="checkbox" v-model="renderQuest.key_style.shadow">
-                                            Ombreggiatura
-                                        </label>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-lg-6">
-                                            <label for="animation">Animazione</label>
-                                            <select name="animation" class="form-control" v-model="renderQuest.key_style.animation">
-                                                <option value="">None</option>
-                                                <option value="press">Pressione</option>
-                                                <option value="flash">Flash</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="keyscreen-customize" class="col-lg-4 m-1">
-                                    <label class="mb-2 font-weight-bold text-info">Personalizza prompt</label>
-                                    <div class="form-group row mb-3">
-                                        <label for="screenfont">Font</label>
-                                        <input name="screenfont" class="form-control" type="text" v-model="renderQuest.key_style.screen_font">
-                                    </div>
-                                    <div class="form-group row mb-3">
-                                        <div class="col-lg-4"><label for="screencolor">Colore Font</label></div>
-                                        <div class="col-lg-2"><input name="screencolor" type="color" v-model="renderQuest.key_style.screen_color"></div>
-                                    </div>
-                                    <div class="form-group form-check mb-3">
-                                        <label for="screenbold" class="form-check-label">
-                                        <input name="screenbold" class="form-check-input" type="checkbox" v-model="renderQuest.key_style.screen_bold">
-                                        Grassetto
-                                        </label>
-                                    </div>
-                                    <div class="form-group row mb-3">
-                                        <div class="col-lg-4"><label for="screenbg">Colore Sfondo</label></div>
-                                        <div class="col-lg-2"><input name="screenbg" type="color" v-model="renderQuest.key_style.screen_bg"></div>
-                                    </div>
-                                    <div class="form-group row mb-3">
-                                        <div class="col-lg-4"><label for="screenbordercolor">Colore Bordo</label></div>
-                                        <div class="col-lg-2"><input name="screenbordercolor" type="color" v-model="renderQuest.key_style.screen_border_color"></div>
-                                    </div>
-                                    <div class="form-group row mb-3">
-                                        <div class="col-lg-4"><label for="screenborder">Spessore Bordo</label></div>
-                                        <div class="col-lg-3"><input type="number" step="1" min="0" v-model="renderQuest.key_style.screen_border_size"></div>
-                                    </div>
-                                    <div class="form-group row mb-3">
-                                        <div class="col-lg-4"><label for="screenlength">Lunghezza</label></div>
-                                        <div class="col-lg-3"><input name="screenlength" type="number" step="0.1" min="0" v-model="renderQuest.key_style.screen_length"></div>
                                     </div>
                                 </div>
                             </div>
