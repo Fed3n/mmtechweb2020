@@ -184,48 +184,93 @@
 
                 					</div>
                 					<!-- scelgi lo sfondo dei componenti -->
-                					<div v-if="!css_style.background.image" class="mt-3 border-bottom">
-                  						<!-- NAVBAR -->
-  		  										<label for="navigationBar">Barra di Navigazione</label>
-                            <!-- colori predefiniti -->
-                            <div v-if="!css_style.background.style.nav.custom">
-  														<div id="navigationBar" class="form-group row pl-4 my-0">
-  															<label class="col col-form-label">Colore del Testo</label>
-  															<div class="col">
-  																<select class="form-control" name="navigationBarStyle" v-model="css_style.background.style.nav.bootstrap.textColor">
-  																	<option v-for="styles in bootstrapConsts.navTextColors" :value="styles.value">{{ styles.name }}</option>
-  																</select>
-  															</div>
-  														</div>
-  														<div class="form-group row pl-4 my-0">
-  															<label class="col col-form-label">Colore di Sfondo</label>
-  															<div class="col">
-  																<select class="form-control" name="navigationBarStyle" v-model="css_style.background.style.nav.bootstrap.background">
-  																	<option v-for="styles in bootstrapConsts.navBackgroundColors" :value="styles.value">{{ styles.name }}</option>
-  																</select>
-  															</div>
-  														</div>
-                            </div>
-                            <!-- colori a scelta -->
-                            <div v-if="css_style.background.style.nav.custom">
-                              <div class="form-group row pl-3 my-0">
-                                <label for="textColorNavCustom" class="col-6">Colore del Testo</label>
-                                <div class="col-6">
-                                  <input name="textColorNavCustom" type="color" v-model="css_style.background.style.nav.customized.general['color']">
+                          <div v-if="!css_style.background.image">
+                            <!-- NAVBAR -->
+                  					<div class="mt-3 border-bottom">
+    		  										<label for="navigationBar">Barra di Navigazione</label>
+                              <!-- colori predefiniti -->
+                              <div v-if="!css_style.background.style.nav.custom">
+    														<div id="navigationBar" class="form-group row pl-4 my-0">
+    															<label class="col col-form-label">Colore del Testo</label>
+    															<div class="col">
+    																<select class="form-control" name="navigationBarStyle" v-model="css_style.background.style.nav.bootstrap.textColor">
+    																	<option v-for="styles in bootstrapConsts.navTextColors" :value="styles.value">{{ styles.name }}</option>
+    																</select>
+    															</div>
+    														</div>
+    														<div class="form-group row pl-4 my-0">
+    															<label class="col col-form-label">Colore di Sfondo</label>
+    															<div class="col">
+    																<select class="form-control" name="navigationBarStyle" v-model="css_style.background.style.nav.bootstrap.background">
+    																	<option v-for="styles in bootstrapConsts.navBackgroundColors" :value="styles.value">{{ styles.name }}</option>
+    																</select>
+    															</div>
+    														</div>
+                              </div>
+                              <!-- colori a scelta -->
+                              <div v-if="css_style.background.style.nav.custom">
+                                <div class="form-group row pl-3 my-0">
+                                  <label for="textColorNavCustom" class="col-6">Colore del Testo</label>
+                                  <div class="col-6">
+                                    <input name="textColorNavCustom" type="color" v-model="css_style.background.style.nav.customized.general['color']">
+                                  </div>
+                                </div>
+                                <div class="form-group row pl-3 my-0">
+                                  <label for="backgroundColorNavCustom" class="col-6">Colore di Sfondo</label>
+                                  <div class="col-6">
+                                    <input name="backgroundColorNavCustom" type="color" v-model="css_style.background.style.nav.customized.general['background-color']">
+                                  </div>
                                 </div>
                               </div>
-                              <div class="form-group row pl-3 my-0">
-                                <label for="backgroundColorNavCustom" class="col-6">Colore di Sfondo</label>
-                                <div class="col-6">
-                                  <input name="backgroundColorNavCustom" type="color" v-model="css_style.background.style.nav.customized.general['background-color']">
+                              <div class="container-fluid text-center mb-0 mt-2">
+         												<label for="navcheckbox">Altri Colori</label>
+         												<input id="navcheckbox" type="checkbox" v-model="css_style.background.style.nav.custom">
+         											</div>
+                            </div>
+                            <!-- CARD -->
+                            <div class="mt-3 border-bottom">
+                              <label for="cardStyleEditor">Corpo Centrale</label>
+                              <!-- colori predefiniti -->
+                              <div v-if="!css_style.background.style.card.custom">
+                                <div id="cardStyleEditor" class="form-group row pl-4 my-0">
+                                  <label class="col col-form-label">Colore del Testo</label>
+                                  <div class="col">
+                                    <select class="form-control" name="cardTextStyle" v-model="css_style.background.style.card.bootstrap.textColor">
+                                      <option v-for="styles in bootstrapConsts.cardTextColors" :value="styles.value">{{ styles.name }}</option>
+                                    </select>
+                                  </div>
+                                </div>
+                                <div class="form-group row pl-4 my-0">
+                                  <label class="col col-form-label">Colore di Sfondo</label>
+                                  <div class="col">
+                                    <select class="form-control" name="cardBackgroundStyle" v-model="css_style.background.style.card.bootstrap.background">
+                                      <option v-for="styles in bootstrapConsts.cardBackgroundColors" :value="styles.value">{{ styles.name }}</option>
+                                    </select>
+                                  </div>
                                 </div>
                               </div>
+                              <!-- colori a scelta -->
+                              <div v-if="css_style.background.style.card.custom">
+                                <div class="form-group row pl-3 my-0">
+                                  <label for="textColorCardCustom" class="col-6">Colore del Testo</label>
+                                  <div class="col-6">
+                                    <input name="textColorCardCustom" type="color" v-model="css_style.background.style.card.customized['color']">
+                                  </div>
+                                </div>
+                                <div class="form-group row pl-3 my-0">
+                                  <label for="backgroundColorCardCustom" class="col-6">Colore di Sfondo</label>
+                                  <div class="col-6">
+                                    <input name="backgroundColorCardCustom" type="color" v-model="css_style.background.style.card.customized['background-color']">
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="container-fluid text-center mb-0 mt-2">
+                                <label for="cardcheckbox">Altri Colori</label>
+                                <input id="cardcheckbox" type="checkbox" v-model="css_style.background.style.card.custom">
+                              </div>
                             </div>
-                            <div class="container-fluid text-center mb-0 mt-2">
-       												<label for="navcheckbox">Altri Colori</label>
-       												<input id="navcheckbox" type="checkbox" v-model="css_style.background.style.nav.custom">
-       											</div>
                           </div>
+
 
 
 

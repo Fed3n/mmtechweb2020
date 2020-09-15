@@ -1,4 +1,4 @@
-//predefined styles 
+//predefined styles
 var transparent_background = "rgba(255,255,255,1)";
 var menu_background = "rgba(255,255,255,0.15)";
 var menu_border_black_text = "1px solid black";
@@ -8,7 +8,7 @@ var menu_links_white_background = "rgba(0,0,0,0.07)";
 var togglerbutton_default_linesWidth = "2";
 
 var badge_default_style = {	"background-color": "orange" };
-	
+
 var submit_button_style = { "background-color": "rgba(255,255,255,0.3)" };
 var submit_button_style_disabled = { "background-color": "rgba(0,0,0,0.15)" };
 var submit_button_border = "1px solid white";
@@ -32,12 +32,12 @@ var bootstrap_menu_border_color_light_text = {
 		"border-style": "solid",
 		"border-color": "white"
 	};
-	
+
 var bootstrap_menu_color_dark_text = { "color" : "black" };
 var bootstrap_menu_color_light_text = { "color" : "white" };
 
 var card_headerFooter = { "background-color": "rgba(0,0,0,0.15)" };
-	
+
 var bootstrap_card_headerFooter_black_background = {
 		"background-color": "rgba(0,0,0,1)",
 		"border-top": "1px solid white",
@@ -49,7 +49,7 @@ var menu_backgroundImage = {
 	"background-color": "rgba(0,0,0,0.05)",
 	"backdrop-filter": "blur(15px)"
 	};
-	
+
 var input_backgroundImage = {
 	"background-color": "rgba(0,0,0,0.05)",
 	"backdrop-filter": "blur(15px)"
@@ -62,7 +62,7 @@ var default_image_togglerButton_border_color = "black";
 var default_image_text_color = "black";
 var default_image_divider_color = "black";
 var default_image_menu_links_text_color = "black";
-var default_image_menu_links_hover_backgroud_color = menu_links;  
+var default_image_menu_links_hover_backgroud_color = menu_links;
 var default_image_menu_border = "1px solid black";
 var defaul_image_alert_color = "black";
 
@@ -81,29 +81,28 @@ var bootstrapConstsExternal = {
 				{ name: "rosso", value: "bg-danger" },
 				{ name: "arancione", value: "bg-warning" },
 				{ name: "verdeacqua", value: "bg-info" },
-				{ name: "panna", value: "bg-light" }				
+				{ name: "panna", value: "bg-light" }
+			],
+			cardTextColors: [
+				{ name: "nero", value: "text-dark" },
+				{ name: "bianco", value: "text-white" },
+				{ name: "blu", value: "text-primary" },
+				{ name: "grigio", value: "text-secondary" },
+				{ name: "verde", value: "text-success" },
+				{ name: "rosso", value: "text-danger" },
+				{ name: "arancione", value: "text-warning" },
+				{ name: "verdeacqua", value: "text-info" },
+				{ name: "panna", value: "text-light" }
+			],
+			cardBackgroundColors: [
+				{ name: "nero", value: "bg-dark" },
+				{ name: "bianco", value: "bg-white" },
+				{ name: "blu", value: "bg-primary" },
+				{ name: "grigio", value: "bg-secondary" },
+				{ name: "verde", value: "bg-success" },
+				{ name: "rosso", value: "bg-danger" },
+				{ name: "arancione", value: "bg-warning" },
+				{ name: "verdeacqua", value: "bg-info" },
+				{ name: "panna", value: "bg-light" }
 			]
 		};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
