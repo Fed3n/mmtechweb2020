@@ -790,6 +790,12 @@
                   this.previewdata.picked = null;
                   this.$refs.questname.focus();
           },
+          styleMenuCollapse: function(){
+             // console.log(this.$refs.stylepanelcollapse);
+             // this.$refs.stylepanelcollapse.collapse = "hide";
+             //DA FARE CON VUE -----------------------------------------------------------------------------------------------------------------------------------------------
+             $('.stylepanelcollapse').collapse('hide');
+          },
           //style functions
           fontSize: function(event) {
 							this.css_style.mainStyle["font-size"] = event.target.value+"px";
