@@ -159,7 +159,6 @@
           mainStyleColor: true,
           currentMainStyleColor: "rgb(0,0,0)",
           mobileView: true,
-          togglerButtonVisible: true,
           onLink: [],
           submitStyleObject: {},
           css_style: {
@@ -397,8 +396,8 @@
                   this.previewdata.picked = null;
               }
           },
-          switchView: function(){
-          	this.mobileView = !this.mobileView;
+          switchView: function(mobile){
+      	     this.mobileView = mobile;
           },
           switchMainSub: function() {
               this.previewdata.in_mainquest = !this.previewdata.in_mainquest;
@@ -874,7 +873,7 @@
                       });
               }
               //used for menu responsivness
-              if (this.togglerButtonVisible)
+              if (this.mobileView)
                   styles = Object.assign(styles, {
                       "white-space": "normal"
                   });
@@ -1125,7 +1124,7 @@
                   styles = Object.assign(styles, temp);
               //apply mainstyle in any case
               styles = this.overwriteMainStyle(styles);
-              if (!this.togglerButtonVisible)
+              if (!this.mobileView)
                   styles = Object.assign(styles, {
                       "margin-top": "-10px"
                   });
@@ -1157,7 +1156,7 @@
                       "color": defaul_image_alert_color
                   });
               styles = this.overwriteMainStyle(styles);
-              if (this.togglerButtonVisible)
+              if (this.mobileView)
                   styles = Object.assign(styles, {
                       "margin-top": "-10px"
                   });
@@ -1165,13 +1164,14 @@
           },
           togglerButtonStyle: function() {
               var buttonColor;
+             // console.log("#36ec85: "+HextoRgb("rgb(23,222,2)"));
               if (!this.css_style.background.image) {
                   if (this.css_style.background.style.nav.custom) {
                       if (this.css_style.mainStyle["color"])
                           buttonColor = this.css_style.mainStyle["color"];
                       else
                           buttonColor = this.css_style.background.style.nav.customized.general["color"];
-                      return `url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='${buttonColor}' stroke-width='${togglerbutton_default_linesWidth}' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") `;
+                      return `url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='${HextoRgb(buttonColor)}' stroke-width='${togglerbutton_default_linesWidth}' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") `;
                   } else
                       return "";
               } else {
@@ -1179,7 +1179,7 @@
                   ;
                   else
                       buttonColor = default_image_togglerButton_color;
-                  return `url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='${buttonColor}' stroke-width='${togglerbutton_default_linesWidth}' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") `;
+                  return `url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='${HextoRgb(buttonColor)}' stroke-width='${togglerbutton_default_linesWidth}' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") `;
               }
           },
           toggleButtonContainer: function() {
@@ -1208,7 +1208,7 @@
               var styles = {};
               if (!this.css_style.background.image) {
                   if (!this.css_style.background.style.nav.custom) {
-                      if (this.togglerButtonVisible)
+                      if (this.mobileView)
                           //predefined style used in addition to bootstrap navbar style
                           styles = Object.assign(styles, {
                               "background-color": bootstrap_menu_background
@@ -1229,7 +1229,7 @@
                       }
                   } else {
                       var temp = this.css_style.background.style.nav.customized.general;
-                      if (this.togglerButtonVisible)
+                      if (this.mobileView)
                           styles = Object.assign(styles, {
                               "background-color": menu_background
                           });
@@ -1248,7 +1248,7 @@
                       }
                   }
               } else {
-                  if (this.togglerButtonVisible)
+                  if (this.mobileView)
                       //predefined style used in addition to bootstrap navbar style
                       styles = Object.assign(styles, {
                           "background-color": menu_background
@@ -1270,7 +1270,7 @@
                           });
                   }
               }
-              if (!this.togglerButtonVisible)
+              if (!this.mobileView)
                   styles = Object.assign(styles, {
                       "width": "max-content"
                   });
@@ -1315,7 +1315,7 @@
               if (!this.css_style.background.image) {
                   if (!this.css_style.background.style.nav.custom) {
                       var temp = this.css_style.background.style.nav.bootstrap;
-                      if (!this.togglerButtonVisible)
+                      if (!this.mobileView)
                           return temp.background;
                       else
                           return "";

@@ -7,6 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/http-vue-loader"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue-observe-visibility/dist/vue-observe-visibility.min.js"></script>
     <script src="qrcode.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <title>Ambiente Autore</title>
@@ -183,6 +184,8 @@
 
                 					</div>
                 					<!-- scelgi lo sfondo dei componenti -->
+
+
                           <div v-if="!css_style.background.image">
                             <!-- NAVBAR -->
                   					<div class="mt-3 border-bottom">
@@ -270,6 +273,35 @@
                             </div>
                           </div>
 
+
+
+
+                          <div class="panel-group" id="accordion">
+                             <div class="panel panel-default">
+                               <div class="panel-heading">
+                                 <h4 class="panel-title">
+                                   <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">Collapsible Group 1</a>
+                                 </h4>
+                               </div>
+                               <div id="collapse1" class="panel-collapse collapse in">
+                                 <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                                 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                 quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div>
+                               </div>
+                             </div>
+                             <div class="panel panel-default">
+                               <div class="panel-heading">
+                                 <h4 class="panel-title">
+                                   <p data-toggle="collapse" data-parent="#accordion" href="#collapse2">Collapsible Group 2</p>
+                                 </h4>
+                               </div>
+                               <div id="collapse2" class="panel-collapse collapse">
+                                 <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                                 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                 quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div>
+                               </div>
+                             </div>
+                           </div>
 
 
 
@@ -409,8 +441,8 @@
                     </div>
                     <div class="col-2">
 						          <div class="btn-group">
-                       <button class="col btn btn-warning" v-on:click="switchView">PC</button>
-                       <button class="col btn btn-danger" v-on:click="switchView">MOBILE</button>
+                       <button class="col btn btn-warning" v-on:click="switchView(false)">PC</button>
+                       <button class="col btn btn-danger" v-on:click="switchView(true)">MOBILE</button>
                       </div>
                     </div>
                 </div>
