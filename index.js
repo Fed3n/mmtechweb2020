@@ -18,7 +18,7 @@ const port = 8000;
 //##PLACEHOLDERS##//
 var players_data = {};
 var players_chat = {};
-var uid_generator = 0;
+var uid_generator = {};
 
 //##EXPRESS MIDDLEWARE AND OPTIONS##
 app.use(fileUpload());
@@ -74,12 +74,16 @@ app.get('/valutatore', (req, res) => {
 
 
 //##PLAYER RESOURCES##//
-app.get('/uid', (req, res) => { // da cambiare in POST
-    uid_generator++;
-    console.log(`New user: ${uid_generator}`);
-    players_data[uid_generator] = {};
-    players_chat[uid_generator] = [];
-    return res.send(uid_generator.toString());
+app.get('/uid', (req, res) => {
+    name = req.query.story_name;
+    console.log("Receiving request for story " + name);
+    if(uid_generator[name] !== undefined) uid_generator[name]++;
+    else uid_generator[name] = 0;
+    uid = name + uid_generator[name];
+    console.log(`New user: ${uid}`);
+    players_data[uid] = {};
+    players_chat[uid] = [];
+    return res.send(uid);
 });
 
 app.patch('/players/:player_id', (req, res) => {

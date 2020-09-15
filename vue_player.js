@@ -116,7 +116,7 @@ var app = new Vue({
     "qrload": httpVueLoader("components/qrload.vue")
   },
   data: {
-    user_id: 0,          // TODO lo deve assegnare il server
+    user_id: "",          // TODO lo deve assegnare il server
     time_played: 0,
     time_inactive: 0,    // entrambe in secondi
     help_requested: false,
@@ -203,9 +203,6 @@ var app = new Vue({
     }
   },
   created: function (){
-    axios.get('/uid').then(res => {
-      this.user_id = res.data;
-    });
     this.upgradeSubmitStyle(false);
   },
   mounted: function() {
@@ -289,10 +286,13 @@ var app = new Vue({
         axios.get(`/stories/${this.questname}`).then(response => {
           this.gamedata = response.data.json;
           this.metadata = response.data.meta;
+            axios.get("/uid", {params: {story_name: this.metadata.name}}).then(res => {
+              this.user_id = res.data;
+          }); 
         });
+    }
           this.$refs.questloader.remove();
-          this.$refs.questrender.removeAttribute("hidden");
-      }
+          this.$refs.questrender.removeAttribute("hidden"); 
     },
     changeState: function (state){
       this.currentQuest = state;
