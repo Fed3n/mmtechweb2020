@@ -159,7 +159,6 @@
           mainStyleColor: true,
           currentMainStyleColor: "rgb(0,0,0)",
           mobileView: true,
-          togglerButtonVisible: true,
           onLink: [],
           submitStyleObject: {},
           css_style: {
@@ -248,7 +247,7 @@
                   "picked": null
               };
               this.custom_keys = "";
-              this.radiusInput = 10; 
+              this.radiusInput = 10;
           },
           //SERVER INTERACTION METHODS//
           updateFs: function() {
@@ -412,8 +411,8 @@
                   this.previewdata.picked = null;
               }
           },
-          switchView: function(){
-          	this.mobileView = !this.mobileView;
+          switchView: function(mobile){
+      	     this.mobileView = mobile;
           },
           switchMainSub: function() {
               this.previewdata.in_mainquest = !this.previewdata.in_mainquest;
@@ -795,13 +794,20 @@
                   this.previewdata.picked = null;
                   this.$refs.questname.focus();
           },
+          styleMenuCollapse: function(){
+             // console.log(this.$refs.stylepanelcollapse);
+             // this.$refs.stylepanelcollapse.collapse = "hide";
+             //DA FARE CON VUE -----------------------------------------------------------------------------------------------------------------------------------------------
+             $('.stylepanelcollapse').collapse('hide');
+          },
           //style functions
           fontSize: function(event) {
 							this.css_style.mainStyle["font-size"] = event.target.value+"px";
 					},
+          borderSize: function(event){
+							this.css_style.background.style.badge.customized['border-width']= event.target.value+"px";
+					},
 					editMainColor: function(event){
-					console.log("checked: ",this.mainStyleColor);
-					console.log("colore: ",this.currentMainStyleColor);
 						if (this.mainStyleColor)
 							this.css_style.mainStyle['color'] = this.currentMainStyleColor;
 						else
@@ -816,6 +822,10 @@
                       main_style_cleaned[key] = value;
               });
               return Object.assign(styles, main_style_cleaned);
+          },
+          //method that returns if navbar button is visible
+          buttonChangedVisibility: function(isVisible, entry) {
+              this.togglerButtonVisible = isVisible
           },
           menuLinkEvent: function(num, bool) {
               this.onLink = new Array(this.getSubquests.length + 1);
@@ -876,7 +886,7 @@
                       });
               }
               //used for menu responsivness
-              if (this.togglerButtonVisible)
+              if (this.mobileView)
                   styles = Object.assign(styles, {
                       "white-space": "normal"
                   });
@@ -1048,7 +1058,7 @@
           getMediaSrc: function() {
             return ("story/" + this.metadata.name + (this.renderQuest.media.type=="image" ? "/images/" : "/videos/") + this.renderQuest.media.uri);
           },
-          //styleObjects
+          //STYLEOBJECTS
           loadImage: function() {
               var styles = {};
               var temp = this.css_style.background;
@@ -1068,6 +1078,14 @@
               }
               return styles;
           },
+          //modifica la dimensione della preview
+          previewMode: function() {
+              if (this.mobileView)
+                return "col-4";
+              else
+                return "col-6";
+          },
+          //oggetti presenti anche nel player
           navbarBootstrapStyle: function() {
 						var classes = "";
 						var temp = this.css_style.background.style.nav.bootstrap;
@@ -1119,7 +1137,7 @@
                   styles = Object.assign(styles, temp);
               //apply mainstyle in any case
               styles = this.overwriteMainStyle(styles);
-              if (!this.togglerButtonVisible)
+              if (!this.mobileView)
                   styles = Object.assign(styles, {
                       "margin-top": "-10px"
                   });
@@ -1151,7 +1169,7 @@
                       "color": defaul_image_alert_color
                   });
               styles = this.overwriteMainStyle(styles);
-              if (this.togglerButtonVisible)
+              if (this.mobileView)
                   styles = Object.assign(styles, {
                       "margin-top": "-10px"
                   });
@@ -1159,13 +1177,14 @@
           },
           togglerButtonStyle: function() {
               var buttonColor;
+             // console.log("#36ec85: "+HextoRgb("rgb(23,222,2)"));
               if (!this.css_style.background.image) {
                   if (this.css_style.background.style.nav.custom) {
                       if (this.css_style.mainStyle["color"])
                           buttonColor = this.css_style.mainStyle["color"];
                       else
                           buttonColor = this.css_style.background.style.nav.customized.general["color"];
-                      return `url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='${buttonColor}' stroke-width='${togglerbutton_default_linesWidth}' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") `;
+                      return `url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='${HextoRgb(buttonColor)}' stroke-width='${togglerbutton_default_linesWidth}' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") `;
                   } else
                       return "";
               } else {
@@ -1173,7 +1192,7 @@
                   ;
                   else
                       buttonColor = default_image_togglerButton_color;
-                  return `url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='${buttonColor}' stroke-width='${togglerbutton_default_linesWidth}' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") `;
+                  return `url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='${HextoRgb(buttonColor)}' stroke-width='${togglerbutton_default_linesWidth}' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") `;
               }
           },
           toggleButtonContainer: function() {
@@ -1202,7 +1221,7 @@
               var styles = {};
               if (!this.css_style.background.image) {
                   if (!this.css_style.background.style.nav.custom) {
-                      if (this.togglerButtonVisible)
+                      if (this.mobileView)
                           //predefined style used in addition to bootstrap navbar style
                           styles = Object.assign(styles, {
                               "background-color": bootstrap_menu_background
@@ -1223,7 +1242,7 @@
                       }
                   } else {
                       var temp = this.css_style.background.style.nav.customized.general;
-                      if (this.togglerButtonVisible)
+                      if (this.mobileView)
                           styles = Object.assign(styles, {
                               "background-color": menu_background
                           });
@@ -1242,7 +1261,7 @@
                       }
                   }
               } else {
-                  if (this.togglerButtonVisible)
+                  if (this.mobileView)
                       //predefined style used in addition to bootstrap navbar style
                       styles = Object.assign(styles, {
                           "background-color": menu_background
@@ -1264,7 +1283,7 @@
                           });
                   }
               }
-              if (!this.togglerButtonVisible)
+              if (!this.mobileView)
                   styles = Object.assign(styles, {
                       "width": "max-content"
                   });
@@ -1309,7 +1328,7 @@
               if (!this.css_style.background.image) {
                   if (!this.css_style.background.style.nav.custom) {
                       var temp = this.css_style.background.style.nav.bootstrap;
-                      if (!this.togglerButtonVisible)
+                      if (!this.mobileView)
                           return temp.background;
                       else
                           return "";

@@ -16,3 +16,17 @@ function myIndexOf(arg1, arg2, fun){
   }
   return -1;
 }
+//converts from hex to rgba format
+//non hex color code are ignored
+function HextoRgb(color) {
+  if (color.search('#') != -1){
+    color = color.replace('#', '');
+    let r = parseInt(color.substring(0, 2), 16);
+    let g = parseInt(color.substring(2, 4), 16);
+    let b = parseInt(color.substring(4, 6), 16);
+    let result = 'rgb(' + r + ',' + g + ',' + b + ')';
+    return result;
+  }
+    else
+      return color;
+}
