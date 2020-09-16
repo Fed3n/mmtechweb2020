@@ -240,8 +240,42 @@ app.post('/stories/:storyName/videos', (req, res) => {
     res.send(":)");
 });
 
-
 //##STILI##//
+
+app.get('/styles/interfaces', (req, res) => {
+    let dir = path.join(__dirname + "/styles/interfaces/");
+    let entrylist = fs.readdirSync(dir);
+    for(let i = 0; i < entrylist.length; i++){
+      entrylist[i].replace(/.json$/g,"");
+    }
+    return res.send(entrylist);
+});
+
+app.get('/styles/interfaces/:interfaceName', (req, res) => {
+    let jsonpath = path.join(__dirname + "/styles/interfaces/" + req.params.interfaceName + ".json");
+    let json = fs.readFileSync(jsonpath);
+    let load = JSON.parse(json);
+    res.setHeader('Content-Type','application/json');
+    res.json(load);
+});
+
+app.post('/styles/interfaces/', (req, res) => {
+    let target = path.join(__dirname + "/styles/interfaces/" + req.body.name + ".json");
+    let json = req.body.json;
+    fs.writeFile(target, JSON.stringify(json), (error) => {
+        if(error) {
+            throw error;
+        }
+    });
+    res.send(":)");
+});
+
+app.delete('/styles/interfaces/', (req, res) => {
+    console.log(req.query.name);
+    let target = path.join(__dirname + "/styles/interfaces/" + req.query.name );
+    fs.unlinkSync(target);
+    res.send(":)");
+});
 
 app.get('/styles/keyboards', (req, res) => {
     let dir = path.join(__dirname + "/styles/keyboards/");
@@ -272,7 +306,7 @@ app.post('/styles/keyboards/', (req, res) => {
 });
 
 app.delete('/styles/keyboards/', (req, res) => {
-    let target = path.join(__dirname + "/styles/keyboards/" + req.query.styleName + ".json");
+    let target = path.join(__dirname + "/styles/keyboards/" + req.query.name );
     fs.unlinkSync(target);
     res.send(":)");
 });

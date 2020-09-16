@@ -11,17 +11,15 @@
         <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
         <link href="external.css" rel="stylesheet">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    </head>
+    </head>   
     <body class="border border-primary h-100">
         <div id="app" :style="loadImage">
-
             <div id="questloader" ref="questloader">
                 <h1>QUEST LOADER</h1>
                 <qrload style="height: 400px" :questname="questname"></qrload>
             </div>
             <!--Area navbar-->
             <div id="questrender" ref="questrender" hidden>
-
                 <nav class="navbar navbar-expand-md" :class="navbarBootstrapStyle" :style="navbarStyle">
                 <div class="navbar-brand" :style="navbarBrandStyle">Menu
                     <span class="badge" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert">Subs!</span>
@@ -29,8 +27,6 @@
                 <button class="navbar-toggler"  type="button" data-toggle="collapse" data-target="#collapsiblemenu" :style="toggleButtonContainer" v-observe-visibility="buttonChangedVisibility" aria-label="Apri il menu">
                     <span class="navbar-toggler-icon" :style="{ 'background-image': togglerButtonStyle }"></span>
                 </button>
-
-
                 <div class="collapse navbar-collapse" id="collapsiblemenu">
                     <ul class="navbar-nav" aria-labelledby="quest-menu-button">
                         <li class="nav-item dropdown">
@@ -52,12 +48,11 @@
                     </ul>
                 </div>
             </nav>
-
         <!--Area quest-->
         <div ref="questrender" class="card player-card overflow-auto" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
             <div class="card-header" :style="cardLimitStyle">
                 <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">
-                    {{in_mainquest ? "Quest" : "Subquest"}} 
+                    {{in_mainquest ? "Quest" : "Subquest"}}
                     {{ in_mainquest ? currentQuest : currentSub }}: {{ renderQuest.title || "no_name" }}
                 </h3>
             </div>
@@ -82,9 +77,8 @@
                         <video width="100%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
                         </video>
                     </div>
-                </div>                                 
+                </div>
             </div>
-
             <div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
                 <button id="submit" ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :style="submitStyle" v-on:click="in_mainquest? submitMain() : submitSub()">Submit</button>
             </div>

@@ -203,7 +203,7 @@
                   _this.inactiveStoryList = inactiveStoryList;
               });
               //Styles
-              axios.get("/styles").then(function(res) {
+              axios.get("/styles/interfaces").then(function(res) {
                   _this.styleList = res.data;
               });
               //Keyboard styles
@@ -310,8 +310,8 @@
               });
           },
           getStyle: function() {
-              let _this = this;
-              axios.get(`/styles/${this.$refs.select_style.value}`).then(res => {
+            let _this = this;
+              axios.get(`/styles/interfaces/${this.$refs.select_style.value}`).then(res => {
                   this.gamedata.css_style = res.data;
               });
           },
@@ -321,14 +321,14 @@
                   json: this.gamedata.css_style
               };
               let _this = this;
-              axios.post('/styles', load)
+              axios.post('/styles/interfaces', load)
                   .then(res => {
                       _this.updateFs();
                   });
           },
           deleteStyle: function() {
               let _this = this;
-              axios.delete('/styles', {
+              axios.delete('/styles/interfaces', {
                       params: {
                           name: this.$refs.select_style.value
                       }
@@ -1073,7 +1073,7 @@
               if (this.mobileView)
                 return "col-md-4 iphone6s";
               else
-                return "col-md-6";
+                return "col-md-8";
           },
           //oggetti presenti anche nel player
           navbarBootstrapStyle: function() {
