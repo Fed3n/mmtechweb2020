@@ -572,15 +572,15 @@
                           </div>
                       </div>
                   </div>
-                  <div id="preview-options" class="col-md-6 row">
-                    <div id="current-answer" v-if="previewdata.picked" class="col-md-6 overflow-auto m-3" style="word-wrap:break-word;">
+                  <div id="preview-options" class="col-md-4">
+                    <div id="current-answer" v-if="previewdata.picked" class="overflow-auto m-3" style="word-wrap:break-word;">
                         <p>Risposta corrente: {{ previewdata.picked }}</p>
                         <button class="btn btn-secondary" v-if="renderQuest.goto.length > 0" data-toggle="tooltip"
                         :title="previewdata.in_mainquest ? gamedata.mainQuest[getAnswerGoto].title : ''" v-on:click="jumpToQuest('main',getAnswerGoto)" :disabled="!previewdata.in_mainquest">
                             {{ previewdata.in_mainquest ? ("Questa risposta porterà a " + getAnswerGoto) : ("La risposta è " + getAnswerCorrectness) }}
                         </button>
                     </div>
-                    <div class="col-md-4 m-3">
+                    <div class="m-3">
 						          <div class="btn-group">
                        <button class="col btn btn-warning" v-on:click="switchView(false)">PC</button>
                        <button class="col btn btn-danger" v-on:click="switchView(true)">MOBILE</button>

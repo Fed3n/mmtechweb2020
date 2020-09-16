@@ -370,21 +370,23 @@
               }
           },
           getVideosList: function() {
-              console.log("Getting videos list...");
+           /*   console.log("Getting videos list...");
               let _this = this;
               axios.get(`/stories/${this.metadata.name}/videos`).then((res) => {
                   console.log(res.data);
                   _this.vidsList = res.data;
               });
+            */
           },
           getStyle: function() {
-              let _this = this;
+             /* let _this = this;
               axios.get(`/styles/${this.$refs.select_style.value}`).then(res => {
                   this.gamedata.css_style = res.data;
               });
+            */
           },
           saveStyle: function() {
-              let load = {
+             /* let load = {
                   name: this.$refs.style_name.value,
                   json: this.gamedata.css_style
               };
@@ -393,9 +395,10 @@
                   .then(res => {
                       _this.updateFs();
                   });
+             */
           },
           deleteStyle: function() {
-              let _this = this;
+           /*   let _this = this;
               axios.delete('/styles', {
                       params: {
                           name: this.$refs.select_style.value
@@ -404,6 +407,7 @@
                   .then(res => {
                       _this.updateFs();
                   });
+             */
           },
           getKeyStyle: function() {
               let _this = this;
@@ -1122,7 +1126,7 @@
               if (this.mobileView)
                 return "col-md-4";
               else
-                return "col-md-6";
+                return "col-md-8";
           },
           //oggetti presenti anche nel player
           navbarBootstrapStyle: function() {
