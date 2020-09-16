@@ -13,9 +13,9 @@ module.exports = {
     methods: {
       updateAns: function(picked){
         this.$emit('input', picked);
-        if(document.getElementById("submit")){
-          if(picked != "") document.getElementById("submit").disabled = false;
-          else document.getElementById("submit").disabled = true;
+        if(this.$parent.$refs.submitbutton.disabled){
+          if(picked != "") this.$parent.$refs.submitbutton.disabled = false;
+          else this.$parent.$refs.submitbutton.disabled = true;
         }
       }
     }
