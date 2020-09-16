@@ -110,75 +110,8 @@
               }
           }
        }
-
-      /*
-      "css_style": {
-          "mainStyle": {
-              "font-family": "",
-              "font-style": "",
-              "font-weight": "",
-              "font-size": "",
-              "color": ""
-          },
-          "background": {
-              "image": null,
-              "url": "",
-              "style": {
-                  "nav": {
-                      "custom": null,
-                      "bootstrap": {
-                          "textColor": "",
-                          "background": ""
-                      },
-                      "customized": {
-                          "general": {
-                              "background-color": "",
-                              "color": ""
-                          },
-                      }
-                  },
-                  "badge": {
-                      "custom": null,
-                      "bootstrap": {
-                          "type": ""
-                      },
-                      "customized": {
-                          "background-color": "",
-                          "border-width": "",
-                          "border-style": "",
-                          "border-color": "",
-                          "color": ""
-                      }
-                  },
-                  "alert": {
-                      "custom": null,
-                      "bootstrap": {
-                          "type": ""
-                      },
-                      "customized": {
-                          "background-color": "",
-                          "border-width": "",
-                          "border-style": "",
-                          "border-color": "",
-                          "color": ""
-                      }
-                  },
-                  "card": {
-                      "custom": null,
-                      "bootstrap": {
-                          "textColor": "",
-                          "background": ""
-                      },
-                      "customized": {
-                          "background-color": "",
-                          "color": ""
-                      }
-                  }
-              }
-          }
-       */
-
   };
+
   metadata_pholder = {
       "name": "",
       "active": false,
@@ -625,11 +558,11 @@
               //Il formato di img_input è differente [[x,y,radius],node]
               if (type == "image") {
                   var ans = [this.previewdata.picked[0], this.previewdata.picked[1], this.radiusInput];
-                  this.renderQuest.goto.push([ans, 0])
+                  this.renderQuest.goto.push([ans, 0, 0])
               }
               //Un comune goto è in formato [ans,node]
               else {
-                  this.renderQuest.goto.push(["", 0]);
+                  this.renderQuest.goto.push(["", 0, 0]);
               }
           },
           rmGoto: function() {
@@ -638,9 +571,9 @@
           addSolution: function(type) {
               if (type == "image") {
                   var ans = [this.previewdata.picked[0], this.previewdata.picked[1], this.radiusInput];
-                  this.renderQuest.solution.push(ans)
+                  this.renderQuest.solution.push([ans,0])
               } else {
-                  this.renderQuest.solution.push("");
+                  this.renderQuest.solution.push(["",0]);
               }
           },
           rmSolution: function(sol) {
@@ -996,7 +929,7 @@
               }
               return prev;
           },
-          //Se stiamo vedendo la previw di una main quest vediamo dove ci porta la risposta attuale
+          //Se stiamo vedendo la preview di una main quest vediamo dove ci porta la risposta attuale
           getAnswerGoto: function() {
               if (!this.previewdata.picked) return "";
               options = this.getCurrentGotos;
@@ -1022,8 +955,27 @@
               return "";
           },
           getAnswerCorrectness: function() {
-              console.log("hi:)");
-              return "hey";
+              if(!this.previewdata.picked) return "";
+              sols = this.renderQuest.solution;
+              if(this.renderQuest.type == "draw"){
+                  for(sol of sols){
+                      if(sol[0]){
+                          let x = sol[0][0];
+                          let y = sol[0][1];
+                          let radius = sol[0][2];
+                          if (this.previewdata.picked[0] >= (x - radius) && this.previewdata.picked[0] <= (x + radius) && 
+                          this.previewdata.picked[1] >= (y - radius) && this.previewdata.picked[1] <= (y + radius)) {
+                              return true;
+                          }
+                      }
+                  }
+              }
+              else {
+                  for(sol of sols){
+                      if(this.previewdata.picked == sol) return true;
+                  }
+              }
+              return false;
           },
           currentComponent: function() {
               var type = this.renderQuest.type;
