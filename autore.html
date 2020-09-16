@@ -575,10 +575,15 @@
                   <div id="preview-options" class="col-md-4">
                     <div id="current-answer" v-if="previewdata.picked" class="overflow-auto m-3" style="word-wrap:break-word;">
                         <p>Risposta corrente: {{ previewdata.picked }}</p>
-                        <button class="btn btn-secondary" v-if="renderQuest.goto.length > 0" data-toggle="tooltip"
-                        :title="previewdata.in_mainquest ? gamedata.mainQuest[getAnswerGoto].title : ''" v-on:click="jumpToQuest('main',getAnswerGoto)" :disabled="!previewdata.in_mainquest">
-                            {{ previewdata.in_mainquest ? ("Questa risposta porterà a " + getAnswerGoto) : ("La risposta è " + getAnswerCorrectness) }}
-                        </button>
+                        <div v-if="previewdata.in_mainquest">
+                            <button class="btn btn-secondary" v-if="renderQuest.goto.length > 0" data-toggle="tooltip"
+                            :title="gamedata.mainQuest[getAnswerGoto].title">
+                                {{ "Questa risposta porterà a " + getAnswerGoto }}
+                            </button>
+                        </div>
+                        <div v-if="!previewdata.in_mainquest">
+                            <p>La risposta è {{ getAnswerCorrectness ? "giusta" : "sbagliata" }}!</p>
+                        </div>
                     </div>
                     <div class="m-3">
 						          <div class="btn-group">
@@ -1004,7 +1009,7 @@
                         <div id="solutions-management" v-if="!previewdata.in_mainquest">
                             <h2 class="bg-info text-light">Soluzioni</h2>
                             <div class="mb-2" v-for="sol in renderQuest.solution">
-                                <input class="form-control" type="text" v-model="renderQuest.solution[renderQuest.solution.indexOf(sol)]">
+                                <input class="form-control" type="text" v-model="renderQuest.solution[renderQuest.solution.indexOf(sol)][0]">
                                 <button class="btn btn-danger" v-on:click="rmSolution(sol)">Rimuovi</button>
                             </div>
                             <div class="btn-group">
