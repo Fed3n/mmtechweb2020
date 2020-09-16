@@ -110,74 +110,6 @@
               }
           }
        }
-
-      /*
-      "css_style": {
-          "mainStyle": {
-              "font-family": "",
-              "font-style": "",
-              "font-weight": "",
-              "font-size": "",
-              "color": ""
-          },
-          "background": {
-              "image": null,
-              "url": "",
-              "style": {
-                  "nav": {
-                      "custom": null,
-                      "bootstrap": {
-                          "textColor": "",
-                          "background": ""
-                      },
-                      "customized": {
-                          "general": {
-                              "background-color": "",
-                              "color": ""
-                          },
-                      }
-                  },
-                  "badge": {
-                      "custom": null,
-                      "bootstrap": {
-                          "type": ""
-                      },
-                      "customized": {
-                          "background-color": "",
-                          "border-width": "",
-                          "border-style": "",
-                          "border-color": "",
-                          "color": ""
-                      }
-                  },
-                  "alert": {
-                      "custom": null,
-                      "bootstrap": {
-                          "type": ""
-                      },
-                      "customized": {
-                          "background-color": "",
-                          "border-width": "",
-                          "border-style": "",
-                          "border-color": "",
-                          "color": ""
-                      }
-                  },
-                  "card": {
-                      "custom": null,
-                      "bootstrap": {
-                          "textColor": "",
-                          "background": ""
-                      },
-                      "customized": {
-                          "background-color": "",
-                          "color": ""
-                      }
-                  }
-              }
-          }
-       */
-
   };
   metadata_pholder = {
       "name": "",
@@ -271,7 +203,7 @@
                   _this.inactiveStoryList = inactiveStoryList;
               });
               //Styles
-              axios.get("/styles").then(function(res) {
+              axios.get("/styles/interfaces").then(function(res) {
                   _this.styleList = res.data;
               });
               //Keyboard styles
@@ -370,36 +302,33 @@
               }
           },
           getVideosList: function() {
-           /*   console.log("Getting videos list...");
+              console.log("Getting videos list...");
               let _this = this;
               axios.get(`/stories/${this.metadata.name}/videos`).then((res) => {
                   console.log(res.data);
                   _this.vidsList = res.data;
               });
-            */
           },
           getStyle: function() {
-             /* let _this = this;
-              axios.get(`/styles/${this.$refs.select_style.value}`).then(res => {
+            let _this = this;
+              axios.get(`/styles/interfaces/${this.$refs.select_style.value}`).then(res => {
                   this.gamedata.css_style = res.data;
               });
-            */
           },
           saveStyle: function() {
-             /* let load = {
+              let load = {
                   name: this.$refs.style_name.value,
                   json: this.gamedata.css_style
               };
               let _this = this;
-              axios.post('/styles', load)
+              axios.post('/styles/interfaces', load)
                   .then(res => {
                       _this.updateFs();
                   });
-             */
           },
           deleteStyle: function() {
-           /*   let _this = this;
-              axios.delete('/styles', {
+              let _this = this;
+              axios.delete('/styles/interfaces', {
                       params: {
                           name: this.$refs.select_style.value
                       }
@@ -407,7 +336,6 @@
                   .then(res => {
                       _this.updateFs();
                   });
-             */
           },
           getKeyStyle: function() {
               let _this = this;
