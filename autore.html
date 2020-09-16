@@ -174,118 +174,130 @@
       						<div class="row container-fluid">
         						<!-- IMMAGINE O SFONDO -->
       							<div id="backgroundStyle" class="col-md-6">
-      									<div class="btn-group container-fluid mb-3">
+      									<div class="btn-group container-fluid mb-4">
       						        <button class="btn btn-light" v-on:click="css_style.background.image = true" :disabled="css_style.background.image">Immagine</button>
       						        <button class="btn btn-light" v-on:click="css_style.background.image = false" :disabled="!css_style.background.image">Colore</button>
                   			</div>
                         <div class="container-fluid">
-                					<!-- scegli l'immagine -->
-                					<div v-if="css_style.background.image">
-                              <div class=" row form-group mb-2">
-                                  <label for="select-image">Scegli l'immagine di sfondo: </label>
-                                  <select name="select-image" class="form-control" value=""  @change="setImage">
-                                      <option v-for="imgname in imagesList" :value="imgname">{{ imgname }}</option>
-                                  </select>
-                              </div>
-                					</div>
-                					<!-- scelgi lo sfondo dei componenti -->
-                          <div v-if="!css_style.background.image" id="setColorBackground" class="panel-group mb-3">
-                            <!-- NAVBAR -->
-                            <div class="panel panel-default">
-                              <div class="panel-heading py-2 border-bottom">
-                                <div class="panel-title" data-toggle="collapse" data-parent="#setColorBackground" href="#navigationBarEditor" @click="styleMenuCollapse">
-                                  <label>Barra di Navigazione</label>
+
+                          <div id="setStyle" class="panel-group mb-3">
+
+                            <!-- scegli l'immagine -->
+                  					<div v-if="css_style.background.image">
+                              <div class="panel panel-default">
+                                <div class="panel-heading py-2 border-bottom border-top">
+                                  <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#imageEditor" @click="styleMenuCollapse">
+                                    <label>Immagine di Sfondo</label>
+                                  </div>
+                                </div>
+                                <div id="imageEditor" class="panel-collapse collapse stylepanelcollapse">
+                                  <div class="panel-body border-bottom mt-2 px-4 pb-3">
+                                    <label for="select-image">Scegli l'immagine: </label>
+                                    <select name="select-image" class="form-control" value=""  @change="setImage">
+                                        <option v-for="imgname in imagesList" :value="imgname">{{ imgname }}</option>
+                                    </select>
+                                  </div>
                                 </div>
                               </div>
-                              <div id="navigationBarEditor" class="panel-collapse collapse stylepanelcollapse">
-                                <div class="panel-body border-bottom mt-2">
-                                  <!-- colori predefiniti -->
-                                  <div v-if="!css_style.background.style.nav.custom">
-        														<div class="form-group row pl-4 my-0">
-        															<label class="col col-form-label">Colore del Testo</label>
-        															<div class="col">
-        																<select class="form-control" name="navigationBarStyle" v-model="css_style.background.style.nav.bootstrap.textColor">
-        																	<option v-for="styles in bootstrapConsts.navTextColors" :value="styles.value">{{ styles.name }}</option>
-        																</select>
-        															</div>
-        														</div>
-        														<div class="form-group row pl-4 my-0">
-        															<label class="col col-form-label">Colore di Sfondo</label>
-        															<div class="col">
-        																<select class="form-control" name="navigationBarStyle" v-model="css_style.background.style.nav.bootstrap.background">
-        																	<option v-for="styles in bootstrapConsts.navCardBackgroundColors" :value="styles.value">{{ styles.name }}</option>
-        																</select>
-        															</div>
-        														</div>
+                  					</div>
+                            <div v-if="!css_style.background.image">
+                              <!-- NAVBAR -->
+                              <div class="panel panel-default">
+                                <div class="panel-heading py-2 border-bottom border-top">
+                                  <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#navigationBarEditor" @click="styleMenuCollapse">
+                                    <label>Barra di Navigazione</label>
                                   </div>
-                                  <!-- colori a scelta -->
-                                  <div v-if="css_style.background.style.nav.custom">
-                                    <div class="form-group row pl-3 my-0">
-                                      <label for="textColorNavCustom" class="col-md-6">Colore del Testo</label>
-                                      <div class="col-md-6">
-                                        <input name="textColorNavCustom" type="color" v-model="css_style.background.style.nav.customized.general['color']">
+                                </div>
+                                <div id="navigationBarEditor" class="panel-collapse collapse stylepanelcollapse">
+                                  <div class="panel-body border-bottom mt-2">
+                                    <!-- colori predefiniti -->
+                                    <div v-if="!css_style.background.style.nav.custom">
+          														<div class="form-group row pl-4 my-0">
+          															<label class="col col-form-label">Colore del Testo</label>
+          															<div class="col">
+          																<select class="form-control" name="navigationBarStyle" v-model="css_style.background.style.nav.bootstrap.textColor">
+          																	<option v-for="styles in bootstrapConsts.navTextColors" :value="styles.value">{{ styles.name }}</option>
+          																</select>
+          															</div>
+          														</div>
+          														<div class="form-group row pl-4 my-0">
+          															<label class="col col-form-label">Colore di Sfondo</label>
+          															<div class="col">
+          																<select class="form-control" name="navigationBarStyle" v-model="css_style.background.style.nav.bootstrap.background">
+          																	<option v-for="styles in bootstrapConsts.navCardBackgroundColors" :value="styles.value">{{ styles.name }}</option>
+          																</select>
+          															</div>
+          														</div>
+                                    </div>
+                                    <!-- colori a scelta -->
+                                    <div v-if="css_style.background.style.nav.custom">
+                                      <div class="form-group row pl-3 my-0">
+                                        <label for="textColorNavCustom" class="col-md-6">Colore del Testo</label>
+                                        <div class="col-md-6">
+                                          <input name="textColorNavCustom" type="color" v-model="css_style.background.style.nav.customized.general['color']">
+                                        </div>
+                                      </div>
+                                      <div class="form-group row pl-3 my-0">
+                                        <label for="backgroundColorNavCustom" class="col-md-6">Colore di Sfondo</label>
+                                        <div class="col-md-6">
+                                          <input name="backgroundColorNavCustom" type="color" v-model="css_style.background.style.nav.customized.general['background-color']">
+                                        </div>
                                       </div>
                                     </div>
-                                    <div class="form-group row pl-3 my-0">
-                                      <label for="backgroundColorNavCustom" class="col-md-6">Colore di Sfondo</label>
-                                      <div class="col-md-6">
-                                        <input name="backgroundColorNavCustom" type="color" v-model="css_style.background.style.nav.customized.general['background-color']">
-                                      </div>
-                                    </div>
+                                    <div class="container-fluid text-center mb-0 mt-2">
+               												<label for="navcheckbox">Altri Colori</label>
+               												<input id="navcheckbox" type="checkbox" v-model="css_style.background.style.nav.custom">
+               											</div>
                                   </div>
-                                  <div class="container-fluid text-center mb-0 mt-2">
-             												<label for="navcheckbox">Altri Colori</label>
-             												<input id="navcheckbox" type="checkbox" v-model="css_style.background.style.nav.custom">
-             											</div>
                                 </div>
                               </div>
-                            </div>
-                            <!-- CARD -->
-                            <div class="panel panel-default">
-                              <div class="panel-heading py-2 border-bottom">
-                                <div class="panel-title" data-toggle="collapse" data-parent="#setColorBackground" href="#cardStyleEditor" @click="styleMenuCollapse">
-                                  <label>Corpo Centrale</label>
+                              <!-- CARD -->
+                              <div class="panel panel-default">
+                                <div class="panel-heading py-2 border-bottom">
+                                  <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#cardStyleEditor" @click="styleMenuCollapse">
+                                    <label>Corpo Centrale</label>
+                                  </div>
                                 </div>
-                              </div>
-                              <div id="cardStyleEditor" class="panel-collapse collapse stylepanelcollapse">
-                                <div class="panel-body border-bottom mt-2">
-                                  <!-- colori predefiniti -->
-                                  <div v-if="!css_style.background.style.card.custom">
-                                    <div class="form-group row pl-4 my-0">
-                                      <label class="col col-form-label">Colore del Testo</label>
-                                      <div class="col">
-                                        <select class="form-control" name="cardTextStyle" v-model="css_style.background.style.card.bootstrap.textColor">
-                                          <option v-for="styles in bootstrapConsts.cardTextColors" :value="styles.value">{{ styles.name }}</option>
-                                        </select>
+                                <div id="cardStyleEditor" class="panel-collapse collapse stylepanelcollapse">
+                                  <div class="panel-body border-bottom mt-2">
+                                    <!-- colori predefiniti -->
+                                    <div v-if="!css_style.background.style.card.custom">
+                                      <div class="form-group row pl-4 my-0">
+                                        <label class="col col-form-label">Colore del Testo</label>
+                                        <div class="col">
+                                          <select class="form-control" name="cardTextStyle" v-model="css_style.background.style.card.bootstrap.textColor">
+                                            <option v-for="styles in bootstrapConsts.cardTextColors" :value="styles.value">{{ styles.name }}</option>
+                                          </select>
+                                        </div>
+                                      </div>
+                                      <div class="form-group row pl-4 my-0">
+                                        <label class="col col-form-label">Colore di Sfondo</label>
+                                        <div class="col">
+                                          <select class="form-control" name="cardBackgroundStyle" v-model="css_style.background.style.card.bootstrap.background">
+                                            <option v-for="styles in bootstrapConsts.navCardBackgroundColors" :value="styles.value">{{ styles.name }}</option>
+                                          </select>
+                                        </div>
                                       </div>
                                     </div>
-                                    <div class="form-group row pl-4 my-0">
-                                      <label class="col col-form-label">Colore di Sfondo</label>
-                                      <div class="col">
-                                        <select class="form-control" name="cardBackgroundStyle" v-model="css_style.background.style.card.bootstrap.background">
-                                          <option v-for="styles in bootstrapConsts.navCardBackgroundColors" :value="styles.value">{{ styles.name }}</option>
-                                        </select>
+                                    <!-- colori a scelta -->
+                                    <div v-if="css_style.background.style.card.custom">
+                                      <div class="form-group row pl-3 my-0">
+                                        <label for="textColorCardCustom" class="col-md-6">Colore del Testo</label>
+                                        <div class="col-md-6">
+                                          <input name="textColorCardCustom" type="color" v-model="css_style.background.style.card.customized['color']">
+                                        </div>
+                                      </div>
+                                      <div class="form-group row pl-3 my-0">
+                                        <label for="backgroundColorCardCustom" class="col-md-6">Colore di Sfondo</label>
+                                        <div class="col-md-6">
+                                          <input name="backgroundColorCardCustom" type="color" v-model="css_style.background.style.card.customized['background-color']">
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                  <!-- colori a scelta -->
-                                  <div v-if="css_style.background.style.card.custom">
-                                    <div class="form-group row pl-3 my-0">
-                                      <label for="textColorCardCustom" class="col-md-6">Colore del Testo</label>
-                                      <div class="col-md-6">
-                                        <input name="textColorCardCustom" type="color" v-model="css_style.background.style.card.customized['color']">
-                                      </div>
+                                    <div class="container-fluid text-center mb-0 mt-2">
+                                      <label for="cardcheckbox">Altri Colori</label>
+                                      <input id="cardcheckbox" type="checkbox" v-model="css_style.background.style.card.custom">
                                     </div>
-                                    <div class="form-group row pl-3 my-0">
-                                      <label for="backgroundColorCardCustom" class="col-md-6">Colore di Sfondo</label>
-                                      <div class="col-md-6">
-                                        <input name="backgroundColorCardCustom" type="color" v-model="css_style.background.style.card.customized['background-color']">
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div class="container-fluid text-center mb-0 mt-2">
-                                    <label for="cardcheckbox">Altri Colori</label>
-                                    <input id="cardcheckbox" type="checkbox" v-model="css_style.background.style.card.custom">
                                   </div>
                                 </div>
                               </div>
@@ -293,7 +305,7 @@
                             <!-- BADGE -->
                             <div class="panel panel-default">
                               <div class="panel-heading py-2 border-bottom">
-                                <div class="panel-title" data-toggle="collapse" data-parent="#setColorBackground" href="#badgeStyleEditor" @click="styleMenuCollapse">
+                                <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#badgeStyleEditor" @click="styleMenuCollapse">
                                   <label>Etichetta obiettivi secondari disponibili</label>
                                 </div>
                               </div>
@@ -355,7 +367,7 @@
                             <!-- ALERT -->
                             <div class="panel panel-default">
                               <div class="panel-heading py-2 border-bottom">
-                                <div class="panel-title" data-toggle="collapse" data-parent="#setColorBackground" href="#alertStyleEditor" @click="styleMenuCollapse">
+                                <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#alertStyleEditor" @click="styleMenuCollapse">
                                   <label>Etichetta aiuto richiesto</label>
                                 </div>
                               </div>
@@ -418,7 +430,7 @@
                   			</div>
       							</div>
       							<!-- STILI GLOBALI DEL TESTO -->
-      							<div id="mainStyles" class="col-md-6">
+      							<div id="mainStyles" class="col-md-6 pl-4">
       									<div class="form-group row">
       										<label for="fontFamilyField" class="col-md-4 col-form-label">Font</label>
       										<div class="col-md-8">
@@ -451,17 +463,20 @@
       									</div>
       									<div class="form-group row">
       										  <label class="col-md-4">Colore del Testo</label>
-      				              <div class="col-md-2">
-      												<input type="color" v-model="currentMainStyleColor" @change="editMainColor">
-      											</div>
-      											<div class="col-md-3">
-      												<label for="applyMainColor">Applica</label>
-      												<input id="applyMainColor" type="checkbox" v-model="mainStyleColor" @change="editMainColor">
-      											</div>
+                            <div class="col-md-8 row">
+        				              <div class="col-md-4">
+        												<input type="color" v-model="currentMainStyleColor" @change="editMainColor">
+        											</div>
+        											<div class="col-md-4">
+        												<label for="applyMainColor">Applica</label>
+        												<input id="applyMainColor" type="checkbox" v-model="mainStyleColor" @change="editMainColor">
+        											</div>
+                              <small v-if="mainStyleColor && !css_style.background.image" class="row form-text text-muted ml-6">
+                                 Verranno sovrascritti tutti i colori del testo specificati in altre sezioni
+                              </small>
+                          </div>
       								  </div>
-                        <div class="row p-0 m-0 ml-6">
-                          <label v-if="mainStyleColor && !css_style.background.image" for="applyMainColor" style="font-size: 15px">Verranno sovrascritti tutti gli altri colori del testo</label>
-                        </div>
+
       							</div>
     		          </div>
                 </div>
