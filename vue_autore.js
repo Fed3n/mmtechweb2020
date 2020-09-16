@@ -51,7 +51,7 @@
               "font-style": "normal",
               "font-weight": "normal",
               "font-size": "20",
-              "color": "rgb(0,0,0)"
+              "color": "#000000"
           },
           "background": {
               "image": false,
@@ -65,8 +65,8 @@
                       },
                       "customized": {
                           "general": {
-                              "background-color": "rgb(255,255,255)",
-                              "color": "rgb(0,0,0)"
+                              "background-color": "#ffffff",
+                              "color": "#000000"
                           },
                       }
                   },
@@ -76,11 +76,11 @@
                           "type": "badge-warning"
                       },
                       "customized": {
-                          "background-color": "rgb(255,255,255)",
+                          "background-color": "#ffffff",
                           "border-width": "0px",
                           "border-style": "solid",
-                          "border-color": "rgb(0,0,0)",
-                          "color": "rgb(0,0,0)"
+                          "border-color": "#000000",
+                          "color": "#000000"
                       }
                   },
                   "alert": {
@@ -89,11 +89,11 @@
                           "type": "alert-warning"
                       },
                       "customized": {
-                          "background-color": "rgb(255,255,255)",
+                          "background-color": "#ffffff",
                           "border-width": "0px",
                           "border-style": "solid",
-                          "border-color": "rgb(0,0,0)",
-                          "color": "rgb(0,0,0)"
+                          "border-color": "#000000",
+                          "color": "#000000"
                       }
                   },
                   "card": {
@@ -103,8 +103,8 @@
                           "background": "bg-white"
                       },
                       "customized": {
-                          "background-color": "rgb(255,255,255)",
-                          "color": "rgb(0,0,0)"
+                          "background-color": "#ffffff",
+                          "color": "#000000"
                       }
                   }
               }
@@ -202,6 +202,7 @@
           storyList: null,
           activeStoryList: null,
           inactiveStoryList: null,
+          styleList: null,
           keyStylesList: null,
           imagesList: null,
           vidsList: null,
@@ -225,76 +226,10 @@
           },
           questname: null,
           mainStyleColor: false,
-          currentMainStyleColor: "rgb(0,0,0)",
+          currentMainStyleColor: "#000000",
           mobileView: true,
           onLink: [],
-          submitStyleObject: {},
-          css_style: {
-		        mainStyle: {
-	            "font-family": "'Dancing Script', cursive",
-	            "font-style": "normal",
-	            "font-weight": "bold",
-	            "font-size": "20px",
-	            "color": "rgba(60,60,60,1)"
-		        },
-            background: {
-                image: false,
-                url: "url('notebook.png')",
-                style: {
-                    nav: {
-                        custom: true,
-                        bootstrap: {
-                            textColor: "navbar-dark",
-                            background: "bg-primary"
-                        },
-                        customized: {
-                            general: {
-                                "background-color": "grey",
-                                "color": "red"
-                            },
-                        }
-                    },
-                    badge: {
-                        custom: false,
-                        bootstrap: {
-                            type: "badge-warning"
-                        },
-                        customized: {
-                            "background-color": "rgba(122,232,14,0.8)",
-                            "border-width": "3px",
-                            "border-style": "dotted",
-                            "border-color": "blue",
-                            "color": "red"
-                        }
-                    },
-                    alert: {
-                        custom: false,
-                        bootstrap: {
-                            type: "alert-warning"
-                        },
-                        customized: {
-                            "background-color": "rgba(122,232,14,0.8)",
-                            "border-width": "3px",
-                            "border-style": "dotted",
-                            "border-color": "blue",
-                            "color": "red"
-                        }
-                    },
-                    card: {
-                        custom: true,
-                        bootstrap: {
-                            textColor: "text-info",
-                            background: "bg-warning"
-                        },
-                        customized: {
-                            "background-color": "white",
-                            "color": "white"
-                        }
-                    }
-                }
-             }
-          }
-
+          submitStyleObject: {}
       },
       created: function() {
           this.updateFs();
@@ -334,6 +269,10 @@
                   _this.storyList = storyList;
                   _this.activeStoryList = activeStoryList;
                   _this.inactiveStoryList = inactiveStoryList;
+              });
+              //Styles
+              axios.get("/styles").then(function(res) {
+                  _this.styleList = res.data;
               });
               //Keyboard styles
               axios.get("/styles/keyboards").then(function(res) {
@@ -437,6 +376,34 @@
                   console.log(res.data);
                   _this.vidsList = res.data;
               });
+          },
+          getStyle: function() {
+              let _this = this;
+              axios.get(`/styles/${this.$refs.select_style.value}`).then(res => {
+                  this.gamedata.css_style = res.data;
+              });
+          },
+          saveStyle: function() {
+              let load = {
+                  name: this.$refs.style_name.value,
+                  json: this.gamedata.css_style
+              };
+              let _this = this;
+              axios.post('/styles', load)
+                  .then(res => {
+                      _this.updateFs();
+                  });
+          },
+          deleteStyle: function() {
+              let _this = this;
+              axios.delete('/styles', {
+                      params: {
+                          name: this.$refs.select_style.value
+                      }
+                  })
+                  .then(res => {
+                      _this.updateFs();
+                  });
           },
           getKeyStyle: function() {
               let _this = this;
@@ -1249,7 +1216,6 @@
           },
           togglerButtonStyle: function() {
               var buttonColor;
-             // console.log("#36ec85: "+HextoRgb("rgb(23,222,2)"));
               if (!this.gamedata.css_style.background.image) {
                   if (this.gamedata.css_style.background.style.nav.custom) {
                       if (this.gamedata.css_style.mainStyle["color"])

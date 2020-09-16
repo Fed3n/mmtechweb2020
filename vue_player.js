@@ -288,11 +288,11 @@ var app = new Vue({
           this.metadata = response.data.meta;
             axios.get("/uid", {params: {story_name: this.metadata.name}}).then(res => {
               this.user_id = res.data;
-          }); 
+          });
         });
     }
           this.$refs.questloader.remove();
-          this.$refs.questrender.removeAttribute("hidden"); 
+          this.$refs.questrender.removeAttribute("hidden");
     },
     changeState: function (state){
       this.currentQuest = state;
