@@ -362,26 +362,27 @@ var app = new Vue({
       this.$refs.questname.focus();
     },
     submitSub: function() {
-	  this.$refs.inputForm.reset();
+      this.$refs.inputForm.reset();
       this.$refs.submitbutton.disabled = true;
-      if (this.in_mainquest) return;
       let wrong_answer = true;
-      let subQuest = this.gamedata.subQuests[this.currentSub];
-      if (subQuest.type == "input") {
-        for (let accepted of subQuest.solution)
-          if (this.picked == accepted)
-            wrong_answer = false;
+      let subQuest = this.renderQuest;
+      if (subQuest.type == "draw") {
+          for(ans of subQuest.solution){
+              let x = ans[0];
+              let y = ans[1];
+              let radius = parseInt(ans[2]);
+              if(this.picked[0] >= x-radius && this.picked[0] <= x+radius &&
+                this.picked[1] >= y-radius && this.picked[1] <= y+radius){
+                  wrong_answer = false;
+              }
           }
-      else if (subQuest.type == "choice") {
-        if (this.picked == subQuest.solution)
-          wrong_answer = false;
-        }
+      }
+      else {
+          for(ans of subQuest.solution)
+              if (this.picked == ans)
+              wrong_answer = false;
+      }
       if (wrong_answer) return;
-
-      // devo aver completato le subquest necessarie richieste
-      for (let required of subQuest.requires_sub)
-        if (!this.completedSubs.includes(required))
-          return;
 
       this.time_inactive = 0;
       this.completedSubs.push(subQuest.number);

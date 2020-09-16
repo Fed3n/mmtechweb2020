@@ -1,12 +1,13 @@
 <template>
   <div>
-    <p :style="textStyle" tabindex=-1 aria-live="polite" aria-label="codice inserito">{{ text }}</p>
+    <p :style="textStyle" tabindex=0 aria-live="polite" aria-label="codice inserito">{{ text }}</p>
     <div id="custom-keyboard" role="grid">
       <div v-for="(row,index) in genKeyboard" :aria-label="'riga'+index">
         <div id="button-line">
           <span v-for="key in row">
-            <button v-if="key.startsWith('!!')" class="input-button" :class="keyboardAnim" :style="keyboardStyle(key)" v-on:click="delValue">{{ key.substring(2,key.length) }}</button>
-            <button v-if="!key.startsWith('!!')" class="input-button" :class="keyboardAnim" :value="key" :style="keyboardStyle(key)" v-on:click="emitValue($event.target.value)">{{ key }}</button>
+            <button v-if="key.startsWith('!!')" type="button" class="input-button" :class="keyboardAnim" :style="keyboardStyle(key)" v-on:click="delValue">{{ key.substring(2,key.length) }}</button>
+            <button v-if="!key.startsWith('!!')" type="button" class="input-button" :class="keyboardAnim" :value="key" :style="keyboardStyle(key)" 
+            v-on:click="emitValue($event.target.value)">{{ key }}</button>
           </span>
         </div>
       </div>
@@ -26,9 +27,12 @@ module.exports = {
     emitValue: function(value) {
       this.text += value;
       this.$emit('input', this.text);
+      this.$parent.$refs.submitbutton.disabled = !this.text;
+      console.log(this.$parent.$refs.submitbutton);
     },
     delValue: function() {
       this.text = this.text.substring(0,this.text.length-1);
+      this.$parent.$refs.submitbutton.disabled = !this.text;
       this.$emit('input', this.text);
     },
     keyboardStyle: function(val){
@@ -99,7 +103,7 @@ module.exports = {
   user-select: none;
   text-align: center;
   vertical-align: top;
-  outine: none;
+  outline: none;
 }
 
 #button-line {
