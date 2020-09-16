@@ -175,15 +175,13 @@
         						<!-- IMMAGINE O SFONDO -->
       							<div id="backgroundStyle" class="col-md-6">
       									<div class="btn-group container-fluid mb-4">
-      						        <button class="btn btn-light" v-on:click="css_style.background.image = true" :disabled="css_style.background.image">Immagine</button>
-      						        <button class="btn btn-light" v-on:click="css_style.background.image = false" :disabled="!css_style.background.image">Colore</button>
+      						        <button class="btn btn-light" v-on:click="gamedata.css_style.background.image = true" :disabled="gamedata.css_style.background.image">Immagine</button>
+      						        <button class="btn btn-light" v-on:click="gamedata.css_style.background.image = false" :disabled="!gamedata.css_style.background.image">Colore</button>
                   			</div>
                         <div class="container-fluid">
-
                           <div id="setStyle" class="panel-group mb-3">
-
                             <!-- scegli l'immagine -->
-                  					<div v-if="css_style.background.image">
+                  					<div v-if="gamedata.css_style.background.image">
                               <div class="panel panel-default">
                                 <div class="panel-heading py-2 border-bottom border-top">
                                   <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#imageEditor" @click="styleMenuCollapse">
@@ -200,7 +198,7 @@
                                 </div>
                               </div>
                   					</div>
-                            <div v-if="!css_style.background.image">
+                            <div v-if="!gamedata.css_style.background.image">
                               <!-- NAVBAR -->
                               <div class="panel panel-default">
                                 <div class="panel-heading py-2 border-bottom border-top">
@@ -211,11 +209,11 @@
                                 <div id="navigationBarEditor" class="panel-collapse collapse stylepanelcollapse">
                                   <div class="panel-body border-bottom mt-2">
                                     <!-- colori predefiniti -->
-                                    <div v-if="!css_style.background.style.nav.custom">
+                                    <div v-if="!gamedata.css_style.background.style.nav.custom">
           														<div class="form-group row pl-4 my-0">
           															<label class="col col-form-label">Colore del Testo</label>
           															<div class="col">
-          																<select class="form-control" name="navigationBarStyle" v-model="css_style.background.style.nav.bootstrap.textColor">
+          																<select class="form-control" name="navigationBarStyle" v-model="gamedata.css_style.background.style.nav.bootstrap.textColor">
           																	<option v-for="styles in bootstrapConsts.navTextColors" :value="styles.value">{{ styles.name }}</option>
           																</select>
           															</div>
@@ -223,30 +221,30 @@
           														<div class="form-group row pl-4 my-0">
           															<label class="col col-form-label">Colore di Sfondo</label>
           															<div class="col">
-          																<select class="form-control" name="navigationBarStyle" v-model="css_style.background.style.nav.bootstrap.background">
+          																<select class="form-control" name="navigationBarStyle" v-model="gamedata.css_style.background.style.nav.bootstrap.background">
           																	<option v-for="styles in bootstrapConsts.navCardBackgroundColors" :value="styles.value">{{ styles.name }}</option>
           																</select>
           															</div>
           														</div>
                                     </div>
                                     <!-- colori a scelta -->
-                                    <div v-if="css_style.background.style.nav.custom">
+                                    <div v-if="gamedata.css_style.background.style.nav.custom">
                                       <div class="form-group row pl-3 my-0">
                                         <label for="textColorNavCustom" class="col-md-6">Colore del Testo</label>
                                         <div class="col-md-6">
-                                          <input name="textColorNavCustom" type="color" v-model="css_style.background.style.nav.customized.general['color']">
+                                          <input name="textColorNavCustom" type="color" v-model="gamedata.css_style.background.style.nav.customized.general['color']">
                                         </div>
                                       </div>
                                       <div class="form-group row pl-3 my-0">
                                         <label for="backgroundColorNavCustom" class="col-md-6">Colore di Sfondo</label>
                                         <div class="col-md-6">
-                                          <input name="backgroundColorNavCustom" type="color" v-model="css_style.background.style.nav.customized.general['background-color']">
+                                          <input name="backgroundColorNavCustom" type="color" v-model="gamedata.css_style.background.style.nav.customized.general['background-color']">
                                         </div>
                                       </div>
                                     </div>
                                     <div class="container-fluid text-center mb-0 mt-2">
                												<label for="navcheckbox">Altri Colori</label>
-               												<input id="navcheckbox" type="checkbox" v-model="css_style.background.style.nav.custom">
+               												<input id="navcheckbox" type="checkbox" v-model="gamedata.css_style.background.style.nav.custom">
                											</div>
                                   </div>
                                 </div>
@@ -261,11 +259,11 @@
                                 <div id="cardStyleEditor" class="panel-collapse collapse stylepanelcollapse">
                                   <div class="panel-body border-bottom mt-2">
                                     <!-- colori predefiniti -->
-                                    <div v-if="!css_style.background.style.card.custom">
+                                    <div v-if="!gamedata.css_style.background.style.card.custom">
                                       <div class="form-group row pl-4 my-0">
                                         <label class="col col-form-label">Colore del Testo</label>
                                         <div class="col">
-                                          <select class="form-control" name="cardTextStyle" v-model="css_style.background.style.card.bootstrap.textColor">
+                                          <select class="form-control" name="cardTextStyle" v-model="gamedata.css_style.background.style.card.bootstrap.textColor">
                                             <option v-for="styles in bootstrapConsts.cardTextColors" :value="styles.value">{{ styles.name }}</option>
                                           </select>
                                         </div>
@@ -273,30 +271,30 @@
                                       <div class="form-group row pl-4 my-0">
                                         <label class="col col-form-label">Colore di Sfondo</label>
                                         <div class="col">
-                                          <select class="form-control" name="cardBackgroundStyle" v-model="css_style.background.style.card.bootstrap.background">
+                                          <select class="form-control" name="cardBackgroundStyle" v-model="gamedata.css_style.background.style.card.bootstrap.background">
                                             <option v-for="styles in bootstrapConsts.navCardBackgroundColors" :value="styles.value">{{ styles.name }}</option>
                                           </select>
                                         </div>
                                       </div>
                                     </div>
                                     <!-- colori a scelta -->
-                                    <div v-if="css_style.background.style.card.custom">
+                                    <div v-if="gamedata.css_style.background.style.card.custom">
                                       <div class="form-group row pl-3 my-0">
                                         <label for="textColorCardCustom" class="col-md-6">Colore del Testo</label>
                                         <div class="col-md-6">
-                                          <input name="textColorCardCustom" type="color" v-model="css_style.background.style.card.customized['color']">
+                                          <input name="textColorCardCustom" type="color" v-model="gamedata.css_style.background.style.card.customized['color']">
                                         </div>
                                       </div>
                                       <div class="form-group row pl-3 my-0">
                                         <label for="backgroundColorCardCustom" class="col-md-6">Colore di Sfondo</label>
                                         <div class="col-md-6">
-                                          <input name="backgroundColorCardCustom" type="color" v-model="css_style.background.style.card.customized['background-color']">
+                                          <input name="backgroundColorCardCustom" type="color" v-model="gamedata.css_style.background.style.card.customized['background-color']">
                                         </div>
                                       </div>
                                     </div>
                                     <div class="container-fluid text-center mb-0 mt-2">
                                       <label for="cardcheckbox">Altri Colori</label>
-                                      <input id="cardcheckbox" type="checkbox" v-model="css_style.background.style.card.custom">
+                                      <input id="cardcheckbox" type="checkbox" v-model="gamedata.css_style.background.style.card.custom">
                                     </div>
                                   </div>
                                 </div>
@@ -312,46 +310,46 @@
                               <div id="badgeStyleEditor" class="panel-collapse collapse stylepanelcollapse">
                                 <div class="panel-body border-bottom mt-2">
                                   <!-- tipologia predefinita -->
-                                  <div v-if="!css_style.background.style.badge.custom">
+                                  <div v-if="!gamedata.css_style.background.style.badge.custom">
                                     <div class="form-group row pl-4 my-0">
                                       <label class="col col-form-label">Tipologia</label>
                                       <div class="col">
-                                        <select class="form-control" name="badgeBootstrapEditor" v-model="css_style.background.style.badge.bootstrap.type">
+                                        <select class="form-control" name="badgeBootstrapEditor" v-model="gamedata.css_style.background.style.badge.bootstrap.type">
                                           <option v-for="styles in bootstrapConsts.badgeColors" :value="styles.value">{{ styles.name }}</option>
                                         </select>
                                       </div>
                                     </div>
                                   </div>
                                   <!-- stile personalizzato -->
-                                  <div v-if="css_style.background.style.badge.custom">
+                                  <div v-if="gamedata.css_style.background.style.badge.custom">
                                     <div class="form-group row pl-3 my-0">
                                       <label for="textColorBadgeCustom" class="col-md-6">Colore del Testo</label>
                                       <div class="col-md-6">
-                                        <input name="textColorBadgeCustom" type="color" v-model="css_style.background.style.badge.customized['color']">
+                                        <input name="textColorBadgeCustom" type="color" v-model="gamedata.css_style.background.style.badge.customized['color']">
                                       </div>
                                     </div>
                                     <div class="form-group row pl-3 my-0">
                                       <label for="backgroundColorBadgeCustom" class="col-md-6">Colore di Sfondo</label>
                                       <div class="col-md-6">
-                                        <input name="backgroundColorBadgeCustom" type="color" v-model="css_style.background.style.badge.customized['background-color']">
+                                        <input name="backgroundColorBadgeCustom" type="color" v-model="gamedata.css_style.background.style.badge.customized['background-color']">
                                       </div>
                                     </div>
                                     <div class="form-group row pl-3 my-0 mb-1">
                                       <label for="borderWidthBadgeCustom" class="col-md-6 pt-1">Spessore del Bordo</label>
                                       <div class="col-md-6">
-                                        <input name="borderWidthBadgeCustom" type="number" step="1" min="1" value="3" @change="badgeBorderSize">
+                                        <input name="borderWidthBadgeCustom" type="number" step="1" min="0" value="0" @change="badgeBorderSize">
                                       </div>
                                     </div>
                                     <div class="form-group row pl-3 my-0">
                                       <label for="borderColorBadgeCustom" class="col-md-6">Colore del Bordo</label>
                                       <div class="col-md-6">
-                                        <input name="borderColorBadgeCustom" type="color" v-model="css_style.background.style.badge.customized['border-color']">
+                                        <input name="borderColorBadgeCustom" type="color" v-model="gamedata.css_style.background.style.badge.customized['border-color']">
                                       </div>
                                     </div>
                                     <div class="form-group row pl-3 my-0">
                                       <label class="col-md-6 pt-2">Tipo di Bordo</label>
                                       <div class="col-md-6">
-                                        <select class="form-control" name="borderStyleBadgeCustom" v-model="css_style.background.style.badge.customized['border-style']">
+                                        <select class="form-control" name="borderStyleBadgeCustom" v-model="gamedata.css_style.background.style.badge.customized['border-style']">
                                           <option v-for="styles in bootstrapConsts.badgeAlertBorderStyles" :value="styles.value">{{ styles.name }}</option>
                                         </select>
                                       </div>
@@ -359,7 +357,7 @@
                                   </div>
                                   <div class="container-fluid text-center mb-0 mt-2">
                                     <label for="badgeCheckbox">Personalizza</label>
-                                    <input id="badgeCheckbox" type="checkbox" v-model="css_style.background.style.badge.custom">
+                                    <input id="badgeCheckbox" type="checkbox" v-model="gamedata.css_style.background.style.badge.custom">
                                   </div>
                                 </div>
                               </div>
@@ -374,46 +372,46 @@
                               <div id="alertStyleEditor" class="panel-collapse collapse stylepanelcollapse">
                                 <div class="panel-body border-bottom mt-2">
                                   <!-- tipologia predefinita -->
-                                  <div v-if="!css_style.background.style.alert.custom">
+                                  <div v-if="!gamedata.css_style.background.style.alert.custom">
                                     <div class="form-group row pl-4 my-0">
                                       <label class="col col-form-label">Tipologia</label>
                                       <div class="col">
-                                        <select class="form-control" name="alertBootstrapEditor" v-model="css_style.background.style.alert.bootstrap.type">
+                                        <select class="form-control" name="alertBootstrapEditor" v-model="gamedata.css_style.background.style.alert.bootstrap.type">
                                           <option v-for="styles in bootstrapConsts.alertColors" :value="styles.value">{{ styles.name }}</option>
                                         </select>
                                       </div>
                                     </div>
                                   </div>
                                   <!-- stile personalizzato -->
-                                  <div v-if="css_style.background.style.alert.custom">
+                                  <div v-if="gamedata.css_style.background.style.alert.custom">
                                     <div class="form-group row pl-3 my-0">
                                       <label for="textColorAlertCustom" class="col-md-6">Colore del Testo</label>
                                       <div class="col-md-6">
-                                        <input name="textColorAlertCustom" type="color" v-model="css_style.background.style.alert.customized['color']">
+                                        <input name="textColorAlertCustom" type="color" v-model="gamedata.css_style.background.style.alert.customized['color']">
                                       </div>
                                     </div>
                                     <div class="form-group row pl-3 my-0">
                                       <label for="backgroundColorAlertCustom" class="col-md-6">Colore di Sfondo</label>
                                       <div class="col-md-6">
-                                        <input name="backgroundColorAlertCustom" type="color" v-model="css_style.background.style.alert.customized['background-color']">
+                                        <input name="backgroundColorAlertCustom" type="color" v-model="gamedata.css_style.background.style.alert.customized['background-color']">
                                       </div>
                                     </div>
                                     <div class="form-group row pl-3 my-0 mb-1">
                                       <label for="borderWidthAlertCustom" class="col-md-6 pt-1">Spessore del Bordo</label>
                                       <div class="col-md-6">
-                                        <input name="borderWidthAlertCustom" type="number" step="1" min="1" value="3" @change="alertBorderSize">
+                                        <input name="borderWidthAlertCustom" type="number" step="1" min="0" value="0" @change="alertBorderSize">
                                       </div>
                                     </div>
                                     <div class="form-group row pl-3 my-0">
                                       <label for="borderColorAlertCustom" class="col-md-6">Colore del Bordo</label>
                                       <div class="col-md-6">
-                                        <input name="borderColorAlertCustom" type="color" v-model="css_style.background.style.alert.customized['border-color']">
+                                        <input name="borderColorAlertCustom" type="color" v-model="gamedata.css_style.background.style.alert.customized['border-color']">
                                       </div>
                                     </div>
                                     <div class="form-group row pl-3 my-0">
                                       <label class="col pt-2">Tipo di Bordo</label>
                                       <div class="col">
-                                        <select class="form-control" name="borderStyleAlertCustom" v-model="css_style.background.style.alert.customized['border-style']">
+                                        <select class="form-control" name="borderStyleAlertCustom" v-model="gamedata.css_style.background.style.alert.customized['border-style']">
                                           <option v-for="styles in bootstrapConsts.badgeAlertBorderStyles" :value="styles.value">{{ styles.name }}</option>
                                         </select>
                                       </div>
@@ -421,7 +419,7 @@
                                   </div>
                                   <div class="container-fluid text-center mb-0 mt-2">
                                     <label for="alertCheckbox">Personalizza</label>
-                                    <input id="alertCheckbox" type="checkbox" v-model="css_style.background.style.alert.custom">
+                                    <input id="alertCheckbox" type="checkbox" v-model="gamedata.css_style.background.style.alert.custom">
                                   </div>
                                 </div>
                               </div>
@@ -434,13 +432,13 @@
       									<div class="form-group row">
       										<label for="fontFamilyField" class="col-md-4 col-form-label">Font</label>
       										<div class="col-md-8">
-      										  <input name="fontFamilyField" type="text" readyonly v-model="css_style.mainStyle['font-family']">
+      										  <input name="fontFamilyField" type="text" readyonly v-model="gamedata.css_style.mainStyle['font-family']">
       										</div>
       									</div>
       									<div class="form-group row">
       										<label for="fontStyleField" class="col-md-4 col-form-label">Stile del Testo</label>
       										<div class="col-md-8">
-      											<select name="fontStyleField" class="form-control col-md-8" v-model="css_style.mainStyle['font-style']">
+      											<select name="fontStyleField" class="form-control col-md-8" v-model="gamedata.css_style.mainStyle['font-style']">
                       		  	<option value="normal">normale</option>
                       		  	<option value="italic">obliquo</option>
                      				</select>
@@ -449,7 +447,7 @@
       									<div class="form-group row">
       										<label for="fontWeightField" class="col-md-4 col-form-label">Peso del Testo</label>
       										<div class="col-md-8">
-      											<select name="fontWeightField" class="form-control col-md-8" v-model="css_style.mainStyle['font-weight']">
+      											<select name="fontWeightField" class="form-control col-md-8" v-model="gamedata.css_style.mainStyle['font-weight']">
                       		  	<option value="normal">normale</option>
                       		  	<option value="bold">grassetto</option>
                      				</select>
@@ -471,7 +469,7 @@
         												<label for="applyMainColor">Applica</label>
         												<input id="applyMainColor" type="checkbox" v-model="mainStyleColor" @change="editMainColor">
         											</div>
-                              <small v-if="mainStyleColor && !css_style.background.image" class="row form-text text-muted ml-6">
+                              <small v-if="mainStyleColor && !gamedata.css_style.background.image" class="row form-text text-muted ml-6">
                                  Verranno sovrascritti tutti i colori del testo specificati in altre sezioni
                               </small>
                           </div>
