@@ -460,23 +460,44 @@
       										</div>
       									</div>
       									<div class="form-group row">
-      										  <label class="col-md-4">Colore del Testo</label>
-                            <div class="col-md-8 row">
-        				              <div class="col-md-4">
+      										  <label class="col-4">Colore del Testo</label>
+                            <div class="col-8 row">
+        				              <div class="col-4">
         												<input type="color" v-model="currentMainStyleColor" @change="editMainColor">
         											</div>
-        											<div class="col-md-4">
+        											<div class="col-8">
         												<label for="applyMainColor">Applica</label>
         												<input id="applyMainColor" type="checkbox" v-model="mainStyleColor" @change="editMainColor">
         											</div>
                               <small v-if="mainStyleColor && !gamedata.css_style.background.image" class="row form-text text-muted ml-6">
                                  Verranno sovrascritti tutti i colori del testo specificati in altre sezioni
                               </small>
-                          </div>
+                            </div>
       								  </div>
-
       							</div>
     		          </div>
+                  <!-- caricamento e salvataggio stili -->
+                  <div class="container-fluid row border-top">
+                    <div id="saveload-style" class="col-md-8 row mt-3 ml-3">
+                        <div class="col-md-6">
+                            <label for="select-style">Stili Salvati</label>
+                            <select name="select-style" ref="select_style">
+                                <option v-for="style in styleList" :value="style">{{ style }}</option>
+                            </select>
+                            <div class="btn btn-group">
+                                <button class="btn btn-success" v-on:click="getStyle">GET</button>
+                                <button class="btn btn-danger" v-on:click="deleteStyle">DELETE</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="name_style">Salva come:</label>
+                            <input name="name_style" type="text" ref="style_name">
+                            <div class="btn btn-group">
+                                <button class="btn btn-primary" v-on:click="saveStyle">SAVE</button>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
                 </div>
                 <!--PREVIEW-->
                 <div id="preview-container" class="container-fluid py-3 row border-bottom">
