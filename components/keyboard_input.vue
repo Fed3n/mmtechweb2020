@@ -28,7 +28,6 @@ module.exports = {
       this.text += value;
       this.$emit('input', this.text);
       this.$parent.$refs.submitbutton.disabled = !this.text;
-      console.log(this.$parent.$refs.submitbutton);
     },
     delValue: function() {
       this.text = this.text.substring(0,this.text.length-1);

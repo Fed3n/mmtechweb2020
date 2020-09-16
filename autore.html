@@ -709,7 +709,7 @@
                                     <option v-for="imgname in imagesList" :value="imgname">{{ imgname }}</option>
                                 </select>
                             </div>
-                            <div id="image-preview" class="container p-1">
+                            <div id="image-preview" v-if="renderQuest.image.imguri" class="container p-1">
                                 <img class="img-thumbnail" :src="'story/' + metadata.name + '/images/' + renderQuest.image.imguri" :alt="'Preview of ' + renderQuest.image.imguri">
                             </div>
                             <div class="form-group">

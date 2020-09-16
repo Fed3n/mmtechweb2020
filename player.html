@@ -77,9 +77,9 @@
                 </form>
                 <!--EVENTUALI MEDIA-->
                 <div v-if="renderQuest.media">
-                    <img v-if="renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
+                    <img width="100%" v-if="renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
                     <div v-if="renderQuest.media.type=='video'">
-                        <video width="40%" height="30%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
+                        <video width="100%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
                         </video>
                     </div>
                 </div>                                 

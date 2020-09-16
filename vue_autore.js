@@ -223,7 +223,6 @@
               "main": null,
               "sub": null
           },
-          questname: null,
           mainStyleColor: false,
           currentMainStyleColor: "rgb(0,0,0)",
           mobileView: true,
@@ -868,7 +867,7 @@
           //style functions
           setImage: function(event){
             console.log("caricamento");
-            this.gamedata.css_style.background.url = "url(story/" + this.metadata.name + "/images/" + event.target.value + ")";
+            this.gamedata.css_style.background.url = "url(stories/" + this.metadata.name + "/images/" + event.target.value + ")";
           },
           fontSize: function(event) {
 						this.gamedata.css_style.mainStyle["font-size"] = event.target.value+"px";
@@ -1153,7 +1152,7 @@
           //modifica la dimensione della preview
           previewMode: function() {
               if (this.mobileView)
-                return "col-md-4";
+                return "col-md-4 iphone6s";
               else
                 return "col-md-6";
           },
