@@ -194,6 +194,7 @@
                                     <select name="select-image" class="form-control" value=""  @change="setImage">
                                         <option v-for="imgname in imagesList" :value="imgname">{{ imgname }}</option>
                                     </select>
+                                    <small v-if="!imagesList" class="text-muted">Non sono presenti immagini in questa storia, caricane una nella sezione "area dati"</small>
                                   </div>
                                 </div>
                               </div>
