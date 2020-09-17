@@ -113,6 +113,7 @@ var app = new Vue({
     "textinput": httpVueLoader("components/text_input.vue"),
     "imginput": httpVueLoader("components/img_input.vue"),
     "keyboardinput": httpVueLoader("components/keyboard_input.vue"),
+    "humaninput": httpVueLoader("components/human_input.vue"),
     "qrload": httpVueLoader("components/qrload.vue")
   },
   data: {
@@ -123,6 +124,9 @@ var app = new Vue({
     help_sent: false,
     help_received: false,
     help_message: "",
+    ans_feedback: "",
+    waiting_feedback: false,
+    received_feedback: false,
     chat: [],
     chat_msg: "",
     gamedata: gamedata_pholder,
@@ -202,6 +206,15 @@ var app = new Vue({
       }
     }
   },
+  watch: {
+    //Se ans_feedback cambia e stavo aspettando un feedback
+    ans_feedback: function(newans, oldans){
+        if(this.waiting_feedback){
+            this.waiting_feedback = false;
+            this.received_feedback = true;
+        }
+    }
+  },
   created: function (){
     this.upgradeSubmitStyle(false);
   },
@@ -222,6 +235,7 @@ var app = new Vue({
         this.sendGameData();
         this.getGameData();
         this.getCurrentChats();
+        if(this.waiting_feedback) this.checkAnsFeedback();
         if(this.currentComponent && this.help_received)
           this.$refs.requestedHelp.style.display = "none";
       }, 5000);
@@ -281,6 +295,12 @@ var app = new Vue({
         this.chat = response.data;
       });
     },
+    checkAnsFeedback: function() {
+        axios.get(`/feedback/`, { params: {user_id: this.user_id} }).then((res) => {
+            console.log("feedback: " + res.data);
+            this.ans_feedback = res.data;
+        });
+    },
     changeQuest: function() {
     if(this.questname) {
         axios.get(`/stories/${this.questname}`).then(response => {
@@ -300,7 +320,6 @@ var app = new Vue({
     goToSubQuest: function (quest){
 	  this.picked = null;
 	  this.$refs.inputForm.reset();
-	  this.$refs.submitbutton.disabled = true;
       this.currentSub = quest.number;
       this.in_mainquest = false;
       this.$refs.questname.focus();
@@ -312,7 +331,6 @@ var app = new Vue({
     goToMainQuest: function(){
 	  this.picked = null;
 	  this.$refs.inputForm.reset();
-	  this.$refs.submitbutton.disabled = true;
       this.in_mainquest = true;
       this.$refs.questname.focus();
       this.$refs.help.classList.remove("disabled");
@@ -321,6 +339,13 @@ var app = new Vue({
       this.sendGameData();
     },
     submitMain: function() {
+      //Caso particolare in cui il submit si comporta diversamente perché non usa il valore picked
+      if(this.renderQuest.type == "human") {
+          this.picked = this.ans_feedback;
+          this.waiting_feedback = false;
+          this.received_feedback = false;
+          this.ans_feedback = "";
+      }
       options = this.getCurrentGotos;
       for(opt of options){
         console.log(opt);
@@ -356,14 +381,12 @@ var app = new Vue({
         }
       }
       this.$refs.inputForm.reset();
-      this.$refs.submitbutton.disabled = true;
       this.upgradeSubmitStyle(true);
       this.picked = null;
       this.$refs.questname.focus();
     },
     submitSub: function() {
       this.$refs.inputForm.reset();
-      this.$refs.submitbutton.disabled = true;
       let wrong_answer = true;
       let subQuest = this.renderQuest;
       if (subQuest.type == "draw") {
@@ -488,6 +511,7 @@ var app = new Vue({
       else if (type == "input") return "textinput";
       else if (type == "draw") return "imginput";
       else if (type == "keys") return "keyboardinput";
+      else if (type == "human") return "humaninput";
       else return "";
     },
     renderQuest: function() {
@@ -551,6 +575,11 @@ var app = new Vue({
     },
     getMediaSrc: function() {
         return ("story/" + this.metadata.name + (this.renderQuest.media.type=="image" ? "/images/" : "/videos/") + this.renderQuest.media.uri);
+    },
+    submitDisabled: function() {
+        if(!this.renderQuest.type) return false;
+        if(this.renderQuest.type == "human") return !this.ans_feedback;
+        else return !this.picked;
     },
     //styleObjects
     loadImage: function(){

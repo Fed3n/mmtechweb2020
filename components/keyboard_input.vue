@@ -20,7 +20,7 @@ module.exports = {
   props: ["gamedata", "current", "value", "metadata","styles","key_style"],
   data: function() {
     return {
-      text: "",
+      text: ""
      }
   },
   methods: {

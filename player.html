@@ -80,7 +80,9 @@
                 </div>
             </div>
             <div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
-                <button id="submit" ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :style="submitStyle" v-on:click="in_mainquest? submitMain() : submitSub()">Submit</button>
+                <button ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :disabled="submitDisabled" :style="submitStyle" v-on:click="in_mainquest? submitMain() : submitSub()">
+                    Submit
+                </button>
             </div>
        </div>
        </div>

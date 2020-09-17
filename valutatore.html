@@ -41,6 +41,14 @@
           <button class="btn btn-success" v-on:click="sendChatMsg">Send</button>
         </form>
       </div>
+      <div class="container border" id="answers">
+        <div v-for="id in waitingForFeedback">
+          <p>User: {{ id }}</p>
+          <p>Text: {{ players_ans[id].text }}</p>
+          <img :src="players_ans[id].imagedata">
+          <button v-on:click="sendFeedback(id)">Submit</button>
+        </div>
+      </div>
 
     </div>
 
