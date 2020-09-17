@@ -166,6 +166,7 @@
       created: function() {
           this.updateFs();
           this.upgradeSubmitStyle(false);
+          this.editMainColor();
       },
       methods: {
           resetData: function() {
@@ -224,6 +225,8 @@
                       _this.updateFs();
                   })
               }
+              //è necessario riaggiornare lo stile principale
+              this.editMainColor();
           },
           postStory: function() {
               data = {
@@ -963,7 +966,7 @@
                           let x = sol[0][0];
                           let y = sol[0][1];
                           let radius = sol[0][2];
-                          if (this.previewdata.picked[0] >= (x - radius) && this.previewdata.picked[0] <= (x + radius) && 
+                          if (this.previewdata.picked[0] >= (x - radius) && this.previewdata.picked[0] <= (x + radius) &&
                           this.previewdata.picked[1] >= (y - radius) && this.previewdata.picked[1] <= (y + radius)) {
                               return true;
                           }
@@ -1343,6 +1346,7 @@
           },
           cardStyle: function() {
               var styles = {};
+              var inutile = this.mainStyleColor;
               if (!this.gamedata.css_style.background.image) {
                   var temp = this.gamedata.css_style.background.style.card.customized;
                   if (this.gamedata.css_style.background.style.card.custom)
@@ -1368,7 +1372,7 @@
                       });
               styles = Object.assign(styles, this.submitStyleObject);
               styles = this.overwriteMainStyle(styles);
-              if (this.gamedata.css_style.mainStyle["color"] || !this.gamedata.css_style.background.style.card.custom)
+              if (this.gamedata.css_style.mainStyle["color"] && !this.gamedata.css_style.background.style.card.custom)
                   styles = Object.assign(styles, {
                       "color": this.gamedata.css_style.mainStyle["color"] + "!important"
                   }); //used in order to overwrite bootstrap text color

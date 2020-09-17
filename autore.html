@@ -194,6 +194,7 @@
                                     <select name="select-image" class="form-control" value=""  @change="setImage">
                                         <option v-for="imgname in imagesList" :value="imgname">{{ imgname }}</option>
                                     </select>
+                                    <small v-if="!imagesList" class="text-muted">Non sono presenti immagini in questa storia, caricane una nella sezione "area dati"</small>
                                   </div>
                                 </div>
                               </div>
@@ -512,22 +513,22 @@
                           <div class="collapse navbar-collapse" id="collapsiblemenu">
                               <ul class="navbar-nav" aria-labelledby="quest-menu-button">
                                   <li class="nav-item dropdown">
-                                      <a class="nav-link dropdown-toggle" id="quest-menu-button" href="#" data-toggle="dropdown" :style="questsStyle" role="button"
+                                      <a class="nav-link dropdown-toggle" id="quest-menu-button" data-toggle="dropdown" :style="questsStyle" role="button"
                                       aria-haspopup="true" role="menu" aria-controls="quest-menu-list">Quests</a>
                                       <div class="dropdown-menu" id="quest-menu-list" :class="menuBootstrapStyle" :style="menuStyle" style="margin-bottom: 10px">
                                           <a class="dropdown-item" :style="menuLinkStyle(0)" v-on:mouseover="menuLinkEvent(0,true)" v-on:mouseleave="menuLinkEvent(0,false)" role="menuitem"
-                                          href="#" v-on:click="jumpToQuest('main',previewdata.currentQuest)">MainQuest {{ previewdata.currentQuest }}</a>
+                                           v-on:click="jumpToQuest('main',previewdata.currentQuest)">MainQuest {{ previewdata.currentQuest }}</a>
                                           <div v-if="getSubquests.length > 0" role="none">
                                               <div class="dropdown-divider" :style="dividerStyle"></div>
                                               <a class="dropdown-item" role="menuitem" :style="menuLinkStyle(index+1)" v-on:mouseover="menuLinkEvent(index+1,true)"
-                                              v-on:mouseleave="menuLinkEvent(index+1,false)" v-for="(quest,index) in getSubquests" href="#" v-on:click="jumpToQuest('sub',quest.number)">
+                                              v-on:mouseleave="menuLinkEvent(index+1,false)" v-for="(quest,index) in getSubquests" v-on:click="jumpToQuest('sub',quest.number)">
                                                   Subquest {{quest.number}}: {{quest.objective}}
                                               </a>
                                           </div>
                                       </div>
                                   </li>
                                   <li class="nav-item">
-                                      <a id="helpAlertContainer" class="nav-link" ref="help" href="#" @click="requestHelp" :style="helpAlertContainerStyle">
+                                      <a id="helpAlertContainer" class="nav-link" ref="help" @click="requestHelp" :style="helpAlertContainerStyle">
                                           Chiedi aiuto
                                           <span ref="requestedHelp" class="alert" role="alert" :class="helpAlertBootstrapStyle" :style="helpAlertStyle"
                                           style="display:none; margin-left: 10px; margin-bottom: -10px;  white-space: nowrap;">Aiuto richiesto! Attendi...</span>
