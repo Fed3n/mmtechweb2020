@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="container border p-3">
     <div v-if="!waitingFeedback & !canProceed">
       <p>Carica un'immagine e/o inserisci una risposta.</p>
-      <form v-on:submit.prevent="submitAnswer">
-        <textarea ref="textarea"></textarea>
-        <input ref="imgarea" type="file" accept="image/*">
+      <form class="form-group" v-on:submit.prevent="submitAnswer">
+        <textarea class="form-control" ref="textarea"></textarea>
+        <input class="form-control" ref="imgarea" type="file" accept="image/*">
 	<input type="submit" value="Invia" v-on:click="submitAnswer">
       </form>
     </div>

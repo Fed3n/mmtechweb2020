@@ -3,6 +3,7 @@ var app = new Vue({
   data: {
     players_data: {},
     players_data_changing: {},
+    ongoing_stories: {},
     players_chat: {},
     players_ans: {},
     current_chat_id: null,
@@ -26,9 +27,16 @@ var app = new Vue({
     },
     getPlayersData: function() {
       axios.get("/players/").then(response => {
-        console.log(response.data);
         this.players_data = response.data;
         for (let id in this.players_data) {
+            //Se c'è una storia nuova, si aggiunge
+            let story = id.substring(0,id.indexOf("#"));
+            if(!story in this.ongoing_stories){
+              axios.get(`/stories/${story}/`).then((res) => {
+                this.ongoing_stories[story] = res.gamedata;
+              });
+            }
+            //Controllo sugli aiuti
             if (this.players_data[id].help_received && this.players_data[id].help_message != "") {
                 this.players_data_changing[id] = this.players_data_changing[id] || {};
                 this.players_data_changing[id].help_sent = false;
