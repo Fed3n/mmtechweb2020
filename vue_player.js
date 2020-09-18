@@ -120,6 +120,7 @@ var app = new Vue({
     user_id: "",          // TODO lo deve assegnare il server
     time_played: 0,
     time_inactive: 0,    // entrambe in secondi
+    score: 0,
     help_requested: false,
     help_sent: false,
     help_received: false,
@@ -357,6 +358,8 @@ var app = new Vue({
           if(this.picked[0] >= x-radius && this.picked[0] <= x+radius &&
             this.picked[1] >= y-radius && this.picked[1] <= y+radius){
               this.currentQuest = opt[1];
+              //Per ragioni di compatibilità mi assicuro ci sia lo score
+              if(opt[2]) this.score += parseInt(opt[2]);
               this.time_inactive = 0;
               this.$refs.help.classList.remove("disabled");
               this.help_message = "";
@@ -368,6 +371,8 @@ var app = new Vue({
         //Formato standard che controlla se opt[0] == picked
         else if(opt[0] == this.picked){
           this.currentQuest = opt[1];
+          //Per ragioni di compatibilità mi assicuro ci sia lo score
+          if(opt[2]) this.score += parseInt(opt[2]);
           this.time_inactive = 0;
           this.$refs.help.classList.remove("disabled");
           this.help_message = "";
@@ -378,11 +383,19 @@ var app = new Vue({
         //L'opzione di default se non ci sono corrispondenze è sempre l'ultima
         if(options.indexOf(opt) == options.length-1){
           this.currentQuest = opt[1];
+          //Per ragioni di compatibilità mi assicuro ci sia lo score
+          if(opt[2]) this.score += parseInt(opt[2]);
+          this.time_inactive = 0;
+          this.$refs.help.classList.remove("disabled");
+          this.help_message = "";
+          this.help_received = false;
+          this.sendGameData();
         }
       }
       this.$refs.inputForm.reset();
       this.upgradeSubmitStyle(true);
       this.picked = null;
+      if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
       this.$refs.questname.focus();
     },
     submitSub: function() {
@@ -415,6 +428,9 @@ var app = new Vue({
       this.in_mainquest = true;
       this.upgradeSubmitStyle(true);
       this.picked = null;
+      //If per ragioni di compatibilità...
+      if(this.renderQuest.sub_score) this.score += parseInt(this.renderQuest.sub_score);
+      if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
       this.$refs.questname.focus();
       this.sendGameData();
     },
@@ -577,8 +593,13 @@ var app = new Vue({
         return ("story/" + this.metadata.name + (this.renderQuest.media.type=="image" ? "/images/" : "/videos/") + this.renderQuest.media.uri);
     },
     submitDisabled: function() {
+        //Se il tipo è "" (none) è sempre abilitato
         if(!this.renderQuest.type) return false;
+        //In un type ending è sempre disabilitato (il gioco è finito)
+        if(this.renderQuest.type == "ending") return true;
+        //Se siamo in human input allora il submit è abilitato se ho ricevuto feedback dal valutatore
         if(this.renderQuest.type == "human") return !this.ans_feedback;
+        //Altrimenti è abilitato se c'è una risposta inserita
         else return !this.picked;
     },
     //styleObjects
