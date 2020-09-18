@@ -78,6 +78,7 @@
                         </video>
                     </div>
                 </div>
+                <p v-if="renderQuest.type == 'ending'">Punteggio finale: {{ score }}</p>
             </div>
             <div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
                 <button ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :disabled="submitDisabled" :style="submitStyle" v-on:click="in_mainquest? submitMain() : submitSub()">

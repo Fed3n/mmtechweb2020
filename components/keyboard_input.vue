@@ -1,8 +1,8 @@
 <template>
   <div>
     <p :style="textStyle" tabindex=0 aria-live="polite" aria-label="codice inserito">{{ text }}</p>
-    <div id="custom-keyboard" role="grid">
-      <div v-for="(row,index) in genKeyboard" :aria-label="'riga'+index">
+    <div id="custom-keyboard" :aria-label="accessibleDescription" role="grid">
+      <div role="row" v-for="(row,index) in genKeyboard" class="row" :aria-label="'riga'+index">
         <div id="button-line">
           <span v-for="key in row">
             <button v-if="key.startsWith('!!')" type="button" class="input-button" :class="keyboardAnim" :style="keyboardStyle(key)" v-on:click="delValue">{{ key.substring(2,key.length) }}</button>
@@ -91,6 +91,9 @@ module.exports = {
         res.push(row.split(","));
       }
       return res;
+    },
+    accessibleDescription: function() {
+      return (this.gamedata.key_style.description || "Tastiera interattiva di bottoni");
     }
   }
 }

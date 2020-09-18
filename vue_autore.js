@@ -30,6 +30,7 @@
           "text": "",
           "type": "",
           "description": "",
+          "sub_score": "",
           "options": [],
           "image": {
               "imguri": "",
@@ -417,6 +418,7 @@
                   "text": "",
                   "type": "",
                   "description": "",
+                  "sub_score": 0,
                   "options": [],
                   "image": {
                       "imguri": "",
@@ -558,25 +560,25 @@
               }
           },
           addGoto: function(type) {
-              //Il formato di img_input è differente [[x,y,radius],node]
-              if (type == "image") {
+              //Il formato di img_input è differente [[x,y,radius],node,score]
+              if (type == "draw") {
                   var ans = [this.previewdata.picked[0], this.previewdata.picked[1], this.radiusInput];
-                  this.renderQuest.goto.push([ans, 0, 0])
+                  this.renderQuest.goto.push([ans, 0, ""])
               }
-              //Un comune goto è in formato [ans,node]
+              //Un comune goto è in formato [ans,node,score]
               else {
-                  this.renderQuest.goto.push(["", 0, 0]);
+                  this.renderQuest.goto.push(["", 0, ""]);
               }
           },
           rmGoto: function() {
               this.renderQuest.goto.pop();
           },
           addSolution: function(type) {
-              if (type == "image") {
+              if (type == "draw") {
                   var ans = [this.previewdata.picked[0], this.previewdata.picked[1], this.radiusInput];
-                  this.renderQuest.solution.push([ans,0])
+                  this.renderQuest.solution.push(ans)
               } else {
-                  this.renderQuest.solution.push(["",0]);
+                  this.renderQuest.solution.push("");
               }
           },
           rmSolution: function(sol) {
@@ -599,7 +601,7 @@
               }
           },
           addAddedGoto: function(sub) {
-              this.renderQuest.subquest_rewards[this.renderQuest.subquest_rewards.indexOf(sub)].added_goto.push(["", 0]);
+              this.renderQuest.subquest_rewards[this.renderQuest.subquest_rewards.indexOf(sub)].added_goto.push(["", 0, ""]);
           },
           rmAddedGoto: function(sub, goto) {
               reward = this.renderQuest.subquest_rewards[this.renderQuest.subquest_rewards.indexOf(sub)];
@@ -610,7 +612,7 @@
               if (ok) {
                   gotos = [];
                   for (opt of this.renderQuest.options) {
-                      gotos.push([opt, 0]);
+                      gotos.push([opt, 0, ""]);
                   }
                   this.renderQuest.goto = gotos;
               }
