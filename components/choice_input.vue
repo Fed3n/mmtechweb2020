@@ -13,10 +13,6 @@ module.exports = {
     methods: {
       updateAns: function(picked){
         this.$emit('input', picked);
-        if(this.$parent.$refs.submitbutton.disabled){
-          if(picked != "") this.$parent.$refs.submitbutton.disabled = false;
-          else this.$parent.$refs.submitbutton.disabled = true;
-        }
       }
     }
 }

@@ -26,8 +26,6 @@ module.exports = {
       ctx.fillText("O", x-10, y+10);
       //La seconda parte manda la risposta
       this.$emit('input', [x,y])
-      //Se ho clickato è sempre un responso valido
-      if(this.$parent.$refs.submitbutton) this.$parent.$refs.submitbutton.disabled = false;
     },
     updateCanvasImage: function() {
       var c = this.$refs.imgcanvas;

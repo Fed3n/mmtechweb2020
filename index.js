@@ -18,6 +18,7 @@ const port = 8000;
 //##PLACEHOLDERS##//
 var players_data = {};
 var players_chat = {};
+var players_ans = {};
 var uid_generator = {};
 
 //##EXPRESS MIDDLEWARE AND OPTIONS##
@@ -79,10 +80,15 @@ app.get('/uid', (req, res) => {
     console.log("Receiving request for story " + name);
     if(uid_generator[name] !== undefined) uid_generator[name]++;
     else uid_generator[name] = 0;
-    uid = name + uid_generator[name];
+    uid = name + "$" + uid_generator[name];
     console.log(`New user: ${uid}`);
     players_data[uid] = {};
     players_chat[uid] = [];
+    players_ans[uid] = {
+        'waiting': false,
+	'answer': {},
+	'feedback': ""
+    };
     return res.send(uid);
 });
 
@@ -104,7 +110,6 @@ app.patch('/players/', (req, res) => {
         players_data[id][key] = req.body[id][key];
       }
     }
-    console.log('Modifiche del valutatore: ', req.body);
     return res.send(":)");
 });
 
@@ -115,6 +120,53 @@ app.get('/players/', (req, res) => {
     else {
         return res.send(players_data);
     }
+});
+
+//valutatore fa get di risposte, restituite solo se ci sono
+app.get('/answers/', (req, res) => {
+    if(req.query.user_id){
+	return res.status(200).send(players_ans[req.query.user_id]);
+    }
+    else{
+	let answers = {};
+	for(id in players_ans){
+		if(players_ans[id].waiting) answers[id] = players_ans[id];
+	}
+	return res.status(200).send(answers);
+    }
+});
+
+//player fa post di risposta
+app.post('/answers/', (req, res) => {
+	let uid = req.query.user_id;
+	if(!players_ans[uid]) return res.status(404).send("Could not find player id.");
+	let ans = {
+		'text': req.body.text,
+		'imagedata': req.body.imagedata
+	};
+	players_ans[uid]['waiting'] = true;
+	players_ans[uid]['answer'] = ans;
+	players_ans[uid]['feedback'] = "";
+	console.log(players_ans);
+	return res.status(200).send("Answer submitted successfully.");
+});
+
+//player fa get di feedback
+app.get('/feedback/', (req, res) => {
+	let uid = req.query.user_id;
+	if(!players_ans[uid]) return res.status(404).send("Could not find player id.");
+	return res.status(200).send(players_ans[uid]['feedback']);
+});
+
+//valutatore fa post di feedback ad una risposta
+app.post('/feedback/', (req, res) => {
+	let uid = req.query.user_id;
+	if(!players_ans[uid]) return res.status(404).send("Could not find player id.");
+	let feedback = req.body.text;
+	players_ans[uid]['waiting'] = false;
+	players_ans[uid]['feedback'] = feedback;
+	players_ans[uid]['answer'] = {};
+	return res.status(200).send("Feedback submitted successfully.");
 });
 
 //## CHAT ##//
@@ -210,7 +262,6 @@ app.get('/stories/:storyName/images', (req, res) =>{
     console.log(`Getting content of /story/${req.params.storyName}/images`);
     var imgdir = path.join(__dirname + `/story/${req.params.storyName}/images/`);
     let entrylist = fs.readdirSync(imgdir);
-    console.log(entrylist);
     res.send(entrylist);
 });
 
@@ -227,7 +278,6 @@ app.get('/stories/:storyName/videos', (req, res) =>{
     console.log(`Getting content of /story/${req.params.storyName}/videos`);
     var viddir = path.join(__dirname + `/story/${req.params.storyName}/videos/`);
     let entrylist = fs.readdirSync(viddir);
-    console.log(entrylist);
     res.send(entrylist);
 });
 
@@ -271,7 +321,6 @@ app.post('/styles/interfaces/', (req, res) => {
 });
 
 app.delete('/styles/interfaces/', (req, res) => {
-    console.log(req.query.name);
     let target = path.join(__dirname + "/styles/interfaces/" + req.query.name );
     fs.unlinkSync(target);
     res.send(":)");

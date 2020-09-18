@@ -681,6 +681,10 @@
                                 <input type="radio" id="keyschoice" class="form-check-input" name="typefield" value="keys" v-model="renderQuest.type">
                                 <label for="keyschoice" class="form-check-label">Tastiera</label>
                             </div>
+                            <div class="form-check form-check-inline">
+                                <input type="radio" id="humanchoice" class="form-check-input" name="typefield" value="human" v-model="renderQuest.type">
+                                <label for="humanchoice" class="form-check-label">Umano</label>
+                            </div>
                             <div class="form-check form-check-inline" v-if="previewdata.in_mainquest">
                                 <input type="radio" id="endchoice" class="form-check-input" name="typefield" value="ending" v-model="renderQuest.type">
                                 <label for="endchoice" class="form-check-label">Finale</label>

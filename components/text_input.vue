@@ -10,13 +10,8 @@ module.exports = {
   props: ["gamedata", "current", "value", "metadata","styles"],
   methods: {
     updateAns: function(picked){
-		console.log(picked);
+      console.log(picked);
       this.$emit('input', picked);
-      if(this.$parent.$refs.submitbutton){
-        if(picked != "") this.$parent.$refs.submitbutton.disabled = false;
-        else this.$parent.$refs.submitbutton.disabled = true;
-        this.$root.upgradeSubmitStyle(this.$parent.$refs.submitbutton.disabled);
-      }
     }
   },
   computed: {
