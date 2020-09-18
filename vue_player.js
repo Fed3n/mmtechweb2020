@@ -390,7 +390,8 @@ var app = new Vue({
           //Per ragioni di compatibilità mi assicuro ci sia lo score
           if(opt[2]) this.score += parseInt(opt[2]);
           this.time_inactive = 0;
-          this.$refs.help.classList.remove("disabled");
+          if(this.currentComponent != "")
+            this.$refs.help.classList.remove("disabled");
           this.help_message = "";
           this.help_received = false;
           this.sendGameData();

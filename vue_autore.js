@@ -732,7 +732,7 @@
               if (document.getElementById("input")) {
                   document.getElementById("input").value = "";
               }
-              document.getElementById("submit").disabled = true;
+             // document.getElementById("submit").disabled = true;
               this.upgradeSubmitStyle(true);
               this.previewdata.picked = null;
               this.$refs.questname.focus();
@@ -761,7 +761,7 @@
                   if (document.getElementById("input")) {
                       document.getElementById("input").value = "";
                   }
-                  document.getElementById("submit").disabled = true;
+                  //document.getElementById("submit").disabled = true;
                   this.upgradeSubmitStyle(true);
                   this.previewdata.picked = null;
                   this.$refs.questname.focus();
@@ -1052,6 +1052,16 @@
           },
           getMediaSrc: function() {
             return ("story/" + this.metadata.name + (this.renderQuest.media.type=="image" ? "/images/" : "/videos/") + this.renderQuest.media.uri);
+          },
+          submitDisabled: function() {
+              //Se il tipo è "" (none) è sempre abilitato
+              if(!this.renderQuest.type) return false;
+              //In un type ending è sempre disabilitato (il gioco è finito)
+              if(this.renderQuest.type == "ending") return true;
+              //Se siamo in human input allora il submit è abilitato se ho ricevuto feedback dal valutatore
+              if(this.renderQuest.type == "human") return !this.ans_feedback;
+              //Altrimenti è abilitato se c'è una risposta inserita
+              else return !this.picked;
           },
           //STYLEOBJECTS
           loadImage: function() {

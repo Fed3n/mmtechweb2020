@@ -568,7 +568,7 @@
                           </div>
                           <!-- TASTO SUBMIT -->
                           <div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
-                              <button id="submit" ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :style="submitStyle"
+                              <button id="submit" ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :style="submitStyle" :disabled="submitDisabled"
                               v-on:click="previewdata.in_mainquest? submitMain() : submitSub()">Submit</button>
                           </div>
                       </div>
@@ -578,7 +578,7 @@
                         <p>Risposta corrente: {{ previewdata.picked }}</p>
                         <div v-if="previewdata.in_mainquest">
                             <button class="btn btn-secondary" v-if="renderQuest.goto.length > 0" data-toggle="tooltip"
-                            :title="gamedata.mainQuest[getAnswerGoto].title">
+                            :title="gamedata.mainQuest[getAnswerGoto].title" v-on:click="jumpToQuest('main',getAnswerGoto)">
                                 {{ "Questa risposta porterà a " + getAnswerGoto }}
                             </button>
                         </div>
