@@ -57,6 +57,20 @@
           <button class="btn btn-success" v-on:click="sendChatMsg">Send</button>
         </form>
       </div>
+      <div class="container border" id="answers">
+        <div v-for="id in waitingForFeedback">
+          <p>User: {{ id }}</p>
+          <p>Text: {{ players_ans[id].answer.text }}</p>
+          <img :src="players_ans[id].answer.imagedata">
+          <form v-on:submit="sendFeedback(id, $event.target.elements.feedbackans.value)">
+            <div class="form-group" v-for="opt in computeJson(id).mainQuest[players_data[id].currentQuest].goto">
+              <label>{{ opt[0] }}</label>
+              <input type="radio" name="feedbackans" :value="opt[0]">
+            </div>
+            <input type="submit" value="Submit">
+          </form>
+        </div>
+      </div>
 
     </div>
 

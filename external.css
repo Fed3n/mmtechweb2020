@@ -1,3 +1,7 @@
 .dropdown-item:active{
 	background: transparent; 
 }
+.player-card {
+	position: relative;
+	height: 75%;
+}

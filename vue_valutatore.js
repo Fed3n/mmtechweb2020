@@ -3,7 +3,9 @@ var app = new Vue({
   data: {
     players_data: {},
     players_data_changing: {},
+    ongoing_stories: {},
     players_chat: {},
+    players_ans: {},
     current_chat_id: null,
     chat_msg: {},
     chat_notify: {}
@@ -20,13 +22,23 @@ var app = new Vue({
         this.patchPlayersData();
         this.getPlayersData();
         this.getCurrentChats();
+        this.getPlayerAnswers();
       }, 5000);
     },
     getPlayersData: function() {
       axios.get("/players/").then(response => {
-        console.log(response.data);
         this.players_data = response.data;
         for (let id in this.players_data) {
+            //Se c'è una storia nuova, si aggiunge
+            let story = this.computeStory(id);
+            console.log(story);
+            if(!(story in this.ongoing_stories)){
+              console.log(`${story} missing from ongoing_stories!`);
+              axios.get(`/stories/${story}/`).then((res) => {
+                this.ongoing_stories[story] = res.data.json;
+              });
+            }
+            //Controllo sugli aiuti
             if (this.players_data[id].help_received && this.players_data[id].help_message != "") {
                 this.players_data_changing[id] = this.players_data_changing[id] || {};
                 this.players_data_changing[id].help_sent = false;
@@ -57,7 +69,7 @@ var app = new Vue({
         var chats = response.data;
         for(let id in chats){
           //Aggiorno le chat esistenti e aggiungo le nuove
-          var prev_chat_length = this.players_chat[id] ? Object.keys(this.players_chat[id]).length : 0;
+          let prev_chat_length = this.players_chat[id] ? Object.keys(this.players_chat[id]).length : 0;
           this.$set(this.players_chat, id, chats[id]);
           //Se è una chat nuova aggiungo il campo per il messaggio da scrivere
           if(!this.chat_msg[id]) this.$set(this.chat_msg, id, "");
@@ -69,6 +81,14 @@ var app = new Vue({
           else if(Object.keys(this.players_chat[id]).length > prev_chat_length && this.current_chat_id != id) {
             this.chat_notify[id] = true;
           }
+        }
+      });
+    },
+    getPlayerAnswers: function() {
+      axios.get('/answers/').then(response => {
+        let answers = response.data;
+        for(let id in answers){
+          this.$set(this.players_ans, id, answers[id]);
         }
       });
     },
@@ -85,28 +105,26 @@ var app = new Vue({
         // dai un messaggio di aiuto
         this.players_data_changing[id].help_message = "Su quel ramo del lago di como";
     },
-    saveJson: function() {
-      var data = JSON.stringify(this.players_data, null, 4);
-      var blob = new Blob([data], { type: 'application/json' });
-      var a = document.createElement("a");
-      a.download = "stats.json";
-      a.innerHTML = "Download JSON";
-      //Funzione createObjectURL cross-browser
-      var createObjectURL = (window.URL || window.webkitURL || {}).createObjectURL || function() {};
-      a.href = createObjectURL(blob);
-      a.click();
+    sendFeedback: function(id,feedback) {
+      axios.post('/feedback/', { 'text': feedback }, { params: { user_id: id } }).then((res) => {
+        this.$delete(this.players_ans, id);
+      });
     },
-    selectInterfaceFields: function({user_id, in_mainquest, currentQuest, currentSub, completedSubs}) {
-      return {user_id, in_mainquest, currentQuest, currentSub, completedSubs};
+    computeStory: function(id) {
+      return id.substring(0,id.indexOf("$"));
+    },
+    computeJson: function(id) {
+      let story = this.computeStory(id);
+      return this.ongoing_stories[story];
     }
   },
   computed: {
-    players_data_shown: function () {
-      var filtered_data = {};
-      for (const key in this.players_data) {
-        filtered_data[key] = this.selectInterfaceFields(this.players_data[key]);
+    waitingForFeedback: function(){
+      waiting_list = [];
+      for(id in this.players_ans){
+        if(this.players_ans[id].waiting) waiting_list.push(id);
       }
-      return filtered_data;
+      return waiting_list;
     }
   }
 });

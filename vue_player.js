@@ -113,16 +113,21 @@ var app = new Vue({
     "textinput": httpVueLoader("components/text_input.vue"),
     "imginput": httpVueLoader("components/img_input.vue"),
     "keyboardinput": httpVueLoader("components/keyboard_input.vue"),
+    "humaninput": httpVueLoader("components/human_input.vue"),
     "qrload": httpVueLoader("components/qrload.vue")
   },
   data: {
-    user_id: 0,          // TODO lo deve assegnare il server
+    user_id: "",          // TODO lo deve assegnare il server
     time_played: 0,
     time_inactive: 0,    // entrambe in secondi
+    score: 0,
     help_requested: false,
     help_sent: false,
     help_received: false,
     help_message: "",
+    ans_feedback: "",
+    waiting_feedback: false,
+    received_feedback: false,
     chat: [],
     chat_msg: "",
     gamedata: gamedata_pholder,
@@ -202,10 +207,16 @@ var app = new Vue({
       }
     }
   },
+  watch: {
+    //Se ans_feedback cambia e stavo aspettando un feedback
+    ans_feedback: function(newans, oldans){
+        if(this.waiting_feedback){
+            this.waiting_feedback = false;
+            this.received_feedback = true;
+        }
+    }
+  },
   created: function (){
-    axios.get('/uid').then(res => {
-      this.user_id = res.data;
-    });
     this.upgradeSubmitStyle(false);
   },
   mounted: function() {
@@ -225,6 +236,7 @@ var app = new Vue({
         this.sendGameData();
         this.getGameData();
         this.getCurrentChats();
+        if(this.waiting_feedback) this.checkAnsFeedback();
         if(this.currentComponent && this.help_received)
           this.$refs.requestedHelp.style.display = "none";
       }, 5000);
@@ -284,15 +296,24 @@ var app = new Vue({
         this.chat = response.data;
       });
     },
+    checkAnsFeedback: function() {
+        axios.get(`/feedback/`, { params: {user_id: this.user_id} }).then((res) => {
+            console.log("feedback: " + res.data);
+            this.ans_feedback = res.data;
+        });
+    },
     changeQuest: function() {
     if(this.questname) {
         axios.get(`/stories/${this.questname}`).then(response => {
           this.gamedata = response.data.json;
           this.metadata = response.data.meta;
+            axios.get("/uid", {params: {story_name: this.metadata.name}}).then(res => {
+              this.user_id = res.data;
+          });
         });
+    }
           this.$refs.questloader.remove();
           this.$refs.questrender.removeAttribute("hidden");
-      }
     },
     changeState: function (state){
       this.currentQuest = state;
@@ -300,11 +321,11 @@ var app = new Vue({
     goToSubQuest: function (quest){
 	  this.picked = null;
 	  this.$refs.inputForm.reset();
-	  this.$refs.submitbutton.disabled = true;
       this.currentSub = quest.number;
       this.in_mainquest = false;
       this.$refs.questname.focus();
-      this.$refs.help.classList.remove("disabled");
+      if (this.currentComponent != "")
+        this.$refs.help.classList.remove("disabled");
       this.help_message = "";
       this.help_received = false;
       this.sendGameData();
@@ -312,15 +333,22 @@ var app = new Vue({
     goToMainQuest: function(){
 	  this.picked = null;
 	  this.$refs.inputForm.reset();
-	  this.$refs.submitbutton.disabled = true;
       this.in_mainquest = true;
       this.$refs.questname.focus();
-      this.$refs.help.classList.remove("disabled");
+      if (this.currentComponent != "")
+        this.$refs.help.classList.remove("disabled");
       this.help_message = "";
       this.help_received = false;
       this.sendGameData();
     },
     submitMain: function() {
+      //Caso particolare in cui il submit si comporta diversamente perché non usa il valore picked
+      if(this.renderQuest.type == "human") {
+          this.picked = this.ans_feedback;
+          this.waiting_feedback = false;
+          this.received_feedback = false;
+          this.ans_feedback = "";
+      }
       options = this.getCurrentGotos;
       for(opt of options){
         console.log(opt);
@@ -332,8 +360,11 @@ var app = new Vue({
           if(this.picked[0] >= x-radius && this.picked[0] <= x+radius &&
             this.picked[1] >= y-radius && this.picked[1] <= y+radius){
               this.currentQuest = opt[1];
+              //Per ragioni di compatibilità mi assicuro ci sia lo score
+              if(opt[2]) this.score += parseInt(opt[2]);
               this.time_inactive = 0;
-              this.$refs.help.classList.remove("disabled");
+              if (this.currentComponent != "")
+                this.$refs.help.classList.remove("disabled");
               this.help_message = "";
               this.help_received = false;
               this.sendGameData();
@@ -343,8 +374,11 @@ var app = new Vue({
         //Formato standard che controlla se opt[0] == picked
         else if(opt[0] == this.picked){
           this.currentQuest = opt[1];
+          //Per ragioni di compatibilità mi assicuro ci sia lo score
+          if(opt[2]) this.score += parseInt(opt[2]);
           this.time_inactive = 0;
-          this.$refs.help.classList.remove("disabled");
+          if (this.currentComponent != "")
+            this.$refs.help.classList.remove("disabled");
           this.help_message = "";
           this.help_received = false;
           this.sendGameData();
@@ -353,49 +387,61 @@ var app = new Vue({
         //L'opzione di default se non ci sono corrispondenze è sempre l'ultima
         if(options.indexOf(opt) == options.length-1){
           this.currentQuest = opt[1];
+          //Per ragioni di compatibilità mi assicuro ci sia lo score
+          if(opt[2]) this.score += parseInt(opt[2]);
+          this.time_inactive = 0;
+          if(this.currentComponent != "")
+            this.$refs.help.classList.remove("disabled");
+          this.help_message = "";
+          this.help_received = false;
+          this.sendGameData();
         }
       }
       this.$refs.inputForm.reset();
-      this.$refs.submitbutton.disabled = true;
       this.upgradeSubmitStyle(true);
       this.picked = null;
+      if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
       this.$refs.questname.focus();
     },
     submitSub: function() {
-	  this.$refs.inputForm.reset();
-      this.$refs.submitbutton.disabled = true;
-      if (this.in_mainquest) return;
+      this.$refs.inputForm.reset();
       let wrong_answer = true;
-      let subQuest = this.gamedata.subQuests[this.currentSub];
-      if (subQuest.type == "input") {
-        for (let accepted of subQuest.solution)
-          if (this.picked == accepted)
-            wrong_answer = false;
+      let subQuest = this.renderQuest;
+      if (subQuest.type == "draw") {
+          for(ans of subQuest.solution){
+              let x = ans[0];
+              let y = ans[1];
+              let radius = parseInt(ans[2]);
+              if(this.picked[0] >= x-radius && this.picked[0] <= x+radius &&
+                this.picked[1] >= y-radius && this.picked[1] <= y+radius){
+                  wrong_answer = false;
+              }
           }
-      else if (subQuest.type == "choice") {
-        if (this.picked == subQuest.solution)
-          wrong_answer = false;
-        }
+      }
+      else {
+          for(ans of subQuest.solution)
+              if (this.picked == ans)
+              wrong_answer = false;
+      }
       if (wrong_answer) return;
-
-      // devo aver completato le subquest necessarie richieste
-      for (let required of subQuest.requires_sub)
-        if (!this.completedSubs.includes(required))
-          return;
 
       this.time_inactive = 0;
       this.completedSubs.push(subQuest.number);
-      this.$refs.help.classList.remove("disabled");
+      if (this.currentComponent != "")
+        this.$refs.help.classList.remove("disabled");
       this.help_message = "";
       this.help_received = false;
       this.in_mainquest = true;
       this.upgradeSubmitStyle(true);
       this.picked = null;
+      //If per ragioni di compatibilità...
+      if(this.renderQuest.sub_score) this.score += parseInt(this.renderQuest.sub_score);
+      if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
       this.$refs.questname.focus();
       this.sendGameData();
     },
     overwriteMainStyle: function(styles){
-      var main_style = this.css_style.mainStyle;
+      var main_style = this.gamedata.css_style.mainStyle;
       var main_style_cleaned = {};
       Object.entries(main_style).forEach( entry => {
       const[key,value] = entry;
@@ -415,21 +461,21 @@ var app = new Vue({
   },
   menuLinkStyle: function(num) {
     var styles = {};
-    if (!this.css_style.background.image){
-      if (!this.css_style.background.style.nav.custom){
+    if (!this.gamedata.css_style.background.image){
+      if (!this.gamedata.css_style.background.style.nav.custom){
         //adding text color property
         //predefined style used in addition to bootstrap navbar style
-        if (!this.css_style.mainStyle["color"])
-          if (color = this.css_style.background.style.nav.bootstrap.textColor == "navbar-light")
+        if (!this.gamedata.css_style.mainStyle["color"])
+          if (color = this.gamedata.css_style.background.style.nav.bootstrap.textColor == "navbar-light")
             styles = Object.assign(styles,bootstrap_menu_color_dark_text);
-          else if (this.css_style.background.style.nav.bootstrap.textColor == "navbar-dark")
+          else if (this.gamedata.css_style.background.style.nav.bootstrap.textColor == "navbar-dark")
             styles = Object.assign(styles,bootstrap_menu_color_light_text);
           else
             console.log(`error in JSON compilation: bootstrap navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
         styles = this.overwriteMainStyle(styles);
         //adding background color property
         if (this.onLink[num]){
-          if (this.css_style.background.style.nav.bootstrap.background != "bg-light")
+          if (this.gamedata.css_style.background.style.nav.bootstrap.background != "bg-light")
             styles = Object.assign(styles,{ "background-color": bootstrap_menu_links_light_background});
           else
             styles = Object.assign(styles,{ "background-color": bootstrap_menu_links_background});
@@ -437,11 +483,11 @@ var app = new Vue({
       }
       else {
         //adding text color property
-        styles = Object.assign(styles, { "color" : this.css_style.background.style.nav.customized.general["color"] } );
+        styles = Object.assign(styles, { "color" : this.gamedata.css_style.background.style.nav.customized.general["color"] } );
         styles = this.overwriteMainStyle(styles);
         //adding background color property
         if (this.onLink[num])
-          if (this.css_style.background.style.nav.customized.general["background-color"] == "white")
+          if (this.gamedata.css_style.background.style.nav.customized.general["background-color"] == "white")
               styles = Object.assign(styles,{ "background-color": menu_links_white_background });
             else
               styles = Object.assign(styles,{ "background-color": menu_links });
@@ -464,16 +510,16 @@ var app = new Vue({
   upgradeSubmitStyle: function(disabled){
     styles = {};
     //if the card uses bootstrap the related style is in the Object submitBootstrapStyle
-    if (!this.css_style.background.image)
-      if (this.css_style.background.style.card.custom)
-        styles = Object.assign(styles, { "color" : this.css_style.background.style.card.customized["color"] } );
+    if (!this.gamedata.css_style.background.image)
+      if (this.gamedata.css_style.background.style.card.custom)
+        styles = Object.assign(styles, { "color" : this.gamedata.css_style.background.style.card.customized["color"] } );
     //adding responsive style
     if (!disabled)
       styles = Object.assign(styles,submit_button_style);
     else {
       styles = Object.assign(styles,submit_button_style_disabled);
-      var temp = this.css_style.background.style.card;
-      if (!this.css_style.background.image)
+      var temp = this.gamedata.css_style.background.style.card;
+      if (!this.gamedata.css_style.background.image)
         if ((temp.custom && temp.customized["background-color"] == "black") || (!temp.custom && temp.bootstrap.background == "bg-dark"))
            styles = Object.assign(styles, { "border" : submit_button_border });
     }
@@ -487,6 +533,7 @@ var app = new Vue({
       else if (type == "input") return "textinput";
       else if (type == "draw") return "imginput";
       else if (type == "keys") return "keyboardinput";
+      else if (type == "human") return "humaninput";
       else return "";
     },
     renderQuest: function() {
@@ -551,9 +598,19 @@ var app = new Vue({
     getMediaSrc: function() {
         return ("story/" + this.metadata.name + (this.renderQuest.media.type=="image" ? "/images/" : "/videos/") + this.renderQuest.media.uri);
     },
+    submitDisabled: function() {
+        //Se il tipo è "" (none) è sempre abilitato
+        if(!this.renderQuest.type) return false;
+        //In un type ending è sempre disabilitato (il gioco è finito)
+        if(this.renderQuest.type == "ending") return true;
+        //Se siamo in human input allora il submit è abilitato se ho ricevuto feedback dal valutatore
+        if(this.renderQuest.type == "human") return !this.ans_feedback;
+        //Altrimenti è abilitato se c'è una risposta inserita
+        else return !this.picked;
+    },
     //styleObjects
     loadImage: function(){
-      var temp = this.css_style.background;
+      var temp = this.gamedata.css_style.background;
     if (temp.image){
         document.getElementsByTagName("body")[0].style.background = temp["url"];
       document.getElementsByTagName("body")[0].style.webkitBackgroundSize = "cover";
@@ -566,9 +623,9 @@ var app = new Vue({
       }
     },
   navbarBootstrapStyle: function() {
-    var temp = this.css_style.background.style.nav.bootstrap;
-    if (!this.css_style.background.image)
-      if (!this.css_style.background.style.nav.custom)
+    var temp = this.gamedata.css_style.background.style.nav.bootstrap;
+    if (!this.gamedata.css_style.background.image)
+      if (!this.gamedata.css_style.background.style.nav.custom)
         return (temp.textColor+" "+temp.background);
       else
         return "";
@@ -579,37 +636,37 @@ var app = new Vue({
   },
   navbarStyle: function() {
     var styles = {};
-    if (!this.css_style.background.image){
-      if (this.css_style.background.style.nav.custom)
-        styles = Object.assign(styles,this.css_style.background.style.nav.customized.general);
+    if (!this.gamedata.css_style.background.image){
+      if (this.gamedata.css_style.background.style.nav.custom)
+        styles = Object.assign(styles,this.gamedata.css_style.background.style.nav.customized.general);
     }
     return styles;
   },
   badgeBootstrapStyle: function() {
-    var temp = this.css_style.background.style.badge.bootstrap;
-    if (!this.css_style.background.style.badge.custom)
+    var temp = this.gamedata.css_style.background.style.badge.bootstrap;
+    if (!this.gamedata.css_style.background.style.badge.custom)
       return temp.type;
     else
       return "";
   },
   badgeStyle: function() {
     var styles = {}
-    var temp = this.css_style.background.style.badge.customized;
-    if (this.css_style.background.style.badge.custom)
+    var temp = this.gamedata.css_style.background.style.badge.customized;
+    if (this.gamedata.css_style.background.style.badge.custom)
       styles = Object.assign(styles,temp);
     return styles;
   },
   helpAlertBootstrapStyle: function() {
-    var temp = this.css_style.background.style.alert.bootstrap;
-    if (!this.css_style.background.style.alert.custom)
+    var temp = this.gamedata.css_style.background.style.alert.bootstrap;
+    if (!this.gamedata.css_style.background.style.alert.custom)
       return temp.type;
     else
       return "";
   },
   helpAlertStyle: function() {
     var styles = {}
-    var temp = this.css_style.background.style.alert.customized;
-    if (this.css_style.background.style.alert.custom)
+    var temp = this.gamedata.css_style.background.style.alert.customized;
+    if (this.gamedata.css_style.background.style.alert.custom)
       styles = Object.assign(styles,temp);
     //apply mainstyle in any case
     styles = this.overwriteMainStyle(styles);
@@ -619,9 +676,9 @@ var app = new Vue({
   },
   helpAlertContainerStyle: function() {
     var styles = {};
-    if (!this.css_style.background.image) {
-      if (!this.css_style.background.style.nav.custom){
-        var temp = this.css_style.background.style.nav.bootstrap.textColor;
+    if (!this.gamedata.css_style.background.image) {
+      if (!this.gamedata.css_style.background.style.nav.custom){
+        var temp = this.gamedata.css_style.background.style.nav.bootstrap.textColor;
         if (temp == "navbar-light")
           styles = Object.assign(styles, { "color" : "black" } );
         else if (temp == "navbar-dark")
@@ -630,7 +687,7 @@ var app = new Vue({
           console.log(`error in JSON compiling: bootstrap's navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
       }
       else {
-        var temp = this.css_style.background.style.nav.customized.general;
+        var temp = this.gamedata.css_style.background.style.nav.customized.general;
         styles = Object.assign(styles, { "color" : temp["color"] } );
       }
     } else
@@ -642,19 +699,19 @@ var app = new Vue({
   },
   togglerButtonStyle: function() {
     var buttonColor;
-    if (!this.css_style.background.image){
-      if (this.css_style.background.style.nav.custom){
-        if (this.css_style.mainStyle["color"])
-          buttonColor = this.css_style.mainStyle["color"];
+    if (!this.gamedata.css_style.background.image){
+      if (this.gamedata.css_style.background.style.nav.custom){
+        if (this.gamedata.css_style.mainStyle["color"])
+          buttonColor = this.gamedata.css_style.mainStyle["color"];
         else
-          buttonColor = this.css_style.background.style.nav.customized.general["color"];
+          buttonColor = this.gamedata.css_style.background.style.nav.customized.general["color"];
         return `url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='${buttonColor}' stroke-width='${togglerbutton_default_linesWidth}' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") `;
       }
       else
         return "";
     }
     else {
-      if (buttonColor = this.css_style.mainStyle["color"])
+      if (buttonColor = this.gamedata.css_style.mainStyle["color"])
         ;
       else
         buttonColor = default_image_togglerButton_color;
@@ -662,13 +719,13 @@ var app = new Vue({
     }
   },
   toggleButtonContainer: function() {
-    if (!this.css_style.background.image){
-      if (this.css_style.background.style.nav.custom){
+    if (!this.gamedata.css_style.background.image){
+      if (this.gamedata.css_style.background.style.nav.custom){
         var borderColor;
-        if (this.css_style.mainStyle["color"])
-          borderColor = this.css_style.mainStyle["color"];
+        if (this.gamedata.css_style.mainStyle["color"])
+          borderColor = this.gamedata.css_style.mainStyle["color"];
         else
-          borderColor = this.css_style.background.style.nav.customized.general["color"];
+          borderColor = this.gamedata.css_style.background.style.nav.customized.general["color"];
         return { "border-color" : borderColor };
       }
       else
@@ -676,40 +733,40 @@ var app = new Vue({
     }
     else {
       var borderColor = default_image_togglerButton_border_color;
-      if (this.css_style.mainStyle["color"])
-        borderColor = this.css_style.mainStyle["color"];
+      if (this.gamedata.css_style.mainStyle["color"])
+        borderColor = this.gamedata.css_style.mainStyle["color"];
       return { "border-color" : borderColor };
     }
   },
   menuStyle: function() {
     var styles = {};
-    if (!this.css_style.background.image){
-      if (!this.css_style.background.style.nav.custom){
+    if (!this.gamedata.css_style.background.image){
+      if (!this.gamedata.css_style.background.style.nav.custom){
         if (this.togglerButtonVisible)
           //predefined style used in addition to bootstrap navbar style
           styles = Object.assign(styles,{ "background-color": bootstrap_menu_background});
         else{
           var color = "";
-          if (color = this.css_style.background.style.nav.bootstrap.textColor == "navbar-light")
+          if (color = this.gamedata.css_style.background.style.nav.bootstrap.textColor == "navbar-light")
             styles = Object.assign(styles,bootstrap_menu_border_color_dark_text);
-          else if (this.css_style.background.style.nav.bootstrap.textColor == "navbar-dark")
+          else if (this.gamedata.css_style.background.style.nav.bootstrap.textColor == "navbar-dark")
             styles = Object.assign(styles,bootstrap_menu_border_color_light_text);
           else
             console.log(`error in JSON compiling: bootstrap's navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
           //overwrite occasional mainstyle
-          if (this.css_style.mainStyle["color"])
-            styles = Object.assign(styles, { "border-color": this.css_style.mainStyle["color"] } );
+          if (this.gamedata.css_style.mainStyle["color"])
+            styles = Object.assign(styles, { "border-color": this.gamedata.css_style.mainStyle["color"] } );
         }
       } else {
-        var temp = this.css_style.background.style.nav.customized.general;
+        var temp = this.gamedata.css_style.background.style.nav.customized.general;
         if (this.togglerButtonVisible)
           styles = Object.assign(styles,{ "background-color": menu_background});
         else {
           styles = Object.assign(styles,{ "background-color": temp["background-color"] });
           styles = Object.assign(styles,{ "border-color": temp["color"] });
           //overwrite occasional mainstyle
-          if (this.css_style.mainStyle["color"])
-            styles = Object.assign(styles,{ "border-color" : this.css_style.mainStyle["color"] });
+          if (this.gamedata.css_style.mainStyle["color"])
+            styles = Object.assign(styles,{ "border-color" : this.gamedata.css_style.mainStyle["color"] });
         }
       }
     }
@@ -720,15 +777,15 @@ var app = new Vue({
       else{
         if (document.getElementById("submit").style.backdropFilter !== ""){
           console.log("ci siamo");
-          document.getElementById("quest-menu-list").style.background = this.css_style.background["url"];
+          document.getElementById("quest-menu-list").style.background = this.gamedata.css_style.background["url"];
           document.getElementById("quest-menu-list").style.mozBackgroundSize = "cover";
           document.getElementById("quest-menu-list").style.backgroundSize =  "cover";
         }
         else
           styles = Object.assign(styles,menu_backgroundImage);
         styles = Object.assign(styles,{ "border": default_image_menu_border });
-        if (this.css_style.mainStyle["color"])
-          styles = Object.assign(styles,{ "border-color": this.css_style.mainStyle["color"] });
+        if (this.gamedata.css_style.mainStyle["color"])
+          styles = Object.assign(styles,{ "border-color": this.gamedata.css_style.mainStyle["color"] });
       }
     }
     if (!this.togglerButtonVisible)
@@ -737,32 +794,32 @@ var app = new Vue({
   },
   dividerStyle: function() {
     var styles = {};
-    if (!this.css_style.background.image){
-      if (!this.css_style.background.style.nav.custom)
+    if (!this.gamedata.css_style.background.image){
+      if (!this.gamedata.css_style.background.style.nav.custom)
         //if the bootstrap class is "navbar-light" the text will be dark
-        if (this.css_style.background.style.nav.bootstrap.textColor == "navbar-light")
+        if (this.gamedata.css_style.background.style.nav.bootstrap.textColor == "navbar-light")
           styles = Object.assign(styles,{ "border-color" : bootstrap_menu_divider_dark });
         else
           styles = Object.assign(styles,{ "border-color" : bootstrap_menu_divider_light });
       else {
-        var temp = this.css_style.background.style.nav.customized.general;
+        var temp = this.gamedata.css_style.background.style.nav.customized.general;
         styles = Object.assign(styles,{ "border-color" : temp["color"] });
       }
       //overwrite occasional mainstyle
-      if (this.css_style.mainStyle["color"])
-        styles = Object.assign(styles,{ "border-color" : this.css_style.mainStyle["color"] });
+      if (this.gamedata.css_style.mainStyle["color"])
+        styles = Object.assign(styles,{ "border-color" : this.gamedata.css_style.mainStyle["color"] });
     }
     else {
       styles = Object.assign(styles, { "border-color" : default_image_divider_color } );
-      if (this.css_style.mainStyle["color"])
-        styles = Object.assign(styles,{ "border-color" : this.css_style.mainStyle["color"] } );
+      if (this.gamedata.css_style.mainStyle["color"])
+        styles = Object.assign(styles,{ "border-color" : this.gamedata.css_style.mainStyle["color"] } );
     }
     return styles;
   },
   menuBootstrapStyle: function() {
-    if (!this.css_style.background.image){
-      if (!this.css_style.background.style.nav.custom){
-        var temp = this.css_style.background.style.nav.bootstrap;
+    if (!this.gamedata.css_style.background.image){
+      if (!this.gamedata.css_style.background.style.nav.custom){
+        var temp = this.gamedata.css_style.background.style.nav.bootstrap;
         if (!this.togglerButtonVisible)
           return temp.background;
         else
@@ -776,9 +833,9 @@ var app = new Vue({
     }
   },
   cardBootstrapStyle: function() {
-    if (!this.css_style.background.image){
-      var temp = this.css_style.background.style.card.bootstrap;
-      if (!this.css_style.background.style.card.custom)
+    if (!this.gamedata.css_style.background.image){
+      var temp = this.gamedata.css_style.background.style.card.bootstrap;
+      if (!this.gamedata.css_style.background.style.card.custom)
         return (temp.textColor+" "+temp.background);
       else {
         return "";
@@ -791,9 +848,9 @@ var app = new Vue({
   },
   cardStyle: function() {
     var styles = {};
-    if (!this.css_style.background.image){
-      var temp = this.css_style.background.style.card.customized;
-      if (this.css_style.background.style.card.custom)
+    if (!this.gamedata.css_style.background.image){
+      var temp = this.gamedata.css_style.background.style.card.customized;
+      if (this.gamedata.css_style.background.style.card.custom)
         styles = Object.assign(styles,temp);
     }
     else
@@ -801,23 +858,23 @@ var app = new Vue({
     return styles;
   },
   submitBootstrapStyle: function() {
-    if (!this.css_style.background.image)
-      if (!this.css_style.background.style.card.custom)
-        return this.css_style.background.style.card.bootstrap.textColor;
+    if (!this.gamedata.css_style.background.image)
+      if (!this.gamedata.css_style.background.style.card.custom)
+        return this.gamedata.css_style.background.style.card.bootstrap.textColor;
   },
   submitStyle: function() {
     styles = {};
     styles = Object.assign(styles, this.submitStyleObject);
     styles = this.overwriteMainStyle(styles);
-    if (this.css_style.mainStyle["color"] || !this.css_style.background.style.card.custom)
-      styles = Object.assign(styles, { "color" : this.css_style.mainStyle["color"]+"!important" } );      //used in order to overwrite bootstrap text color
+    if (this.gamedata.css_style.mainStyle["color"] || !this.gamedata.css_style.background.style.card.custom)
+      styles = Object.assign(styles, { "color" : this.gamedata.css_style.mainStyle["color"]+"!important" } );      //used in order to overwrite bootstrap text color
     return styles;
   },
   cardLimitStyle: function() {
     var styles = {};
-    if (!this.css_style.background.image){
+    if (!this.gamedata.css_style.background.image){
       styles = Object.assign(styles,card_headerFooter);
-      var temp = this.css_style.background.style.card;
+      var temp = this.gamedata.css_style.background.style.card;
       if ((!temp.custom && temp.bootstrap.background == "bg-dark") || (temp.custom && temp.customized["background-color"] == "black"))
           styles = Object.assign(styles,bootstrap_card_headerFooter_black_background);
     }
@@ -829,15 +886,15 @@ var app = new Vue({
   },
   questsStyle: function() {
     var styles = {};
-    if (this.css_style.background.image) {
+    if (this.gamedata.css_style.background.image) {
       styles = Object.assign(styles, { "color" : default_image_text_color } );
       styles = this.overwriteMainStyle(styles);
     }
     else
-      if (!this.css_style.background.style.nav.custom)
+      if (!this.gamedata.css_style.background.style.nav.custom)
         styles = this.overwriteMainStyle(styles);
       else {
-        styles = Object.assign(styles, { "color" : this.css_style.background.style.nav.customized.general["color"] } );
+        styles = Object.assign(styles, { "color" : this.gamedata.css_style.background.style.nav.customized.general["color"] } );
         styles = this.overwriteMainStyle(styles);
       }
     return styles;
@@ -852,8 +909,8 @@ var app = new Vue({
         if (this.currentComponent == "textinput")
           style = this.overwriteMainStyle(styles);
           style = Object.assign(styles,input_backgroundImage);
-          if (!this.css_style.background.image)
-        if (!this.css_style.mainStyle["color"])
+          if (!this.gamedata.css_style.background.image)
+        if (!this.gamedata.css_style.mainStyle["color"])
           styles = Object.assign(styles, { "color" : "inherit" } );
         if (this.currentComponent == "imginput")
          ;

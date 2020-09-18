@@ -14,14 +14,12 @@
     </head>
     <body class="border border-primary h-100">
         <div id="app" :style="loadImage">
-
             <div id="questloader" ref="questloader">
                 <h1>QUEST LOADER</h1>
                 <qrload style="height: 400px" :questname="questname"></qrload>
             </div>
             <!--Area navbar-->
             <div id="questrender" ref="questrender" hidden>
-
                 <nav class="navbar navbar-expand-md" :class="navbarBootstrapStyle" :style="navbarStyle">
                 <div class="navbar-brand" :style="navbarBrandStyle">Menu
                     <span class="badge" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert">Subs!</span>
@@ -29,8 +27,6 @@
                 <button class="navbar-toggler"  type="button" data-toggle="collapse" data-target="#collapsiblemenu" :style="toggleButtonContainer" v-observe-visibility="buttonChangedVisibility" aria-label="Apri il menu">
                     <span class="navbar-toggler-icon" :style="{ 'background-image': togglerButtonStyle }"></span>
                 </button>
-
-
                 <div class="collapse navbar-collapse" id="collapsiblemenu">
                     <ul class="navbar-nav" aria-labelledby="quest-menu-button">
                         <li class="nav-item dropdown">
@@ -52,16 +48,15 @@
                     </ul>
                 </div>
             </nav>
-
         <!--Area quest-->
-        <div ref="questrender" class="card" style="position: relative;"  :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
+        <div ref="questrender" class="card player-card overflow-auto" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
             <div class="card-header" :style="cardLimitStyle">
                 <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">
-                    {{in_mainquest ? "Quest" : "Subquest"}} 
+                    {{in_mainquest ? "Quest" : "Subquest"}}
                     {{ in_mainquest ? currentQuest : currentSub }}: {{ renderQuest.title || "no_name" }}
                 </h3>
             </div>
-            <div class="card-body" :style="removePredefinedStylesCard">
+            <div class="card-body overflow-auto" :style="removePredefinedStylesCard">
                 <form ref="inputForm" v-on:submit.prevent="in_mainquest? submitMain() : submitSub()">
                         <p>{{ renderQuest.text }}</p>
                         <p>{{ renderQuest.description || "" }}</p>
@@ -77,16 +72,18 @@
                 </form>
                 <!--EVENTUALI MEDIA-->
                 <div v-if="renderQuest.media">
-                    <img v-if="renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
+                    <img width="100%" v-if="renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
                     <div v-if="renderQuest.media.type=='video'">
-                        <video width="40%" height="30%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
+                        <video width="100%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
                         </video>
                     </div>
-                </div>                                 
+                </div>
+                <p v-if="renderQuest.type == 'ending'">Punteggio finale: {{ score }}</p>
             </div>
-
             <div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
-                <button id="submit" ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :style="submitStyle" v-on:click="in_mainquest? submitMain() : submitSub()">Submit</button>
+                <button ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :disabled="submitDisabled" :style="submitStyle" v-on:click="in_mainquest? submitMain() : submitSub()">
+                    Submit
+                </button>
             </div>
        </div>
        </div>

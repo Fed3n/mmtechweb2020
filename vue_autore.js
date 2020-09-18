@@ -30,6 +30,7 @@
           "text": "",
           "type": "",
           "description": "",
+          "sub_score": "",
           "options": [],
           "image": {
               "imguri": "",
@@ -47,70 +48,71 @@
       }],
       "css_style": {
           "mainStyle": {
-              "font-family": "",
-              "font-style": "",
-              "font-weight": "",
-              "font-size": "",
-              "color": ""
+              "font-family": "Arial",
+              "font-style": "normal",
+              "font-weight": "normal",
+              "font-size": "20",
+              "color": "#000000"
           },
           "background": {
-              "image": null,
+              "image": false,
               "url": "",
               "style": {
                   "nav": {
-                      "custom": null,
+                      "custom": false,
                       "bootstrap": {
-                          "textColor": "",
-                          "background": ""
+                          "textColor": "navbar-light",
+                          "background": "bg-white"
                       },
                       "customized": {
                           "general": {
-                              "background-color": "",
-                              "color": ""
+                              "background-color": "#ffffff",
+                              "color": "#000000"
                           },
                       }
                   },
                   "badge": {
-                      "custom": null,
+                      "custom": false,
                       "bootstrap": {
-                          "type": ""
+                          "type": "badge-warning"
                       },
                       "customized": {
-                          "background-color": "",
-                          "border-width": "",
-                          "border-style": "",
-                          "border-color": "",
-                          "color": ""
+                          "background-color": "#ffffff",
+                          "border-width": "0px",
+                          "border-style": "solid",
+                          "border-color": "#000000",
+                          "color": "#000000"
                       }
                   },
                   "alert": {
-                      "custom": null,
+                      "custom": false,
                       "bootstrap": {
-                          "type": ""
+                          "type": "alert-warning"
                       },
                       "customized": {
-                          "background-color": "",
-                          "border-width": "",
-                          "border-style": "",
-                          "border-color": "",
-                          "color": ""
+                          "background-color": "#ffffff",
+                          "border-width": "0px",
+                          "border-style": "solid",
+                          "border-color": "#000000",
+                          "color": "#000000"
                       }
                   },
                   "card": {
-                      "custom": null,
+                      "custom": false,
                       "bootstrap": {
-                          "textColor": "",
-                          "background": ""
+                          "textColor": "text-dark",
+                          "background": "bg-white"
                       },
                       "customized": {
-                          "background-color": "",
-                          "color": ""
+                          "background-color": "#ffffff",
+                          "color": "#000000"
                       }
                   }
               }
           }
-      }
+       }
   };
+
   metadata_pholder = {
       "name": "",
       "active": false,
@@ -134,6 +136,7 @@
           storyList: null,
           activeStoryList: null,
           inactiveStoryList: null,
+          styleList: null,
           keyStylesList: null,
           imagesList: null,
           vidsList: null,
@@ -155,82 +158,16 @@
               "main": null,
               "sub": null
           },
-          questname: null,
-          mainStyleColor: true,
-          currentMainStyleColor: "rgb(0,0,0)",
+          mainStyleColor: false,
+          currentMainStyleColor: "#000000",
           mobileView: true,
           onLink: [],
-          submitStyleObject: {},
-          css_style: {
-		        mainStyle: {
-	            "font-family": "'Dancing Script', cursive",
-	            "font-style": "normal",
-	            "font-weight": "bold",
-	            "font-size": "20px",
-	            "color": "rgba(60,60,60,1)"
-		        },
-            background: {
-                image: false,
-                url: "url('notebook.png')",
-                style: {
-                    nav: {
-                        custom: true,
-                        bootstrap: {
-                            textColor: "navbar-dark",
-                            background: "bg-primary"
-                        },
-                        customized: {
-                            general: {
-                                "background-color": "grey",
-                                "color": "red"
-                            },
-                        }
-                    },
-                    badge: {
-                        custom: false,
-                        bootstrap: {
-                            type: "badge-warning"
-                        },
-                        customized: {
-                            "background-color": "rgba(122,232,14,0.8)",
-                            "border-width": "3px",
-                            "border-style": "dotted",
-                            "border-color": "blue",
-                            "color": "red"
-                        }
-                    },
-                    alert: {
-                        custom: false,
-                        bootstrap: {
-                            type: "alert-warning"
-                        },
-                        customized: {
-                            "background-color": "rgba(122,232,14,0.8)",
-                            "border-width": "3px",
-                            "border-style": "dotted",
-                            "border-color": "blue",
-                            "color": "red"
-                        }
-                    },
-                    card: {
-                        custom: true,
-                        bootstrap: {
-                            textColor: "text-info",
-                            background: "bg-warning"
-                        },
-                        customized: {
-                            "background-color": "white",
-                            "color": "white"
-                        }
-                    }
-                }
-             }
-          }
-
+          submitStyleObject: {}
       },
       created: function() {
           this.updateFs();
           this.upgradeSubmitStyle(false);
+          this.editMainColor();
       },
       methods: {
           resetData: function() {
@@ -267,6 +204,10 @@
                   _this.activeStoryList = activeStoryList;
                   _this.inactiveStoryList = inactiveStoryList;
               });
+              //Styles
+              axios.get("/styles/interfaces").then(function(res) {
+                  _this.styleList = res.data;
+              });
               //Keyboard styles
               axios.get("/styles/keyboards").then(function(res) {
                   _this.keyStylesList = res.data;
@@ -285,6 +226,8 @@
                       _this.updateFs();
                   })
               }
+              //è necessario riaggiornare lo stile principale
+              this.editMainColor();
           },
           postStory: function() {
               data = {
@@ -370,6 +313,34 @@
                   _this.vidsList = res.data;
               });
           },
+          getStyle: function() {
+            let _this = this;
+              axios.get(`/styles/interfaces/${this.$refs.select_style.value}`).then(res => {
+                  this.gamedata.css_style = res.data;
+              });
+          },
+          saveStyle: function() {
+              let load = {
+                  name: this.$refs.style_name.value,
+                  json: this.gamedata.css_style
+              };
+              let _this = this;
+              axios.post('/styles/interfaces', load)
+                  .then(res => {
+                      _this.updateFs();
+                  });
+          },
+          deleteStyle: function() {
+              let _this = this;
+              axios.delete('/styles/interfaces', {
+                      params: {
+                          name: this.$refs.select_style.value
+                      }
+                  })
+                  .then(res => {
+                      _this.updateFs();
+                  });
+          },
           getKeyStyle: function() {
               let _this = this;
               axios.get(`/styles/keyboards/${this.$refs.select_key_style.value}`).then(res => {
@@ -447,6 +418,7 @@
                   "text": "",
                   "type": "",
                   "description": "",
+                  "sub_score": 0,
                   "options": [],
                   "image": {
                       "imguri": "",
@@ -588,21 +560,21 @@
               }
           },
           addGoto: function(type) {
-              //Il formato di img_input è differente [[x,y,radius],node]
-              if (type == "image") {
+              //Il formato di img_input è differente [[x,y,radius],node,score]
+              if (type == "draw") {
                   var ans = [this.previewdata.picked[0], this.previewdata.picked[1], this.radiusInput];
-                  this.renderQuest.goto.push([ans, 0])
+                  this.renderQuest.goto.push([ans, 0, ""])
               }
-              //Un comune goto è in formato [ans,node]
+              //Un comune goto è in formato [ans,node,score]
               else {
-                  this.renderQuest.goto.push(["", 0]);
+                  this.renderQuest.goto.push(["", 0, ""]);
               }
           },
           rmGoto: function() {
               this.renderQuest.goto.pop();
           },
           addSolution: function(type) {
-              if (type == "image") {
+              if (type == "draw") {
                   var ans = [this.previewdata.picked[0], this.previewdata.picked[1], this.radiusInput];
                   this.renderQuest.solution.push(ans)
               } else {
@@ -629,7 +601,7 @@
               }
           },
           addAddedGoto: function(sub) {
-              this.renderQuest.subquest_rewards[this.renderQuest.subquest_rewards.indexOf(sub)].added_goto.push(["", 0]);
+              this.renderQuest.subquest_rewards[this.renderQuest.subquest_rewards.indexOf(sub)].added_goto.push(["", 0, ""]);
           },
           rmAddedGoto: function(sub, goto) {
               reward = this.renderQuest.subquest_rewards[this.renderQuest.subquest_rewards.indexOf(sub)];
@@ -640,7 +612,7 @@
               if (ok) {
                   gotos = [];
                   for (opt of this.renderQuest.options) {
-                      gotos.push([opt, 0]);
+                      gotos.push([opt, 0, ""]);
                   }
                   this.renderQuest.goto = gotos;
               }
@@ -760,7 +732,7 @@
               if (document.getElementById("input")) {
                   document.getElementById("input").value = "";
               }
-              document.getElementById("submit").disabled = true;
+             // document.getElementById("submit").disabled = true;
               this.upgradeSubmitStyle(true);
               this.previewdata.picked = null;
               this.$refs.questname.focus();
@@ -789,7 +761,7 @@
                   if (document.getElementById("input")) {
                       document.getElementById("input").value = "";
                   }
-                  document.getElementById("submit").disabled = true;
+                  //document.getElementById("submit").disabled = true;
                   this.upgradeSubmitStyle(true);
                   this.previewdata.picked = null;
                   this.$refs.questname.focus();
@@ -798,23 +770,27 @@
              $('.stylepanelcollapse').collapse('hide');
           },
           //style functions
+          setImage: function(event){
+            console.log("caricamento");
+            this.gamedata.css_style.background.url = "url(stories/" + this.metadata.name + "/images/" + event.target.value + ")";
+          },
           fontSize: function(event) {
-						this.css_style.mainStyle["font-size"] = event.target.value+"px";
+						this.gamedata.css_style.mainStyle["font-size"] = event.target.value+"px";
 					},
           badgeBorderSize: function(event){
-							this.css_style.background.style.badge.customized['border-width']= event.target.value+"px";
+							this.gamedata.css_style.background.style.badge.customized['border-width']= event.target.value+"px";
           },
           alertBorderSize: function(event){
-              this.css_style.background.style.alert.customized['border-width']= event.target.value+"px";
+              this.gamedata.css_style.background.style.alert.customized['border-width']= event.target.value+"px";
 					},
 					editMainColor: function(event){
 						if (this.mainStyleColor)
-							this.css_style.mainStyle['color'] = this.currentMainStyleColor;
+							this.gamedata.css_style.mainStyle['color'] = this.currentMainStyleColor;
 						else
-							this.css_style.mainStyle['color'] = "";
+							this.gamedata.css_style.mainStyle['color'] = "";
 					},
           overwriteMainStyle: function(styles) {
-              var main_style = this.css_style.mainStyle;
+              var main_style = this.gamedata.css_style.mainStyle;
               var main_style_cleaned = {};
               Object.entries(main_style).forEach(entry => {
                   const [key, value] = entry;
@@ -834,21 +810,21 @@
           },
           menuLinkStyle: function(num) {
               var styles = {};
-              if (!this.css_style.background.image) {
-                  if (!this.css_style.background.style.nav.custom) {
+              if (!this.gamedata.css_style.background.image) {
+                  if (!this.gamedata.css_style.background.style.nav.custom) {
                       //adding text color property
                       //predefined style used in addition to bootstrap navbar style
-                      if (!this.css_style.mainStyle["color"])
-                          if (color = this.css_style.background.style.nav.bootstrap.textColor == "navbar-light")
+                      if (!this.gamedata.css_style.mainStyle["color"])
+                          if (color = this.gamedata.css_style.background.style.nav.bootstrap.textColor == "navbar-light")
                               styles = Object.assign(styles, bootstrap_menu_color_dark_text);
-                          else if (this.css_style.background.style.nav.bootstrap.textColor == "navbar-dark")
+                          else if (this.gamedata.css_style.background.style.nav.bootstrap.textColor == "navbar-dark")
                           styles = Object.assign(styles, bootstrap_menu_color_light_text);
                       else
                           console.log(`error in JSON compilation: bootstrap navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
                       styles = this.overwriteMainStyle(styles);
                       //adding background color property
                       if (this.onLink[num]) {
-                          if (this.css_style.background.style.nav.bootstrap.background != "bg-light")
+                          if (this.gamedata.css_style.background.style.nav.bootstrap.background != "bg-light")
                               styles = Object.assign(styles, {
                                   "background-color": bootstrap_menu_links_light_background
                               });
@@ -860,12 +836,12 @@
                   } else {
                       //adding text color property
                       styles = Object.assign(styles, {
-                          "color": this.css_style.background.style.nav.customized.general["color"]
+                          "color": this.gamedata.css_style.background.style.nav.customized.general["color"]
                       });
                       styles = this.overwriteMainStyle(styles);
                       //adding background color property
                       if (this.onLink[num])
-                          if (this.css_style.background.style.nav.customized.general["background-color"] == "white")
+                          if (this.gamedata.css_style.background.style.nav.customized.general["background-color"] == "white")
                               styles = Object.assign(styles, {
                                   "background-color": menu_links_white_background
                               });
@@ -904,8 +880,8 @@
                   styles = Object.assign(styles, submit_button_style);
               else {
                   styles = Object.assign(styles, submit_button_style_disabled);
-                  var temp = this.css_style.background.style.card;
-                  if (!this.css_style.background.image)
+                  var temp = this.gamedata.css_style.background.style.card;
+                  if (!this.gamedata.css_style.background.image)
                       if ((temp.custom && temp.customized["background-color"] == "black") || (!temp.custom && temp.bootstrap.background == "bg-dark"))
                           styles = Object.assign(styles, {
                               "border": submit_button_border
@@ -958,7 +934,7 @@
               }
               return prev;
           },
-          //Se stiamo vedendo la previw di una main quest vediamo dove ci porta la risposta attuale
+          //Se stiamo vedendo la preview di una main quest vediamo dove ci porta la risposta attuale
           getAnswerGoto: function() {
               if (!this.previewdata.picked) return "";
               options = this.getCurrentGotos;
@@ -984,8 +960,27 @@
               return "";
           },
           getAnswerCorrectness: function() {
-              console.log("hi:)");
-              return "hey";
+              if(!this.previewdata.picked) return "";
+              sols = this.renderQuest.solution;
+              if(this.renderQuest.type == "draw"){
+                  for(sol of sols){
+                      if(sol[0]){
+                          let x = sol[0][0];
+                          let y = sol[0][1];
+                          let radius = sol[0][2];
+                          if (this.previewdata.picked[0] >= (x - radius) && this.previewdata.picked[0] <= (x + radius) &&
+                          this.previewdata.picked[1] >= (y - radius) && this.previewdata.picked[1] <= (y + radius)) {
+                              return true;
+                          }
+                      }
+                  }
+              }
+              else {
+                  for(sol of sols){
+                      if(this.previewdata.picked == sol) return true;
+                  }
+              }
+              return false;
           },
           currentComponent: function() {
               var type = this.renderQuest.type;
@@ -1058,10 +1053,20 @@
           getMediaSrc: function() {
             return ("story/" + this.metadata.name + (this.renderQuest.media.type=="image" ? "/images/" : "/videos/") + this.renderQuest.media.uri);
           },
+          submitDisabled: function() {
+              //Se il tipo è "" (none) è sempre abilitato
+              if(!this.renderQuest.type) return false;
+              //In un type ending è sempre disabilitato (il gioco è finito)
+              if(this.renderQuest.type == "ending") return true;
+              //Se siamo in human input allora il submit è abilitato se ho ricevuto feedback dal valutatore
+              if(this.renderQuest.type == "human") return !this.ans_feedback;
+              //Altrimenti è abilitato se c'è una risposta inserita
+              else return !this.picked;
+          },
           //STYLEOBJECTS
           loadImage: function() {
               var styles = {};
-              var temp = this.css_style.background;
+              var temp = this.gamedata.css_style.background;
               if (temp.image) {
                   styles = Object.assign(styles, {
                       "background-image": temp["url"],
@@ -1081,16 +1086,16 @@
           //modifica la dimensione della preview
           previewMode: function() {
               if (this.mobileView)
-                return "col-4";
+                return "col-md-4 iphone6s";
               else
-                return "col-6";
+                return "col-md-8";
           },
           //oggetti presenti anche nel player
           navbarBootstrapStyle: function() {
 						var classes = "";
-						var temp = this.css_style.background.style.nav.bootstrap;
-						if (!this.css_style.background.image) {
-							if (!this.css_style.background.style.nav.custom)
+						var temp = this.gamedata.css_style.background.style.nav.bootstrap;
+						if (!this.gamedata.css_style.background.image) {
+							if (!this.gamedata.css_style.background.style.nav.custom)
 								classes = classes+temp.textColor+" "+temp.background;
 							else
 									;
@@ -1103,37 +1108,37 @@
 					},
           navbarStyle: function() {
               var styles = {};
-              if (!this.css_style.background.image) {
-                  if (this.css_style.background.style.nav.custom)
-                      styles = Object.assign(styles, this.css_style.background.style.nav.customized.general);
+              if (!this.gamedata.css_style.background.image) {
+                  if (this.gamedata.css_style.background.style.nav.custom)
+                      styles = Object.assign(styles, this.gamedata.css_style.background.style.nav.customized.general);
               }
               return styles;
           },
           badgeBootstrapStyle: function() {
-              var temp = this.css_style.background.style.badge.bootstrap;
-              if (!this.css_style.background.style.badge.custom)
+              var temp = this.gamedata.css_style.background.style.badge.bootstrap;
+              if (!this.gamedata.css_style.background.style.badge.custom)
                   return temp.type;
               else
                   return "";
           },
           badgeStyle: function() {
               var styles = {}
-              var temp = this.css_style.background.style.badge.customized;
-              if (this.css_style.background.style.badge.custom)
+              var temp = this.gamedata.css_style.background.style.badge.customized;
+              if (this.gamedata.css_style.background.style.badge.custom)
                   styles = Object.assign(styles, temp);
               return styles;
           },
           helpAlertBootstrapStyle: function() {
-              var temp = this.css_style.background.style.alert.bootstrap;
-              if (!this.css_style.background.style.alert.custom)
+              var temp = this.gamedata.css_style.background.style.alert.bootstrap;
+              if (!this.gamedata.css_style.background.style.alert.custom)
                   return temp.type;
               else
                   return "";
           },
           helpAlertStyle: function() {
               var styles = {}
-              var temp = this.css_style.background.style.alert.customized;
-              if (this.css_style.background.style.alert.custom)
+              var temp = this.gamedata.css_style.background.style.alert.customized;
+              if (this.gamedata.css_style.background.style.alert.custom)
                   styles = Object.assign(styles, temp);
               //apply mainstyle in any case
               styles = this.overwriteMainStyle(styles);
@@ -1145,9 +1150,9 @@
           },
           helpAlertContainerStyle: function() {
               var styles = {};
-              if (!this.css_style.background.image) {
-                  if (!this.css_style.background.style.nav.custom) {
-                      var temp = this.css_style.background.style.nav.bootstrap.textColor;
+              if (!this.gamedata.css_style.background.image) {
+                  if (!this.gamedata.css_style.background.style.nav.custom) {
+                      var temp = this.gamedata.css_style.background.style.nav.bootstrap.textColor;
                       if (temp == "navbar-light")
                           styles = Object.assign(styles, {
                               "color": "black"
@@ -1159,7 +1164,7 @@
                       else
                           console.log(`error in JSON compiling: bootstrap's navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
                   } else {
-                      var temp = this.css_style.background.style.nav.customized.general;
+                      var temp = this.gamedata.css_style.background.style.nav.customized.general;
                       styles = Object.assign(styles, {
                           "color": temp["color"]
                       });
@@ -1177,18 +1182,17 @@
           },
           togglerButtonStyle: function() {
               var buttonColor;
-             // console.log("#36ec85: "+HextoRgb("rgb(23,222,2)"));
-              if (!this.css_style.background.image) {
-                  if (this.css_style.background.style.nav.custom) {
-                      if (this.css_style.mainStyle["color"])
-                          buttonColor = this.css_style.mainStyle["color"];
+              if (!this.gamedata.css_style.background.image) {
+                  if (this.gamedata.css_style.background.style.nav.custom) {
+                      if (this.gamedata.css_style.mainStyle["color"])
+                          buttonColor = this.gamedata.css_style.mainStyle["color"];
                       else
-                          buttonColor = this.css_style.background.style.nav.customized.general["color"];
+                          buttonColor = this.gamedata.css_style.background.style.nav.customized.general["color"];
                       return `url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='${HextoRgb(buttonColor)}' stroke-width='${togglerbutton_default_linesWidth}' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") `;
                   } else
                       return "";
               } else {
-                  if (buttonColor = this.css_style.mainStyle["color"])
+                  if (buttonColor = this.gamedata.css_style.mainStyle["color"])
                   ;
                   else
                       buttonColor = default_image_togglerButton_color;
@@ -1196,13 +1200,13 @@
               }
           },
           toggleButtonContainer: function() {
-              if (!this.css_style.background.image) {
-                  if (this.css_style.background.style.nav.custom) {
+              if (!this.gamedata.css_style.background.image) {
+                  if (this.gamedata.css_style.background.style.nav.custom) {
                       var borderColor;
-                      if (this.css_style.mainStyle["color"])
-                          borderColor = this.css_style.mainStyle["color"];
+                      if (this.gamedata.css_style.mainStyle["color"])
+                          borderColor = this.gamedata.css_style.mainStyle["color"];
                       else
-                          borderColor = this.css_style.background.style.nav.customized.general["color"];
+                          borderColor = this.gamedata.css_style.background.style.nav.customized.general["color"];
                       return {
                           "border-color": borderColor
                       };
@@ -1210,8 +1214,8 @@
                       return "";
               } else {
                   var borderColor = default_image_togglerButton_border_color;
-                  if (this.css_style.mainStyle["color"])
-                      borderColor = this.css_style.mainStyle["color"];
+                  if (this.gamedata.css_style.mainStyle["color"])
+                      borderColor = this.gamedata.css_style.mainStyle["color"];
                   return {
                       "border-color": borderColor
                   };
@@ -1219,8 +1223,8 @@
           },
           menuStyle: function() {
               var styles = {};
-              if (!this.css_style.background.image) {
-                  if (!this.css_style.background.style.nav.custom) {
+              if (!this.gamedata.css_style.background.image) {
+                  if (!this.gamedata.css_style.background.style.nav.custom) {
                       if (this.mobileView)
                           //predefined style used in addition to bootstrap navbar style
                           styles = Object.assign(styles, {
@@ -1228,20 +1232,20 @@
                           });
                       else {
                           var color = "";
-                          if (color = this.css_style.background.style.nav.bootstrap.textColor == "navbar-light")
+                          if (color = this.gamedata.css_style.background.style.nav.bootstrap.textColor == "navbar-light")
                               styles = Object.assign(styles, bootstrap_menu_border_color_dark_text);
-                          else if (this.css_style.background.style.nav.bootstrap.textColor == "navbar-dark")
+                          else if (this.gamedata.css_style.background.style.nav.bootstrap.textColor == "navbar-dark")
                               styles = Object.assign(styles, bootstrap_menu_border_color_light_text);
                           else
                               console.log(`error in JSON compiling: bootstrap's navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
                           //overwrite occasional mainstyle
-                          if (this.css_style.mainStyle["color"])
+                          if (this.gamedata.css_style.mainStyle["color"])
                               styles = Object.assign(styles, {
-                                  "border-color": this.css_style.mainStyle["color"]
+                                  "border-color": this.gamedata.css_style.mainStyle["color"]
                               });
                       }
                   } else {
-                      var temp = this.css_style.background.style.nav.customized.general;
+                      var temp = this.gamedata.css_style.background.style.nav.customized.general;
                       if (this.mobileView)
                           styles = Object.assign(styles, {
                               "background-color": menu_background
@@ -1254,9 +1258,9 @@
                               "border-color": temp["color"]
                           });
                           //overwrite occasional mainstyle
-                          if (this.css_style.mainStyle["color"])
+                          if (this.gamedata.css_style.mainStyle["color"])
                               styles = Object.assign(styles, {
-                                  "border-color": this.css_style.mainStyle["color"]
+                                  "border-color": this.gamedata.css_style.mainStyle["color"]
                               });
                       }
                   }
@@ -1269,7 +1273,7 @@
                   else {
                       if (document.getElementById("submit").style.backdropFilter !== "") {
                           console.log("ci siamo");
-                          document.getElementById("quest-menu-list").style.background = this.css_style.background["url"];
+                          document.getElementById("quest-menu-list").style.background = this.gamedata.css_style.background["url"];
                           document.getElementById("quest-menu-list").style.mozBackgroundSize = "cover";
                           document.getElementById("quest-menu-list").style.backgroundSize = "cover";
                       } else
@@ -1277,9 +1281,9 @@
                       styles = Object.assign(styles, {
                           "border": default_image_menu_border
                       });
-                      if (this.css_style.mainStyle["color"])
+                      if (this.gamedata.css_style.mainStyle["color"])
                           styles = Object.assign(styles, {
-                              "border-color": this.css_style.mainStyle["color"]
+                              "border-color": this.gamedata.css_style.mainStyle["color"]
                           });
                   }
               }
@@ -1291,10 +1295,10 @@
           },
           dividerStyle: function() {
               var styles = {};
-              if (!this.css_style.background.image) {
-                  if (!this.css_style.background.style.nav.custom)
+              if (!this.gamedata.css_style.background.image) {
+                  if (!this.gamedata.css_style.background.style.nav.custom)
                       //if the bootstrap class is "navbar-light" the text will be dark
-                      if (this.css_style.background.style.nav.bootstrap.textColor == "navbar-light")
+                      if (this.gamedata.css_style.background.style.nav.bootstrap.textColor == "navbar-light")
                           styles = Object.assign(styles, {
                               "border-color": bootstrap_menu_divider_dark
                           });
@@ -1303,31 +1307,31 @@
                               "border-color": bootstrap_menu_divider_light
                           });
                   else {
-                      var temp = this.css_style.background.style.nav.customized.general;
+                      var temp = this.gamedata.css_style.background.style.nav.customized.general;
                       styles = Object.assign(styles, {
                           "border-color": temp["color"]
                       });
                   }
                   //overwrite occasional mainstyle
-                  if (this.css_style.mainStyle["color"])
+                  if (this.gamedata.css_style.mainStyle["color"])
                       styles = Object.assign(styles, {
-                          "border-color": this.css_style.mainStyle["color"]
+                          "border-color": this.gamedata.css_style.mainStyle["color"]
                       });
               } else {
                   styles = Object.assign(styles, {
                       "border-color": default_image_divider_color
                   });
-                  if (this.css_style.mainStyle["color"])
+                  if (this.gamedata.css_style.mainStyle["color"])
                       styles = Object.assign(styles, {
-                          "border-color": this.css_style.mainStyle["color"]
+                          "border-color": this.gamedata.css_style.mainStyle["color"]
                       });
               }
               return styles;
           },
           menuBootstrapStyle: function() {
-              if (!this.css_style.background.image) {
-                  if (!this.css_style.background.style.nav.custom) {
-                      var temp = this.css_style.background.style.nav.bootstrap;
+              if (!this.gamedata.css_style.background.image) {
+                  if (!this.gamedata.css_style.background.style.nav.custom) {
+                      var temp = this.gamedata.css_style.background.style.nav.bootstrap;
                       if (!this.mobileView)
                           return temp.background;
                       else
@@ -1340,9 +1344,9 @@
               }
           },
           cardBootstrapStyle: function() {
-              if (!this.css_style.background.image) {
-                  var temp = this.css_style.background.style.card.bootstrap;
-                  if (!this.css_style.background.style.card.custom)
+              if (!this.gamedata.css_style.background.image) {
+                  var temp = this.gamedata.css_style.background.style.card.bootstrap;
+                  if (!this.gamedata.css_style.background.style.card.custom)
                       return (temp.textColor + " " + temp.background);
                   else {
                       return "";
@@ -1354,9 +1358,10 @@
           },
           cardStyle: function() {
               var styles = {};
-              if (!this.css_style.background.image) {
-                  var temp = this.css_style.background.style.card.customized;
-                  if (this.css_style.background.style.card.custom)
+              var inutile = this.mainStyleColor;
+              if (!this.gamedata.css_style.background.image) {
+                  var temp = this.gamedata.css_style.background.style.card.customized;
+                  if (this.gamedata.css_style.background.style.card.custom)
                       styles = Object.assign(styles, temp);
               } else
                   styles = Object.assign(styles, {
@@ -1365,31 +1370,31 @@
               return styles;
           },
           submitBootstrapStyle: function() {
-              if (!this.css_style.background.image)
-                  if (!this.css_style.background.style.card.custom)
-                      return this.css_style.background.style.card.bootstrap.textColor;
+              if (!this.gamedata.css_style.background.image)
+                  if (!this.gamedata.css_style.background.style.card.custom)
+                      return this.gamedata.css_style.background.style.card.bootstrap.textColor;
           },
           submitStyle: function() {
               styles = {};
               //if the card uses bootstrap the related style is in the Object submitBootstrapStyle
-              if (!this.css_style.background.image)
-                  if (this.css_style.background.style.card.custom)
+              if (!this.gamedata.css_style.background.image)
+                  if (this.gamedata.css_style.background.style.card.custom)
                       styles = Object.assign(styles, {
-                          "color": this.css_style.background.style.card.customized["color"]
+                          "color": this.gamedata.css_style.background.style.card.customized["color"]
                       });
               styles = Object.assign(styles, this.submitStyleObject);
               styles = this.overwriteMainStyle(styles);
-              if (this.css_style.mainStyle["color"] || !this.css_style.background.style.card.custom)
+              if (this.gamedata.css_style.mainStyle["color"] && !this.gamedata.css_style.background.style.card.custom)
                   styles = Object.assign(styles, {
-                      "color": this.css_style.mainStyle["color"] + "!important"
+                      "color": this.gamedata.css_style.mainStyle["color"] + "!important"
                   }); //used in order to overwrite bootstrap text color
               return styles;
           },
           cardLimitStyle: function() {
               var styles = {};
-              if (!this.css_style.background.image) {
+              if (!this.gamedata.css_style.background.image) {
                   styles = Object.assign(styles, card_headerFooter);
-                  var temp = this.css_style.background.style.card;
+                  var temp = this.gamedata.css_style.background.style.card;
                   if ((!temp.custom && temp.bootstrap.background == "bg-dark") || (temp.custom && temp.customized["background-color"] == "black"))
                       styles = Object.assign(styles, bootstrap_card_headerFooter_black_background);
               }
@@ -1401,17 +1406,17 @@
           },
           questsStyle: function() {
               var styles = {};
-              if (this.css_style.background.image) {
+              if (this.gamedata.css_style.background.image) {
                   styles = Object.assign(styles, {
                       "color": default_image_text_color
                   });
                   styles = this.overwriteMainStyle(styles);
               } else
-              if (!this.css_style.background.style.nav.custom)
+              if (!this.gamedata.css_style.background.style.nav.custom)
                   styles = this.overwriteMainStyle(styles);
               else {
                   styles = Object.assign(styles, {
-                      "color": this.css_style.background.style.nav.customized.general["color"]
+                      "color": this.gamedata.css_style.background.style.nav.customized.general["color"]
                   });
                   styles = this.overwriteMainStyle(styles);
               }
@@ -1427,8 +1432,8 @@
               if (this.currentComponent == "textinput")
                   style = this.overwriteMainStyle(styles);
               style = Object.assign(styles, input_backgroundImage);
-              if (!this.css_style.background.image)
-                  if (!this.css_style.mainStyle["color"])
+              if (!this.gamedata.css_style.background.image)
+                  if (!this.gamedata.css_style.mainStyle["color"])
                       styles = Object.assign(styles, {
                           "color": "inherit"
                       });

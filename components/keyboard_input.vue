@@ -1,12 +1,13 @@
 <template>
   <div>
-    <p :style="textStyle" tabindex=-1 aria-live="polite" aria-label="codice inserito">{{ text }}</p>
-    <div id="custom-keyboard" role="grid">
-      <div v-for="(row,index) in genKeyboard" :aria-label="'riga'+index">
+    <p :style="textStyle" tabindex=0 aria-live="polite" aria-label="codice inserito">{{ text }}</p>
+    <div id="custom-keyboard" :aria-label="accessibleDescription" role="grid">
+      <div role="row" v-for="(row,index) in genKeyboard" class="row" :aria-label="'riga'+index">
         <div id="button-line">
           <span v-for="key in row">
-            <button v-if="key.startsWith('!!')" class="input-button" :class="keyboardAnim" :style="keyboardStyle(key)" v-on:click="delValue">{{ key.substring(2,key.length) }}</button>
-            <button v-if="!key.startsWith('!!')" class="input-button" :class="keyboardAnim" :value="key" :style="keyboardStyle(key)" v-on:click="emitValue($event.target.value)">{{ key }}</button>
+            <button v-if="key.startsWith('!!')" type="button" class="input-button" :class="keyboardAnim" :style="keyboardStyle(key)" v-on:click="delValue">{{ key.substring(2,key.length) }}</button>
+            <button v-if="!key.startsWith('!!')" type="button" class="input-button" :class="keyboardAnim" :value="key" :style="keyboardStyle(key)" 
+            v-on:click="emitValue($event.target.value)">{{ key }}</button>
           </span>
         </div>
       </div>
@@ -19,16 +20,18 @@ module.exports = {
   props: ["gamedata", "current", "value", "metadata","styles","key_style"],
   data: function() {
     return {
-      text: "",
+      text: ""
      }
   },
   methods: {
     emitValue: function(value) {
       this.text += value;
       this.$emit('input', this.text);
+      this.$parent.$refs.submitbutton.disabled = !this.text;
     },
     delValue: function() {
       this.text = this.text.substring(0,this.text.length-1);
+      this.$parent.$refs.submitbutton.disabled = !this.text;
       this.$emit('input', this.text);
     },
     keyboardStyle: function(val){
@@ -88,6 +91,9 @@ module.exports = {
         res.push(row.split(","));
       }
       return res;
+    },
+    accessibleDescription: function() {
+      return (this.gamedata.key_style.description || "Tastiera interattiva di bottoni");
     }
   }
 }
@@ -99,7 +105,7 @@ module.exports = {
   user-select: none;
   text-align: center;
   vertical-align: top;
-  outine: none;
+  outline: none;
 }
 
 #button-line {

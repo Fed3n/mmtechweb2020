@@ -26,16 +26,13 @@ module.exports = {
       ctx.fillText("O", x-10, y+10);
       //La seconda parte manda la risposta
       this.$emit('input', [x,y])
-      //Se ho clickato è sempre un responso valido
-      if(document.getElementById("submit")) document.getElementById("submit").disabled = false;
     },
     updateCanvasImage: function() {
       var c = this.$refs.imgcanvas;
       var ctx = c.getContext("2d");
       var img = new Image();
-      img.src = "story/" + this.metadata.name + "/images/" + this.gamedata.image.imguri;
+      img.src = this.gamedata.image.imguri ? ("story/" + this.metadata.name + "/images/" + this.gamedata.image.imguri) : "";
       img.alt = this.gamedata.image.imgalt;
-      console.log(img.src + " " + img.alt);
       img.onload = function() {
         ctx.drawImage(img,0,0, c.width, c.height);
       }
