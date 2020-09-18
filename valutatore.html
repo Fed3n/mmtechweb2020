@@ -46,7 +46,13 @@
           <p>User: {{ id }}</p>
           <p>Text: {{ players_ans[id].answer.text }}</p>
           <img :src="players_ans[id].answer.imagedata">
-          <button v-on:click="sendFeedback(id)">Submit</button>
+          <form v-on:submit="sendFeedback(id, $event.target.elements.feedbackans.value)">
+            <div class="form-group" v-for="opt in computeJson(id).mainQuest[players_data[id].currentQuest].goto">
+              <label>{{ opt[0] }}</label>
+              <input type="radio" name="feedbackans" :value="opt[0]">
+            </div>
+            <input type="submit" value="Submit">
+          </form>
         </div>
       </div>
 

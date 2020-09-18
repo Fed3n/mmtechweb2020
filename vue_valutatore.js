@@ -30,10 +30,12 @@ var app = new Vue({
         this.players_data = response.data;
         for (let id in this.players_data) {
             //Se c'è una storia nuova, si aggiunge
-            let story = id.substring(0,id.indexOf("#"));
-            if(!story in this.ongoing_stories){
+            let story = this.computeStory(id);
+            console.log(story);
+            if(!(story in this.ongoing_stories)){
+              console.log(`${story} missing from ongoing_stories!`);
               axios.get(`/stories/${story}/`).then((res) => {
-                this.ongoing_stories[story] = res.gamedata;
+                this.ongoing_stories[story] = res.data.json;
               });
             }
             //Controllo sugli aiuti
@@ -103,10 +105,17 @@ var app = new Vue({
         // dai un messaggio di aiuto
         this.players_data_changing[id].help_message = "Su quel ramo del lago di como";
     },
-    sendFeedback: function(id) {
-      axios.post('/feedback/', { 'text': "feedback!!" }, { params: { user_id: id } }).then((res) => {
+    sendFeedback: function(id,feedback) {
+      axios.post('/feedback/', { 'text': feedback }, { params: { user_id: id } }).then((res) => {
         this.$delete(this.players_ans, id);
       });
+    },
+    computeStory: function(id) {
+      return id.substring(0,id.indexOf("$"));
+    },
+    computeJson: function(id) {
+      let story = this.computeStory(id);
+      return this.ongoing_stories[story];
     }
   },
   computed: {
