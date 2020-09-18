@@ -84,6 +84,29 @@ var app = new Vue({
         this.players_data_changing[id].help_sent = true;
         // dai un messaggio di aiuto
         this.players_data_changing[id].help_message = "Su quel ramo del lago di como";
+    },
+    saveJson: function() {
+      var data = JSON.stringify(this.players_data, null, 4);
+      var blob = new Blob([data], { type: 'application/json' });
+      var a = document.createElement("a");
+      a.download = "stats.json";
+      a.innerHTML = "Download JSON";
+      //Funzione createObjectURL cross-browser
+      var createObjectURL = (window.URL || window.webkitURL || {}).createObjectURL || function() {};
+      a.href = createObjectURL(blob);
+      a.click();
+    },
+    selectInterfaceFields: function({user_id, in_mainquest, currentQuest, currentSub, completedSubs}) {
+      return {user_id, in_mainquest, currentQuest, currentSub, completedSubs};
+    }
+  },
+  computed: {
+    players_data_shown: function () {
+      var filtered_data = {};
+      for (const key in this.players_data) {
+        filtered_data[key] = this.selectInterfaceFields(this.players_data[key]);
+      }
+      return filtered_data;
     }
   }
 });
