@@ -110,7 +110,7 @@ app.patch('/players/', (req, res) => {
         players_data[id][key] = req.body[id][key];
       }
     }
-    return res.send.status(201).send("Data updated successfully.");
+    return res.status(201).send("Data updated successfully.");
 });
 
 app.get('/players/', (req, res) => {
