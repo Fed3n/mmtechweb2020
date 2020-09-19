@@ -31,9 +31,8 @@ var app = new Vue({
         for (let id in this.players_data) {
             //Se c'è una storia nuova, si aggiunge
             let story = this.computeStory(id);
-            console.log(story);
             if(!(story in this.ongoing_stories)){
-              console.log(`${story} missing from ongoing_stories!`);
+              console.log(`${story} missing from ongoing_stories! Now loading it...`);
               axios.get(`/stories/${story}/`).then((res) => {
                 this.ongoing_stories[story] = res.data.json;
               });
