@@ -321,25 +321,25 @@ var app = new Vue({
     goToSubQuest: function (quest){
 	  this.picked = null;
 	  this.$refs.inputForm.reset();
-      this.currentSub = quest.number;
-      this.in_mainquest = false;
-      this.$refs.questname.focus();
-      if (this.currentComponent != "")
-        this.$refs.help.classList.remove("disabled");
-      this.help_message = "";
-      this.help_received = false;
-      this.sendGameData();
+    this.currentSub = quest.number;
+    this.in_mainquest = false;
+    this.$refs.questname.focus();
+    if (this.$refs.help)
+      this.$refs.help.classList.remove("disabled");
+    this.help_message = "";
+    this.help_received = false;
+    this.sendGameData();
     },
     goToMainQuest: function(){
 	  this.picked = null;
 	  this.$refs.inputForm.reset();
-      this.in_mainquest = true;
-      this.$refs.questname.focus();
-      if (this.currentComponent != "")
-        this.$refs.help.classList.remove("disabled");
-      this.help_message = "";
-      this.help_received = false;
-      this.sendGameData();
+    this.in_mainquest = true;
+    this.$refs.questname.focus();
+    if (this.$refs.help)
+      this.$refs.help.classList.remove("disabled");
+    this.help_message = "";
+    this.help_received = false;
+    this.sendGameData();
     },
     submitMain: function() {
       //Caso particolare in cui il submit si comporta diversamente perché non usa il valore picked
@@ -363,8 +363,7 @@ var app = new Vue({
               //Per ragioni di compatibilità mi assicuro ci sia lo score
               if(opt[2]) this.score += parseInt(opt[2]);
               this.time_inactive = 0;
-              if (this.currentComponent != "")
-                this.$refs.help.classList.remove("disabled");
+              this.$refs.help.classList.remove("disabled");
               this.help_message = "";
               this.help_received = false;
               this.sendGameData();
@@ -373,12 +372,11 @@ var app = new Vue({
         }
         //Formato standard che controlla se opt[0] == picked
         else if(opt[0] == this.picked){
+          if(this.currentComponent != "")
+            this.$refs.help.classList.remove("disabled");
           this.currentQuest = opt[1];
           //Per ragioni di compatibilità mi assicuro ci sia lo score
           if(opt[2]) this.score += parseInt(opt[2]);
-          this.time_inactive = 0;
-          if (this.currentComponent != "")
-            this.$refs.help.classList.remove("disabled");
           this.help_message = "";
           this.help_received = false;
           this.sendGameData();
@@ -386,12 +384,12 @@ var app = new Vue({
         }
         //L'opzione di default se non ci sono corrispondenze è sempre l'ultima
         if(options.indexOf(opt) == options.length-1){
+          if(this.currentComponent != "")
+            this.$refs.help.classList.remove("disabled");
           this.currentQuest = opt[1];
           //Per ragioni di compatibilità mi assicuro ci sia lo score
           if(opt[2]) this.score += parseInt(opt[2]);
           this.time_inactive = 0;
-          if(this.currentComponent != "")
-            this.$refs.help.classList.remove("disabled");
           this.help_message = "";
           this.help_received = false;
           this.sendGameData();
