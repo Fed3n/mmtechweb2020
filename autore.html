@@ -621,19 +621,19 @@
                                 <input name="titlefield" type="text" class="form-control" v-model="renderQuest.title">
                             </div>
                         </div>
-                        <!--Quest OBJECTIVE (subquests only)-->
-                        <div class="form-group row mb-2" v-if="!previewdata.in_mainquest">
-                            <label for="objectivefield" class="col-md-2 col-form-label">Obiettivo</label>
-                            <div class="col-md-10">
-                                <input name="objectivefield" class="form-control" type="text" v-model="renderQuest.objective">
-                            </div>
-                        </div>
                         <!--Quest TEXT-->
                         <div class="form-group row mb-2">
                             <label for="textfield" class="col-md-2 col-form-label">Testo</label>
                             <div class="col-md-10">
                                 <textarea name="textfield" class="form-control" type="text" v-model="renderQuest.text"></textarea>
                             </div>
+                        </div>
+                        <!--Quest STARTING POINT (main quest only)-->
+                        <div v-if="previewdata.in_mainquest" class="form-check container mb-2">
+                            <label for="startfield" class="form-check-label">
+                                <input type="checkbox" class="form-check-input" :value="renderQuest.number" v-model="gamedata.starting_points">
+                                Quest Iniziale
+                            </label>
                         </div>
                         <!--Quest AVAILABLE_ON (subquests only)-->
                         <label for="availableonfield" v-if="!previewdata.in_mainquest">Disponibile nelle Quest</label>

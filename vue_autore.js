@@ -46,6 +46,7 @@
           },
           "solution": []
       }],
+      "starting_points": [],
       "css_style": {
           "mainStyle": {
               "font-family": "Arial",
@@ -588,7 +589,6 @@
           addRmOptions: function(type) {
               if (type == "add") {
                   this.renderQuest.options.push("");
-                  this.renderQuest.goto.push(["", 0]);
               } else {
                   this.renderQuest.options.pop();
               }
