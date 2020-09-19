@@ -132,6 +132,10 @@ var app = new Vue({
     }
   },
   computed: {
+    firstPlayer: function () {
+      let firstKey = Object.keys(this.players_data_shown)[0];
+      return this.players_data_shown[firstKey];
+    },
     players_data_shown: function() {
       var filtered_data = {};
       for (const key in this.players_data) {

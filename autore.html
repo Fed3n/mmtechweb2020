@@ -22,19 +22,19 @@
                 <p>Crea e gestisci le tue storie di M&M!</p>
             </div>
             <div class="container-fluid border-top">
-                <h2>Storia caricata: {{ loadedStory ? loadedStory : "Carica una storia!"}}</h2>
-                <p v-if="!loadedStory">Posta (POST) e carica (GET) una nuova storia per accedere alle funzioni di upload.</p>
+                <h2>Storia caricata: {{ loadedStory ? loadedStory : "Nessuna! Carica una storia"}}</h2>
+                <p v-if="!loadedStory">Inizia a creare la tua storia e premi il tasto SAVE una volta completata. Apri AREA STORIE per gestire tutte le storie disponibili.</p>
             </div>
         </div>
-        <button class="btn btn-block btn-info" type="button" data-toggle="collapse" data-target="#managedata">AREA DATI</button>
+        <button class="btn btn-block btn-info" type="button" data-toggle="collapse" data-target="#managedata">AREA STORIE</button>
         <div id="managedata" class="row container-fluid collapse p-3">
             <div id="server-manage" class="col-md-8 border-right">
-                <h2 class="bg-info text-light">Server-Side</h2>
+                <h2 class="bg-info text-light">Il tuo archivio</h2>
                 <div class="row">
                     <!--GET / DELETE IN FS-->
                     <label for="select-story">Storie Registrate</label>
                     <select name="select-story" class="custom-select" size="6" ref="selectedStory">
-                        <option v-for="story in storyList" :value="story" data-toggle="tooltip" :title="activeStoryList.includes(story) ? 'Active' : 'Inactive'"
+                        <option v-for="story in storyList" :value="story" data-toggle="tooltip" :title="activeStoryList.includes(story) ? 'Attiva' : 'Inattiva'"
                         :style="{ color: activeStoryList.includes(story) ? 'green' : 'red' }">{{ story }}</option>
                     </select>
                     <div class="btn btn-group">
@@ -46,10 +46,10 @@
                 <div id="uploadimages" class="row border-top mt-2">
                     <div class="col-md-4">
                         <div class="form-group mb-2">
-                            <label for="img_upload">Upload immagine per la storia corrente: </label>
+                            <label for="img_upload">Carica immagini per la storia corrente: </label>
                             <input class="form-control-file" type="file" accept="image/*" name="img_upload" ref="img_upload">
                         </div>
-                        <button class="btn btn-primary" v-on:click="uploadImg()">UPLOAD</button>
+                        <button class="btn btn-primary" v-on:click="uploadImg()">CARICA</button>
                     </div>
                     <div class="col-md-4">
                         <div class=" row form-group mb-2">
@@ -67,10 +67,10 @@
                 <div id="uploadvideos" class="row border-top mt-2">
                     <div class="col-md-4">
                         <div class="form-group mb-2">
-                            <label for="vid_upload">Upload video per la storia corrente: </label>
+                            <label for="vid_upload">Carica video per la storia corrente: </label>
                             <input class="form-control-file" type="file" accept="video/*" name="vid_upload" ref="vid_upload">
                         </div>
-                        <button class="btn btn-primary" v-on:click="uploadVid()">UPLOAD</button>
+                        <button class="btn btn-primary" v-on:click="uploadVid()">CARICA</button>
                     </div>
                     <div class="col-md-4">
                         <div class=" row form-group mb-2">
@@ -79,28 +79,28 @@
                                 <option v-for="vidname in vidsList" :value="vidname">{{ vidname }}</option>
                             </select>
                             <div id="video-preview" v-if="selectedVideo" class="container-fluid mt-2">
-                                <video width="60%" controls :src="'story/' + metadata.name + '/videos/' + selectedVideo">Preview of {{ selectedVideo }}</video>
+                                <video width="60%" controls :src="'story/' + metadata.name + '/videos/' + selectedVideo">Anteprima di {{ selectedVideo }}</video>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div id="saveload" class="col-md-4 border-left">
-                <h2 class="bg-info text-light">SAVE/LOAD dal sistema locale e QRCODE</h2>
-                <div id="jsonLoader" class="container">
+                <h2 class="bg-info text-light">Creazione QR Code e file .json della storia</h2>
+                <div id="jsonLoader" class="container border-bottom pb-3 m-3">
                     <div class="form-group row">
-                        <label for="file-loader" class="col-md-3" >Json Loader</label>
-                        <div class="col-9"><input name="file-loader" class="form-control-file" type="file" ref="toLoad"></div>
+                        <label for="file-loader" class="col-md-5" >caricamento storia da file</label>
+                        <div class="col-7"><input name="file-loader" class="form-control-file" type="file" ref="toLoad"></div>
                     </div>
-                    <button class="btn btn-success" v-on:click="loadJson">Load JSON</button>
+                    <button class="btn btn-success" v-on:click="loadJson">CARICA STORIA</button>
                 </div>
-                <div id="jsonSaver" class="container">
+                <div id="jsonSaver" class="container m-3">
                     <div class="form-group row">
-                        <label class="col-md-3" for="file-downloader">Json Saver</label>
-                        <div class="col-9"><input name="file-downloader" type="text" value="myfile.json" ref="fileName"></div>
+                        <label class="col-md-5" for="file-downloader">Salva file della storia</label>
+                        <div class="col-7"><input name="file-downloader" type="text" value="myfile.json" ref="fileName"></div>
                     </div>
-                    <button class="btn btn-success" v-on:click="saveJson">Download JSON</button>
-                    <button class="btn btn-info" v-on:click="createQR">Create QR Code!</button>
+                    <button class="btn btn-success" v-on:click="saveJson">SCARICA FILE</button>
+                    <button class="btn btn-info" v-on:click="createQR">Crea QR Code</button>
                 </div>
             </div>
         </div>
@@ -126,8 +126,8 @@
                     <input name="language" class="form-control" type="text" v-model="metadata.language">
                 </div>
                 <div class="btn-group">
-                    <button class="col btn btn-info" v-on:click="postStory">POST</button>
-                    <button class="col btn btn-secondary" v-on:click="resetData">NEW</button>
+                    <button class="col btn btn-info" v-on:click="postStory" data-toggle="tooltip" title="salva la tua storia">SAVE</button>
+                    <button class="col btn btn-secondary" v-on:click="resetData" data-toggle="tooltip" title="resetta i campi ed inizia una nuova storia">RESET</button>
                 </div>
             </div>
         </div>
@@ -150,7 +150,7 @@
                 <!--Accesso rapido alle quest usando v-for buttons-->
                 <!--TODO Chiuderlo in un box con overflow a scorrimento maybe?-->
                 <div>
-                    <label for="questlistcontainer">Quick Access:</label>
+                    <label for="questlistcontainer">Accesso diretto:</label>
                     <div name="questlistcontainer" class="container border-top p-2 mx-25 overflow-auto">
                         <div v-for="quest in questList" class="btn-group container-fluid pb-1">
                             <button class="btn" data-toggle="tooltip" :title="quest.title" v-on:click="previewdata.in_mainquest ? jumpToQuest('main',quest.number) : jumpToQuest('sub',quest.number)">
@@ -305,7 +305,7 @@
                             <div class="panel panel-default">
                               <div class="panel-heading py-2 border-bottom">
                                 <div class="panel-title" data-toggle="collapse" rata-parent="#setStyle" href="#badgeStyleEditor" @click="styleMenuCollapse">
-                                  <label>Etichetta obiettivi secondari disponibili</label>
+                                  <label>Etichetta obiettivi secondari(Sub) disponibili</label>
                                 </div>
                               </div>
                               <div id="badgeStyleEditor" class="panel-collapse collapse stylepanelcollapse">
