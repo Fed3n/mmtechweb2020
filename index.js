@@ -110,15 +110,16 @@ app.patch('/players/', (req, res) => {
         players_data[id][key] = req.body[id][key];
       }
     }
-    return res.send(":)");
+    return res.status(201).send("Data updated successfully.");
 });
 
 app.get('/players/', (req, res) => {
     if(req.query.user_id){
-        return res.send(players_data[req.query.user_id]);
+        return res.status(200).send(players_data[req.query.user_id]);
     }
     else {
-        return res.send(players_data);
+	console.log(players_data);
+        return res.status(200).send(players_data);
     }
 });
 
@@ -183,10 +184,10 @@ app.post('/chat/:player_id/', (req,res) => {
 
 app.get('/chat/', (req,res) => {
   if(req.query.user_id){
-    return res.send(players_chat[req.query.user_id]);
+    return res.status(200).send(players_chat[req.query.user_id]);
   }
   else {
-    return res.send(players_chat);
+    return res.status(200).send(players_chat);
   }
 });
 
@@ -202,7 +203,7 @@ app.get('/stories', (req, res) => {
         info = JSON.parse(info);
         load.push(info);
     }
-    res.send(load);
+    res.status(200).send(load);
 });
 
 app.get('/stories/:storyName', (req, res) => {
@@ -219,7 +220,7 @@ app.get('/stories/:storyName', (req, res) => {
         meta: meta
     };
     res.setHeader('Content-Type','application/json');
-    res.json(load);
+    res.status(200).json(load);
 });
 
 app.post('/stories', (req, res) => {
@@ -254,7 +255,7 @@ app.delete('/stories', (req, res) => {
     fs.rmdir(dir, { recursive: true }, (error) => {
         if(error) throw error;
         console.log("Deleted story " + story);
-        res.send(":)");
+        res.status(200).send("Story delete successfully.");
     });
 });
 
@@ -271,7 +272,7 @@ app.post('/stories/:storyName/images', (req, res) => {
     fs.writeFile(path.join(targetDir + req.files.image.name), req.files.image.data, (error) => {
         if(error)   throw error;
     });
-    res.send(":)");
+    res.status(201).send("Image created successfully.");
 });
 
 app.get('/stories/:storyName/videos', (req, res) =>{
@@ -287,7 +288,7 @@ app.post('/stories/:storyName/videos', (req, res) => {
     fs.writeFile(path.join(targetDir + req.files.video.name), req.files.video.data, (error) => {
         if(error)   throw error;
     });
-    res.send(":)");
+    res.status(201).send("Video created successfully.");
 });
 
 //##STILI##//
@@ -317,13 +318,13 @@ app.post('/styles/interfaces/', (req, res) => {
             throw error;
         }
     });
-    res.send(":)");
+    res.status(201).send("Style created successfully.");
 });
 
 app.delete('/styles/interfaces/', (req, res) => {
     let target = path.join(__dirname + "/styles/interfaces/" + req.query.name );
     fs.unlinkSync(target);
-    res.send(":)");
+    res.status(200).send("Style deleted successfully.");
 });
 
 app.get('/styles/keyboards', (req, res) => {
@@ -351,13 +352,13 @@ app.post('/styles/keyboards/', (req, res) => {
             throw error;
         }
     });
-    res.send(":)");
+    res.status(201).send("Keyboard created successfully.");
 });
 
 app.delete('/styles/keyboards/', (req, res) => {
     let target = path.join(__dirname + "/styles/keyboards/" + req.query.name );
     fs.unlinkSync(target);
-    res.send(":)");
+    res.status(200).send("Keyboard deleted successfully.");
 });
 
 //#######################################################//

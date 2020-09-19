@@ -87,7 +87,7 @@
             </div>
        </div>
        </div>
-       <div class="container border overflow-auto" id="chat">
+       <div v-if="user_id" class="container border overflow-auto" id="chat">
          <div v-for="msg in chat">
            {{ msg.sender }} scrive: {{ msg.text }}
          </div>

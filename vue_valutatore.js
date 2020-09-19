@@ -31,9 +31,8 @@ var app = new Vue({
         for (let id in this.players_data) {
             //Se c'è una storia nuova, si aggiunge
             let story = this.computeStory(id);
-            console.log(story);
             if(!(story in this.ongoing_stories)){
-              console.log(`${story} missing from ongoing_stories!`);
+              console.log(`${story} missing from ongoing_stories! Now loading it...`);
               axios.get(`/stories/${story}/`).then((res) => {
                 this.ongoing_stories[story] = res.data.json;
               });
@@ -133,6 +132,10 @@ var app = new Vue({
     }
   },
   computed: {
+    firstPlayer: function () {
+      let firstKey = Object.keys(this.players_data_shown)[0];
+      return this.players_data_shown[firstKey];
+    },
     players_data_shown: function() {
       var filtered_data = {};
       for (const key in this.players_data) {
