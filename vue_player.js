@@ -292,28 +292,36 @@ var app = new Vue({
     },
     getCurrentChats: function() {
       axios.get("/chat", {params: {user_id: this.user_id}}).then(response => {
-        console.log(response.data);
         this.chat = response.data;
       });
     },
     checkAnsFeedback: function() {
         axios.get(`/feedback/`, { params: {user_id: this.user_id} }).then((res) => {
-            console.log("feedback: " + res.data);
             this.ans_feedback = res.data;
         });
     },
     changeQuest: function() {
-    if(this.questname) {
-        axios.get(`/stories/${this.questname}`).then(response => {
-          this.gamedata = response.data.json;
-          this.metadata = response.data.meta;
-            axios.get("/uid", {params: {story_name: this.metadata.name}}).then(res => {
-              this.user_id = res.data;
-          });
-        });
-    }
-          this.$refs.questloader.remove();
-          this.$refs.questrender.removeAttribute("hidden");
+        if(this.questname) {
+            axios.get(`/stories/${this.questname}`).then(response => {
+              this.gamedata = response.data.json;
+              this.metadata = response.data.meta;
+                //Chiedo al server il mio user id che è in formato nome_storia$numero
+                axios.get("/uid", {params: {story_name: this.metadata.name}}).then(res => {
+                  this.user_id = res.data;
+                  //E mi faccio assegnare uno starting point
+                  this.currentQuest = this.parseStart(this.user_id);
+              });
+            });
+        }
+        this.$refs.questloader.remove();
+        this.$refs.questrender.removeAttribute("hidden");
+    },
+    parseStart: function(id) {
+        if(this.gamedata.starting_points) {
+            let len = this.gamedata.starting_points.length;
+            let n = parseInt(id.substring(id.indexOf("$")+1,id.length));
+            return (n%len);
+        }
     },
     changeState: function (state){
       this.currentQuest = state;
@@ -351,7 +359,6 @@ var app = new Vue({
       }
       options = this.getCurrentGotos;
       for(opt of options){
-        console.log(opt);
         //Le risposte del tipo draw hanno un formato diverso
         if(this.gamedata.mainQuest[this.currentQuest].type == "draw"){
           let x = opt[0][0];

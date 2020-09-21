@@ -143,12 +143,43 @@ var app = new Vue({
       }
       return filtered_data;
     },
+    players_data_shown_from_story: function() {
+      var res = {};
+      for (let story of this.activeStories) {
+        res[story] = {};
+        for (let player in this.players_data_shown) {
+          if (player.split('$')[0] == story) {
+            res[story][player] = this.players_data_shown[player];
+          }
+        }
+      }
+      return res;
+    },
+    players_chat_from_story: function() {
+      var res = {};
+      for (let story of this.activeStories) {
+        res[story] = {};
+        for (let player in this.players_chat) {
+          if (player.split('$')[0] == story) {
+            res[story][player] = this.players_chat[player];
+          }
+        }
+      }
+      return res;
+    },
     waitingForFeedback: function(){
       waiting_list = [];
       for(id in this.players_ans){
         if(this.players_ans[id].waiting) waiting_list.push(id);
       }
       return waiting_list;
+    },
+    activeStories: function() {
+      var stories = new Set();
+      for (let playerID in this.players_data) {
+        stories.add(playerID.split("$")[0]);    // playerID = [story, id]
+      }
+      return Array.from(stories);
     }
   }
 });
