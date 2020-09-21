@@ -502,7 +502,7 @@
                 </div>
                 <!--PREVIEW-->
                 <div id="preview-container" class="container-fluid py-3 row border-bottom">
-                  <div id="preview" style="width:375px !important; height:350px !important;" :style="loadImage" class="border">  <!--  :class="previewMode"  -->
+                  <div id="preview" style="width:375px !important; height:667px !important; overflow:overlay" :style="loadImage" class="border">  <!--  :class="previewMode"  -->
                       <nav class="navbar" :class="navbarBootstrapStyle" :style="navbarStyle">
                           <div class="navbar-brand" :style="navbarBrandStyle">Menu
                               <span class="badge" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert">Subs!</span>

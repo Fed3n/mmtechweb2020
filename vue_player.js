@@ -244,7 +244,7 @@ var app = new Vue({
                 axios.get("/uid", {params: {story_name: this.metadata.name}}).then(res => {
                   this.user_id = res.data;
                   //E mi faccio assegnare uno starting point
-                  this.currentQuest = this.parseStart(this.user_id);
+  //                this.currentQuest = this.parseStart(this.user_id);    //_------------------------------------------------DA TOGLIERE IL COMMENTO --------------------------------------------------
               });
             });
         }
