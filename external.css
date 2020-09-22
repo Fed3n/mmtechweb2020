@@ -1,7 +1,18 @@
 .dropdown-item:active{
-	background: transparent; 
+	background: transparent;
 }
 .player-card {
 	position: relative;
 	height: 75%;
+}
+
+.player-card-author {
+	position: relative;
+	height: 90%;
+}
+
+.player-footer {
+	position: -webkit-sticky;
+	position: sticky;
+	bottom: 0;
 }

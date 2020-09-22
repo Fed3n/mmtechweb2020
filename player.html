@@ -20,7 +20,7 @@
             </div>
             <!--Area navbar-->
             <div id="questrender" ref="questrender" hidden>
-                <nav class="navbar navbar-expand-md" :class="navbarBootstrapStyle" :style="navbarStyle">
+              <nav class="navbar navbar-expand-md" :class="navbarBootstrapStyle" :style="navbarStyle">
                 <div class="navbar-brand" :style="navbarBrandStyle">Menu
                     <span class="badge" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert">Subs!</span>
                 </div>
@@ -47,61 +47,61 @@
                         </li>
                     </ul>
                 </div>
-            </nav>
-        <!--Area quest-->
-        <div ref="questrender" class="card player-card overflow-auto" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
-            <div class="card-header" :style="cardLimitStyle">
-                <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">
-                    {{in_mainquest ? "Quest" : "Subquest"}}
-                    {{ in_mainquest ? currentQuest : currentSub }}: {{ renderQuest.title || "no_name" }}
-                </h3>
+              </nav>
+              <!--Area quest-->
+              <div ref="questrender" class="card player-card overflow-auto" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
+                  <div class="card-header" :style="cardLimitStyle">
+                      <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">
+                          {{in_mainquest ? "Quest" : "Subquest"}}
+                          {{ in_mainquest ? currentQuest : currentSub }}: {{ renderQuest.title || "no_name" }}
+                      </h3>
+                  </div>
+                  <div class="card-body overflow-auto" :style="removePredefinedStylesCard">
+                      <form ref="inputForm" v-on:submit.prevent="in_mainquest? submitMain() : submitSub()">
+                              <p style="white-space: pre-line;">{{ renderQuest.text }}</p>
+                              <p style="white-space: pre-line;">{{ renderQuest.description || "" }}</p>
+                              <ul v-if="in_mainquest && getCurrentClues.length > 0">
+                                      <li v-for="clue in getCurrentClues">{{ clue }}</li>
+                              </ul>
+                              <div v-if="help_received && help_message">Hint: {{help_message}}</div>
+                              <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
+                              <div id="gameinput">
+                                <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :current="in_mainquest ? currentQuest : currentSub"
+                                :options="in_mainquest ? getCurrentOptions : renderQuest.options" v-model="picked" ref="inputComponent" :styles="componentStyle"></component>
+                              </div>
+                      </form>
+                      <!--EVENTUALI MEDIA-->
+                      <div v-if="renderQuest.media">
+                          <img width="100%" v-if="renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
+                          <div v-if="renderQuest.media.type=='video'">
+                              <video width="100%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
+                              </video>
+                          </div>
+                      </div>
+                      <p v-if="renderQuest.type == 'ending'">Punteggio finale: {{ score }}</p>
+                  </div>
+                  <div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
+                      <button ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :disabled="submitDisabled" :style="submitStyle" v-on:click="in_mainquest? submitMain() : submitSub()">
+                          Submit
+                      </button>
+                  </div>
+              </div>
             </div>
-            <div class="card-body overflow-auto" :style="removePredefinedStylesCard">
-                <form ref="inputForm" v-on:submit.prevent="in_mainquest? submitMain() : submitSub()">
-                        <p style="white-space: pre-line;">{{ renderQuest.text }}</p>
-                        <p style="white-space: pre-line;">{{ renderQuest.description || "" }}</p>
-                        <ul v-if="in_mainquest && getCurrentClues.length > 0">
-                                <li v-for="clue in getCurrentClues">{{ clue }}</li>
-                        </ul>
-                        <div v-if="help_received && help_message">Hint: {{help_message}}</div>
-                        <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
-                        <div id="gameinput">
-                          <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :current="in_mainquest ? currentQuest : currentSub"
-                          :options="in_mainquest ? getCurrentOptions : renderQuest.options" v-model="picked" ref="inputComponent" :styles="componentStyle"></component>
-                        </div>
-                </form>
-                <!--EVENTUALI MEDIA-->
-                <div v-if="renderQuest.media">
-                    <img width="100%" v-if="renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
-                    <div v-if="renderQuest.media.type=='video'">
-                        <video width="100%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
-                        </video>
-                    </div>
-                </div>
-                <p v-if="renderQuest.type == 'ending'">Punteggio finale: {{ score }}</p>
-            </div>
-            <div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
-                <button ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :disabled="submitDisabled" :style="submitStyle" v-on:click="in_mainquest? submitMain() : submitSub()">
-                    Submit
-                </button>
-            </div>
-       </div>
-       </div>
-       <div v-if="user_id" class="container border overflow-auto" id="chat">
-         <div v-for="msg in chat">
-           {{ msg.sender }} scrive: {{ msg.text }}
-         </div>
-         <form class="btn-group" v-on:submit.prevent>
-           <input type="text" v-model="chat_msg">
-           <button class="btn btn-success" v-on:click="sendChatMsg">Send</button>
-         </form>
-       </div>
-    </div>
+           <div v-if="user_id" class="container border overflow-auto" id="chat">
+             <div v-for="msg in chat">
+               {{ msg.sender }} scrive: {{ msg.text }}
+             </div>
+             <form class="btn-group" v-on:submit.prevent>
+               <input type="text" v-model="chat_msg">
+               <button class="btn btn-success" v-on:click="sendChatMsg">Send</button>
+             </form>
+           </div>
+        </div>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-     <script type="text/javascript" src="style_consts.js"></script>
-     <script type="text/javascript" src="vue_player.js"></script>
+        <script type="text/javascript" src="style_consts.js"></script>
+        <script type="text/javascript" src="vue_player.js"></script>
         <script type="text/javascript" src="utils.js"></script>
     </body>
 </html>
