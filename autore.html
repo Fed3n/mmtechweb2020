@@ -504,7 +504,7 @@
                 </div>
                 <!--PREVIEW-->
                 <div id="preview-container" class="container-fluid py-3 row border-bottom">
-                  <div id="preview" :class="previewMode" :style="previewStyle" class="border">
+                  <div id="preview" :class="previewMode" :style="previewStyle" class="p-0">
                       <nav class="navbar" :class="navbarBootstrapStyle" :style="navbarStyle">
                           <div class="navbar-brand" :style="navbarBrandStyle">Menu
                               <span class="badge" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert">Subs!</span>
@@ -540,14 +540,14 @@
                           </div>
                       </nav>
                       <!--Area quest-->
-                      <div ref="questrender" class="card player-card-author" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
+                      <div ref="questrender" class="card player-card-author overflow-auto" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
                           <div class="card-header" :style="cardLimitStyle">
                               <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">
                                   {{previewdata.in_mainquest ? "Quest" : "Subquest"}}
                                   {{ previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub }}: {{ renderQuest.title || "no_name" }}
                               </h3>
                           </div>
-                          <div class="card-body" :style="removePredefinedStylesCard">
+                          <div class="card-body overflow-auto" :style="removePredefinedStylesCard">
                               <form ref="inputForm" v-on:submit.prevent="previewdata.in_mainquest? submitMain() : submitSub()">
                                       <p style="white-space: pre-line;">{{ renderQuest.text }}</p>
                                       <p style="white-space: pre-line;">{{ renderQuest.description || "" }}</p>
@@ -568,8 +568,8 @@
                                       </video>
                                   </div>
                               </div>
-                          </div>
-                          <div v-if="renderQuest.type != 'ending'" class="card-footer player-footer" :style="cardLimitStyle">
+                          </div>                                        <!-- player-footer -->
+                          <div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
                               <button ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :disabled="submitDisabled" :style="submitStyle" v-on:click="previewdata.in_mainquest? submitMain() : submitSub()">
                                   Submit
                               </button>
