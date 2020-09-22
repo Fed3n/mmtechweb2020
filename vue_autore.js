@@ -700,10 +700,12 @@
           goToSubQuest: function(quest) {
               this.currentSub = quest.number;
               this.previewdata.in_mainquest = false;
+              window.scrollTo(0,0); //---NON DEFINITIVO ---------------------------------- EVITA LO SCROL DELLA PAGINA AL MOMENTO DEL CLICK------------------------------------------------------------------------------------------------------------
               this.$refs.questname.focus();
           },
           goToMainQuest: function() {
               this.previewdata.in_mainquest = true;
+              window.scrollTo(0,0); //---NON DEFINITIVO ----------------------------------------------------------------------------------------------------------------------------------------------
               this.$refs.questname.focus();
           },
           submitMain: function() {
@@ -736,6 +738,7 @@
              // document.getElementById("submit").disabled = true;
               this.upgradeSubmitStyle(true);
               this.previewdata.picked = null;
+              window.scrollTo(0,0); //---NON DEFINITIVO ----------------------------------------------------------------------------------------------------------------------------------------------
               this.$refs.questname.focus();
           },
           submitSub: function() {
@@ -765,6 +768,7 @@
                   //document.getElementById("submit").disabled = true;
                   this.upgradeSubmitStyle(true);
                   this.previewdata.picked = null;
+                  window.scrollTo(0,0); //---NON DEFINITIVO ----------------------------------------------------------------------------------------------------------------------------------------------
                   this.$refs.questname.focus();
           },
           styleMenuCollapse: function(){
