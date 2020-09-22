@@ -141,71 +141,6 @@ var app = new Vue({
     togglerButtonVisible: true,
     onLink: [],
     submitStyleObject: {},
-    css_style: {
-      mainStyle: {
-        "font-family": "'Dancing Script', cursive",
-          "font-style": "normal",
-          "font-weight": "bold",
-          "font-size": "25px",
-          "color" : "rgba(60,60,60,1)"      //se non si vuole specificare le proprietà globalmente inserire ""
-      },
-      background: {
-          image: false,
-          url: "url('notebook.png') no-repeat center center fixed",
-          style: {
-            nav: {
-            custom: false,
-            bootstrap: {
-              textColor: "navbar-light",
-              background: "bg-light"
-            },
-            customized: {
-              general: {
-              "background-color": "grey",
-              "color": "red"
-            },
-           }
-        },
-        badge: {
-        custom: false,
-          bootstrap: {
-            type: "badge-warning"
-          },
-          customized: {
-              "background-color": "rgba(122,232,14,0.8)",
-              "border-width": "3px",
-              "border-style": "dotted",
-              "border-color": "blue",
-              "color" : "red"
-          }
-        },
-        alert: {
-        custom: false,
-          bootstrap: {
-            type: "alert-warning"
-          },
-          customized: {
-              "background-color": "rgba(122,232,14,0.8)",
-              "border-width": "3px",
-              "border-style": "dotted",
-              "border-color": "blue",
-              "color" : "red"
-          }
-        },
-        card: {
-          custom: false,
-          bootstrap: {
-            textColor: "text-info",
-            background: "bg-light"
-          },
-          customized: {
-              "background-color": "white",
-              "color": "white"
-        }
-       }
-        }
-      }
-    }
   },
   watch: {
     //Se ans_feedback cambia e stavo aspettando un feedback
@@ -309,7 +244,7 @@ var app = new Vue({
                 axios.get("/uid", {params: {story_name: this.metadata.name}}).then(res => {
                   this.user_id = res.data;
                   //E mi faccio assegnare uno starting point
-                  this.currentQuest = this.parseStart(this.user_id);
+  //                this.currentQuest = this.parseStart(this.user_id);    //_------------------------------------------------DA TOGLIERE IL COMMENTO --------------------------------------------------
               });
             });
         }
