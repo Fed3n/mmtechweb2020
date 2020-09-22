@@ -153,7 +153,7 @@
                     <label for="questlistcontainer">Accesso diretto:</label>
                     <div name="questlistcontainer" class="container border-top p-2 mx-25 overflow-auto">
                         <div v-for="quest in questList" class="btn-group container-fluid pb-1">
-                            <button class="btn btn-block bg-white border border-dark" 
+                            <button class="btn btn-block bg-white border border-dark"
                             v-on:click="previewdata.in_mainquest ? jumpToQuest('main',quest.number) : jumpToQuest('sub',quest.number)">
                                 {{ quest.title || quest.number }}
                             </button>
@@ -503,7 +503,7 @@
                 </div>
                 <!--PREVIEW-->
                 <div id="preview-container" class="container-fluid py-3 row border-bottom">
-                  <div id="preview" style="width:375px !important; height:667px !important; overflow:overlay" :style="loadImage" class="border">  <!--  :class="previewMode"  -->
+                  <div id="preview" :class="previewMode" :style="previewStyle">
                       <nav class="navbar" :class="navbarBootstrapStyle" :style="navbarStyle">
                           <div class="navbar-brand" :style="navbarBrandStyle">Menu
                               <span class="badge" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert">Subs!</span>

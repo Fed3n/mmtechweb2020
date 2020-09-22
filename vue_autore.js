@@ -1065,8 +1065,9 @@
               else return !this.picked;
           },
           //STYLEOBJECTS
-          loadImage: function() {
+          previewStyle: function() {
               var styles = {};
+              //loading background image
               var temp = this.gamedata.css_style.background;
               if (temp.image) {
                   styles = Object.assign(styles, {
@@ -1082,12 +1083,19 @@
                       "background-image": "none"
                   });
               }
+              //loading mobile resolution
+              if (this.mobileView)
+                  styles = Object.assign(styles, {
+                      "width": mobile_width,
+                      "height": mobile_height,
+                      "overflow": "overlay"
+                  });
               return styles;
           },
           //modifica la dimensione della preview
           previewMode: function() {
               if (this.mobileView)
-                return "col-md-4 iphone6s";
+                return "col-md-4";
               else
                 return "col-md-8";
           },
