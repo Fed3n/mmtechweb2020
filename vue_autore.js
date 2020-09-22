@@ -419,7 +419,7 @@
                   "text": "",
                   "type": "",
                   "description": "",
-                  "sub_score": 0,
+                  "sub_score": "",
                   "options": [],
                   "image": {
                       "imguri": "",
@@ -631,6 +631,7 @@
               if (this.$refs.subtoadd.value) {
                   reward = {
                       "number": parseInt(this.$refs.subtoadd.value),
+                      "title": this.gamedata.subQuests[this.$refs.subtoadd.value].title,
                       "clue": "",
                       "added_options": [],
                       "removed_options": [],

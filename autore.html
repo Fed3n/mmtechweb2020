@@ -131,7 +131,7 @@
                 </div>
             </div>
         </div>
-        <div id="editor" class="row container-fluid">
+        <div id="editor" class="row container-fluid mt-2">
             <!--QUICK ACCESS/CREATION/REMOVAL-->
             <div class="col-md-2 container pt-3 pb-3 border-right">
                 <!--Passaggio da schermata main a sub e viceversa-->
@@ -153,8 +153,9 @@
                     <label for="questlistcontainer">Accesso diretto:</label>
                     <div name="questlistcontainer" class="container border-top p-2 mx-25 overflow-auto">
                         <div v-for="quest in questList" class="btn-group container-fluid pb-1">
-                            <button class="btn" data-toggle="tooltip" :title="quest.title" v-on:click="previewdata.in_mainquest ? jumpToQuest('main',quest.number) : jumpToQuest('sub',quest.number)">
-                                {{ quest.number }}
+                            <button class="btn btn-block bg-white border border-dark" 
+                            v-on:click="previewdata.in_mainquest ? jumpToQuest('main',quest.number) : jumpToQuest('sub',quest.number)">
+                                {{ quest.title || quest.number }}
                             </button>
                             <button class="btn btn-danger" v-on:click="previewdata.in_mainquest ? rmMainNode(quest.number) : rmSubNode(quest.number)">Cancella</button>
                             <span class="col form-check ml-1" id="subquestadd" v-if="!previewdata.in_mainquest">
@@ -522,7 +523,7 @@
                                               <div class="dropdown-divider" :style="dividerStyle"></div>
                                               <a class="dropdown-item" role="menuitem" :style="menuLinkStyle(index+1)" v-on:mouseover="menuLinkEvent(index+1,true)"
                                               v-on:mouseleave="menuLinkEvent(index+1,false)" v-for="(quest,index) in getSubquests" v-on:click="jumpToQuest('sub',quest.number)">
-                                                  Subquest {{quest.number}}: {{quest.objective}}
+                                                  Subquest {{quest.number}}: {{quest.title}}
                                               </a>
                                           </div>
                                       </div>
@@ -546,8 +547,8 @@
                               </h3>
                           </div>
                           <div class="card-body" :style="removePredefinedStylesCard">
-                              <p>{{ renderQuest.text }}</p>
-                              <p>{{ renderQuest.description || "" }}</p>
+                              <p style="white-space: pre-line;">{{ renderQuest.text }}</p>
+                              <p style="white-space: pre-line;">{{ renderQuest.description || "" }}</p>
                               <ul v-if="previewdata.in_mainquest && getCurrentClues.length > 0">
                                   <li v-for="clue in getCurrentClues">{{ clue }}</li>
                               </ul>
@@ -579,7 +580,7 @@
                         <div v-if="previewdata.in_mainquest">
                             <button class="btn btn-secondary" v-if="renderQuest.goto.length > 0" data-toggle="tooltip"
                             :title="gamedata.mainQuest[getAnswerGoto].title" v-on:click="jumpToQuest('main',getAnswerGoto)">
-                                {{ "Questa risposta porterà a " + getAnswerGoto }}
+                                {{ "Questa risposta porterà a " + (gamedata.mainQuest[getAnswerGoto].title || getAnswerGoto)}}
                             </button>
                         </div>
                         <div v-if="!previewdata.in_mainquest">
@@ -602,7 +603,7 @@
                         <h2 class="bg-info text-light">Nodi Precedenti</h2>
                         <button class="btn btn-secondary btn-block" v-for="prev in previewdata.in_mainquest ? getPrevNodes : renderQuest.requires_sub"
                         data-toggle="tooltip" :title="gamedata.mainQuest[prev].title" v-on:click="jumpToQuest('main',prev)">
-                            {{ prev }}
+                            {{ previewdata.in_mainquest ? ( gamedata.mainQuest[prev].title || prev ) : ( gamedata.subQuests[prev].title || prev ) }}
                         </button>
                     </div>
                     <!--CAMPI QUEST ATTUALE-->
@@ -638,7 +639,7 @@
                         <!--Quest AVAILABLE_ON (subquests only)-->
                         <label for="availableonfield" v-if="!previewdata.in_mainquest">Disponibile nelle Quest</label>
                         <div name="availableonfield" v-if="!previewdata.in_mainquest">
-                            <div v-for="quest in gamedata.mainQuest" class="form-check form-check-inline">
+                            <div v-for="quest in gamedata.mainQuest" class="form-check form-check-inline" data-toggle="tooltip" :title="quest.title">
                                 <input type="checkbox" class="form-check-input" :name="'quest' + quest.number" :value="quest.number" v-model="renderQuest.available_on">
                                 <label for="'quest' + quest.number" class="form-check-label"> {{ quest.number }}</label>
                             </div>
@@ -646,7 +647,7 @@
                         <!--Quest REQUIRES_SUBQUEST (subquests only)-->
                         <label for="subreqfield" v-if="!previewdata.in_mainquest">Richiede le Subquest</label>
                         <div name="subreqfield" v-if="!previewdata.in_mainquest">
-                            <div v-for="sub in gamedata.subQuests" class="form-check form-check-inline">
+                            <div v-for="sub in gamedata.subQuests" class="form-check form-check-inline" data-toggle="tooltip" :title="sub.title">
                                 <input type="checkbox" class="form-check-input" :name="'sub' + sub.number" :value="sub.number" v-model="renderQuest.requires_sub">
                                 <label :for="'quest' + sub.number">{{ sub.number }}</label>
                             </div>
@@ -663,7 +664,7 @@
                             <div class="form-group row mb-2">
                                 <label for="scorefield" class="col-md-2 col-form-label">Punteggio</label>
                                 <div class="col-md-4">
-                                    <input type="number" step="1" v-model="this.renderQuest.sub_score">
+                                    <input type="number" v-model="renderQuest.sub_score">
                                 </div>
                             </div>
                         </div>
@@ -721,9 +722,9 @@
                                 <select v-model="renderQuest.media.uri">
                                     <option v-for="opt in (renderQuest.media.type=='image' ? imagesList : vidsList)" :value="opt">{{ opt }}</option>
                                 </select>
-                                <div class="form-group row">
-                                    <label for="media-alt">Descrizione:</label>
-                                    <input name="media-alt" type="text" v-model="renderQuest.media.alt">
+                                <div class="form-group container row">
+                                    <label for="media-alt" class="mr-2">Descrizione:</label>
+                                    <textarea name="media-alt" v-model="renderQuest.media.alt"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -913,12 +914,14 @@
                             <div class="btn-group">
                                 <button class="btn btn-outline-primary" v-on:click="addSubReward">Aggiungi</button>
                                 <select name="subquests" class="form-control" ref="subtoadd">
-                                    <option v-for="sub in getRemainingSubs" :value="sub.number">Numero {{ sub.number }}</option>
+                                    <option v-for="sub in getRemainingSubs" :value="sub.number">{{ (sub.title || sub.number) }}</option>
                                 </select>
                             </div>
                             <div v-for="sub in renderQuest.subquest_rewards" class="container-fluid pt-1">
                                 <div class="btn-group">
-                                    <button class="btn btn-outline-secondary" :data-target="'#' + 'reward' + sub.number" data-toggle="collapse">Ricompensa per la Subquest {{ sub.number }}</button>
+                                    <button class="btn btn-outline-secondary" :data-target="'#' + 'reward' + sub.number" data-toggle="collapse">
+                                        Ricompensa per {{ (sub.title || sub.number) }}
+                                    </button>
                                     <button class="btn btn-outline-danger" v-on:click="rmSubReward(sub)">Rimuovi Ricompensa</button>
                                 </div>
                                 <div :id="'reward' + sub.number" class="collapse container p-2 border-bottom">
@@ -939,7 +942,9 @@
                                     <!--Reward ADDED OPTIONS-->
                                     <label for="subchoice" v-if="renderQuest.type=='choice'">Opzioni Aggiuntive</label>
                                     <div name="subchoice" v-if="renderQuest.type=='choice'">
-                                        <input v-for="opt in sub.added_options" v-model="sub.added_options[sub.added_options.indexOf(opt)]">
+                                        <div v-for="opt in sub.added_options">
+                                            <input v-model="sub.added_options[sub.added_options.indexOf(opt)]">
+                                        </div>
                                         <div class="btn-group">
                                             <button class="btn btn-outline-primary" v-on:click="addRmSubAddedOptions('add',renderQuest.subquest_rewards.indexOf(sub))">Add</button>
                                             <button class="btn btn-outline-primary" v-on:click="addRmSubAddedOptions('rm',renderQuest.subquest_rewards.indexOf(sub))">Remove</button>
@@ -962,7 +967,7 @@
                                         <div class="form-group row" v-for="goto in sub.added_goto">
                                             <input class="form-control col-md-6" type="text" v-model="goto[0]" placeholder="Risposta">
                                             <select class="form-control col-md-3" name="quests" v-model="goto[1]">
-                                                <option v-for="quest in questList" :value="quest.number">Numero {{ quest.number }}</option>
+                                                <option v-for="quest in questList" :value="quest.number">{{ (quest.title || quest.number) }}</option>
                                             </select>
                                             <input v-if="goto[2] !== undefined" class="form-control col-md-6" v-model="goto[2]" placeholder="Punteggio">
                                             <div class="btn-group">
@@ -988,7 +993,7 @@
                                     <div class="form-group" v-for="opt in renderQuest.goto">
                                         <input class="form-control" type="text" v-model="opt[0]" placeholder="Risposta">
                                         <select class="form-control" name="quests" v-model="opt[1]">
-                                            <option v-for="quest in questList" data-toggle="tooltip" :title="quest.title" :value="quest.number">Numero {{ quest.number }}</option>
+                                            <option v-for="quest in questList" data-toggle="tooltip" :title="quest.title" :value="quest.number">{{ ( quest.title || quest.number ) }}</option>
                                         </select>
                                         <input v-if="opt[2] !== undefined" class="form-control" type="text" v-model="opt[2]" placeholder="Punteggio attribuito">
                                         <!--Removed gotos for subquest_rewards-->
@@ -1022,7 +1027,7 @@
                                     <div v-for="opt in getAddedGotos">
                                         <input type="text" v-model="renderQuest.subquest_rewards[opt[0]].added_goto[renderQuest.subquest_rewards[opt[0]].added_goto.indexOf(opt[1])][0]">
                                         <select name="quests" v-model="renderQuest.subquest_rewards[opt[0]].added_goto[renderQuest.subquest_rewards[opt[0]].added_goto.indexOf(opt[1])][1]">
-                                            <option v-for="quest in questList" data-toggle="tooltip" :title="quest.title" :value="quest.number">Numero {{ quest.number }}</option>
+                                            <option v-for="quest in questList" data-toggle="tooltip" :title="quest.title" :value="quest.number">{{ (quest.title || quest.number) }}</option>
                                         </select>
                                     </div>
                                 </div>
