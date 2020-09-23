@@ -1,3 +1,8 @@
+//mobile resolution of player's preview in the author's tool
+//this is 16:9 aspect ratio
+var mobile_width = "375px";
+var mobile_height = "667px";
+
 //predefined styles
 var transparent_background = "rgba(255,255,255,1)";
 var menu_background = "rgba(255,255,255,0.15)";

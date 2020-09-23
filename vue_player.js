@@ -130,6 +130,7 @@ var app = new Vue({
     received_feedback: false,
     chat: [],
     chat_msg: "",
+	bool_inchat: false,
     gamedata: gamedata_pholder,
     metadata: metadata_pholder,
     questname: null,
@@ -159,6 +160,19 @@ var app = new Vue({
       this.trackTimeEverySecond();
   },
   methods: {
+	chatAppear: function(fromHelp) {
+		console.log ("dentro!");
+		let node = this.$refs.chatbtn.innerHTML;
+		if(this.bool_inchat) {
+			this.bool_inchat = false;
+			node = "Chat";
+		}
+		else if((!this.bool_inchat && fromHelp)) {
+			this.bool_inchat = true;
+			node = "X";
+		}
+		this.$refs.chatbtn.innerHTML = node;
+	},
     requestHelp: function() {
       if (!this.help_message) {
         this.$refs.requestedHelp.style.display = "inline";
@@ -222,9 +236,9 @@ var app = new Vue({
         axios.post(`chat/${this.user_id}`, msg)
         .then(() => { console.log("sent message successfully :)")});
         this.chat.push(msg);
-        this.chat_msg = "";
+		this.chat_msg = "";
       }
-    },
+	},
     getCurrentChats: function() {
       axios.get("/chat", {params: {user_id: this.user_id}}).then(response => {
         this.chat = response.data;

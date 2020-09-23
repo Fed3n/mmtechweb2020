@@ -9,6 +9,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/vue-observe-visibility/dist/vue-observe-visibility.min.js"></script>
     <script src="qrcode.min.js"></script>
+    <link href="external.css" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <title>Ambiente Autore</title>
 </head>
@@ -153,7 +154,7 @@
                     <label for="questlistcontainer">Accesso diretto:</label>
                     <div name="questlistcontainer" class="container border-top p-2 mx-25 overflow-auto">
                         <div v-for="quest in questList" class="btn-group container-fluid pb-1">
-                            <button class="btn btn-block bg-white border border-dark" 
+                            <button class="btn btn-block bg-white border border-dark"
                             v-on:click="previewdata.in_mainquest ? jumpToQuest('main',quest.number) : jumpToQuest('sub',quest.number)">
                                 {{ quest.title || quest.number }}
                             </button>
@@ -503,7 +504,7 @@
                 </div>
                 <!--PREVIEW-->
                 <div id="preview-container" class="container-fluid py-3 row border-bottom">
-                  <div id="preview" style="width:375px !important; height:667px !important; overflow:overlay" :style="loadImage" class="border">  <!--  :class="previewMode"  -->
+                  <div id="preview" :class="previewMode" :style="previewStyle" class="p-0">
                       <nav class="navbar" :class="navbarBootstrapStyle" :style="navbarStyle">
                           <div class="navbar-brand" :style="navbarBrandStyle">Menu
                               <span class="badge" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert">Subs!</span>
@@ -539,38 +540,39 @@
                           </div>
                       </nav>
                       <!--Area quest-->
-                      <div ref="questrender" class="card" style="position: relative;" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
+                      <div ref="questrender" class="card player-card-author overflow-auto" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
                           <div class="card-header" :style="cardLimitStyle">
                               <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">
                                   {{previewdata.in_mainquest ? "Quest" : "Subquest"}}
                                   {{ previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub }}: {{ renderQuest.title || "no_name" }}
                               </h3>
                           </div>
-                          <div class="card-body" :style="removePredefinedStylesCard">
-                              <p style="white-space: pre-line;">{{ renderQuest.text }}</p>
-                              <p style="white-space: pre-line;">{{ renderQuest.description || "" }}</p>
-                              <ul v-if="previewdata.in_mainquest && getCurrentClues.length > 0">
-                                  <li v-for="clue in getCurrentClues">{{ clue }}</li>
-                              </ul>
-                              <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
-                              <div id="gameinput">
-                                  <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata"
-                                  :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub" :options="previewdata.in_mainquest ? getCurrentOptions : renderQuest.options"
-                                  v-model="previewdata.picked" ref="inputComponent" :styles="componentStyle"></component>
-                              </div>
+                          <div class="card-body overflow-auto" :style="removePredefinedStylesCard">
+                              <form ref="inputForm" v-on:submit.prevent="previewdata.in_mainquest? submitMain() : submitSub()">
+                                      <p style="white-space: pre-line;">{{ renderQuest.text }}</p>
+                                      <p style="white-space: pre-line;">{{ renderQuest.description || "" }}</p>
+                                      <ul v-if="previewdata.in_mainquest && getCurrentClues.length > 0">
+                                              <li v-for="clue in getCurrentClues">{{ clue }}</li>
+                                      </ul>
+                                      <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
+                                      <div id="gameinput">
+                                        <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub"
+                                        :options="previewdata.in_mainquest ? getCurrentOptions : renderQuest.options" v-model="previewdata.picked" ref="inputComponent" :styles="componentStyle"></component>
+                                      </div>
+                              </form>
                               <!--EVENTUALI MEDIA-->
                               <div v-if="renderQuest.media">
-                                  <img v-if="renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
+                                  <img width="100%" v-if="renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
                                   <div v-if="renderQuest.media.type=='video'">
-                                      <video width="40%" height="30%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
+                                      <video width="100%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
                                       </video>
                                   </div>
                               </div>
-                          </div>
-                          <!-- TASTO SUBMIT -->
+                          </div>                                        <!-- player-footer -->
                           <div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
-                              <button id="submit" ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :style="submitStyle" :disabled="submitDisabled"
-                              v-on:click="previewdata.in_mainquest? submitMain() : submitSub()">Submit</button>
+                              <button ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :disabled="submitDisabled" :style="submitStyle" v-on:click="previewdata.in_mainquest? submitMain() : submitSub()">
+                                  Submit
+                              </button>
                           </div>
                       </div>
                   </div>
