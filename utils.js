@@ -30,3 +30,10 @@ function HextoRgb(color) {
     else
       return color;
 }
+
+function resetDivScrolling() {
+  divs = document.querySelectorAll("div");
+  for(el of divs){
+    el.scrollTop = 0;
+  }
+}

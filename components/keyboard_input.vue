@@ -1,13 +1,25 @@
 <template>
   <div>
-    <p :style="textStyle" tabindex=0 aria-live="polite" aria-label="codice inserito">{{ text }}</p>
+    <div class="row">
+      <p :style="textStyle" tabindex=0 aria-live="polite" aria-label="codice inserito">{{ text }}</p>
+    </div>
     <div id="custom-keyboard" :aria-label="accessibleDescription" role="grid">
       <div role="row" v-for="(row,index) in genKeyboard" class="row" :aria-label="'riga'+index">
         <div id="button-line">
           <span v-for="key in row">
-            <button v-if="key.startsWith('!!')" type="button" class="input-button" :class="keyboardAnim" :style="keyboardStyle(key)" v-on:click="delValue">{{ key.substring(2,key.length) }}</button>
-            <button v-if="!key.startsWith('!!')" type="button" class="input-button" :class="keyboardAnim" :value="key" :style="keyboardStyle(key)" 
-            v-on:click="emitValue($event.target.value)">{{ key }}</button>
+            <!-- Si può inserire un bottone con un valore diverso dalla sua rappresentazione usando la sintassi ??valore$$nome-->
+            <button v-if="key.startsWith('??')" type="button" class="input-button" :class="keyboardAnim" :style="keyboardStyle(key)"
+            :value="key.substring(2,key.indexOf('$$'))" v-on:click="emitValue($event.target.value)">
+              {{ key.substring(key.indexOf("$$")+2,key.length) }}
+            </button>
+            <!-- Si può inserire un bottone di cancellazione con una qualunque rappresentazione con la sintassi !!nome-->
+            <button v-else-if="key.startsWith('!!')" type="button" class="input-button" :class="keyboardAnim" :style="keyboardStyle(key)" v-on:click="delValue">
+              {{ key.substring(2,key.length) }}
+            </button>
+            <!-- Altrimenti di default un bottone ha valore=nome-->
+            <button v-else type="button" class="input-button" :class="keyboardAnim" :value="key" :style="keyboardStyle(key)" 
+            v-on:click="emitValue($event.target.value)">{{ key }}
+            </button>
           </span>
         </div>
       </div>

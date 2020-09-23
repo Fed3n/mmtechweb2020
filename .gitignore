@@ -3,6 +3,7 @@ node_modules/
 
 # Ignora file di sessione di vi
 *.swp
+*.swo
 
 # Ignora dati di test del player
 players/*

@@ -272,7 +272,7 @@ var app = new Vue({
     this.help_message = "";
     this.help_received = false;
     this.sendGameData();
-    window.scrollTo(0,0);
+    resetDivScrolling();
     },
     goToMainQuest: function(){
 	  this.picked = null;
@@ -284,7 +284,7 @@ var app = new Vue({
     this.help_message = "";
     this.help_received = false;
     this.sendGameData();
-    window.scrollTo(0,0);
+    resetDivScrolling();
     },
     submitMain: function() {
       //Caso particolare in cui il submit si comporta diversamente perché non usa il valore picked
@@ -337,12 +337,12 @@ var app = new Vue({
           this.help_message = "";
           this.help_received = false;
           this.sendGameData();
+          resetDivScrolling();
         }
       }
       this.$refs.inputForm.reset();
       this.upgradeSubmitStyle(true);
       this.picked = null;
-      window.scrollTo(0,0);
       if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
       this.$refs.questname.focus();
     },
@@ -382,7 +382,7 @@ var app = new Vue({
       if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
       this.$refs.questname.focus();
       this.sendGameData();
-      window.scrollTo(0,0);
+      resetDivScrolling();
     },
     overwriteMainStyle: function(styles){
       var main_style = this.gamedata.css_style.mainStyle;

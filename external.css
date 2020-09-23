@@ -1,6 +1,9 @@
 .dropdown-item:active{
 	background: transparent; 
 }
+.lb-text {
+	white-space: pre-line;
+}
 .player-card {
 	position: relative;
 	height: 75%;
