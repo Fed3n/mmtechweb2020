@@ -112,8 +112,8 @@ var app = new Vue({
     sendHelp: function(id) {
         this.players_data_changing[id] = this.players_data_changing[id] || {};
         this.players_data_changing[id].help_sent = true;
-        // dai un messagit ggio di aiuto
-        this.players_data_changing[id].help_message = "Su quel ramo del lago di como";
+        var msg = prompt("Inserisci un messaggio di aiuto");
+        this.players_data_changing[id].help_message = msg;
     },
     sendFeedback: function(id,feedback) {
       axios.post('/feedback/', { 'text': feedback }, { params: { user_id: id } }).then((res) => {
