@@ -1,8 +1,8 @@
 <template>
   <div>
-    <p ref="texterror" style="font-weight: bold; color: red;">{{ error }}</p>
+    <p class="alert alert-danger" role="alert" ref="texterror" style="font-weight: bold; color: red;">{{ error }}</p>
 
-	<p style="font-weight: bold; color: blue;">Scansiona o carica un QR Code compatibile per iniziare una missione!</p>
+	<p class="alert alert-info" role="alert">Scansiona o carica un QR Code compatibile per iniziare una missione!</p>
 
     <div id="qrstream" ref="qrstream" v-on:click="clicked"><qrcode-stream @decode="check" @init="init"></qrcode-stream></div>
 	<div id="qrdrop" ref="qrdrop" hidden>

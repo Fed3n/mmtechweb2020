@@ -1,4 +1,4 @@
-<html lang="it">
+<!DOCTYPE html lang="it">
     <head>
         <meta charset='utf-8'>
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,17 +14,19 @@
     </head>
     <body class="border border-primary h-100">
         <div id="app" :style="loadImage">
-            <div id="questloader" ref="questloader">
-                <h1>QUEST LOADER</h1>
-                <qrload style="height: 400px" :questname="questname"></qrload>
-            </div>
+			<center>
+				<div id="questloader" ref="questloader">
+					<h1 class="display-2">QUEST LOADER</h1>
+					<qrload style="height: 400px" :questname="questname"></qrload>
+				</div>
+			</center>
             <!--Area navbar-->
-            <div id="questrender" ref="questrender" hidden>
+            <div id="questrender" ref="questrender" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
                 <nav class="navbar navbar-expand-md" :class="navbarBootstrapStyle" :style="navbarStyle">
                 <div class="navbar-brand" :style="navbarBrandStyle">Menu
                     <span class="badge" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert">Subs!</span>
                 </div>
-                <button class="navbar-toggler"  type="button" data-toggle="collapse" data-target="#collapsiblemenu" :style="toggleButtonContainer" v-observe-visibility="buttonChangedVisibility" aria-label="Apri il menu">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsiblemenu" :style="toggleButtonContainer" v-observe-visibility="buttonChangedVisibility" aria-label="Apri il menu">
                     <span class="navbar-toggler-icon" :style="{ 'background-image': togglerButtonStyle }"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="collapsiblemenu">
@@ -48,54 +50,82 @@
                     </ul>
                 </div>
             </nav>
+		</div>
         <!--Area quest-->
-        <div ref="questrender" class="card player-card overflow-auto" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
-            <div class="card-header" :style="cardLimitStyle">
+		<div id="accordion" class="overflow-hidden" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
+        <div class="card player-card" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
+            <div class="card-header h-10" :style="cardLimitStyle">
                 <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">
-                    {{in_mainquest ? "Quest" : "Subquest"}}
-                    {{ in_mainquest ? currentQuest : currentSub }}: {{ renderQuest.title || "no_name" }}
+                    <button type="button" class="btn btn-outline-dark btn-lg btn-block" data-toggle="collapse" data-target="#rendercard" v-on:click="chatAppear(false)">
+						{{in_mainquest ? "Quest" : "Subquest"}}
+						{{ in_mainquest ? currentQuest : currentSub }}: {{ renderQuest.title || "no_name" }}
+					</button>
                 </h3>
             </div>
-            <div class="card-body overflow-auto" :style="removePredefinedStylesCard">
-                <form ref="inputForm" v-on:submit.prevent="in_mainquest? submitMain() : submitSub()">
-                        <p>{{ renderQuest.text }}</p>
-                        <p>{{ renderQuest.description || "" }}</p>
-                        <ul v-if="in_mainquest && getCurrentClues.length > 0">
-                                <li v-for="clue in getCurrentClues">{{ clue }}</li>
-                        </ul>
-                        <div v-if="help_received && help_message">Hint: {{help_message}}</div>
-                        <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
-                        <div id="gameinput">
-                          <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :current="in_mainquest ? currentQuest : currentSub"
-                          :options="in_mainquest ? getCurrentOptions : renderQuest.options" v-model="picked" ref="inputComponent" :styles="componentStyle"></component>
-                        </div>
-                </form>
-                <!--EVENTUALI MEDIA-->
-                <div v-if="renderQuest.media">
-                    <img width="100%" v-if="renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
-                    <div v-if="renderQuest.media.type=='video'">
-                        <video width="100%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
-                        </video>
-                    </div>
-                </div>
-                <p v-if="renderQuest.type == 'ending'">Punteggio finale: {{ score }}</p>
-            </div>
-            <div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
-                <button ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :disabled="submitDisabled" :style="submitStyle" v-on:click="in_mainquest? submitMain() : submitSub()">
-                    Submit
-                </button>
-            </div>
+			<div id="rendercard" class="collapse show" data-parent="#accordion">
+				<div class="card-body player-body show" :style="removePredefinedStylesCard">
+					<form ref="inputForm" v-on:submit.prevent="in_mainquest? submitMain() : submitSub()">
+							<p>{{ renderQuest.text }}</p>
+							<p>{{ renderQuest.description || "" }}</p>
+							<ul v-if="in_mainquest && getCurrentClues.length > 0">
+									<li v-for="clue in getCurrentClues">{{ clue }}</li>
+							</ul>
+							<div v-if="help_received && help_message">Hint: {{help_message}}</div>
+							<!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
+							<div id="gameinput">
+							  <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :current="in_mainquest ? currentQuest : currentSub"
+							  :options="in_mainquest ? getCurrentOptions : renderQuest.options" v-model="picked" ref="inputComponent" :styles="componentStyle"></component>
+							</div>
+					</form>
+					<!--EVENTUALI MEDIA-->
+					<div v-if="renderQuest.media">
+						<img width="100%" v-if="renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
+						<div v-if="renderQuest.media.type=='video'">
+							<video width="100%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
+							</video>
+						</div>
+					</div>
+					<p v-if="renderQuest.type == 'ending'">Punteggio finale: {{ score }}</p>
+				</div>
+				<div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
+					<button ref="submitbutton" class="btn-default submitquest" :class="submitBootstrapStyle" :disabled="submitDisabled" :style="submitStyle" v-on:click="in_mainquest? submitMain() : submitSub()">
+						Submit
+					</button>
+				</div>
+			</div>
        </div>
-       </div>
-       <div class="container border overflow-auto" id="chat">
-         <div v-for="msg in chat">
-           {{ msg.sender }} scrive: {{ msg.text }}
-         </div>
-         <form class="btn-group" v-on:submit.prevent>
-           <input type="text" v-model="chat_msg">
-           <button class="btn btn-success" v-on:click="sendChatMsg">Send</button>
-         </form>
-       </div>
+	   <div class="card overflow-hidden">
+		<div class="row" >
+			<div class="card-header col-3" id="head2">
+				<h3 id="questchat" ref="questchat" :style="removePredefinedStylesCard">
+					<button type="button" id="chatbutton" ref="chatbtn" class="btn btn-warning btn-lg" data-toggle="collapse" data-target="#renderchat" v-on:click="chatAppear(true)">
+						Chat
+					</button>
+				</h3>
+			</div>
+		   <div id="renderchat" class="collapse col-9" data-parent="#accordion">
+		   <div class="card-body player-body" id="chat">
+			 <div id="chatbox" ref="chatbox" class="overflow-auto border border-success rounded">
+				 <div class="card chat-message" v-bind:class="{ 'float-right' : (msg.sender != 'Valutatore') }" v-for="msg in chat">
+					<div class="card-body watch-msg">
+					   <div class="card-subtitle text-muted" id="senderbox">{{ msg.sender }}</div>
+					   <div class="card-text" id="contentbox">{{ msg.text }}</div>
+					</div>
+				 </div>
+				 <!--<div id="position" ref="anchorposition"></div>-->
+			 </div>
+				<div id="chatform" style="position: absolute; bottom: 0px;">
+				 <form class="btn-group w-100" v-on:submit.prevent>
+				   <input type="text" style="width: 85%;" v-model="chat_msg">
+				   <button class="btn btn-success" v-on:click="sendChatMsg();" ref="sendmsg">Invia</button>
+				 </form>
+				</div>
+			 </div>
+		   </div>
+		   </div>
+		</div>
+		</div>
+		</div>
     </div>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
