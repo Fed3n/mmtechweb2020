@@ -37,3 +37,8 @@ function resetDivScrolling() {
     el.scrollTop = 0;
   }
 }
+
+function scrollToBottom(id) {
+  el = document.getElementById(id);
+  el.scrollTop = el.scrollHeight;
+}

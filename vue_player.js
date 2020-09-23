@@ -143,19 +143,11 @@ var app = new Vue({
     onLink: [],
     submitStyleObject: {},
   },
-  watch: {
-    //Se ans_feedback cambia e stavo aspettando un feedback
-    ans_feedback: function(newans, oldans){
-        if(this.waiting_feedback){
-            this.waiting_feedback = false;
-            this.received_feedback = true;
-        }
-    }
-  },
   created: function (){
     this.upgradeSubmitStyle(false);
   },
   mounted: function() {
+      this.is_mounted = true;
       this.updatesEvery5Seconds();
       this.trackTimeEverySecond();
   },
@@ -236,12 +228,18 @@ var app = new Vue({
         axios.post(`chat/${this.user_id}`, msg)
         .then(() => { console.log("sent message successfully :)")});
         this.chat.push(msg);
-		this.chat_msg = "";
+	this.chat_msg = "";
+        this.$nextTick( () => {
+            scrollToBottom("chatbox");
+        });;
       }
 	},
     getCurrentChats: function() {
       axios.get("/chat", {params: {user_id: this.user_id}}).then(response => {
         this.chat = response.data;
+        this.$nextTick( () => {
+            scrollToBottom("chatbox");
+        });;
       });
     },
     checkAnsFeedback: function() {
@@ -874,5 +872,14 @@ var app = new Vue({
          ;
         return styles;
   }
+  },
+  watch: {
+    //Se ans_feedback cambia e stavo aspettando un feedback
+    ans_feedback: function(newans, oldans){
+        if(this.waiting_feedback){
+            this.waiting_feedback = false;
+            this.received_feedback = true;
+        }
+    }
   }
 });
