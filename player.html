@@ -49,11 +49,11 @@
                         </li>
                     </ul>
                 </div>
-            </nav>
-		</div>
+				</nav>
+			</div>
         <!--Area quest-->
 		<div id="accordion" class="overflow-hidden" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
-        <div class="card player-card" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
+        <div class="card player-card" :class="cardBootstrapStyle" :style="cardLimitStyle" aria-live="polite">
             <div class="card-header h-10" :style="cardLimitStyle">
                 <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">
                     <button type="button" class="btn btn-outline-dark btn-lg btn-block" data-toggle="collapse" data-target="#rendercard" v-on:click="chatAppear(false)">
@@ -63,10 +63,10 @@
                 </h3>
             </div>
 			<div id="rendercard" class="collapse show" data-parent="#accordion">
-				<div class="card-body player-body show" :style="removePredefinedStylesCard">
+				<div class="card-body player-body show overflow-auto" :style="removePredefinedStylesCard">
 					<form ref="inputForm" v-on:submit.prevent="in_mainquest? submitMain() : submitSub()">
-							<p>{{ renderQuest.text }}</p>
-							<p>{{ renderQuest.description || "" }}</p>
+							<p style="white-space: pre-line;">{{ renderQuest.text }}</p>
+							<p style="white-space: pre-line;">{{ renderQuest.description || "" }}</p>
 							<ul v-if="in_mainquest && getCurrentClues.length > 0">
 									<li v-for="clue in getCurrentClues">{{ clue }}</li>
 							</ul>
@@ -79,19 +79,19 @@
 					</form>
 					<!--EVENTUALI MEDIA-->
 					<div v-if="renderQuest.media">
-						<img width="100%" v-if="renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
-						<div v-if="renderQuest.media.type=='video'">
-							<video width="100%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
-							</video>
-						</div>
-					</div>
+                        <img width="100%" v-if="renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
+                        <div v-if="renderQuest.media.type=='video'">
+                            <video width="100%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
+                            </video>
+                        </div>
+                    </div>
 					<p v-if="renderQuest.type == 'ending'">Punteggio finale: {{ score }}</p>
-				</div>
+                  </div>
 				<div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
-					<button ref="submitbutton" class="btn-default submitquest" :class="submitBootstrapStyle" :disabled="submitDisabled" :style="submitStyle" v-on:click="in_mainquest? submitMain() : submitSub()">
-						Submit
-					</button>
-				</div>
+                    <button ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :disabled="submitDisabled" :style="submitStyle" v-on:click="in_mainquest? submitMain() : submitSub()">
+                        Submit
+                    </button>
+                </div>
 			</div>
        </div>
 	   <div class="card overflow-hidden">
@@ -126,12 +126,11 @@
 		</div>
 		</div>
 		</div>
-    </div>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-     <script type="text/javascript" src="style_consts.js"></script>
-     <script type="text/javascript" src="vue_player.js"></script>
+        <script type="text/javascript" src="style_consts.js"></script>
+        <script type="text/javascript" src="vue_player.js"></script>
         <script type="text/javascript" src="utils.js"></script>
     </body>
 </html>

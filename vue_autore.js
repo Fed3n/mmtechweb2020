@@ -46,6 +46,7 @@
           },
           "solution": []
       }],
+      "starting_points": [],
       "css_style": {
           "mainStyle": {
               "font-family": "Arial",
@@ -418,7 +419,7 @@
                   "text": "",
                   "type": "",
                   "description": "",
-                  "sub_score": 0,
+                  "sub_score": "",
                   "options": [],
                   "image": {
                       "imguri": "",
@@ -588,7 +589,6 @@
           addRmOptions: function(type) {
               if (type == "add") {
                   this.renderQuest.options.push("");
-                  this.renderQuest.goto.push(["", 0]);
               } else {
                   this.renderQuest.options.pop();
               }
@@ -631,6 +631,7 @@
               if (this.$refs.subtoadd.value) {
                   reward = {
                       "number": parseInt(this.$refs.subtoadd.value),
+                      "title": this.gamedata.subQuests[this.$refs.subtoadd.value].title,
                       "clue": "",
                       "added_options": [],
                       "removed_options": [],
@@ -693,78 +694,99 @@
                       this.$refs.help.classList.add("disabled");
                       this.help_requested = true;
                   }
-                  // manda richiesta aiuto
-                  // quando la soddisfera', sara' da mettere display = "none"
           },
           goToSubQuest: function(quest) {
-              this.currentSub = quest.number;
-              this.previewdata.in_mainquest = false;
-              this.$refs.questname.focus();
+            this.previewdata.picked = null;
+            this.$refs.inputForm.reset();
+            this.previewdata.currentSub = quest.number;
+            this.previewdata.in_mainquest = false;
+            this.$refs.questname.focus();
+            if (this.$refs.help)
+              this.$refs.help.classList.remove("disabled");
+            //window.scrollTo(0,0);
           },
           goToMainQuest: function() {
-              this.previewdata.in_mainquest = true;
-              this.$refs.questname.focus();
+            this.previewdata.picked = null;
+        	  this.$refs.inputForm.reset();
+            this.previewdata.in_mainquest = true;
+            this.$refs.questname.focus();
+            if (this.$refs.help)
+              this.$refs.help.classList.remove("disabled");
+            //window.scrollTo(0,0);
           },
           submitMain: function() {
-              options = this.getCurrentGotos;
-              for (opt of options) {
-                  //Le risposte del tipo draw hanno un formato diverso
-                  if (this.gamedata.mainQuest[this.previewdata.currentQuest].type == "draw") {
-                      let x = opt[0][0];
-                      let y = opt[0][1];
-                      let radius = parseInt(opt[0][2]);
-                      if (this.previewdata.picked[0] >= x - radius && this.previewdata.picked[0] <= x + radius &&
-                          this.previewdata.picked[1] >= y - radius && this.previewdata.picked[1] <= y + radius) {
-                          this.previewdata.currentQuest = opt[1];
-                          break;
-                      }
-                  }
-                  //Formato standard che controlla se opt[0] == picked
-                  else if (opt[0] == this.previewdata.picked) {
-                      this.previewdata.currentQuest = opt[1];
-                      break;
-                  }
-                  //L'opzione di default se non ci sono corrispondenze è sempre l'ultima
-                  if (options.indexOf(opt) == options.length - 1) {
-                      this.previewdata.currentQuest = opt[1];
+            //Caso particolare in cui il submit si comporta diversamente perché non usa il valore picked
+            if(this.renderQuest.type == "human") {
+                this.previewdata.picked = this.ans_feedback;
+                this.waiting_feedback = false;
+                this.received_feedback = false;
+                this.ans_feedback = "";
+            }
+            options = this.getCurrentGotos;
+            for(opt of options){
+              //Le risposte del tipo draw hanno un formato diverso
+              if(this.gamedata.mainQuest[this.previewdata.currentQuest].type == "draw"){
+                let x = opt[0][0];
+                let y = opt[0][1];
+                let radius = parseInt(opt[0][2]);
+                if(this.previewdata.picked[0] >= x-radius && this.previewdata.picked[0] <= x+radius &&
+                  this.previewdata.picked[1] >= y-radius && this.previewdata.picked[1] <= y+radius){
+                    this.previewdata.currentQuest = opt[1];
+                    this.$refs.help.classList.remove("disabled");
+                    break;
                   }
               }
-              if (document.getElementById("input")) {
-                  document.getElementById("input").value = "";
+              //Formato standard che controlla se opt[0] == picked
+              else if(opt[0] == this.previewdata.picked){
+                if(this.currentComponent != "")
+                  this.$refs.help.classList.remove("disabled");
+                this.previewdata.currentQuest = opt[1];
+                break;
               }
-             // document.getElementById("submit").disabled = true;
-              this.upgradeSubmitStyle(true);
-              this.previewdata.picked = null;
-              this.$refs.questname.focus();
+              //L'opzione di default se non ci sono corrispondenze è sempre l'ultima
+              if(options.indexOf(opt) == options.length-1){
+                if(this.currentComponent != "")
+                  this.$refs.help.classList.remove("disabled");
+                this.previewdata.currentQuest = opt[1];
+              }
+            }
+            this.$refs.inputForm.reset();
+            this.upgradeSubmitStyle(true);
+            this.previewdata.picked = null;
+            //window.scrollTo(0,0);
+            if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
+            this.$refs.questname.focus();
           },
           submitSub: function() {
-                  if (this.previewdata.in_mainquest) return;
-                  let wrong_answer = true;
-                  let subQuest = this.gamedata.subQuests[this.previewdata.currentSub];
-                  if (subQuest.type == "input") {
-                      for (let accepted of subQuest.solution)
-                          if (this.previewdata.picked == accepted)
-                              wrong_answer = false;
-                  } else if (subQuest.type == "choice") {
-                      if (this.previewdata.picked == subQuest.solution)
-                          wrong_answer = false;
-                  }
-                  if (wrong_answer) return;
-
-                  // devo aver completato le subquest necessarie richieste
-                  for (let required of subQuest.requires_sub)
-                      if (!this.previewdata.completedSubs.includes(required))
-                          return;
-
-                  this.previewdata.completedSubs.push(subQuest.number);
-                  this.previewdata.in_mainquest = true;
-                  if (document.getElementById("input")) {
-                      document.getElementById("input").value = "";
-                  }
-                  //document.getElementById("submit").disabled = true;
-                  this.upgradeSubmitStyle(true);
-                  this.previewdata.picked = null;
-                  this.$refs.questname.focus();
+            this.$refs.inputForm.reset();
+            let wrong_answer = true;
+            let subQuest = this.renderQuest;
+            if (subQuest.type == "draw") {
+                for(ans of subQuest.solution){
+                    let x = ans[0];
+                    let y = ans[1];
+                    let radius = parseInt(ans[2]);
+                    if(this.previewdata.picked[0] >= x-radius && this.previewdata.picked[0] <= x+radius &&
+                      this.previewdata.picked[1] >= y-radius && this.previewdata.picked[1] <= y+radius){
+                        wrong_answer = false;
+                    }
+                }
+            }
+            else {
+                for(ans of subQuest.solution)
+                    if (this.previewdata.picked == ans)
+                    wrong_answer = false;
+            }
+            if (wrong_answer) return;
+            this.previewdata.completedSubs.push(subQuest.number);
+            if (this.currentComponent != "")
+              this.$refs.help.classList.remove("disabled");
+            this.previewdata.in_mainquest = true;
+            this.upgradeSubmitStyle(true);
+            this.previewdata.picked = null;
+            if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
+            this.$refs.questname.focus();
+            //window.scrollTo(0,0);
           },
           styleMenuCollapse: function(){
              $('.stylepanelcollapse').collapse('hide');
@@ -1064,8 +1086,9 @@
               else return !this.picked;
           },
           //STYLEOBJECTS
-          loadImage: function() {
+          previewStyle: function() {
               var styles = {};
+              //loading background image
               var temp = this.gamedata.css_style.background;
               if (temp.image) {
                   styles = Object.assign(styles, {
@@ -1081,12 +1104,19 @@
                       "background-image": "none"
                   });
               }
+              //loading mobile resolution
+              if (this.mobileView)
+                  styles = Object.assign(styles, {
+                      "width": mobile_width,
+                      "height": mobile_height,
+                      "overflow": "auto"
+                  });
               return styles;
           },
           //modifica la dimensione della preview
           previewMode: function() {
               if (this.mobileView)
-                return "col-md-4 iphone6s";
+                return "col-md-4";
               else
                 return "col-md-8";
           },

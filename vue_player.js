@@ -142,71 +142,6 @@ var app = new Vue({
     togglerButtonVisible: true,
     onLink: [],
     submitStyleObject: {},
-    css_style: {
-      mainStyle: {
-        "font-family": "'Dancing Script', cursive",
-          "font-style": "normal",
-          "font-weight": "bold",
-          "font-size": "25px",
-          "color" : "rgba(60,60,60,1)"      //se non si vuole specificare le proprietà globalmente inserire ""
-      },
-      background: {
-          image: false,
-          url: "url('notebook.png') no-repeat center center fixed",
-          style: {
-            nav: {
-            custom: false,
-            bootstrap: {
-              textColor: "navbar-light",
-              background: "bg-light"
-            },
-            customized: {
-              general: {
-              "background-color": "grey",
-              "color": "red"
-            },
-           }
-        },
-        badge: {
-        custom: false,
-          bootstrap: {
-            type: "badge-warning"
-          },
-          customized: {
-              "background-color": "rgba(122,232,14,0.8)",
-              "border-width": "3px",
-              "border-style": "dotted",
-              "border-color": "blue",
-              "color" : "red"
-          }
-        },
-        alert: {
-        custom: false,
-          bootstrap: {
-            type: "alert-warning"
-          },
-          customized: {
-              "background-color": "rgba(122,232,14,0.8)",
-              "border-width": "3px",
-              "border-style": "dotted",
-              "border-color": "blue",
-              "color" : "red"
-          }
-        },
-        card: {
-          custom: false,
-          bootstrap: {
-            textColor: "text-info",
-            background: "bg-light"
-          },
-          customized: {
-              "background-color": "white",
-              "color": "white"
-        }
-       }
-        }
-      }
-    }
   },
   watch: {
     //Se ans_feedback cambia e stavo aspettando un feedback
@@ -306,27 +241,36 @@ var app = new Vue({
 	},
     getCurrentChats: function() {
       axios.get("/chat", {params: {user_id: this.user_id}}).then(response => {
-        console.log(response.data);
         this.chat = response.data;
       });
     },
     checkAnsFeedback: function() {
         axios.get(`/feedback/`, { params: {user_id: this.user_id} }).then((res) => {
-            console.log("feedback: " + res.data);
             this.ans_feedback = res.data;
         });
     },
     changeQuest: function() {
-    if(this.questname) {
-        axios.get(`/stories/${this.questname}`).then(response => {
-          this.gamedata = response.data.json;
-          this.metadata = response.data.meta;
-            axios.get("/uid", {params: {story_name: this.metadata.name}}).then(res => {
-              this.user_id = res.data;
-          });
-        });
-    }
-          this.$refs.questloader.remove();
+        if(this.questname) {
+            axios.get(`/stories/${this.questname}`).then(response => {
+              this.gamedata = response.data.json;
+              this.metadata = response.data.meta;
+                //Chiedo al server il mio user id che è in formato nome_storia$numero
+                axios.get("/uid", {params: {story_name: this.metadata.name}}).then(res => {
+                  this.user_id = res.data;
+                  //E mi faccio assegnare uno starting point
+  //                this.currentQuest = this.parseStart(this.user_id);    //_------------------------------------------------DA TOGLIERE IL COMMENTO --------------------------------------------------
+              });
+            });
+        }
+        this.$refs.questloader.remove();
+        this.$refs.questrender.removeAttribute("hidden");
+    },
+    parseStart: function(id) {
+        if(this.gamedata.starting_points) {
+            let len = this.gamedata.starting_points.length;
+            let n = parseInt(id.substring(id.indexOf("$")+1,id.length));
+            return (n%len);
+        }
     },
     changeState: function (state){
       this.currentQuest = state;
@@ -334,25 +278,27 @@ var app = new Vue({
     goToSubQuest: function (quest){
 	  this.picked = null;
 	  this.$refs.inputForm.reset();
-      this.currentSub = quest.number;
-      this.in_mainquest = false;
-      this.$refs.questname.focus();
-      if (this.currentComponent != "")
-        this.$refs.help.classList.remove("disabled");
-      this.help_message = "";
-      this.help_received = false;
-      this.sendGameData();
+    this.currentSub = quest.number;
+    this.in_mainquest = false;
+    this.$refs.questname.focus();
+    if (this.$refs.help)
+      this.$refs.help.classList.remove("disabled");
+    this.help_message = "";
+    this.help_received = false;
+    this.sendGameData();
+    window.scrollTo(0,0);
     },
     goToMainQuest: function(){
 	  this.picked = null;
 	  this.$refs.inputForm.reset();
-      this.in_mainquest = true;
-      this.$refs.questname.focus();
-      if (this.currentComponent != "")
-        this.$refs.help.classList.remove("disabled");
-      this.help_message = "";
-      this.help_received = false;
-      this.sendGameData();
+    this.in_mainquest = true;
+    this.$refs.questname.focus();
+    if (this.$refs.help)
+      this.$refs.help.classList.remove("disabled");
+    this.help_message = "";
+    this.help_received = false;
+    this.sendGameData();
+    window.scrollTo(0,0);
     },
     submitMain: function() {
       //Caso particolare in cui il submit si comporta diversamente perché non usa il valore picked
@@ -364,7 +310,6 @@ var app = new Vue({
       }
       options = this.getCurrentGotos;
       for(opt of options){
-        console.log(opt);
         //Le risposte del tipo draw hanno un formato diverso
         if(this.gamedata.mainQuest[this.currentQuest].type == "draw"){
           let x = opt[0][0];
@@ -376,8 +321,7 @@ var app = new Vue({
               //Per ragioni di compatibilità mi assicuro ci sia lo score
               if(opt[2]) this.score += parseInt(opt[2]);
               this.time_inactive = 0;
-              if (this.currentComponent != "")
-                this.$refs.help.classList.remove("disabled");
+              this.$refs.help.classList.remove("disabled");
               this.help_message = "";
               this.help_received = false;
               this.sendGameData();
@@ -386,12 +330,11 @@ var app = new Vue({
         }
         //Formato standard che controlla se opt[0] == picked
         else if(opt[0] == this.picked){
+          if(this.currentComponent != "")
+            this.$refs.help.classList.remove("disabled");
           this.currentQuest = opt[1];
           //Per ragioni di compatibilità mi assicuro ci sia lo score
           if(opt[2]) this.score += parseInt(opt[2]);
-          this.time_inactive = 0;
-          if (this.currentComponent != "")
-            this.$refs.help.classList.remove("disabled");
           this.help_message = "";
           this.help_received = false;
           this.sendGameData();
@@ -399,12 +342,12 @@ var app = new Vue({
         }
         //L'opzione di default se non ci sono corrispondenze è sempre l'ultima
         if(options.indexOf(opt) == options.length-1){
+          if(this.currentComponent != "")
+            this.$refs.help.classList.remove("disabled");
           this.currentQuest = opt[1];
           //Per ragioni di compatibilità mi assicuro ci sia lo score
           if(opt[2]) this.score += parseInt(opt[2]);
           this.time_inactive = 0;
-          if(this.currentComponent != "")
-            this.$refs.help.classList.remove("disabled");
           this.help_message = "";
           this.help_received = false;
           this.sendGameData();
@@ -413,6 +356,7 @@ var app = new Vue({
       this.$refs.inputForm.reset();
       this.upgradeSubmitStyle(true);
       this.picked = null;
+      window.scrollTo(0,0);
       if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
       this.$refs.questname.focus();
     },
@@ -452,6 +396,7 @@ var app = new Vue({
       if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
       this.$refs.questname.focus();
       this.sendGameData();
+      window.scrollTo(0,0);
     },
     overwriteMainStyle: function(styles){
       var main_style = this.gamedata.css_style.mainStyle;

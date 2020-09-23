@@ -12,65 +12,157 @@
   </head>
   <body>
     <div id="app">
+
       <div class="container">
-        <div class="table-responsive table-wrapper">
-          <div class="table-title bg-primary text-white">
-            <div class="row justify-content-around">
-              <h1>Giocatori attivi</h1>
-              <div class="py-1">
-                <button v-if="players_data" @click="saveJson" class="btn btn-light" ><span class="material-icons">&#xE24D;</span>Esporta statistiche in JSON</button>
+        <h2>Storie in gioco</h2>
+        <ul class="nav nav-pills" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active"
+               :id="activeStories[0] + 'tab'"
+               :href="'#' + activeStories[0]"
+               data-toggle="tab" role="tab" :aria-controls="activeStories[0]" aria-selected="true">{{ activeStories[0] }}</a>
+          </li>
+          <li v-for="story in activeStories.slice(1)" class="nav-item" >
+            <a class="nav-link"
+                :id="story + 'tab'"
+                :href="'#' + story"
+                data-toggle="tab" role="tab" :aria-controls="story" aria-selected="false">{{ story }}</a>
+          </li>
+        </ul>
+      </div>
+      <hr>
+
+     <div class="tab-content">
+      <!-- Tab della prima storia------------------------------------------------------------------------------------------------------------------>
+        <div class="tab-pane fade show active"
+             :id="activeStories[0]"
+             :aria-labelledby="activeStories[0] + 'tab'" role="tabpanel" >
+          <div class="container">
+            <div class="table-responsive table-wrapper">
+              <div class="table-title bg-primary text-white rounded">
+                <div class="row justify-content-around py-2">
+                  <h1>Giocatori attivi</h1>
+                    <button v-if="players_data" @click="saveJson" class="btn btn-light" ><span class="material-icons">&#xE24D;</span>Esporta statistiche in JSON</button>
+                </div>
+              </div>
+              <table v-if="players_data" class="table table-striped table-hover">
+                  <thead>
+                    <tr>
+                      <th v-for="(value, key) in firstPlayer">{{ key }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="player in players_data_shown_from_story[activeStories[0]]">
+                      <td v-for="value in player">{{ value }}</td>
+                      <td v-if="players_data[player.user_id].finished === false" class="float-right">
+                          <div v-if="players_data[player.user_id].time_inactive > 60" class="badge badge-warning">Bloccato da tempo</div>
+                          <div v-if="players_data[player.user_id].help_requested === true" class="badge badge-warning">Ha richiesto aiuto</div>
+                          <button type="button" class="btn btn-sm btn-primary"
+                            @click="sendHelp(player.user_id)">Aiuta il giocatore</button>
+                      </td>
+                      <td v-else class="badge badge-success float-right">Ha finito!</td>
+                  </tr>
+                  </tbody>
+              </table>
+            </div><br>
+
+            <div v-if="players_data" class="container border" id="chat">
+              <div class="row justify-content-center bg-secondary text-white rounded py-2"><h3>Inizia una chat con i giocatori</h3></div>
+              <div class="btn-group p-2">
+                <button class="btn btn-outline-secondary" v-for="(chat,id) in players_chat_from_story[activeStories[0]]" :class="chat_notify[id] ? 'btn-warning' : ''" v-on:click="switchIndex(id)">{{ id }}</button>
+              </div>
+              <div v-if="players_chat[current_chat_id]" v-for="msg in players_chat[current_chat_id]">
+                {{ msg.sender }} scrive: {{ msg.text }}
+              </div>
+              <form class="btn-group" v-if="players_chat[current_chat_id]" v-on:submit.prevent>
+                <input type="text" v-model="chat_msg[current_chat_id]">
+                <button class="btn btn-success" v-on:click="sendChatMsg">Send</button>
+              </form>
+            </div>
+            <div class="container border" id="answers">
+              <div v-for="id in waitingForFeedback">
+                <p>User: {{ id }}</p>
+                <p>Text: {{ players_ans[id].answer.text }}</p>
+                <img :src="players_ans[id].answer.imagedata">
+                <form v-on:submit.prevent="sendFeedback(id, $event.target.elements.feedbackans.value)">
+                  <div class="form-group" v-for="opt in computeJson(id).mainQuest[players_data[id].currentQuest].goto">
+                    <label>{{ opt[0] }}</label>
+                    <input type="radio" name="feedbackans" :value="opt[0]">
+                  </div>
+                  <input type="submit" value="Submit">
+                </form>
               </div>
             </div>
           </div>
-          <table v-if="players_data" class="table table-striped table-hover">
-              <thead>
-                <tr>
-                  <td v-for="(value, key) in players_data_shown[1]">{{ key }}</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="player in players_data_shown">
-                  <td v-for="value in player">{{ value }}</td>
-                  <td v-if="players_data[player.user_id].finished === false" class="float-right">
-                      <div v-if="players_data[player.user_id].time_inactive > 60" class="badge badge-warning">Bloccato da tempo</div>
-                      <div v-if="players_data[player.user_id].help_requested === true" class="badge badge-warning">Ha richiesto aiuto</div>
-                      <button type="button" class="btn btn-sm btn-primary"
-                        @click="sendHelp(player.user_id)">Aiuta il giocatore</button>
-                  </td>
-                  <td v-else class="badge badge-success float-right">Ha finito!</td>
-              </tr>
-              </tbody>
-          </table>
+        </div>
+
+        <!-- Tab per le storie oltre la prima selezionata ------------------------------------------------------------------------------------------>
+        <div v-for="story in activeStories.slice(1)"
+             class="tab-pane fade" :id="story"
+             :aria-labelledby="story + 'tab'" role="tabpanel" >
+          <div class="container">
+            <div class="table-responsive table-wrapper">
+              <div class="table-title bg-primary text-white rounded">
+                <div class="row justify-content-around py-2">
+                  <h1>Giocatori attivi</h1>
+                  <div class="py-1">
+                    <button v-if="players_data" @click="saveJson" class="btn btn-light" ><span class="material-icons">&#xE24D;</span>Esporta statistiche in JSON</button>
+                  </div>
+                </div>
+              </div>
+              <table v-if="players_data" class="table table-striped table-hover">
+                  <thead>
+                    <tr>
+                      <th v-for="(value, key) in firstPlayer">{{ key }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="player in players_data_shown_from_story[story]">
+                      <td v-for="value in player">{{ value }}</td>
+                      <td v-if="players_data[player.user_id].finished === false" class="float-right">
+                          <div v-if="players_data[player.user_id].time_inactive > 60" class="badge badge-warning">Bloccato da tempo</div>
+                          <div v-if="players_data[player.user_id].help_requested === true" class="badge badge-warning">Ha richiesto aiuto</div>
+                          <button type="button" class="btn btn-sm btn-primary"
+                            @click="sendHelp(player.user_id)">Aiuta il giocatore</button>
+                      </td>
+                      <td v-else class="badge badge-success float-right">Ha finito!</td>
+                  </tr>
+                  </tbody>
+              </table>
+            </div><br>
+
+            <div v-if="players_data" class="container border" id="chat">
+              <div class="row justify-content-center bg-secondary text-white rounded py-2"><h3>Inizia una chat con i giocatori</h3></div>
+              <div class="btn-group p-2">
+                <button class="btn btn-outline-secondary" v-for="(chat,id) in players_chat_from_story[story]" :class="chat_notify[id] ? 'btn-warning' : ''" v-on:click="switchIndex(id)">{{ id }}</button>
+              </div>
+              <div v-if="players_chat[current_chat_id]" v-for="msg in players_chat[current_chat_id]">
+                {{ msg.sender }} scrive: {{ msg.text }}
+              </div>
+              <form class="btn-group" v-if="players_chat[current_chat_id]" v-on:submit.prevent>
+                <input type="text" v-model="chat_msg[current_chat_id]">
+                <button class="btn btn-success" v-on:click="sendChatMsg">Send</button>
+              </form>
+            </div>
+            <div class="container border" id="answers">
+              <div v-for="id in waitingForFeedback">
+                <p>User: {{ id }}</p>
+                <p>Text: {{ players_ans[id].answer.text }}</p>
+                <img :src="players_ans[id].answer.imagedata">
+                <form v-on:submit.prevent="sendFeedback(id, $event.target.elements.feedbackans.value)">
+                  <div class="form-group" v-for="opt in computeJson(id).mainQuest[players_data[id].currentQuest].goto">
+                    <label>{{ opt[0] }}</label>
+                    <input type="radio" name="feedbackans" :value="opt[0]">
+                  </div>
+                  <input type="submit" value="Submit">
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div v-if="players_data" class="container border" id="chat">
-        <div class="row justify-content-around bg-secondary text-white"><h3>Inizia una chat con i giocatori</h3></div>
-        <div class="btn-group p-2">
-          <button class="btn btn-outline-secondary" v-for="(chat,id) in players_chat" :class="chat_notify[id] ? 'btn-warning' : ''" v-on:click="switchIndex(id)">{{ id }}</button>
-        </div>
-        <div v-if="players_chat[current_chat_id]" v-for="msg in players_chat[current_chat_id]">
-          {{ msg.sender }} scrive: {{ msg.text }}
-        </div>
-        <form class="btn-group" v-if="players_chat[current_chat_id]" v-on:submit.prevent>
-          <input type="text" v-model="chat_msg[current_chat_id]">
-          <button class="btn btn-success" v-on:click="sendChatMsg">Send</button>
-        </form>
-      </div>
-      <div class="container border" id="answers">
-        <div v-for="id in waitingForFeedback">
-          <p>User: {{ id }}</p>
-          <p>Text: {{ players_ans[id].answer.text }}</p>
-          <img :src="players_ans[id].answer.imagedata">
-          <form v-on:submit.prevent="sendFeedback(id, $event.target.elements.feedbackans.value)">
-            <div class="form-group" v-for="opt in computeJson(id).mainQuest[players_data[id].currentQuest].goto">
-              <label>{{ opt[0] }}</label>
-              <input type="radio" name="feedbackans" :value="opt[0]">
-            </div>
-            <input type="submit" value="Submit">
-          </form>
-        </div>
-      </div>
+      <!--finito il blocco delle tab ------------------------------------------------------------------------------------->
 
     </div>
 

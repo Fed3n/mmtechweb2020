@@ -31,9 +31,8 @@ var app = new Vue({
         for (let id in this.players_data) {
             //Se c'è una storia nuova, si aggiunge
             let story = this.computeStory(id);
-            console.log(story);
             if(!(story in this.ongoing_stories)){
-              console.log(`${story} missing from ongoing_stories!`);
+              console.log(`${story} missing from ongoing_stories! Now loading it...`);
               axios.get(`/stories/${story}/`).then((res) => {
                 this.ongoing_stories[story] = res.data.json;
               });
@@ -133,6 +132,10 @@ var app = new Vue({
     }
   },
   computed: {
+    firstPlayer: function () {
+      let firstKey = Object.keys(this.players_data_shown)[0];
+      return this.players_data_shown[firstKey];
+    },
     players_data_shown: function() {
       var filtered_data = {};
       for (const key in this.players_data) {
@@ -140,12 +143,43 @@ var app = new Vue({
       }
       return filtered_data;
     },
+    players_data_shown_from_story: function() {
+      var res = {};
+      for (let story of this.activeStories) {
+        res[story] = {};
+        for (let player in this.players_data_shown) {
+          if (player.split('$')[0] == story) {
+            res[story][player] = this.players_data_shown[player];
+          }
+        }
+      }
+      return res;
+    },
+    players_chat_from_story: function() {
+      var res = {};
+      for (let story of this.activeStories) {
+        res[story] = {};
+        for (let player in this.players_chat) {
+          if (player.split('$')[0] == story) {
+            res[story][player] = this.players_chat[player];
+          }
+        }
+      }
+      return res;
+    },
     waitingForFeedback: function(){
       waiting_list = [];
       for(id in this.players_ans){
         if(this.players_ans[id].waiting) waiting_list.push(id);
       }
       return waiting_list;
+    },
+    activeStories: function() {
+      var stories = new Set();
+      for (let playerID in this.players_data) {
+        stories.add(playerID.split("$")[0]);    // playerID = [story, id]
+      }
+      return Array.from(stories);
     }
   }
 });
