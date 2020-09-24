@@ -518,23 +518,26 @@
                                       <a class="nav-link dropdown-toggle" id="quest-menu-button" data-toggle="dropdown" :style="questsStyle" role="button"
                                       aria-haspopup="true" role="menu" aria-controls="quest-menu-list">Quests</a>
                                       <div class="dropdown-menu" id="quest-menu-list" :class="menuBootstrapStyle" :style="menuStyle" style="margin-bottom: 10px">
-                                          <a class="dropdown-item" :style="menuLinkStyle(0)" v-on:mouseover="menuLinkEvent(0,true)" v-on:mouseleave="menuLinkEvent(0,false)" role="menuitem"
+                                          <a class="dropdown-item" :style="menuLinkStyle(0,true)" v-on:mouseover="menuLinkEvent(0,true)" v-on:mouseleave="menuLinkEvent(0,false)" role="menuitem"
                                            v-on:click="jumpToQuest('main',previewdata.currentQuest)">MainQuest {{ previewdata.currentQuest }}</a>
                                           <div v-if="getSubquests.length > 0" role="none">
                                               <div class="dropdown-divider" :style="dividerStyle"></div>
-                                              <a class="dropdown-item" role="menuitem" :style="menuLinkStyle(index+1)" v-on:mouseover="menuLinkEvent(index+1,true)"
+                                              <a class="dropdown-item" role="menuitem" :style="menuLinkStyle(index+1,true)" v-on:mouseover="menuLinkEvent(index+1,true)"
                                               v-on:mouseleave="menuLinkEvent(index+1,false)" v-for="(quest,index) in getSubquests" v-on:click="jumpToQuest('sub',quest.number)">
                                                   Subquest {{quest.number}}: {{quest.title}}
                                               </a>
                                           </div>
                                       </div>
                                   </li>
-                                  <li class="nav-item">
+                                  <li class="nav-item" v-if="currentComponent">
                                       <a id="helpAlertContainer" class="nav-link" ref="help" @click="requestHelp" :style="helpAlertContainerStyle">
                                           Chiedi aiuto
                                           <span ref="requestedHelp" class="alert" role="alert" :class="helpAlertBootstrapStyle" :style="helpAlertStyle"
                                           style="display:none; margin-left: 10px; margin-bottom: -10px;  white-space: nowrap;">Aiuto richiesto! Attendi...</span>
                                       </a>
+                                  </li>
+                                  <li class="nav-item">
+                                      <a class="nav-link" style="width: max-content" :style="menuLinkStyle(0,false)">LOGOUT</a>
                                   </li>
                               </ul>
                           </div>

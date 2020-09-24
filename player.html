@@ -43,10 +43,10 @@
                             </div>
                         </li>
                         <li class="nav-item" v-if="currentComponent">
-                            <a id="helpAlertContainer" class="nav-link" ref="help" href="#" @click="requestHelp" :style="helpAlertContainerStyle">
+                            <a id="helpAlertContainer" class="nav-link" ref="help" @click="requestHelp" :style="helpAlertContainerStyle">
                                 Chiedi aiuto
                                 <span ref="requestedHelp" class="alert" role="alert" :class="helpAlertBootstrapStyle" :style="helpAlertStyle"
-                                style="display:none; margin-left: 10px; margin-bottom: -10px;  white-space: nowrap;">Aiuto richiesto! Attendi...</span>
+                                style="display:none; margin-left: 10px; margin-bottom: -10px; white-space: nowrap;">Aiuto richiesto! Attendi...</span>
                             </a>
                         </li>
                         <li class="nav-item">
