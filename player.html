@@ -27,6 +27,7 @@
                 <div class="navbar-brand" :style="navbarBrandStyle">Menu
                     <span class="badge" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert">Subs!</span>
                 </div>
+				<a class="nav-item nav-link" v-on:click="deleteCookies();" href="#">LOGOUT</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsiblemenu" :style="toggleButtonContainer" v-observe-visibility="buttonChangedVisibility" aria-label="Apri il menu">
                     <span class="navbar-toggler-icon" :style="{ 'background-image': togglerButtonStyle }"></span>
                 </button>
@@ -53,7 +54,7 @@
 				</nav>
 			</div>
         <!--Area quest-->
-		<div id="accordion" class="overflow-hidden" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
+		<div id="accordion" class="accordion" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
         <div class="card player-card" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
             <div class="card-header h-10" :style="cardLimitStyle">
                 <h3 id="questname" ref="questname" tabindex="-1">
