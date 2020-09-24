@@ -244,11 +244,13 @@ var app = new Vue({
 	},
     getCurrentChats: function() {
       axios.get("/chat", {params: {user_id: this.user_id}}).then(response => {
+        old_chat = this.chat;
         this.chat = response.data;
-        this.$nextTick(() => {
-            scrollToBottom("chatbox");
-        });
-
+        if(this.chat.length > old_chat.length){
+            this.$nextTick(() => {
+                scrollToBottom("chatbox");
+            });
+        }
       });
     },
     checkAnsFeedback: function() {
