@@ -216,7 +216,12 @@ var app = new Vue({
             newPlayerMsgs: this.newPlayerMsgs
           })
         .then(res => {console.log(res)})
-        .catch(err => {console.log(err)});
+        .catch(err => {
+			console.log(err);
+			alert("Server riavviato, elimino la sessione...");
+			this.deleteCookies();
+			location.reload();
+		});
     },
     getGameData: function() {
       let uid = { params: { user_id: this.user_id }};
