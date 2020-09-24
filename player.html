@@ -53,13 +53,13 @@
 			</div>
         <!--Area quest-->
 		<div id="accordion" class="overflow-hidden" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
-        <div class="card player-card" :class="cardBootstrapStyle" :style="cardLimitStyle" aria-live="polite">
+        <div class="card player-card" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
             <div class="card-header h-10" :style="cardLimitStyle">
-                <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">
-                    <button type="button" class="btn btn-outline-dark btn-lg btn-block" data-toggle="collapse" data-target="#rendercard" v-on:click="chatAppear(false)">
-						{{in_mainquest ? "Quest" : "Subquest"}}
-						{{ in_mainquest ? currentQuest : currentSub }}: {{ renderQuest.title || "no_name" }}
-					</button>
+                <h3 id="questname" ref="questname" tabindex="-1">
+                    <button type="button" class="btn btn-lg btn-block" :style="removePredefinedStylesCard" data-toggle="collapse" data-target="#rendercard" v-on:click="chatAppear(false)">
+          						{{in_mainquest ? "Quest" : "Subquest"}}
+          						{{ in_mainquest ? currentQuest : currentSub }}: {{ renderQuest.title || "no_name" }}
+          					</button>
                 </h3>
             </div>
 			<div id="rendercard" class="collapse show" data-parent="#accordion">
@@ -79,19 +79,19 @@
 					</form>
 					<!--EVENTUALI MEDIA-->
 					<div v-if="renderQuest.media">
-                        <img width="100%" v-if="renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
-                        <div v-if="renderQuest.media.type=='video'">
-                            <video width="100%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
-                            </video>
-                        </div>
-                    </div>
+              <img width="100%" v-if="renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
+              <div v-if="renderQuest.media.type=='video'">
+                  <video width="100%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
+                  </video>
+              </div>
+          </div>
 					<p v-if="renderQuest.type == 'ending'">Punteggio finale: {{ score }}</p>
-                  </div>
-				<div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
-                    <button ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :disabled="submitDisabled" :style="submitStyle" v-on:click="in_mainquest? submitMain() : submitSub()">
-                        Submit
-                    </button>
-                </div>
+            </div>
+		            <div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
+                <button ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :disabled="submitDisabled" :style="submitStyle" v-on:click="in_mainquest? submitMain() : submitSub()">
+                    Submit
+                </button>
+            </div>
 			</div>
        </div>
 	   <div class="card overflow-hidden">

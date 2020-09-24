@@ -143,11 +143,19 @@ var app = new Vue({
     onLink: [],
     submitStyleObject: {},
   },
+  watch: {
+    //Se ans_feedback cambia e stavo aspettando un feedback
+    ans_feedback: function(newans, oldans){
+        if(this.waiting_feedback){
+            this.waiting_feedback = false;
+            this.received_feedback = true;
+        }
+    }
+  },
   created: function (){
     this.upgradeSubmitStyle(false);
   },
   mounted: function() {
-      this.is_mounted = true;
       this.updatesEvery5Seconds();
       this.trackTimeEverySecond();
   },
@@ -228,18 +236,12 @@ var app = new Vue({
         axios.post(`chat/${this.user_id}`, msg)
         .then(() => { console.log("sent message successfully :)")});
         this.chat.push(msg);
-	this.chat_msg = "";
-        this.$nextTick( () => {
-            scrollToBottom("chatbox");
-        });;
+		this.chat_msg = "";
       }
 	},
     getCurrentChats: function() {
       axios.get("/chat", {params: {user_id: this.user_id}}).then(response => {
         this.chat = response.data;
-        this.$nextTick( () => {
-            scrollToBottom("chatbox");
-        });;
       });
     },
     checkAnsFeedback: function() {
@@ -822,8 +824,10 @@ var app = new Vue({
     styles = {};
     styles = Object.assign(styles, this.submitStyleObject);
     styles = this.overwriteMainStyle(styles);
-    if (this.gamedata.css_style.mainStyle["color"] || !this.gamedata.css_style.background.style.card.custom)
+    if (this.gamedata.css_style.mainStyle["color"] && this.gamedata.css_style.background.style.card.custom)
       styles = Object.assign(styles, { "color" : this.gamedata.css_style.mainStyle["color"]+"!important" } );      //used in order to overwrite bootstrap text color
+    if (!this.gamedata.css_style.mainStyle["color"] && this.gamedata.css_style.background.style.card.custom)
+        styles = Object.assign(styles, { "color" : this.gamedata.css_style.background.style.card.customized["color"]+"!important" } );      //used in order to overwrite bootstrap text color
     return styles;
   },
   cardLimitStyle: function() {
@@ -856,7 +860,14 @@ var app = new Vue({
     return styles;
   },
   removePredefinedStylesCard: function() {
-      return this.overwriteMainStyle({});
+    var styles = {};
+    var temp = this.gamedata.css_style.background;
+    if (!temp.image)
+      if (temp.style.card.custom)
+        styles = Object.assign(styles, {
+          "color" : temp.style.card.customized.color
+        });
+    return this.overwriteMainStyle(styles);
   },
   componentStyle: function() {
     var styles = {}
@@ -872,14 +883,5 @@ var app = new Vue({
          ;
         return styles;
   }
-  },
-  watch: {
-    //Se ans_feedback cambia e stavo aspettando un feedback
-    ans_feedback: function(newans, oldans){
-        if(this.waiting_feedback){
-            this.waiting_feedback = false;
-            this.received_feedback = true;
-        }
-    }
   }
 });
