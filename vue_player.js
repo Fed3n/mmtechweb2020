@@ -1,5 +1,6 @@
 window.onload = function(){
     document.getElementById("questname").focus();
+	if(app.getIsLogged) app.changeQuest();
 }
 
 //PLACEHOLDER OBJECTS//
@@ -117,6 +118,7 @@ var app = new Vue({
     "qrload": httpVueLoader("components/qrload.vue")
   },
   data: {
+	logged: false,
     user_id: "",          // TODO lo deve assegnare il server
     time_played: 0,
     time_inactive: 0,    // entrambe in secondi
@@ -257,18 +259,41 @@ var app = new Vue({
         axios.get(`/feedback/`, { params: {user_id: this.user_id} }).then((res) => {
             this.ans_feedback = res.data;
         });
-    },
+    }, 
+	getIsLogged: function() {
+		return this.logged;
+	},
+	createCookies: function() {
+		//Creo coookie per ricordare che utente sono e a che quest mi trovo
+		Cookies.set('user_id',this.user_id);
+		Cookies.set('questname',this.questname);
+		this.logged = true;
+	},
+	restoreCookies: function() {
+		if(Cookies.get('user_id') && Cookies.get('questname')){
+			console.log("Restore section!");
+			this.user_id = Cookies.get('user_id');
+			this.questname = Cookies.get('questname');
+			console.log(this.user_id + this.questname);
+			return true;
+		} else return false;
+	},
     changeQuest: function() {
+		let logged = this.restoreCookies();
         if(this.questname) {
             axios.get(`/stories/${this.questname}`).then(response => {
               this.gamedata = response.data.json;
               this.metadata = response.data.meta;
+			  if(!logged) {
                 //Chiedo al server il mio user id che è in formato nome_storia$numero
                 axios.get("/uid", {params: {story_name: this.metadata.name}}).then(res => {
                   this.user_id = res.data;
+				  //Creo Cookies sull'utente
+				  this.createCookies();
                   //E mi faccio assegnare uno starting point
   //                this.currentQuest = this.parseStart(this.user_id);    //_------------------------------------------------DA TOGLIERE IL COMMENTO --------------------------------------------------
-              });
+				});
+			  }
             });
         }
         this.$refs.questloader.remove();
