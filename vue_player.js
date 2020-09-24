@@ -225,7 +225,7 @@ var app = new Vue({
         for (let key in response.data) {
           this[key] = response.data[key];
         }
-        if (this.help_message === "") {
+        if (this.help_message !== "") {
           console.log(this.help_message);
           this.help_received = true;
           this.help_requested = false;
@@ -262,7 +262,7 @@ var app = new Vue({
         axios.get(`/feedback/`, { params: {user_id: this.user_id} }).then((res) => {
             this.ans_feedback = res.data;
         });
-    }, 
+    },
 	deleteCookies: function() {
 		Cookies.remove('user_id');
 		Cookies.remove('questname');
