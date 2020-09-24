@@ -468,9 +468,11 @@
                   if (mains.length > 1) {
                       //Se sto cancellando la quest su cui mi trovo devo prima cambiare schermata o genero errori
                       if (this.previewdata.currentQuest == index) {
-                          //Se sto cancellando la 0 non è un problema
-                          if (index != 0) this.previewdata.currentSub--;
+                          //Se sto cancellando la 0 e mi ci trovo sopra non è un problema
+                          if (index != 0) this.previewdata.currentQuest--;
                       }
+                      //Se sto cancellando una quest trovandomi sopra l'ultima devo cambiare schermata
+                      else if(this.previewdata.currentQuest == mains.length-1) this.previewdata.currentQuest--;
                       //Bisogna scalare in basso tutti i riferimenti ad indici con indice > index
                       //e cancellare i riferimenti con indice = index
                       //Non sto usando i for each perché mi serve il riferimento diretto all'mainsay per cambiarne i valori...
@@ -530,6 +532,7 @@
                               //Se sto cancellando la 0 non è un problema
                               if (index != 0) this.previewdata.currentSub--;
                           }
+                          else if(this.previewdata.currentSub == subs.length-1) this.previewdata.currentSub--;
                           //Bisogna scalare in basso tutti i riferimenti ad indici con indice > index
                           //e cancellare i riferimenti con indice = index
                           //Non sto usando i for each perché mi serve il riferimento diretto all'mainsay per cambiarne i valori...
