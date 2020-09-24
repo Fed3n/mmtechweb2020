@@ -56,7 +56,7 @@
         <div class="card player-card" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
             <div class="card-header h-10" :style="cardLimitStyle">
                 <h3 id="questname" ref="questname" tabindex="-1">
-                    <button type="button" class="btn btn-lg btn-block" :style="removePredefinedStylesCard" data-toggle="collapse" data-target="#rendercard" v-on:click="chatAppear(false)">
+                    <button type="button" class="btn btn-lg btn-block border" :class="mainquestButtonBootstrapStyle" :style="removePredefinedStylesCard" data-toggle="collapse" data-target="#rendercard" v-on:click="chatAppear(false)">
           						{{in_mainquest ? "Quest" : "Subquest"}}
           						{{ in_mainquest ? currentQuest : currentSub }}: {{ renderQuest.title || "no_name" }}
           					</button>

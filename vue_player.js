@@ -467,10 +467,6 @@ var app = new Vue({
   },
   upgradeSubmitStyle: function(disabled){
     styles = {};
-    //if the card uses bootstrap the related style is in the Object submitBootstrapStyle
-    if (!this.gamedata.css_style.background.image)
-      if (this.gamedata.css_style.background.style.card.custom)
-        styles = Object.assign(styles, { "color" : this.gamedata.css_style.background.style.card.customized["color"] } );
     //adding responsive style
     if (!disabled)
       styles = Object.assign(styles,submit_button_style);
@@ -663,7 +659,7 @@ var app = new Vue({
           buttonColor = this.gamedata.css_style.mainStyle["color"];
         else
           buttonColor = this.gamedata.css_style.background.style.nav.customized.general["color"];
-        return `url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='${buttonColor}' stroke-width='${togglerbutton_default_linesWidth}' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") `;
+        return `url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='${HextoRgb(buttonColor)}' stroke-width='${togglerbutton_default_linesWidth}' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") `;
       }
       else
         return "";
@@ -673,7 +669,7 @@ var app = new Vue({
         ;
       else
         buttonColor = default_image_togglerButton_color;
-      return `url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='${buttonColor}' stroke-width='${togglerbutton_default_linesWidth}' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") `;
+      return `url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='${HextoRgb(buttonColor)}' stroke-width='${togglerbutton_default_linesWidth}' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") `;
     }
   },
   toggleButtonContainer: function() {
@@ -695,6 +691,14 @@ var app = new Vue({
         borderColor = this.gamedata.css_style.mainStyle["color"];
       return { "border-color" : borderColor };
     }
+  },
+  mainquestButtonBootstrapStyle: function(){
+    if (!this.gamedata.css_style.background.image)
+      if (!this.gamedata.css_style.background.style.card.custom)
+        if (!this.gamedata.css_style.mainStyle["color"])
+          return this.gamedata.css_style.background.style.card.bootstrap["textColor"];
+    else
+        return "";
   },
   menuStyle: function() {
     var styles = {};
@@ -823,11 +827,14 @@ var app = new Vue({
   submitStyle: function() {
     styles = {};
     styles = Object.assign(styles, this.submitStyleObject);
+    //if the card uses bootstrap the related style is in the Object submitBootstrapStyle
+    if (!this.gamedata.css_style.background.image)
+      if (this.gamedata.css_style.background.style.card.custom)
+        styles = Object.assign(styles, { "color" : this.gamedata.css_style.background.style.card.customized["color"] } );
     styles = this.overwriteMainStyle(styles);
-    if (this.gamedata.css_style.mainStyle["color"] && this.gamedata.css_style.background.style.card.custom)
-      styles = Object.assign(styles, { "color" : this.gamedata.css_style.mainStyle["color"]+"!important" } );      //used in order to overwrite bootstrap text color
-    if (!this.gamedata.css_style.mainStyle["color"] && this.gamedata.css_style.background.style.card.custom)
-        styles = Object.assign(styles, { "color" : this.gamedata.css_style.background.style.card.customized["color"]+"!important" } );      //used in order to overwrite bootstrap text color
+    //overwrite bootstrap text color
+    if (this.gamedata.css_style.mainStyle["color"] && !this.gamedata.css_style.background.style.card.custom)
+      styles = Object.assign(styles, { "color" : this.gamedata.css_style.mainStyle["color"]+"!important" } );
     return styles;
   },
   cardLimitStyle: function() {
@@ -864,9 +871,7 @@ var app = new Vue({
     var temp = this.gamedata.css_style.background;
     if (!temp.image)
       if (temp.style.card.custom)
-        styles = Object.assign(styles, {
-          "color" : temp.style.card.customized.color
-        });
+        styles = Object.assign(styles, { "color" : temp.style.card.customized.color });
     return this.overwriteMainStyle(styles);
   },
   componentStyle: function() {
