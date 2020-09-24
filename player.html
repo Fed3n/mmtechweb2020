@@ -27,7 +27,7 @@
                 <div class="navbar-brand" :style="navbarBrandStyle">Menu
                     <span class="badge" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert">Subs!</span>
                 </div>
-				<a class="nav-item nav-link" v-on:click="deleteCookies();" href="#">LOGOUT</a>
+				<a class="nav-item nav-link" v-on:click="logout();" href="#">LOGOUT</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsiblemenu" :style="toggleButtonContainer" v-observe-visibility="buttonChangedVisibility" aria-label="Apri il menu">
                     <span class="navbar-toggler-icon" :style="{ 'background-image': togglerButtonStyle }"></span>
                 </button>
