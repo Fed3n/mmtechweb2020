@@ -237,11 +237,18 @@ var app = new Vue({
         .then(() => { console.log("sent message successfully :)")});
         this.chat.push(msg);
 		this.chat_msg = "";
+        this.$nextTick(() => {
+            scrollToBottom("chatbox");
+        });
       }
 	},
     getCurrentChats: function() {
       axios.get("/chat", {params: {user_id: this.user_id}}).then(response => {
         this.chat = response.data;
+        this.$nextTick(() => {
+            scrollToBottom("chatbox");
+        });
+
       });
     },
     checkAnsFeedback: function() {
