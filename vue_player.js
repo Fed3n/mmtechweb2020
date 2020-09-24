@@ -1,10 +1,6 @@
 window.onload = function(){
     document.getElementById("questname").focus();
-	if(Cookies.get('logged') === 'true') {
-		console.log("Log in: ");
-		console.log(Cookies.get('user_id') + Cookies.get('questname'));
-		app.changeQuest();
-	}
+	if(Cookies.get('logged') === 'true') app.changeQuest();
 }
 
 //PLACEHOLDER OBJECTS//
@@ -566,7 +562,6 @@ var app = new Vue({
 		  else if (type == "human") return "humaninput";
 		  else return "";
 		} catch(error) {
-			console.log("CIAOOOO");
 			console.log(error);
 		}
     },
