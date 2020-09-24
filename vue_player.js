@@ -225,7 +225,7 @@ var app = new Vue({
         for (let key in response.data) {
           this[key] = response.data[key];
         }
-        if (this.help_message === "") {
+        if (this.help_message !== "") {
           console.log(this.help_message);
           this.help_received = true;
           this.help_requested = false;
@@ -263,13 +263,17 @@ var app = new Vue({
             this.ans_feedback = res.data;
         });
     },
+	logout: function() {
+		this.deleteCookies();
+		let reload = confirm("Perderai tutti i progressi di gioco, vuoi uscire?");
+		if(reload) location.reload();
+	},
 	deleteCookies: function() {
 		Cookies.remove('user_id');
 		Cookies.remove('questname');
 		Cookies.remove('status',0);
 		Cookies.remove('logged');
 		console.log('COOKIES ELIMINATI');
-		location.reload();
 	},
 	createCookies: function() {
 		//Creo coookie per ricordare che utente sono e a che quest mi trovo
