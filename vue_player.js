@@ -824,8 +824,10 @@ var app = new Vue({
     styles = {};
     styles = Object.assign(styles, this.submitStyleObject);
     styles = this.overwriteMainStyle(styles);
-    if (this.gamedata.css_style.mainStyle["color"] || !this.gamedata.css_style.background.style.card.custom)
+    if (this.gamedata.css_style.mainStyle["color"] && this.gamedata.css_style.background.style.card.custom)
       styles = Object.assign(styles, { "color" : this.gamedata.css_style.mainStyle["color"]+"!important" } );      //used in order to overwrite bootstrap text color
+    if (!this.gamedata.css_style.mainStyle["color"] && this.gamedata.css_style.background.style.card.custom)
+        styles = Object.assign(styles, { "color" : this.gamedata.css_style.background.style.card.customized["color"]+"!important" } );      //used in order to overwrite bootstrap text color
     return styles;
   },
   cardLimitStyle: function() {
