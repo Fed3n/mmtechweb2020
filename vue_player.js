@@ -262,7 +262,7 @@ var app = new Vue({
         axios.get(`/feedback/`, { params: {user_id: this.user_id} }).then((res) => {
             this.ans_feedback = res.data;
         });
-    }, 
+    },
 	deleteCookies: function() {
 		Cookies.remove('user_id');
 		Cookies.remove('questname');
@@ -508,8 +508,8 @@ var app = new Vue({
     return styles;
   },
   upgradeSubmitStyle: function(disabled){
-    styles = {};
     //adding responsive style
+    styles = {};
     if (!disabled)
       styles = Object.assign(styles,submit_button_style);
     else {
