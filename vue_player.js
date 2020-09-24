@@ -1,6 +1,10 @@
 window.onload = function(){
     document.getElementById("questname").focus();
-	if(app.getIsLogged) app.changeQuest();
+	if(Cookies.get('logged') === 'true') {
+		console.log("ECCOCIIIIIIIIII");
+		console.log(Cookies.get('user_id') + Cookies.get('questname'));
+		app.changeQuest();
+	}
 }
 
 //PLACEHOLDER OBJECTS//
@@ -118,7 +122,6 @@ var app = new Vue({
     "qrload": httpVueLoader("components/qrload.vue")
   },
   data: {
-	logged: false,
     user_id: "",          // TODO lo deve assegnare il server
     time_played: 0,
     time_inactive: 0,    // entrambe in secondi
@@ -260,17 +263,19 @@ var app = new Vue({
             this.ans_feedback = res.data;
         });
     }, 
-	getIsLogged: function() {
-		return this.logged;
+	deleteCookies: function() {
+		Cookies.remove('user_id');
+		Cookies.remove('questname');
 	},
 	createCookies: function() {
 		//Creo coookie per ricordare che utente sono e a che quest mi trovo
 		Cookies.set('user_id',this.user_id);
 		Cookies.set('questname',this.questname);
-		this.logged = true;
+		Cookies.set('logged','true');
+		console.log("COOKIES CREATI");
 	},
 	restoreCookies: function() {
-		if(Cookies.get('user_id') && Cookies.get('questname')){
+		if(Cookies.get('logged')){
 			console.log("Restore section!");
 			this.user_id = Cookies.get('user_id');
 			this.questname = Cookies.get('questname');
@@ -279,6 +284,8 @@ var app = new Vue({
 		} else return false;
 	},
     changeQuest: function() {
+		console.log("SONO LOGGATO?");
+		console.log(Cookies.get('logged'));
 		let logged = this.restoreCookies();
         if(this.questname) {
             axios.get(`/stories/${this.questname}`).then(response => {
@@ -289,6 +296,7 @@ var app = new Vue({
                 axios.get("/uid", {params: {story_name: this.metadata.name}}).then(res => {
                   this.user_id = res.data;
 				  //Creo Cookies sull'utente
+				  console.log("CREO I COOKIES");
 				  this.createCookies();
                   //E mi faccio assegnare uno starting point
   //                this.currentQuest = this.parseStart(this.user_id);    //_------------------------------------------------DA TOGLIERE IL COMMENTO --------------------------------------------------
