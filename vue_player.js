@@ -266,11 +266,16 @@ var app = new Vue({
 	deleteCookies: function() {
 		Cookies.remove('user_id');
 		Cookies.remove('questname');
+		Cookies.remove('status',0);
+		Cookies.remove('logged');
+		console.log('COOKIES ELIMINATI');
+		location.reload();
 	},
 	createCookies: function() {
 		//Creo coookie per ricordare che utente sono e a che quest mi trovo
 		Cookies.set('user_id',this.user_id);
 		Cookies.set('questname',this.questname);
+		Cookies.set('status',0);
 		Cookies.set('logged','true');
 		console.log("COOKIES CREATI");
 	},
