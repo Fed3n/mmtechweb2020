@@ -225,7 +225,7 @@ var app = new Vue({
         for (let key in response.data) {
           this[key] = response.data[key];
         }
-        if (this.help_message === "") {
+        if (this.help_message !== "") {
           console.log(this.help_message);
           this.help_received = true;
           this.help_requested = false;
