@@ -40,12 +40,6 @@ app.use(function(req, res, next) {
 app.enable('trust proxy');
 
 //##MAIN PAGES RESPONSES##//
-/*app.get('/favicon.ico'), (req, res) => {
-	console.log("Richiesta favicon!");
-	res.writeHead(404);
-	res.end();
-}*/
-
 app.get('/', (req, res) => {
 	if((req.protocol == "https" && serverOpened == true) || (serverOpened == false)) {
 		return res.sendFile(path.join(__dirname + "/player.html"));
