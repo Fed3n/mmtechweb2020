@@ -122,7 +122,7 @@ var app = new Vue({
     "qrload": httpVueLoader("components/qrload.vue")
   },
   data: {
-    user_id: "",          // TODO lo deve assegnare il server
+    user_id: "",
     time_played: 0,
     time_inactive: 0,    // entrambe in secondi
     score: 0,
@@ -277,18 +277,35 @@ var app = new Vue({
 		Cookies.remove('questname');
 		Cookies.remove('status',0);
 		Cookies.remove('logged');
+		Cookies.remove('currentQuest');
+		Cookies.remove('currentSub');
+		//Cookies.remove('completedSubs');
+		Cookies.remove('in_mainquest');
+		console.log("SESSION CLEARED");
 	},
 	createCookies: function() {
-		//Creo coookie per ricordare che utente sono e a che quest mi trovo
+		//Creo coookie per ricordare che utente sono e che json caricare
 		Cookies.set('user_id',this.user_id);
 		Cookies.set('questname',this.questname);
 		Cookies.set('status',0);
 		Cookies.set('logged','true');
 	},
+	updateCookies: function() {
+		//Aggiorno lo stato dei cookies
+		Cookies.set('currentQuest',this.currentQuest);
+		Cookies.set('currentSub',this.currentSub);
+		//Cookies.set('completedSubs',this.completedSubs);  // -> TODO domandare al server
+		Cookies.set('in_mainquest',this.in_mainquest);
+		console.log("Sessione aggiornata.");
+	},
 	restoreCookies: function() {
 		if(Cookies.get('logged')){
 			this.user_id = Cookies.get('user_id');
 			this.questname = Cookies.get('questname');
+			this.currentQuest = Cookies.get('currentQuest');
+			this.currentSub = Cookies.get('currentSub');
+			//this.completedSubs = Cookies.get('completedSubs');
+			this.in_mainquest = Cookies.get('in_mainquest');
 			return true;
 		} else return false;
 	},
@@ -334,6 +351,7 @@ var app = new Vue({
     this.help_message = "";
     this.help_received = false;
     this.sendGameData();
+	this.updateCookies();
     resetDivScrolling();
     },
     goToMainQuest: function(){
@@ -346,6 +364,7 @@ var app = new Vue({
     this.help_message = "";
     this.help_received = false;
     this.sendGameData();
+	this.updateCookies();
     resetDivScrolling();
     },
     submitMain: function() {
@@ -407,6 +426,7 @@ var app = new Vue({
       this.picked = null;
       if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
       this.$refs.questname.focus();
+	  this.updateCookies();
     },
     submitSub: function() {
       this.$refs.inputForm.reset();
@@ -444,6 +464,7 @@ var app = new Vue({
       if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
       this.$refs.questname.focus();
       this.sendGameData();
+	  this.updateCookies();
       resetDivScrolling();
     },
     overwriteMainStyle: function(styles){
@@ -536,13 +557,18 @@ var app = new Vue({
   },
   computed: {
     currentComponent: function() {
-      var type = this.renderQuest.type;
-      if (type == "choice") return "choiceinput";
-      else if (type == "input") return "textinput";
-      else if (type == "draw") return "imginput";
-      else if (type == "keys") return "keyboardinput";
-      else if (type == "human") return "humaninput";
-      else return "";
+		try {
+		  var type = this.renderQuest.type;
+		  if (type == "choice") return "choiceinput";
+		  else if (type == "input") return "textinput";
+		  else if (type == "draw") return "imginput";
+		  else if (type == "keys") return "keyboardinput";
+		  else if (type == "human") return "humaninput";
+		  else return "";
+		} catch(error) {
+			console.log("CIAOOOO");
+			console.log(error);
+		}
     },
     renderQuest: function() {
       if(this.gamedata == null)
