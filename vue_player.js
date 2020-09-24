@@ -180,7 +180,7 @@ var app = new Vue({
 	},
     requestHelp: function() {
       if (!this.help_message) {
-        this.$refs.requestedHelp.style.display = "inline";
+        this.$refs.requestedHelp.style.display = "inline-block";
         this.$refs.help.classList.add("disabled");
         this.help_requested = true;
       }
@@ -682,7 +682,9 @@ var app = new Vue({
     //apply mainstyle in any case
     styles = this.overwriteMainStyle(styles);
     if (!this.togglerButtonVisible)
-      styles = Object.assign(styles, { "margin-top" : "-10px" } );
+      styles = Object.assign(styles, {
+         "margin-top" : "-10px"
+      });
     return styles;
   },
   helpAlertContainerStyle: function() {
@@ -705,7 +707,7 @@ var app = new Vue({
       styles = Object.assign(styles, { "color" : defaul_image_alert_color } );
     styles = this.overwriteMainStyle(styles);
     if (this.togglerButtonVisible)
-      styles = Object.assign(styles, { "margin-top" : "-10px" } );
+      styles = Object.assign(styles, { "margin-top" : "-10px" });
     return styles;
   },
   togglerButtonStyle: function() {

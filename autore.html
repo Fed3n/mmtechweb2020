@@ -529,7 +529,7 @@
                                           </div>
                                       </div>
                                   </li>
-                                  <li class="nav-item">
+                                  <li class="nav-item" v-if="currentComponent">
                                       <a id="helpAlertContainer" class="nav-link" ref="help" @click="requestHelp" :style="helpAlertContainerStyle">
                                           Chiedi aiuto
                                           <span ref="requestedHelp" class="alert" role="alert" :class="helpAlertBootstrapStyle" :style="helpAlertStyle"
