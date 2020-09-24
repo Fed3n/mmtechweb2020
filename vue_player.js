@@ -1,7 +1,7 @@
 window.onload = function(){
     document.getElementById("questname").focus();
 	if(Cookies.get('logged') === 'true') {
-		console.log("ECCOCIIIIIIIIII");
+		console.log("Log in: ");
 		console.log(Cookies.get('user_id') + Cookies.get('questname'));
 		app.changeQuest();
 	}
@@ -166,7 +166,6 @@ var app = new Vue({
   },
   methods: {
 	chatAppear: function(fromHelp) {
-		console.log ("dentro!");
 		let node = this.$refs.chatbtn.innerHTML;
 		if(this.bool_inchat) {
 			this.bool_inchat = false;
@@ -273,7 +272,6 @@ var app = new Vue({
 		Cookies.remove('questname');
 		Cookies.remove('status',0);
 		Cookies.remove('logged');
-		console.log('COOKIES ELIMINATI');
 	},
 	createCookies: function() {
 		//Creo coookie per ricordare che utente sono e a che quest mi trovo
@@ -281,20 +279,15 @@ var app = new Vue({
 		Cookies.set('questname',this.questname);
 		Cookies.set('status',0);
 		Cookies.set('logged','true');
-		console.log("COOKIES CREATI");
 	},
 	restoreCookies: function() {
 		if(Cookies.get('logged')){
-			console.log("Restore section!");
 			this.user_id = Cookies.get('user_id');
 			this.questname = Cookies.get('questname');
-			console.log(this.user_id + this.questname);
 			return true;
 		} else return false;
 	},
     changeQuest: function() {
-		console.log("SONO LOGGATO?");
-		console.log(Cookies.get('logged'));
 		let logged = this.restoreCookies();
         if(this.questname) {
             axios.get(`/stories/${this.questname}`).then(response => {
@@ -305,7 +298,6 @@ var app = new Vue({
                 axios.get("/uid", {params: {story_name: this.metadata.name}}).then(res => {
                   this.user_id = res.data;
 				  //Creo Cookies sull'utente
-				  console.log("CREO I COOKIES");
 				  this.createCookies();
                   //E mi faccio assegnare uno starting point
   //                this.currentQuest = this.parseStart(this.user_id);    //_------------------------------------------------DA TOGLIERE IL COMMENTO --------------------------------------------------
