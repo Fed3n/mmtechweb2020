@@ -464,7 +464,7 @@ var app = new Vue({
     this.onLink.fill(false);
     this.onLink[num] = bool;
   },
-  menuLinkStyle: function(num) {
+  menuLinkStyle: function(num,apply) {
     var styles = {};
     if (!this.gamedata.css_style.background.image){
       if (!this.gamedata.css_style.background.style.nav.custom){
@@ -479,11 +479,13 @@ var app = new Vue({
             console.log(`error in JSON compilation: bootstrap navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
         styles = this.overwriteMainStyle(styles);
         //adding background color property
-        if (this.onLink[num]){
-          if (this.gamedata.css_style.background.style.nav.bootstrap.background != "bg-light")
-            styles = Object.assign(styles,{ "background-color": bootstrap_menu_links_light_background});
-          else
-            styles = Object.assign(styles,{ "background-color": bootstrap_menu_links_background});
+        if (apply){
+          if (this.onLink[num]){
+            if (this.gamedata.css_style.background.style.nav.bootstrap.background != "bg-light")
+              styles = Object.assign(styles,{ "background-color": bootstrap_menu_links_light_background});
+            else
+              styles = Object.assign(styles,{ "background-color": bootstrap_menu_links_background});
+          }
         }
       }
       else {
@@ -491,19 +493,23 @@ var app = new Vue({
         styles = Object.assign(styles, { "color" : this.gamedata.css_style.background.style.nav.customized.general["color"] } );
         styles = this.overwriteMainStyle(styles);
         //adding background color property
-        if (this.onLink[num])
-          if (this.gamedata.css_style.background.style.nav.customized.general["background-color"] == "white")
-              styles = Object.assign(styles,{ "background-color": menu_links_white_background });
-            else
-              styles = Object.assign(styles,{ "background-color": menu_links });
+        if (apply){
+          if (this.onLink[num])
+            if (this.gamedata.css_style.background.style.nav.customized.general["background-color"] == "white")
+                styles = Object.assign(styles,{ "background-color": menu_links_white_background });
+              else
+                styles = Object.assign(styles,{ "background-color": menu_links });
+        }
       }
     }
     else {
       styles = Object.assign(styles, { "color" : default_image_menu_links_text_color } );
       styles = this.overwriteMainStyle(styles);
       //adding background color property
-      if (this.onLink[num])
-        styles = Object.assign(styles,{ "background-color": default_image_menu_links_hover_backgroud_color });
+      if (apply){
+        if (this.onLink[num])
+          styles = Object.assign(styles,{ "background-color": default_image_menu_links_hover_backgroud_color });
+      }
     }
     //used for menu responsivness
     if (this.togglerButtonVisible)
