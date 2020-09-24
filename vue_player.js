@@ -259,7 +259,7 @@ var app = new Vue({
         axios.get(`/feedback/`, { params: {user_id: this.user_id} }).then((res) => {
             this.ans_feedback = res.data;
         });
-    }, 
+    },
 	getIsLogged: function() {
 		return this.logged;
 	},
