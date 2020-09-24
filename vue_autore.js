@@ -1083,10 +1083,8 @@
               if(!this.renderQuest.type) return false;
               //In un type ending è sempre disabilitato (il gioco è finito)
               if(this.renderQuest.type == "ending") return true;
-              //Se siamo in human input allora il submit è abilitato se ho ricevuto feedback dal valutatore
-              if(this.renderQuest.type == "human") return !this.ans_feedback;
               //Altrimenti è abilitato se c'è una risposta inserita
-              else return !this.picked;
+              else return !this.previewdata.picked;
           },
           //STYLEOBJECTS
           previewStyle: function() {
