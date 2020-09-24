@@ -89,7 +89,7 @@ app.get('/uid', (req, res) => {
 	'answer': {},
 	'feedback': ""
     };
-    return res.send(uid);
+    return res.status(200).send(uid);
 });
 
 app.patch('/players/:player_id', (req, res) => {
@@ -244,7 +244,7 @@ app.post('/stories', (req, res) => {
     });
     fs.mkdirSync(path.join(newdir+"/images"), {recursive: true});
     fs.mkdirSync(path.join(newdir+"/videos"), {recursive: true});
-    res.send(":)");
+    res.status(201).send("Story posted successfully.");
 });
 
 app.delete('/stories', (req, res) => {
@@ -263,7 +263,7 @@ app.get('/stories/:storyName/images', (req, res) =>{
     console.log(`Getting content of /story/${req.params.storyName}/images`);
     var imgdir = path.join(__dirname + `/story/${req.params.storyName}/images/`);
     let entrylist = fs.readdirSync(imgdir);
-    res.send(entrylist);
+    res.status(200).send(entrylist);
 });
 
 app.post('/stories/:storyName/images', (req, res) => {
@@ -279,7 +279,7 @@ app.get('/stories/:storyName/videos', (req, res) =>{
     console.log(`Getting content of /story/${req.params.storyName}/videos`);
     var viddir = path.join(__dirname + `/story/${req.params.storyName}/videos/`);
     let entrylist = fs.readdirSync(viddir);
-    res.send(entrylist);
+    res.status(200).send(entrylist);
 });
 
 app.post('/stories/:storyName/videos', (req, res) => {
@@ -299,7 +299,7 @@ app.get('/styles/interfaces', (req, res) => {
     for(let i = 0; i < entrylist.length; i++){
       entrylist[i].replace(/.json$/g,"");
     }
-    return res.send(entrylist);
+    return res.status(200).send(entrylist);
 });
 
 app.get('/styles/interfaces/:interfaceName', (req, res) => {
@@ -307,7 +307,7 @@ app.get('/styles/interfaces/:interfaceName', (req, res) => {
     let json = fs.readFileSync(jsonpath);
     let load = JSON.parse(json);
     res.setHeader('Content-Type','application/json');
-    res.json(load);
+    res.status(200).json(load);
 });
 
 app.post('/styles/interfaces/', (req, res) => {
@@ -333,7 +333,7 @@ app.get('/styles/keyboards', (req, res) => {
     for(let i = 0; i < entrylist.length; i++){
       entrylist[i].replace(/.json$/g,"");
     }
-    return res.send(entrylist);
+    return res.status(200).send(entrylist);
 });
 
 app.get('/styles/keyboards/:keyName', (req, res) => {
@@ -341,7 +341,7 @@ app.get('/styles/keyboards/:keyName', (req, res) => {
     let json = fs.readFileSync(jsonpath);
     let load = JSON.parse(json);
     res.setHeader('Content-Type','application/json');
-    res.json(load);
+    res.status(200).json(load);
 });
 
 app.post('/styles/keyboards/', (req, res) => {
