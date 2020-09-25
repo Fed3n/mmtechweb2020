@@ -193,7 +193,8 @@
                                 <div id="imageEditor" class="panel-collapse collapse stylepanelcollapse">
                                   <div class="panel-body border-bottom mt-2 px-4 pb-3">
                                     <label for="select-image">Scegli l'immagine: </label>
-                                    <select name="select-image" class="form-control" value=""  @change="setImage">
+                                    <select ref="selectimages" name="select-image" class="form-control" @change="setImage">
+                                        <option ref="emptyOptionImages" value=""></option>
                                         <option v-for="imgname in imagesList" :value="imgname">{{ imgname }}</option>
                                     </select>
                                     <small v-if="!imagesList" class="text-muted">Non sono presenti immagini in questa storia, caricane una nella sezione "area dati"</small>
