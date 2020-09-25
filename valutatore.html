@@ -66,6 +66,62 @@
               </table>
             </div><br>
 
+            <div id="previewblock" v-if="ongoing_stories[activeStories[0]]" class="container mt-3 mb-3">
+              <button class="btn btn-block btn-outline-secondary" type="button" data-toggle="collapse" data-target="#story-preview">Preview Storia</button>
+              <div id="story-preview" class="container-fluid collapse overflow-auto p-2">
+                <div id="preview-menu" class="row">
+                  <div class="form-check col-md-3">
+                    <label class="form-check-label">
+                      <input type="checkbox" v-model="previewdata.in_mainquest">
+                      Mainquest
+                    </label>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <div v-if="previewdata.in_mainquest">
+                      <label for="mainselect">Seleziona Main</label>
+                      <select class="form-input" v-model="previewdata.currentQuest">
+                        <option v-for="quest in ongoing_stories[activeStories[0]].mainQuest" :value="quest.number">{{ quest.number }}: {{ ( quest.title || "" ) }}</option>
+                      </select>
+                    </div>
+                    <div v-if="!previewdata.in_mainquest">
+                      <label for="mainselect">Seleziona Sub</label>
+                      <select class="form-input" v-model="previewdata.currentSub">
+                        <option v-for="quest in  ongoing_stories[activeStories[0]].subQuests" :value="quest.number">{{ quest.number }}: {{ ( quest.title || "" ) }}</option>
+                      </select>
+                    </div>
+                    <div id="preview-view" v-if="getQuestData(activeStories[0])">
+                      <p>Title: {{ (getQuestData(activeStories[0]).title || "none") }}</p>
+                      <p>Text: {{ (getQuestData(activeStories[0]).text || "none") }}</p>
+                      <p>Description: {{ (getQuestData(activeStories[0]).description || "none") }}</p>
+                      <div v-if="getQuestData(activeStories[0]).type=='choice'">
+                        <p>Opzioni</p>
+                        <ul>
+                          <li v-for="opt in getQuestData(activeStories[0]).options">{{ opt }}</li>
+                        </ul>
+                      </div>
+                      <p>Media: {{ (getQuestData(activeStories[0]).media.alt || "none") }}</p>
+                      <div v-if="previewdata.in_mainquest">
+                        <p>Gotos</p>
+                        <ul>
+                          <li v-for="goto in getQuestData(activeStories[0]).goto">
+                            {{ goto[0] }} : {{ goto[1] }} 
+                          </li>
+                        </ul>
+                      </div>
+                      <div v-if="!previewdata.in_mainquest">
+                        <p>Soluzioni</p>
+                        <ul>
+                          <li v-for="sol in getQuestData(activeStories[0]).solution">
+                            {{ sol }}
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div v-if="players_data" class="container border" id="chat">
               <div class="row justify-content-center bg-secondary text-white rounded py-2"><h3>Inizia una chat con i giocatori</h3></div>
               <div class="btn-group p-2">
@@ -129,7 +185,64 @@
                   </tr>
                   </tbody>
               </table>
-            </div><br>
+            </div><br>  
+            </div>
+
+            <div id="previewblock" v-if="ongoing_stories[activeStories[0]]" class="container mt-3 mb-3">
+              <button class="btn btn-block btn-outline-secondary" type="button" data-toggle="collapse" data-target="#story-preview">Preview Storia</button>
+              <div id="story-preview" class="container-fluid collapse overflow-auto p-2"> 
+                <div id="preview-menu" class="row">
+                  <div class="form-check col-md-3">
+                    <label class="form-check-label">
+                      <input type="checkbox" v-model="previewdata.in_mainquest">
+                      Mainquest
+                    </label>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <div v-if="previewdata.in_mainquest">
+                      <label for="mainselect">Seleziona Main</label>
+                      <select class="form-input" v-model="previewdata.currentQuest">
+                        <option v-for="quest in ongoing_stories[story].mainQuest" :value="quest.number">{{ quest.number }}: {{ ( quest.title || "" ) }}</option>
+                      </select>
+                    </div>
+                    <div v-if="!previewdata.in_mainquest">
+                      <label for="mainselect">Seleziona Sub</label>
+                      <select class="form-input" v-model="previewdata.currentSub">
+                        <option v-for="quest in ongoing_stories[story].subQuests" :value="quest.number">{{ quest.number }}: {{ ( quest.title || "" ) }}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div id="preview-view" v-if="getQuestData(story)">
+                  <p>Titolo: {{ (getQuestData(story).title || "none") }}</p>
+                  <p>Testo: {{ (getQuestData(story).text || "none") }}</p>
+                  <p>Descrizione: {{ (getQuestData(story).description || "none") }}</p>
+                  <div v-if="getQuestData(story).type=='choice'">
+                    <p>Opzioni</p>
+                    <ul>
+                      <li v-for="opt in getQuestData(story).options">{{ opt }}</li>
+                    </ul>
+                  </div>
+                  <p>Media: {{ (getQuestData(story).media.alt || "none") }}</p>
+                  <div v-if="previewdata.in_mainquest">
+                    <p>Gotos</p>
+                    <ul>
+                      <li v-for="goto in getQuestData(story).goto">
+                        {{ goto[0] }} : {{ goto[1] }} 
+                      </li>
+                    </ul>
+                  </div>
+                  <div v-if="!previewdata.in_mainquest">
+                    <p>Soluzioni</p>
+                    <ul>
+                      <li v-for="sol in getQuestData(story).solution">
+                        {{ sol }}
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <div v-if="players_data" class="container border" id="chat">
               <div class="row justify-content-center bg-secondary text-white rounded py-2"><h3>Inizia una chat con i giocatori</h3></div>
