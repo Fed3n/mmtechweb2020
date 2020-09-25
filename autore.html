@@ -107,7 +107,9 @@
                         <div class="col-7"><input name="file-downloader" type="text" value="myfile.json" ref="fileName"></div>
                     </div>
                     <button class="btn btn-success" v-on:click="saveJson">SCARICA FILE</button>
-                    <button class="btn btn-info" v-on:click="createQR">Crea QR Code</button>
+                    <div id="qrcreate" class="mt-3">
+                        <button class="btn btn-info" v-on:click="createQR">Crea QR Code</button>
+                    </div>
                 </div>
             </div>
         </div>

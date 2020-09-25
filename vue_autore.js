@@ -697,8 +697,8 @@
               link.click();
           },
           createQR: function() {
-                  var qrname = this.$refs.fileName.value.replace('.json', '');
-				  var qrcontent = this.$refs.storyName.value.replace('.json','');
+                  let qrname = this.metadata.name;
+		  let qrcontent = this.metadata.name;
                   qr.clear();
                   qr.makeCode(qrcontent);
                   var node = this.$refs.qrcode;
