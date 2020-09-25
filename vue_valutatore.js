@@ -47,6 +47,16 @@ var app = new Vue({
                 this.players_data_changing[id] = this.players_data_changing[id] || {};
                 this.players_data_changing[id].help_sent = false;
             }
+            // Se un giocatore ha finito, faccio partire un timer che lo rimuove dopo 2 minuti
+            if (this.players_data[id].finished === true) {
+              setTimeout(function() {
+                axios.delete(`/players/${id}`);
+              }, 2 * 60 * 1000);
+            }
+            // Giocatori inattivi per oltre 10 minuti vengono rimossi
+            if (this.players_data[id].time_inactive > 10 * 60 * 1000) {
+              axios.delete(`/players/${id}`);
+            }
         }
       });
     },

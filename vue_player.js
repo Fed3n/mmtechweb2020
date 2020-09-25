@@ -1,10 +1,6 @@
 window.onload = function(){
     document.getElementById("questname").focus();
-	if(Cookies.get('logged') === 'true') {
-		console.log("ECCOCIIIIIIIIII");
-		console.log(Cookies.get('user_id') + Cookies.get('questname'));
-		app.changeQuest();
-	}
+	if(Cookies.get('logged') === 'true') app.changeQuest();
 }
 
 //PLACEHOLDER OBJECTS//
@@ -122,7 +118,7 @@ var app = new Vue({
     "qrload": httpVueLoader("components/qrload.vue")
   },
   data: {
-    user_id: "",          // TODO lo deve assegnare il server
+    user_id: "",
     time_played: 0,
     time_inactive: 0,    // entrambe in secondi
     score: 0,
@@ -166,7 +162,6 @@ var app = new Vue({
   },
   methods: {
 	chatAppear: function(fromHelp) {
-		console.log ("dentro!");
 		let node = this.$refs.chatbtn.innerHTML;
 		if(this.bool_inchat) {
 			this.bool_inchat = false;
@@ -180,7 +175,7 @@ var app = new Vue({
 	},
     requestHelp: function() {
       if (!this.help_message) {
-        this.$refs.requestedHelp.style.display = "inline";
+        this.$refs.requestedHelp.style.display = "inline-block";
         this.$refs.help.classList.add("disabled");
         this.help_requested = true;
       }
@@ -217,7 +212,12 @@ var app = new Vue({
             newPlayerMsgs: this.newPlayerMsgs
           })
         .then(res => {console.log(res)})
-        .catch(err => {console.log(err)});
+        .catch(err => {
+			console.log(err);
+			alert("Server riavviato, elimino la sessione...");
+			this.deleteCookies();
+			location.reload();
+		});
     },
     getGameData: function() {
       let uid = { params: { user_id: this.user_id }};
@@ -225,7 +225,7 @@ var app = new Vue({
         for (let key in response.data) {
           this[key] = response.data[key];
         }
-        if (this.help_message === "") {
+        if (this.help_message !== "") {
           console.log(this.help_message);
           this.help_received = true;
           this.help_requested = false;
@@ -262,35 +262,50 @@ var app = new Vue({
         axios.get(`/feedback/`, { params: {user_id: this.user_id} }).then((res) => {
             this.ans_feedback = res.data;
         });
-    }, 
+    },
+	logout: function() {
+		this.deleteCookies();
+		let reload = confirm("Perderai tutti i progressi di gioco, vuoi uscire?");
+		if(reload) location.reload();
+	},
 	deleteCookies: function() {
 		Cookies.remove('user_id');
 		Cookies.remove('questname');
 		Cookies.remove('status',0);
 		Cookies.remove('logged');
-		console.log('COOKIES ELIMINATI');
-		location.reload();
+		Cookies.remove('currentQuest');
+		Cookies.remove('currentSub');
+		//Cookies.remove('completedSubs');
+		Cookies.remove('in_mainquest');
+		console.log("SESSION CLEARED");
 	},
 	createCookies: function() {
-		//Creo coookie per ricordare che utente sono e a che quest mi trovo
+		//Creo coookie per ricordare che utente sono e che json caricare
 		Cookies.set('user_id',this.user_id);
 		Cookies.set('questname',this.questname);
 		Cookies.set('status',0);
 		Cookies.set('logged','true');
-		console.log("COOKIES CREATI");
+	},
+	updateCookies: function() {
+		//Aggiorno lo stato dei cookies
+		Cookies.set('currentQuest',this.currentQuest);
+		Cookies.set('currentSub',this.currentSub);
+		//Cookies.set('completedSubs',this.completedSubs);  // -> TODO domandare al server
+		Cookies.set('in_mainquest',this.in_mainquest);
+		console.log("Sessione aggiornata.");
 	},
 	restoreCookies: function() {
 		if(Cookies.get('logged')){
-			console.log("Restore section!");
 			this.user_id = Cookies.get('user_id');
 			this.questname = Cookies.get('questname');
-			console.log(this.user_id + this.questname);
+			this.currentQuest = Cookies.get('currentQuest');
+			this.currentSub = Cookies.get('currentSub');
+			//this.completedSubs = Cookies.get('completedSubs');
+			this.in_mainquest = Cookies.get('in_mainquest');
 			return true;
 		} else return false;
 	},
     changeQuest: function() {
-		console.log("SONO LOGGATO?");
-		console.log(Cookies.get('logged'));
 		let logged = this.restoreCookies();
         if(this.questname) {
             axios.get(`/stories/${this.questname}`).then(response => {
@@ -301,7 +316,6 @@ var app = new Vue({
                 axios.get("/uid", {params: {story_name: this.metadata.name}}).then(res => {
                   this.user_id = res.data;
 				  //Creo Cookies sull'utente
-				  console.log("CREO I COOKIES");
 				  this.createCookies();
                   //E mi faccio assegnare uno starting point
   //                this.currentQuest = this.parseStart(this.user_id);    //_------------------------------------------------DA TOGLIERE IL COMMENTO --------------------------------------------------
@@ -333,6 +347,7 @@ var app = new Vue({
     this.help_message = "";
     this.help_received = false;
     this.sendGameData();
+	this.updateCookies();
     resetDivScrolling();
     },
     goToMainQuest: function(){
@@ -345,6 +360,7 @@ var app = new Vue({
     this.help_message = "";
     this.help_received = false;
     this.sendGameData();
+	this.updateCookies();
     resetDivScrolling();
     },
     submitMain: function() {
@@ -406,6 +422,7 @@ var app = new Vue({
       this.picked = null;
       if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
       this.$refs.questname.focus();
+	  this.updateCookies();
     },
     submitSub: function() {
       this.$refs.inputForm.reset();
@@ -443,6 +460,7 @@ var app = new Vue({
       if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
       this.$refs.questname.focus();
       this.sendGameData();
+	  this.updateCookies();
       resetDivScrolling();
     },
     overwriteMainStyle: function(styles){
@@ -464,7 +482,7 @@ var app = new Vue({
     this.onLink.fill(false);
     this.onLink[num] = bool;
   },
-  menuLinkStyle: function(num) {
+  menuLinkStyle: function(num,apply) {
     var styles = {};
     if (!this.gamedata.css_style.background.image){
       if (!this.gamedata.css_style.background.style.nav.custom){
@@ -479,11 +497,13 @@ var app = new Vue({
             console.log(`error in JSON compilation: bootstrap navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
         styles = this.overwriteMainStyle(styles);
         //adding background color property
-        if (this.onLink[num]){
-          if (this.gamedata.css_style.background.style.nav.bootstrap.background != "bg-light")
-            styles = Object.assign(styles,{ "background-color": bootstrap_menu_links_light_background});
-          else
-            styles = Object.assign(styles,{ "background-color": bootstrap_menu_links_background});
+        if (apply){
+          if (this.onLink[num]){
+            if (this.gamedata.css_style.background.style.nav.bootstrap.background != "bg-light")
+              styles = Object.assign(styles,{ "background-color": bootstrap_menu_links_light_background});
+            else
+              styles = Object.assign(styles,{ "background-color": bootstrap_menu_links_background});
+          }
         }
       }
       else {
@@ -491,19 +511,23 @@ var app = new Vue({
         styles = Object.assign(styles, { "color" : this.gamedata.css_style.background.style.nav.customized.general["color"] } );
         styles = this.overwriteMainStyle(styles);
         //adding background color property
-        if (this.onLink[num])
-          if (this.gamedata.css_style.background.style.nav.customized.general["background-color"] == "white")
-              styles = Object.assign(styles,{ "background-color": menu_links_white_background });
-            else
-              styles = Object.assign(styles,{ "background-color": menu_links });
+        if (apply){
+          if (this.onLink[num])
+            if (this.gamedata.css_style.background.style.nav.customized.general["background-color"] == "white")
+                styles = Object.assign(styles,{ "background-color": menu_links_white_background });
+              else
+                styles = Object.assign(styles,{ "background-color": menu_links });
+        }
       }
     }
     else {
       styles = Object.assign(styles, { "color" : default_image_menu_links_text_color } );
       styles = this.overwriteMainStyle(styles);
       //adding background color property
-      if (this.onLink[num])
-        styles = Object.assign(styles,{ "background-color": default_image_menu_links_hover_backgroud_color });
+      if (apply){
+        if (this.onLink[num])
+          styles = Object.assign(styles,{ "background-color": default_image_menu_links_hover_backgroud_color });
+      }
     }
     //used for menu responsivness
     if (this.togglerButtonVisible)
@@ -513,8 +537,8 @@ var app = new Vue({
     return styles;
   },
   upgradeSubmitStyle: function(disabled){
-    styles = {};
     //adding responsive style
+    styles = {};
     if (!disabled)
       styles = Object.assign(styles,submit_button_style);
     else {
@@ -529,13 +553,17 @@ var app = new Vue({
   },
   computed: {
     currentComponent: function() {
-      var type = this.renderQuest.type;
-      if (type == "choice") return "choiceinput";
-      else if (type == "input") return "textinput";
-      else if (type == "draw") return "imginput";
-      else if (type == "keys") return "keyboardinput";
-      else if (type == "human") return "humaninput";
-      else return "";
+		try {
+		  var type = this.renderQuest.type;
+		  if (type == "choice") return "choiceinput";
+		  else if (type == "input") return "textinput";
+		  else if (type == "draw") return "imginput";
+		  else if (type == "keys") return "keyboardinput";
+		  else if (type == "human") return "humaninput";
+		  else return "";
+		} catch(error) {
+			console.log(error);
+		}
     },
     renderQuest: function() {
       if(this.gamedata == null)
@@ -672,7 +700,9 @@ var app = new Vue({
     //apply mainstyle in any case
     styles = this.overwriteMainStyle(styles);
     if (!this.togglerButtonVisible)
-      styles = Object.assign(styles, { "margin-top" : "-10px" } );
+      styles = Object.assign(styles, {
+         "margin-top" : "-10px"
+      });
     return styles;
   },
   helpAlertContainerStyle: function() {
@@ -695,7 +725,7 @@ var app = new Vue({
       styles = Object.assign(styles, { "color" : defaul_image_alert_color } );
     styles = this.overwriteMainStyle(styles);
     if (this.togglerButtonVisible)
-      styles = Object.assign(styles, { "margin-top" : "-10px" } );
+      styles = Object.assign(styles, { "margin-top" : "-10px" });
     return styles;
   },
   togglerButtonStyle: function() {

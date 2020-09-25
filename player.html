@@ -13,7 +13,7 @@
         <link href="external.css" rel="stylesheet">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     </head>
-    <body class="border border-primary h-100">
+    <body class="h-100">
         <div id="app" :style="loadImage">
 			<center>
 				<div id="questloader" ref="questloader">
@@ -27,7 +27,6 @@
                 <div class="navbar-brand" :style="navbarBrandStyle">Menu
                     <span class="badge" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert">Subs!</span>
                 </div>
-				<a class="nav-item nav-link" v-on:click="deleteCookies();" href="#">LOGOUT</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsiblemenu" :style="toggleButtonContainer" v-observe-visibility="buttonChangedVisibility" aria-label="Apri il menu">
                     <span class="navbar-toggler-icon" :style="{ 'background-image': togglerButtonStyle }"></span>
                 </button>
@@ -36,18 +35,22 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" id="quest-menu-button" href="#" data-toggle="dropdown" :style="questsStyle" role="button" aria-haspopup="true" role="menu" aria-controls="quest-menu-list">Quests</a>
                             <div class="dropdown-menu" id="quest-menu-list" :class="menuBootstrapStyle" :style="menuStyle" style="margin-bottom: 10px">
-                                <a class="dropdown-item" :style="menuLinkStyle(0)" v-on:mouseover="menuLinkEvent(0,true)" v-on:mouseleave="menuLinkEvent(0,false)" role="menuitem" href="#" v-on:click="goToMainQuest()">MainQuest {{currentQuest}}</a>
+                                <a class="dropdown-item" :style="menuLinkStyle(0,true)" v-on:mouseover="menuLinkEvent(0,true)" v-on:mouseleave="menuLinkEvent(0,false)" role="menuitem" href="#" v-on:click="goToMainQuest()">MainQuest {{currentQuest}}</a>
                                 <div v-if="getSubquests.length > 0" role="none">
                                     <div class="dropdown-divider" :style="dividerStyle"></div>
-                                    <a class="dropdown-item" role="menuitem" :style="menuLinkStyle(index+1)" v-on:mouseover="menuLinkEvent(index+1,true)" v-on:mouseleave="menuLinkEvent(index+1,false)" v-for="(quest,index) in getSubquests" href="#" v-on:click="goToSubQuest(quest)">Subquest {{quest.number}}: {{quest.objective}}</a>
+                                    <a class="dropdown-item" role="menuitem" :style="menuLinkStyle(index+1,true)" v-on:mouseover="menuLinkEvent(index+1,true)" v-on:mouseleave="menuLinkEvent(index+1,false)" v-for="(quest,index) in getSubquests" href="#" v-on:click="goToSubQuest(quest)">Subquest {{quest.number}}: {{quest.objective}}</a>
                                 </div>
                             </div>
                         </li>
                         <li class="nav-item" v-if="currentComponent">
-                            <a id="helpAlertContainer" class="nav-link" ref="help" href="#" @click="requestHelp" :style="helpAlertContainerStyle">
+                            <a id="helpAlertContainer" class="nav-link" ref="help" @click="requestHelp" :style="helpAlertContainerStyle">
                                 Chiedi aiuto
-                                <span ref="requestedHelp" class="alert" role="alert" :class="helpAlertBootstrapStyle" :style="helpAlertStyle" style="display:none; margin-left: 10px; margin-bottom: -10px;  white-space: nowrap;">Aiuto richiesto! Attendi...</span>
+                                <span ref="requestedHelp" class="alert" role="alert" :class="helpAlertBootstrapStyle" :style="helpAlertStyle"
+                                style="display:none; margin-left: 10px; margin-bottom: -10px; white-space: nowrap;">Aiuto richiesto! Attendi...</span>
                             </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" v-on:click="logout();" href="#" style="width: max-content" :style="menuLinkStyle(0,false)">LOGOUT</a>
                         </li>
                     </ul>
                 </div>

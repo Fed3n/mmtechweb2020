@@ -19,6 +19,7 @@ const port = 8000;
 var players_data = {};
 var players_chat = {};
 var players_ans = {};
+var players_deleted = [];
 var uid_generator = {};
 
 //##EXPRESS MIDDLEWARE AND OPTIONS##
@@ -88,10 +89,10 @@ app.get('/uid', (req, res) => {
 
 app.patch('/players/:player_id', (req, res) => {
     var id = req.params.player_id;
-    if(players_data[id]){
+    if(players_data[id] && !players_deleted.includes(id)){
       for (let key in req.body)
           players_data[id][key] = req.body[key];
-            return res.send(":)");
+            return res.send("Player sent data successfully");
     }
     else {
       return res.status(404).send({ error: "Couldn't find id"});
@@ -100,21 +101,32 @@ app.patch('/players/:player_id', (req, res) => {
 
 app.patch('/players/', (req, res) => {
     for(let id in req.body){
-        for(let key in req.body[id]){
-        players_data[id][key] = req.body[id][key];
-      }
+        if (!players_deleted.includes(id)) {
+            for(let key in req.body[id]){
+                players_data[id][key] = req.body[id][key];
+            }
+        }
     }
     return res.status(201).send("Data updated successfully.");
 });
 
 app.get('/players/', (req, res) => {
-    if(req.query.user_id){
-        return res.status(200).send(players_data[req.query.user_id]);
+    var id = req.query.user_id;
+    if (id) {
+        if (!players_deleted.includes(id))
+            return res.status(200).send(players_data[req.query.user_id]);
+        else
+            return res.status(404).send("Player data not available anymore");
     }
     else {
-	console.log(players_data);
         return res.status(200).send(players_data);
     }
+});
+
+app.delete('/players/:player_id', (req, res) => {
+    var id = req.params.player_id;
+    players_deleted.push(id);
+    delete players_data[id];
 });
 
 //valutatore fa get di risposte, restituite solo se ci sono
