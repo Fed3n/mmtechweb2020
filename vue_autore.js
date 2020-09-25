@@ -287,6 +287,14 @@
                   _this.imagesList = res.data;
               });
           },
+          deleteImg: function() {
+            let _this = this;
+            if(this.selectedImage) 
+              axios.delete(`/stories/${this.metadata.name}/images`, { params: { img: this.selectedImage }}).then((res) => {
+                _this.getImagesList();
+                _this.selectedImage = "";
+              });
+          },
           uploadVid: function() {
               if(this.$refs.vid_upload.files[0] && this.loadedStory){
                   //Mando come multipart/form-data
@@ -301,7 +309,6 @@
                           }
                       })
                       .then((res) => {
-                          console.log(res);
                           _this.getVideosList();
                       });
               }
@@ -313,6 +320,14 @@
                   console.log(res.data);
                   _this.vidsList = res.data;
               });
+          },
+          deleteVid: function() {
+              let _this = this;
+              if(this.selectedVideo) 
+                axios.delete(`/stories/${this.metadata.name}/videos`, { params: { vid: this.selectedVideo }}).then((res) => {
+                  _this.getVideosList();
+                  _this.selectedVideo = "";
+                });
           },
           getStyle: function() {
             let _this = this;
@@ -682,8 +697,8 @@
               link.click();
           },
           createQR: function() {
-                  var qrname = this.$refs.fileName.value.replace('.json', '');
-				  var qrcontent = this.$refs.storyName.value.replace('.json','');
+                  let qrname = this.metadata.name;
+		  let qrcontent = this.metadata.name;
                   qr.clear();
                   qr.makeCode(qrcontent);
                   var node = this.$refs.qrcode;

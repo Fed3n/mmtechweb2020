@@ -84,7 +84,7 @@ app.get('/uid', (req, res) => {
 	'answer': {},
 	'feedback': ""
     };
-    return res.send(uid);
+    return res.status(200).send(uid);
 });
 
 app.patch('/players/:player_id', (req, res) => {
@@ -231,11 +231,11 @@ app.get('/stories/:storyName', (req, res) => {
 
 app.post('/stories', (req, res) => {
     console.log("Posting story :)");
-    var storyName = req.body.storyName;
-    var json = req.body.json;
-    var meta = req.body.meta;
-    var storydir = path.join(__dirname + "/story");
-    var newdir = path.join(storydir + "/" + storyName);
+    let storyName = req.body.storyName;
+    let json = req.body.json;
+    let meta = req.body.meta;
+    let storydir = path.join(__dirname + "/story");
+    let newdir = path.join(storydir + "/" + storyName);
     //Se la directory c'è già non la ricrea
     fs.mkdirSync(newdir, { recursive: true });
     fs.writeFile(path.join(newdir + "/" + storyName + ".json"), JSON.stringify(json), (error) => {
@@ -250,14 +250,14 @@ app.post('/stories', (req, res) => {
     });
     fs.mkdirSync(path.join(newdir+"/images"), {recursive: true});
     fs.mkdirSync(path.join(newdir+"/videos"), {recursive: true});
-    res.send(":)");
+    res.status(201).send("Story posted successfully.");
 });
 
 app.delete('/stories', (req, res) => {
-    var story = req.query.storyName;
+    let  story = req.query.storyName;
     console.log("Deleting story: " + story);
-    var storydir = path.join(__dirname + "/story");
-    var dir = path.join(storydir + "/" + story);
+    let storydir = path.join(__dirname + "/story");
+    let dir = path.join(storydir + "/" + story);
     fs.rmdir(dir, { recursive: true }, (error) => {
         if(error) throw error;
         console.log("Deleted story " + story);
@@ -266,35 +266,48 @@ app.delete('/stories', (req, res) => {
 });
 
 app.get('/stories/:storyName/images', (req, res) =>{
-    console.log(`Getting content of /story/${req.params.storyName}/images`);
-    var imgdir = path.join(__dirname + `/story/${req.params.storyName}/images/`);
+    let imgdir = path.join(__dirname + `/story/${req.params.storyName}/images/`);
     let entrylist = fs.readdirSync(imgdir);
-    res.send(entrylist);
+    res.status(200).send(entrylist);
 });
 
 app.post('/stories/:storyName/images', (req, res) => {
-    var targetDir = path.join(__dirname + "/story/" + req.params.storyName + "/images/");
-    fs.mkdirSync(targetDir, { recursive: true });
-    fs.writeFile(path.join(targetDir + req.files.image.name), req.files.image.data, (error) => {
+    let imgdir = path.join(__dirname + `/story/${req.params.storyName}/images/`);
+    fs.mkdirSync(imgdir, { recursive: true });
+    fs.writeFile(path.join(imgdir + req.files.image.name), req.files.image.data, (error) => {
         if(error)   throw error;
     });
     res.status(201).send("Image created successfully.");
 });
 
+app.delete('/stories/:storyName/images/', (req, res) => {
+    let imgdir = path.join(__dirname + `/story/${req.params.storyName}/images/`);
+    let img = req.query.img;
+    console.log(path.join(imgdir+img));
+    fs.unlinkSync(path.join(imgdir+img)); 
+    res.status(200).send("Image deleted successfully.");
+});
+
 app.get('/stories/:storyName/videos', (req, res) =>{
-    console.log(`Getting content of /story/${req.params.storyName}/videos`);
-    var viddir = path.join(__dirname + `/story/${req.params.storyName}/videos/`);
+    let viddir = path.join(__dirname + `/story/${req.params.storyName}/videos/`);
     let entrylist = fs.readdirSync(viddir);
-    res.send(entrylist);
+    res.status(200).send(entrylist);
 });
 
 app.post('/stories/:storyName/videos', (req, res) => {
-    var targetDir = path.join(__dirname + "/story/" + req.params.storyName + "/videos/");
-    fs.mkdirSync(targetDir, { recursive: true });
-    fs.writeFile(path.join(targetDir + req.files.video.name), req.files.video.data, (error) => {
+    let viddir = path.join(__dirname + `/story/${req.params.storyName}/videos/`);
+    fs.mkdirSync(viddir, { recursive: true });
+    fs.writeFile(path.join(viddir + req.files.video.name), req.files.video.data, (error) => {
         if(error)   throw error;
     });
     res.status(201).send("Video created successfully.");
+});
+
+app.delete('/stories/:storyName/videos/', (req, res) => {
+    let viddir = path.join(__dirname + `/story/${req.params.storyName}/videos/`);
+    let vid = req.query.vid;
+    fs.unlinkSync(path.join(viddir+vid)); 
+    res.status(200).send("Video deleted successfully.");
 });
 
 //##STILI##//
@@ -305,7 +318,7 @@ app.get('/styles/interfaces', (req, res) => {
     for(let i = 0; i < entrylist.length; i++){
       entrylist[i].replace(/.json$/g,"");
     }
-    return res.send(entrylist);
+    return res.status(200).send(entrylist);
 });
 
 app.get('/styles/interfaces/:interfaceName', (req, res) => {
@@ -313,7 +326,7 @@ app.get('/styles/interfaces/:interfaceName', (req, res) => {
     let json = fs.readFileSync(jsonpath);
     let load = JSON.parse(json);
     res.setHeader('Content-Type','application/json');
-    res.json(load);
+    res.status(200).json(load);
 });
 
 app.post('/styles/interfaces/', (req, res) => {
@@ -339,7 +352,7 @@ app.get('/styles/keyboards', (req, res) => {
     for(let i = 0; i < entrylist.length; i++){
       entrylist[i].replace(/.json$/g,"");
     }
-    return res.send(entrylist);
+    return res.status(200).send(entrylist);
 });
 
 app.get('/styles/keyboards/:keyName', (req, res) => {
@@ -347,7 +360,7 @@ app.get('/styles/keyboards/:keyName', (req, res) => {
     let json = fs.readFileSync(jsonpath);
     let load = JSON.parse(json);
     res.setHeader('Content-Type','application/json');
-    res.json(load);
+    res.status(200).json(load);
 });
 
 app.post('/styles/keyboards/', (req, res) => {

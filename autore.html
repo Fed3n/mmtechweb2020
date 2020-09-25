@@ -58,6 +58,9 @@
                             <select name="select-image" class="form-control" v-model="selectedImage">
                                 <option v-for="imgname in imagesList" :value="imgname">{{ imgname }}</option>
                             </select>
+                            <div>
+                                <button class="btn btn-danger" v-on:click="deleteImg()">DELETE</button>
+                            </div>
                             <div id="image-preview" v-if="selectedImage" class="container-fluid mt-2">
                                 <img class="img-thumbnail" width="60%" :src="'story/' + metadata.name + '/images/' + selectedImage" :alt="'Preview of ' + selectedImage">
                             </div>
@@ -79,6 +82,9 @@
                             <select name="select-video" class="form-control" v-model="selectedVideo">
                                 <option v-for="vidname in vidsList" :value="vidname">{{ vidname }}</option>
                             </select>
+                            <div>
+                                <button class="btn btn-danger" v-on:click="deleteVid()">DELETE</button>
+                            </div>
                             <div id="video-preview" v-if="selectedVideo" class="container-fluid mt-2">
                                 <video width="60%" controls :src="'story/' + metadata.name + '/videos/' + selectedVideo">Anteprima di {{ selectedVideo }}</video>
                             </div>
@@ -101,7 +107,9 @@
                         <div class="col-7"><input name="file-downloader" type="text" value="myfile.json" ref="fileName"></div>
                     </div>
                     <button class="btn btn-success" v-on:click="saveJson">SCARICA FILE</button>
-                    <button class="btn btn-info" v-on:click="createQR">Crea QR Code</button>
+                    <div id="qrcreate" class="mt-3">
+                        <button class="btn btn-info" v-on:click="createQR">Crea QR Code</button>
+                    </div>
                 </div>
             </div>
         </div>
