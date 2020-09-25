@@ -797,8 +797,8 @@
           //style functions
           setImage: function(event){
             console.log("caricamento");
-            this.gamedata.css_style.background.url = "url(stories/" + this.metadata.name + "/images/" + event.target.value + ")";
-          },
+            this.gamedata.css_style.background.url = `url("story/${this.metadata.name}/images/${event.target.value}");`;
+          }, 
           fontSize: function(event) {
 						this.gamedata.css_style.mainStyle["font-size"] = event.target.value+"px";
 					},
