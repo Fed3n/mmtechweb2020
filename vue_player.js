@@ -131,7 +131,7 @@ var app = new Vue({
     received_feedback: false,
     chat: [],
     chat_msg: "",
-	bool_inchat: false,
+	  bool_inchat: false,
     gamedata: gamedata_pholder,
     metadata: metadata_pholder,
     questname: null,
