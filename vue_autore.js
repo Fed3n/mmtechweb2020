@@ -463,6 +463,7 @@
                   if (this.questClipboard.main) {
                       var quest = Object.assign({}, this.renderQuest)
                       quest.goto = [];
+                      quest.subquest_rewards = [];
                       quest.number = num;
                       this.gamedata.mainQuest.push(quest);
                   }
@@ -470,6 +471,7 @@
                   if (this.questClipboard.sub) {
                       var quest = Object.assign({}, this.renderQuest)
                       quest.goto = [];
+                      quest.subquest_rewards = [];
                       quest.number = num;
                       this.gamedata.subQuests.push(quest);
                   }
