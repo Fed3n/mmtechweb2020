@@ -461,17 +461,13 @@
               num = this.previewdata.in_mainquest ? this.gamedata.mainQuest.length : this.gamedata.subQuests.length;
               if (this.previewdata.in_mainquest) {
                   if (this.questClipboard.main) {
-                      var quest = Object.assign({}, this.renderQuest)
-                      quest.goto = [];
-                      quest.subquest_rewards = [];
+                      var quest = JSON.parse(JSON.stringify(this.renderQuest));
                       quest.number = num;
                       this.gamedata.mainQuest.push(quest);
                   }
               } else {
                   if (this.questClipboard.sub) {
-                      var quest = Object.assign({}, this.renderQuest)
-                      quest.goto = [];
-                      quest.subquest_rewards = [];
+                      var quest = JSON.parse(JSON.stringify(this.renderQuest));
                       quest.number = num;
                       this.gamedata.subQuests.push(quest);
                   }
