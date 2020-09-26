@@ -289,7 +289,7 @@
           },
           deleteImg: function() {
             let _this = this;
-            if(this.selectedImage) 
+            if(this.selectedImage)
               axios.delete(`/stories/${this.metadata.name}/images`, { params: { img: this.selectedImage }}).then((res) => {
                 _this.getImagesList();
                 _this.selectedImage = "";
@@ -323,7 +323,7 @@
           },
           deleteVid: function() {
               let _this = this;
-              if(this.selectedVideo) 
+              if(this.selectedVideo)
                 axios.delete(`/stories/${this.metadata.name}/videos`, { params: { vid: this.selectedVideo }}).then((res) => {
                   _this.getVideosList();
                   _this.selectedVideo = "";
@@ -462,12 +462,14 @@
               if (this.previewdata.in_mainquest) {
                   if (this.questClipboard.main) {
                       var quest = Object.assign({}, this.renderQuest)
+                      quest.goto = [];
                       quest.number = num;
                       this.gamedata.mainQuest.push(quest);
                   }
               } else {
                   if (this.questClipboard.sub) {
                       var quest = Object.assign({}, this.renderQuest)
+                      quest.goto = [];
                       quest.number = num;
                       this.gamedata.subQuests.push(quest);
                   }
