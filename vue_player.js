@@ -566,6 +566,7 @@ var app = new Vue({
 		}
     },
     renderQuest: function() {
+		console.log("SONO IN RENDERQUEST");
       if(this.gamedata == null) {
 		console.log("Renderquest If 0");
         return null;
@@ -578,31 +579,30 @@ var app = new Vue({
 		this.time_inactive = Cookies.get('time_inactive'); //4
 		this.score = Cookies.get('score'); //5
 		this.currentQuest = Cookies.get('currentQuest'); //6
+		//I Cookies vengono salvati solo come stringhe, e non come booleani
 		if(Cookies.get('in_mainquest') === 'true') this.in_mainquest = true; //7
 		else this.in_mainquest = false; //7
 		this.currentSub = Cookies.get('currentSub'); //8
 		console.log("Sono loggato: " + this.user_id + this.questname + this.in_mainquest);
 		this.changeQuest();
 	  }
-      if(this.in_mainquest){
-		console.log("RenderQuest If 1");
-		console.log(this.gamedata.mainQuest);
-		console.log(this.currentQuest);
-		return this.gamedata.mainQuest[this.currentQuest];
-	  }else {
-		console.log("Renderquest If 2");
-		return this.gamedata.subQuests[this.currentSub];
-	  }
+      if(this.in_mainquest) return this.gamedata.mainQuest[this.currentQuest];
+	  else return this.gamedata.subQuests[this.currentSub];
     },
     getSubquests: function() {
+	  console.log("SONO IN GET SUBQUEST");
       var subQuestList = [];
-      if(!this.gamedata) return subQuestList;
-            for(sub of this.gamedata.subQuests){
+      if(!this.gamedata) {
+		  console.log("RITORNO NULL");
+		  return subQuestList;
+	  }
+	  console.log(this.gamedata);
+      for(sub of this.gamedata.subQuests){
         if (!this.completedSubs.includes(sub.number) && sub.available_on.includes(this.currentQuest)
           && sub.requires_sub.every( val => this.completedSubs.includes(val) ))
               subQuestList.push(sub);
-            }
-            return subQuestList;
+      }
+      return subQuestList;
     },
     getCurrentClues: function() {
       clues = [];
