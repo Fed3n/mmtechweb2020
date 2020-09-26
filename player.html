@@ -16,7 +16,7 @@
     <body class="h-100">
         <div id="app" :style="loadImage">
 			<center>
-				<div id="questloader" ref="questloader">
+				<div v-if="!questname" id="questloader" ref="questloader">
 					<h1 class="display-2">QUEST LOADER</h1>
 					<qrload style="height: 400px" :questname="questname"></qrload>
 				</div>
@@ -42,7 +42,7 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="nav-item" v-if="currentComponent">
+                        <li class="nav-item" v-if="renderQuest && currentComponent">
                             <a id="helpAlertContainer" class="nav-link" ref="help" @click="requestHelp" :style="helpAlertContainerStyle">
                                 Chiedi aiuto
                                 <span ref="requestedHelp" class="alert" role="alert" :class="helpAlertBootstrapStyle" :style="helpAlertStyle"
@@ -57,42 +57,42 @@
 				</nav>
 			</div>
         <!--Area quest-->
-		<div id="accordion" class="accordion" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
+		<div v-if="questname" id="accordion" class="accordion" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
         <div class="card player-card" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
             <div class="card-header h-10" :style="cardLimitStyle">
                 <h3 id="questname" ref="questname" tabindex="-1">
                     <button type="button" class="btn btn-lg btn-block border" :class="mainquestButtonBootstrapStyle" :style="removePredefinedStylesCard" data-toggle="collapse" data-target="#rendercard" v-on:click="chatAppear(false)">
           						{{in_mainquest ? "Quest" : "Subquest"}}
-          						{{ in_mainquest ? currentQuest : currentSub }}: {{ renderQuest.title || "no_name" }}
+          						{{ in_mainquest ? currentQuest : currentSub }}: {{ renderQuest ? renderQuest.title : "no_name" }}
           					</button>
                 </h3>
             </div>
 			<div id="rendercard" class="collapse show" data-parent="#accordion">
 				<div class="card-body player-body show overflow-auto" :style="removePredefinedStylesCard">
 					<form ref="inputForm" v-on:submit.prevent="in_mainquest? submitMain() : submitSub()">
-							<p style="white-space: pre-line;">{{ renderQuest.text }}</p>
-							<p style="white-space: pre-line;">{{ renderQuest.description || "" }}</p>
-							<ul v-if="in_mainquest && getCurrentClues.length > 0">
+							<p style="white-space: pre-line;">{{ renderQuest ? renderQuest.text : "no_text" }}</p>
+							<p style="white-space: pre-line;">{{ renderQuest ? renderQuest.description : "" }}</p>
+							<ul v-if="renderQuest && in_mainquest && getCurrentClues.length > 0">
 									<li v-for="clue in getCurrentClues">{{ clue }}</li>
 							</ul>
 							<div v-if="help_received && help_message">Hint: {{help_message}}</div>
 							<!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
-							<div id="gameinput">
+							<div v-if="renderQuest" id="gameinput">
 							  <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :current="in_mainquest ? currentQuest : currentSub"
 							  :options="in_mainquest ? getCurrentOptions : renderQuest.options" v-model="picked" ref="inputComponent" :styles="componentStyle"></component>
 							</div>
 					</form>
 					<!--EVENTUALI MEDIA-->
-					<div v-if="renderQuest.media">
-              <img width="100%" v-if="renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
-              <div v-if="renderQuest.media.type=='video'">
+					<div v-if="renderQuest && renderQuest.media">
+              <img width="100%" v-if="renderQuest && renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
+              <div v-if="renderQuest && renderQuest.media.type=='video'">
                   <video width="100%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
                   </video>
               </div>
           </div>
-					<p v-if="renderQuest.type == 'ending'">Punteggio finale: {{ score }}</p>
+					<p v-if="renderQuest && renderQuest.type == 'ending'">Punteggio finale: {{ score }}</p>
             </div>
-		            <div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
+		            <div v-if="renderQuest && renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
                 <button ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :disabled="submitDisabled" :style="submitStyle" v-on:click="in_mainquest? submitMain() : submitSub()">
                     Submit
                 </button>
