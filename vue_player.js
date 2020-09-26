@@ -1,6 +1,6 @@
 window.onload = function(){
-    document.getElementById("questname").focus();
-	if(Cookies.get('logged') === 'true') app.changeQuest();
+	let title = document.getElementById("questname");
+    if(title) title.focus();
 }
 
 //PLACEHOLDER OBJECTS//
@@ -118,6 +118,7 @@ var app = new Vue({
     "qrload": httpVueLoader("components/qrload.vue")
   },
   data: {
+	restored: false,
     user_id: "",
     time_played: 0,
     time_inactive: 0,    // entrambe in secondi
@@ -271,60 +272,44 @@ var app = new Vue({
 	deleteCookies: function() {
 		Cookies.remove('user_id');
 		Cookies.remove('questname');
-		Cookies.remove('status',0);
 		Cookies.remove('logged');
+		Cookies.remove('time_played');
+		Cookies.remove('time_inactive');
+		Cookies.remove('score');
 		Cookies.remove('currentQuest');
 		Cookies.remove('currentSub');
-		//Cookies.remove('completedSubs');
+		Cookies.remove('completedSubs');
 		Cookies.remove('in_mainquest');
 		console.log("SESSION CLEARED");
 	},
-	createCookies: function() {
-		//Creo coookie per ricordare che utente sono e che json caricare
-		Cookies.set('user_id',this.user_id);
-		Cookies.set('questname',this.questname);
-		Cookies.set('status',0);
-		Cookies.set('logged','true');
-	},
-	updateCookies: function() {
-		//Aggiorno lo stato dei cookies
-		Cookies.set('currentQuest',this.currentQuest);
-		Cookies.set('currentSub',this.currentSub);
-		//Cookies.set('completedSubs',this.completedSubs);  // -> TODO domandare al server
-		Cookies.set('in_mainquest',this.in_mainquest);
-		console.log("Sessione aggiornata.");
-	},
-	restoreCookies: function() {
-		if(Cookies.get('logged')){
-			this.user_id = Cookies.get('user_id');
-			this.questname = Cookies.get('questname');
-			this.currentQuest = Cookies.get('currentQuest');
-			this.currentSub = Cookies.get('currentSub');
-			//this.completedSubs = Cookies.get('completedSubs');
-			this.in_mainquest = Cookies.get('in_mainquest');
-			return true;
-		} else return false;
-	},
     changeQuest: function() {
-		let logged = this.restoreCookies();
         if(this.questname) {
             axios.get(`/stories/${this.questname}`).then(response => {
               this.gamedata = response.data.json;
               this.metadata = response.data.meta;
-			  if(!logged) {
+			  if(!Cookies.get('logged')) {
                 //Chiedo al server il mio user id che è in formato nome_storia$numero
                 axios.get("/uid", {params: {story_name: this.metadata.name}}).then(res => {
                   this.user_id = res.data;
 				  //Creo Cookies sull'utente
-				  this.createCookies();
+					Cookies.set('logged','true');
+					Cookies.set('user_id',this.user_id);
+					Cookies.set('questname',this.questname);
+					Cookies.set('time_played',this.time_played);
+					Cookies.set('time_inactive',this.time_inactive);
+					Cookies.set('score',this.score);
+					Cookies.set('in_mainquest',true);
+					Cookies.set('currentQuest',0);
+					Cookies.set('currentSub',0);
+					//Con restored il sistema non dovrà ripristinare i cookies. 
+					//Se la pagina viene ricaricata, restored va a false per default e i cookies vengono ripristinati.
+					this.restored = true;
                   //E mi faccio assegnare uno starting point
-  //                this.currentQuest = this.parseStart(this.user_id);    //_------------------------------------------------DA TOGLIERE IL COMMENTO --------------------------------------------------
+                  //this.currentQuest = this.parseStart(this.user_id);    //_------------------------------------------------DA TOGLIERE IL COMMENTO --------------------------------------------------
 				});
 			  }
             });
         }
-        this.$refs.questloader.remove();
-        this.$refs.questrender.removeAttribute("hidden");
     },
     parseStart: function(id) {
         if(this.gamedata.starting_points) {
@@ -347,7 +332,14 @@ var app = new Vue({
     this.help_message = "";
     this.help_received = false;
     this.sendGameData();
-	this.updateCookies();
+	//Aggiorno status Cookies
+	console.log("Entro nella subquest");
+	Cookies.set('in_mainquest',this.in_mainquest);
+	Cookies.set('currentSub',this.currentSub);
+	console.log(this.currentSub);
+	console.log(Cookies.get('currentSub'));
+	console.log(this.in_mainquest);
+	console.log(Cookies.get('in_mainquest'));
     resetDivScrolling();
     },
     goToMainQuest: function(){
@@ -360,7 +352,9 @@ var app = new Vue({
     this.help_message = "";
     this.help_received = false;
     this.sendGameData();
-	this.updateCookies();
+	//Aggiorno lo stato dei cookies
+	Cookies.set('in_mainquest',this.in_mainquest);
+	Cookies.set('currentQuest',this.currentQuest);
     resetDivScrolling();
     },
     submitMain: function() {
@@ -421,8 +415,10 @@ var app = new Vue({
       this.upgradeSubmitStyle(true);
       this.picked = null;
       if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
+	  //Aggiorno lo stato dei cookies
+	  Cookies.set('in_mainquest',this.in_mainquest);
+	  Cookies.set('currentQuest',this.currentQuest);
       this.$refs.questname.focus();
-	  this.updateCookies();
     },
     submitSub: function() {
       this.$refs.inputForm.reset();
@@ -460,7 +456,9 @@ var app = new Vue({
       if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
       this.$refs.questname.focus();
       this.sendGameData();
-	  this.updateCookies();
+	  //Aggiorno lo status dei Cookies
+	  Cookies.set('in_mainquest',this.in_mainquest);
+	  Cookies.set('currentSub',this.currentSub);
       resetDivScrolling();
     },
     overwriteMainStyle: function(styles){
@@ -554,7 +552,9 @@ var app = new Vue({
   computed: {
     currentComponent: function() {
 		try {
+		  console.log("Computed Current Component");
 		  var type = this.renderQuest.type;
+		  console.log("Cerco di caricare il componente...");
 		  if (type == "choice") return "choiceinput";
 		  else if (type == "input") return "textinput";
 		  else if (type == "draw") return "imginput";
@@ -562,24 +562,47 @@ var app = new Vue({
 		  else if (type == "human") return "humaninput";
 		  else return "";
 		} catch(error) {
-			console.log(error);
+			console.log("RELOAD COMPONENT!");
 		}
     },
     renderQuest: function() {
-      if(this.gamedata == null)
+		console.log("SONO IN RENDERQUEST");
+      if(this.gamedata == null) {
+		console.log("Renderquest If 0");
         return null;
-            if(this.in_mainquest) return this.gamedata.mainQuest[this.currentQuest];
-                else return this.gamedata.subQuests[this.currentSub];
+	  }
+	  if(Cookies.get('logged') == 'true' && this.restored == false) {
+		this.restored = true;
+		this.user_id = Cookies.get('user_id'); //1
+		this.questname = Cookies.get('questname'); //2
+		this.time_played = Cookies.get('time_played'); //3
+		this.time_inactive = Cookies.get('time_inactive'); //4
+		this.score = Cookies.get('score'); //5
+		this.currentQuest = Cookies.get('currentQuest'); //6
+		//I Cookies vengono salvati solo come stringhe, e non come booleani
+		if(Cookies.get('in_mainquest') === 'true') this.in_mainquest = true; //7
+		else this.in_mainquest = false; //7
+		this.currentSub = Cookies.get('currentSub'); //8
+		console.log("Sono loggato: " + this.user_id + this.questname + this.in_mainquest);
+		this.changeQuest();
+	  }
+      if(this.in_mainquest) return this.gamedata.mainQuest[this.currentQuest];
+	  else return this.gamedata.subQuests[this.currentSub];
     },
     getSubquests: function() {
+	  console.log("SONO IN GET SUBQUEST");
       var subQuestList = [];
-      if(!this.gamedata) return subQuestList;
-            for(sub of this.gamedata.subQuests){
+      if(!this.gamedata) {
+		  console.log("RITORNO NULL");
+		  return subQuestList;
+	  }
+	  console.log(this.gamedata);
+      for(sub of this.gamedata.subQuests){
         if (!this.completedSubs.includes(sub.number) && sub.available_on.includes(this.currentQuest)
           && sub.requires_sub.every( val => this.completedSubs.includes(val) ))
               subQuestList.push(sub);
-            }
-            return subQuestList;
+      }
+      return subQuestList;
     },
     getCurrentClues: function() {
       clues = [];
