@@ -8,7 +8,12 @@ var app = new Vue({
     players_ans: {},
     current_chat_id: null,
     chat_msg: {},
-    chat_notify: {}
+    chat_notify: {},
+    previewdata: {
+      in_mainquest: true,
+      currentQuest: 0,
+      currentSub: 0
+    }
   },
   mounted: function() {
     this.updatesEvery5Seconds();
@@ -139,6 +144,10 @@ var app = new Vue({
     computeJson: function(id) {
       let story = this.computeStory(id);
       return this.ongoing_stories[story];
+    },
+    getQuestData: function(story) {
+      if(this.previewdata.in_mainquest) return this.ongoing_stories[story].mainQuest[this.previewdata.currentQuest];
+      else return this.ongoing_stories[story].subQuests[this.previewdata.currentSub];
     }
   },
   computed: {
