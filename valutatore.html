@@ -67,8 +67,8 @@
             </div><br>
 
             <div id="previewblock" v-if="ongoing_stories[activeStories[0]]" class="container mt-3 mb-3">
-              <button class="btn btn-block btn-outline-secondary" type="button" data-toggle="collapse" data-target="#story-preview">Preview Storia</button>
-              <div id="story-preview" class="container-fluid collapse overflow-auto p-2">
+              <button class="btn btn-block btn-outline-secondary" type="button" data-toggle="collapse" data-target="#story-preview-1">Preview Storia</button>
+              <div id="story-preview-1" class="container-fluid collapse overflow-auto p-2">
                 <div id="preview-menu" class="row">
                   <div class="form-check col-md-3">
                     <label class="form-check-label">
@@ -88,34 +88,72 @@
                       <select class="form-input" v-model="previewdata.currentSub">
                         <option v-for="quest in  ongoing_stories[activeStories[0]].subQuests" :value="quest.number">{{ quest.number }}: {{ ( quest.title || "" ) }}</option>
                       </select>
+                    </div>     
+                  </div>
+                </div>
+                <div id="preview-view" v-if="getQuestData(activeStories[0])">
+                  <div class="row m-1">
+                    <div class="bg-primary col-6"><p class="text-light font-weight-bold">Titolo</p></div>
+                    <div class="col-6">{{ (getQuestData(activeStories[0]).title || "none") }}</div>
+                  </div>
+                  <div class="row m-1">
+                    <div class="bg-primary col-6"><p class="text-light font-weight-bold">Testo</p></div>
+                    <div class="col-6"><p>{{ (getQuestData(activeStories[0]).text || "none") }}</p></div>
+                  </div>
+                  <div class="row m-1">
+                    <div class="bg-primary col-6"><p class="text-light font-weight-bold">Descrizione</p></div>
+                    <div class="col-6"><p>{{ (getQuestData(activeStories[0]).description || "none") }}</p></div>
+                  </div>
+                  <div class="row m-1">
+                    <div class="bg-primary col-6"><p class="text-light font-weight-bold">Media</p></div>
+                    <div class="col-6"><p>{{ (getQuestData(activeStories[0]).description || "none") }}</p></div>
+                  </div>
+                  <div v-if="getQuestData(activeStories[0]).type=='choice'" class="container m-1">
+                    <div class="row bg-primary">
+                      <p class="text-light font-weight-bold">Opzioni standard</p>
                     </div>
-                    <div id="preview-view" v-if="getQuestData(activeStories[0])">
-                      <p>Title: {{ (getQuestData(activeStories[0]).title || "none") }}</p>
-                      <p>Text: {{ (getQuestData(activeStories[0]).text || "none") }}</p>
-                      <p>Description: {{ (getQuestData(activeStories[0]).description || "none") }}</p>
-                      <div v-if="getQuestData(activeStories[0]).type=='choice'">
-                        <p>Opzioni</p>
-                        <ul>
-                          <li v-for="opt in getQuestData(activeStories[0]).options">{{ opt }}</li>
-                        </ul>
+                    <div v-for="opt in getQuestData(activeStories[0]).options" class="row">
+                      <p>{{ opt }}</p>
+                    </div>
+                    <div v-if="getQuestData(activeStories[0]).subquest_rewards.length > 0">
+                      <div class="row bg-primary">
+                        <p class="text-light font-weight-bold">Opzioni aggiunte</p>
                       </div>
-                      <p>Media: {{ (getQuestData(activeStories[0]).media.alt || "none") }}</p>
-                      <div v-if="previewdata.in_mainquest">
-                        <p>Gotos</p>
-                        <ul>
-                          <li v-for="goto in getQuestData(activeStories[0]).goto">
-                            {{ goto[0] }} : {{ goto[1] }} 
-                          </li>
-                        </ul>
+                      <div v-for="sub in getQuestData(activeStories[0]).subquest_rewards">
+                        <div v-for="opt in sub.added_options" class="row">
+                          <div class="col-6"><p>{{ sub.title || sub.number }}</p></div>
+                          <div class="col-6"><p>{{ opt }}</p></div>
+                        </div>
                       </div>
-                      <div v-if="!previewdata.in_mainquest">
-                        <p>Soluzioni</p>
-                        <ul>
-                          <li v-for="sol in getQuestData(activeStories[0]).solution">
-                            {{ sol }}
-                          </li>
-                        </ul>
+                    </div>
+                  </div>
+                  <div v-if="previewdata.in_mainquest" class="container m-1">
+                    <div class="row bg-primary">
+                      <p class="text-light font-weight-bold">Goto standard</p>
+                    </div>
+                    <div v-for="goto in getQuestData(activeStories[0]).goto" class="row">
+                      <div class="col-6"><p>Risposta: {{ goto[0] }}</p></div>
+                      <div class="col-6"><p>Porta a: {{ goto[1] }}</p></div>
+                    </div>
+                    <div v-if="getQuestData(activeStories[0]).subquest_rewards.length > 0">
+                      <div class="row bg-primary">
+                        <p class="text-light font-weight-bold">Goto aggiunti</p>
                       </div>
+                      <div v-for="sub in getQuestData(activeStories[0]).subquest_rewards">
+                        <div v-for="goto in sub.added_goto" class="row">
+                          <div class="col-4"><p>{{ sub.title || sub.number }}</p></div>
+                          <div class="col-4"><p>Risposta: {{  goto[0] || "No_risposta"  }}</p></div>
+                          <div class="col-4"><p>Porta a: {{ goto[1] }}</p></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div> 
+                  <div v-if="!previewdata.in_mainquest" class="row m-1">
+                    <div class="row bg-primary">
+                      <p class="text-light font-weight-bold">Soluzioni</p>
+                    </div>
+                    <div v-for="sol in getQuestData(activeStories[0]).solution" class="row">
+                      <p>{{ sol }}</p>
                     </div>
                   </div>
                 </div>
@@ -214,31 +252,69 @@
                   </div>
                 </div>
                 <div id="preview-view" v-if="getQuestData(story)">
-                  <p>Titolo: {{ (getQuestData(story).title || "none") }}</p>
-                  <p>Testo: {{ (getQuestData(story).text || "none") }}</p>
-                  <p>Descrizione: {{ (getQuestData(story).description || "none") }}</p>
-                  <div v-if="getQuestData(story).type=='choice'">
-                    <p>Opzioni</p>
-                    <ul>
-                      <li v-for="opt in getQuestData(story).options">{{ opt }}</li>
-                    </ul>
+                  <div class="row m-1">
+                    <div class="bg-primary col-6"><p class="text-light font-weight-bold">Titolo</p></div>
+                    <div class="col-6">{{ (getQuestData(story).title || "none") }}</div>
                   </div>
-                  <p>Media: {{ (getQuestData(story).media.alt || "none") }}</p>
-                  <div v-if="previewdata.in_mainquest">
-                    <p>Gotos</p>
-                    <ul>
-                      <li v-for="goto in getQuestData(story).goto">
-                        {{ goto[0] }} : {{ goto[1] }} 
-                      </li>
-                    </ul>
+                  <div class="row m-1">
+                    <div class="bg-primary col-6"><p class="text-light font-weight-bold">Testo</p></div>
+                    <div class="col-6"><p>{{ (getQuestData(story).text || "none") }}</p></div>
                   </div>
-                  <div v-if="!previewdata.in_mainquest">
-                    <p>Soluzioni</p>
-                    <ul>
-                      <li v-for="sol in getQuestData(story).solution">
-                        {{ sol }}
-                      </li>
-                    </ul>
+                  <div class="row m-1">
+                    <div class="bg-primary col-6"><p class="text-light font-weight-bold">Descrizione</p></div>
+                    <div class="col-6"><p>{{ (getQuestData(story).description || "none") }}</p></div>
+                  </div>
+                  <div class="row m-1">
+                    <div class="bg-primary col-6"><p class="text-light font-weight-bold">Media</p></div>
+                    <div class="col-6"><p>{{ (getQuestData(story).description || "none") }}</p></div>
+                  </div>
+                  <div v-if="getQuestData(story).type=='choice'" class="container m-1">
+                    <div class="row bg-primary">
+                      <p class="text-light font-weight-bold">Opzioni standard</p>
+                    </div>
+                    <div v-for="opt in getQuestData(story).options" class="row">
+                      <p>{{ opt }}</p>
+                    </div>
+                    <div v-if="getQuestData(story).subquest_rewards.length > 0">
+                      <div class="row bg-primary">
+                        <p class="text-light font-weight-bold">Opzioni aggiunte</p>
+                      </div>
+                      <div v-for="sub in getQuestData(story).subquest_rewards">
+                        <div v-for="opt in sub.added_options" class="row">
+                          <div class="col-6"><p>{{ sub.title || sub.number }}</p></div>
+                          <div class="col-6"><p>{{ opt }}</p></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div v-if="previewdata.in_mainquest" class="container m-1">
+                    <div class="row bg-primary">
+                      <p class="text-light font-weight-bold">Goto standard</p>
+                    </div>
+                    <div v-for="goto in getQuestData(story).goto" class="row">
+                      <div class="col-6"><p>Risposta: {{ goto[0] }}</p></div>
+                      <div class="col-6"><p>Porta a: {{ goto[1] }}</p></div>
+                    </div>
+                    <div v-if="getQuestData(story).subquest_rewards.length > 0">
+                      <div class="row bg-primary">
+                        <p class="text-light font-weight-bold">Goto aggiunti</p>
+                      </div>
+                      <div v-for="sub in getQuestData(story).subquest_rewards">
+                        <div v-for="goto in sub.added_goto" class="row">
+                          <div class="col-4"><p>{{ sub.title || sub.number }}</p></div>
+                          <div class="col-4"><p>Risposta: {{  goto[0] || "No_risposta"  }}</p></div>
+                          <div class="col-4"><p>Porta a: {{ goto[1] }}</p></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div> 
+                  <div v-if="!previewdata.in_mainquest" class="row m-1">
+                    <div class="row bg-primary">
+                      <p class="text-light font-weight-bold">Soluzioni</p>
+                    </div>
+                    <div v-for="sol in getQuestData(story).solution" class="row">
+                      <p>{{ sol }}</p>
+                    </div>
                   </div>
                 </div>
               </div>
