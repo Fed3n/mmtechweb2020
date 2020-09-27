@@ -25,20 +25,28 @@
             <div id="questrender" ref="questrender" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
                 <nav class="navbar navbar-expand-md" :class="navbarBootstrapStyle" :style="navbarStyle">
                 <div class="navbar-brand" :style="navbarBrandStyle">Menu
-                    <span class="badge" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert">Subs!</span>
+                    <span class="badge" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert" aria-label="missioni disponibili nel menù">Subs!</span>
                 </div>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsiblemenu" :style="toggleButtonContainer" v-observe-visibility="buttonChangedVisibility" aria-label="Apri il menu">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsiblemenu" :style="toggleButtonContainer" 
+		v-observe-visibility="buttonChangedVisibility" aria-label="Apri il menu">
                     <span class="navbar-toggler-icon" :style="{ 'background-image': togglerButtonStyle }"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="collapsiblemenu">
                     <ul class="navbar-nav" aria-labelledby="quest-menu-button">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="quest-menu-button" href="#" data-toggle="dropdown" :style="questsStyle" role="button" aria-haspopup="true" role="menu" aria-controls="quest-menu-list">Quests</a>
+                            <a class="nav-link dropdown-toggle" id="quest-menu-button" href="#" data-toggle="dropdown" :style="questsStyle" 
+			    role="button" aria-haspopup="true" role="menu" aria-controls="quest-menu-list" aria-label="lista quests">Quests</a>
                             <div class="dropdown-menu" id="quest-menu-list" :class="menuBootstrapStyle" :style="menuStyle" style="margin-bottom: 10px">
-                                <a class="dropdown-item" :style="menuLinkStyle(0,true)" v-on:mouseover="menuLinkEvent(0,true)" v-on:mouseleave="menuLinkEvent(0,false)" role="menuitem" href="#" v-on:click="goToMainQuest()">MainQuest {{currentQuest}}</a>
+                                <a class="dropdown-item" :style="menuLinkStyle(0,true)" v-on:mouseover="menuLinkEvent(0,true)" v-on:mouseleave="menuLinkEvent(0,false)" 
+				role="menuitem" href="#" v-on:click="goToMainQuest()">
+					Quest principale: {{ gamedata.mainQuest[currentQuest].title || gamedata.mainQuest[currentQuest].number }}
+				</a>
                                 <div v-if="getSubquests.length > 0" role="none">
                                     <div class="dropdown-divider" :style="dividerStyle"></div>
-                                    <a class="dropdown-item" role="menuitem" :style="menuLinkStyle(index+1,true)" v-on:mouseover="menuLinkEvent(index+1,true)" v-on:mouseleave="menuLinkEvent(index+1,false)" v-for="(quest,index) in getSubquests" href="#" v-on:click="goToSubQuest(quest)">Subquest {{quest.number}}: {{quest.objective}}</a>
+                                    <a class="dropdown-item" role="menuitem" :style="menuLinkStyle(index+1,true)" v-on:mouseover="menuLinkEvent(index+1,true)" 
+				    v-on:mouseleave="menuLinkEvent(index+1,false)" v-for="(quest,index) in getSubquests" href="#" v-on:click="goToSubQuest(quest)">
+					Quest secondaria: {{ quest.title || quest.number }}
+				    </a>
                                 </div>
                             </div>
                         </li>
@@ -61,15 +69,15 @@
         <div class="card player-card" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
             <div class="card-header h-10" :style="cardLimitStyle">
                 <h3 id="questname" ref="questname" tabindex="-1">
-                    <button type="button" class="btn btn-lg btn-block border" :class="mainquestButtonBootstrapStyle" :style="removePredefinedStylesCard" data-toggle="collapse" data-target="#rendercard" v-on:click="chatAppear(false)">
-          						{{in_mainquest ? "Quest" : "Subquest"}}
-          						{{ in_mainquest ? currentQuest : currentSub }}: {{ renderQuest ? renderQuest.title : "no_name" }}
-          					</button>
+                    <button type="button" class="btn btn-lg btn-block border" :class="mainquestButtonBootstrapStyle" :style="removePredefinedStylesCard" 
+		    data-toggle="collapse" data-target="#rendercard" v-on:click="chatAppear(false)">
+			{{ renderQuest ? (renderQuest.title || "renderQuest.number") : "" }}
+		    </button>
                 </h3>
             </div>
 			<div id="rendercard" class="collapse show" data-parent="#accordion">
 				<div class="card-body player-body show overflow-auto" :style="removePredefinedStylesCard">
-					<form ref="inputForm" v-on:submit.prevent="in_mainquest? submitMain() : submitSub()">
+					<form ref="inputForm" v-on:submit.prevent="in_mainquest? submitMain() : submitSub()" aria-label="descrizione quest">
 							<p style="white-space: pre-line;">{{ renderQuest ? renderQuest.text : "no_text" }}</p>
 							<p style="white-space: pre-line;">{{ renderQuest ? renderQuest.description : "" }}</p>
 							<ul v-if="renderQuest && in_mainquest && getCurrentClues.length > 0">
@@ -93,7 +101,9 @@
 					<p v-if="renderQuest && renderQuest.type == 'ending'">Punteggio finale: {{ score }}</p>
             </div>
 		            <div v-if="renderQuest && renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
-                <button ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" :disabled="submitDisabled" :style="submitStyle" v-on:click="in_mainquest? submitMain() : submitSub()">
+		<!--Bottone submit non c'è se siamo in un ending o in una subquest di tipo none-->
+                <button v-if="!(renderQuest.type == 'ending' || (renderQuest.type == '' && !in_mainquest))" ref="submitbutton" class="btn-default" :class="submitBootstrapStyle" 
+		:disabled="submitDisabled" :style="submitStyle" v-on:click="in_mainquest? submitMain() : submitSub()">
                     Submit
                 </button>
             </div>
