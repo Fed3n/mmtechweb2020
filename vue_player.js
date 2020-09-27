@@ -119,6 +119,7 @@ var app = new Vue({
   },
   data: {
 	restored: false,
+	restoredSubs : false,
     user_id: "",
     time_played: 0,
     time_inactive: 0,    // entrambe in secondi
@@ -280,6 +281,7 @@ var app = new Vue({
 		Cookies.remove('currentSub');
 		Cookies.remove('completedSubs');
 		Cookies.remove('in_mainquest');
+		Cookies.remove('subQuestList');
 		console.log("SESSION CLEARED");
 	},
     changeQuest: function() {
@@ -596,12 +598,27 @@ var app = new Vue({
 		  console.log("RITORNO NULL");
 		  return subQuestList;
 	  }
-	  console.log(this.gamedata);
-      for(sub of this.gamedata.subQuests){
-        if (!this.completedSubs.includes(sub.number) && sub.available_on.includes(this.currentQuest)
-          && sub.requires_sub.every( val => this.completedSubs.includes(val) ))
-              subQuestList.push(sub);
-      }
+	  if(Cookies.get('logged') == 'true' && this.restoredSubs == false) {
+		restoredSubs = true;
+		console.log("Cookies delle subs trovato! Ripristino...");
+		subQuestList = Cookies.getJSON('subQuestList');
+		console.log(subQuestList);
+	  }
+	  else {
+		  for(sub of this.gamedata.subQuests){
+			if (!this.completedSubs.includes(sub.number) && sub.available_on.includes(this.currentQuest)
+			  && sub.requires_sub.every( val => this.completedSubs.includes(val) ))
+				  subQuestList.push(sub);
+		  }
+		  console.log("SUBQUEST DISPONIBILI: ");
+		  console.log(subQuestList);
+		  this.restoredSubs = true;
+		  let obj = JSON.stringify(subQuestList);
+		  console.log(obj);
+		  console.log("Converto in cookies: ");
+		  Cookies.set('subQuestList',obj);
+		  console.log(Cookies.getJSON('subQuestList'));
+	  }
       return subQuestList;
     },
     getCurrentClues: function() {
