@@ -121,38 +121,38 @@
                       </div>
                       <div v-for="sub in getQuestData(activeStories[0]).subquest_rewards">
                         <div v-for="opt in sub.added_options" class="row">
-                          <div class="col-6"><p>{{ sub.title || sub.number }}</p></div>
+                          <div class="col-6"><p>Da: {{ sub.title || sub.number }}</p></div>
                           <div class="col-6"><p>{{ opt }}</p></div>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div v-if="previewdata.in_mainquest" class="container m-1">
-                    <div class="row bg-primary">
+                    <div class="container row bg-primary">
                       <p class="text-light font-weight-bold">Goto standard</p>
                     </div>
-                    <div v-for="goto in getQuestData(activeStories[0]).goto" class="row">
+                    <div v-for="goto in getQuestData(activeStories[0]).goto" class="container row">
                       <div class="col-6"><p>Risposta: {{ goto[0] }}</p></div>
                       <div class="col-6"><p>Porta a: {{ goto[1] }}</p></div>
                     </div>
                     <div v-if="getQuestData(activeStories[0]).subquest_rewards.length > 0">
-                      <div class="row bg-primary">
+                      <div class="container row bg-primary">
                         <p class="text-light font-weight-bold">Goto aggiunti</p>
                       </div>
                       <div v-for="sub in getQuestData(activeStories[0]).subquest_rewards">
-                        <div v-for="goto in sub.added_goto" class="row">
-                          <div class="col-4"><p>{{ sub.title || sub.number }}</p></div>
+                        <div v-for="goto in sub.added_goto" class="container row">
+                          <div class="col-4"><p>Da: {{ sub.title || sub.number }}</p></div>
                           <div class="col-4"><p>Risposta: {{  goto[0] || "No_risposta"  }}</p></div>
                           <div class="col-4"><p>Porta a: {{ goto[1] }}</p></div>
                         </div>
                       </div>
                     </div>
                   </div> 
-                  <div v-if="!previewdata.in_mainquest" class="row m-1">
-                    <div class="row bg-primary">
+                  <div v-if="!previewdata.in_mainquest" class="container m-1">
+                    <div class="container row bg-primary">
                       <p class="text-light font-weight-bold">Soluzioni</p>
                     </div>
-                    <div v-for="sol in getQuestData(activeStories[0]).solution" class="row">
+                    <div v-for="sol in getQuestData(activeStories[0]).solution" class="container row">
                       <p>{{ sol }}</p>
                     </div>
                   </div>
@@ -281,38 +281,38 @@
                       </div>
                       <div v-for="sub in getQuestData(story).subquest_rewards">
                         <div v-for="opt in sub.added_options" class="row">
-                          <div class="col-6"><p>{{ sub.title || sub.number }}</p></div>
+                          <div class="col-6"><p>Da: {{ sub.title || sub.number }}</p></div>
                           <div class="col-6"><p>{{ opt }}</p></div>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div v-if="previewdata.in_mainquest" class="container m-1">
-                    <div class="row bg-primary">
+                    <div class="container row bg-primary">
                       <p class="text-light font-weight-bold">Goto standard</p>
                     </div>
-                    <div v-for="goto in getQuestData(story).goto" class="row">
+                    <div v-for="goto in getQuestData(story).goto" class="container row">
                       <div class="col-6"><p>Risposta: {{ goto[0] }}</p></div>
                       <div class="col-6"><p>Porta a: {{ goto[1] }}</p></div>
                     </div>
                     <div v-if="getQuestData(story).subquest_rewards.length > 0">
-                      <div class="row bg-primary">
+                      <div class="container row bg-primary">
                         <p class="text-light font-weight-bold">Goto aggiunti</p>
                       </div>
                       <div v-for="sub in getQuestData(story).subquest_rewards">
-                        <div v-for="goto in sub.added_goto" class="row">
-                          <div class="col-4"><p>{{ sub.title || sub.number }}</p></div>
+                        <div v-for="goto in sub.added_goto" class="container row">
+                          <div class="col-4"><p>Da: {{ sub.title || sub.number }}</p></div>
                           <div class="col-4"><p>Risposta: {{  goto[0] || "No_risposta"  }}</p></div>
                           <div class="col-4"><p>Porta a: {{ goto[1] }}</p></div>
                         </div>
                       </div>
                     </div>
                   </div> 
-                  <div v-if="!previewdata.in_mainquest" class="row m-1">
-                    <div class="row bg-primary">
+                  <div v-if="!previewdata.in_mainquest" class="container row m-1">
+                    <div class="container row bg-primary">
                       <p class="text-light font-weight-bold">Soluzioni</p>
                     </div>
-                    <div v-for="sol in getQuestData(story).solution" class="row">
+                    <div v-for="sol in getQuestData(story).solution" class="container row">
                       <p>{{ sol }}</p>
                     </div>
                   </div>

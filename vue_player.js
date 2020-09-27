@@ -8,6 +8,7 @@ gamedata_pholder = {
         "mainQuest": [
               {
                      "number": 0,
+		     "title": "",
                      "text": "",
                      "type": "",
                      "description": "",
@@ -23,7 +24,7 @@ gamedata_pholder = {
         "subQuests": [
           {
             "number": 0,
-            "objective": "",
+            "title": "",
             "available_on": [],
             "requires_sub": [],
             "text": "",
@@ -289,6 +290,8 @@ var app = new Vue({
             axios.get(`/stories/${this.questname}`).then(response => {
               this.gamedata = response.data.json;
               this.metadata = response.data.meta;
+	      document.getElementById("questname").focus();
+	      
 			  if(!Cookies.get('logged')) {
                 //Chiedo al server il mio user id che è in formato nome_storia$numero
                 axios.get("/uid", {params: {story_name: this.metadata.name}}).then(res => {
@@ -595,10 +598,8 @@ var app = new Vue({
 	  else return this.gamedata.subQuests[this.currentSub];
     },
     getSubquests: function() {
-	  console.log("SONO IN GET SUBQUEST");
       var subQuestList = [];
       if(!this.gamedata) {
-		  console.log("RITORNO NULL");
 		  return subQuestList;
 	  }
 	  if(Cookies.get('logged') == 'true' && this.restoredSubs == false) {
