@@ -492,13 +492,11 @@
                       //e cancellare i riferimenti con indice = index
                       //Non sto usando i for each perché mi serve il riferimento diretto all'array per cambiarne i valori...
                       for (i = 0; i < mains.length; i++) {
-                          console.log("for esterno");
                           if (i != index) {
                               //number
                               if (mains[i].number > index) mains[i].number -= 1;
                               //goto
                               for (j = 0; j < mains[i].goto.length; j++) {
-                                  console.log("for gotos");
                                   if (mains[i].goto[j][1] == index) {
                                       mains[i].goto.splice(j, 1);
                                       j--;
@@ -506,7 +504,6 @@
                               }
                               //sub_rewards
                               for (j = 0; j < mains[i].subquest_rewards.length; j++) {
-                                  console.log("for rewards");
                                   //added_goto
                                   for (k = 0; k < mains[i].subquest_rewards[j].added_goto.length; k++) {
                                       if (mains[i].subquest_rewards[j].added_goto[k][1] == index) {
@@ -516,7 +513,6 @@
                                   }
                                   //removed_goto
                                   for (k = 0; k < mains[i].subquest_rewards[j].removed_goto.length; k++) {
-                                      console.log("for removedgotos");
                                       if (mains[i].subquest_rewards[j].removed_goto[k] == index) {
                                           mains[i].subquest_rewards[j].removed_goto.splice(k, 1);
                                           k--;
@@ -527,7 +523,6 @@
                       }
                       subs = this.gamedata.subQuests;
                       for (i = 0; i < subs.length; i++) {
-                          console.log("for available_on");
                           for (j = 0; j < subs[i].available_on.length; j++) {
                               if (subs[i].available_on[j] == index) {
                                   subs[i].available_on.splice(j, 1);
