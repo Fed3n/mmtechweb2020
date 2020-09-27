@@ -271,17 +271,17 @@ var app = new Vue({
 		if(reload) location.reload();
 	},
 	deleteCookies: function() {
-		Cookies.remove('user_id');
-		Cookies.remove('questname');
-		Cookies.remove('logged');
-		Cookies.remove('time_played');
-		Cookies.remove('time_inactive');
-		Cookies.remove('score');
-		Cookies.remove('currentQuest');
-		Cookies.remove('currentSub');
-		Cookies.remove('completedSubs');
-		Cookies.remove('in_mainquest');
-		Cookies.remove('subQuestList');
+		Cookies.remove('user_id'); //1
+		Cookies.remove('questname'); //2
+		Cookies.remove('logged'); //3
+		Cookies.remove('time_played'); //4
+		Cookies.remove('time_inactive'); //5
+		Cookies.remove('score'); //6
+		Cookies.remove('currentQuest'); //7
+		Cookies.remove('currentSub'); //8
+		Cookies.remove('completedSubs'); //9
+		Cookies.remove('in_mainquest'); //10
+		Cookies.remove('subQuestList'); //11
 		console.log("SESSION CLEARED");
 	},
     changeQuest: function() {
@@ -461,6 +461,8 @@ var app = new Vue({
 	  //Aggiorno lo status dei Cookies
 	  Cookies.set('in_mainquest',this.in_mainquest);
 	  Cookies.set('currentSub',this.currentSub);
+	  let obj = JSON.stringify(this.completedSubs);
+	  Cookies.set('completedSubs',obj);
       resetDivScrolling();
     },
     overwriteMainStyle: function(styles){
@@ -585,6 +587,7 @@ var app = new Vue({
 		if(Cookies.get('in_mainquest') === 'true') this.in_mainquest = true; //7
 		else this.in_mainquest = false; //7
 		this.currentSub = Cookies.get('currentSub'); //8
+		this.completedSubs = Cookies.getJSON('completedSubs'); //9
 		console.log("Sono loggato: " + this.user_id + this.questname + this.in_mainquest);
 		this.changeQuest();
 	  }
@@ -616,7 +619,7 @@ var app = new Vue({
 		  let obj = JSON.stringify(subQuestList);
 		  console.log(obj);
 		  console.log("Converto in cookies: ");
-		  Cookies.set('subQuestList',obj);
+		  Cookies.set('subQuestList',obj); //10
 		  console.log(Cookies.getJSON('subQuestList'));
 	  }
       return subQuestList;
