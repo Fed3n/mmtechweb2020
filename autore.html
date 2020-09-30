@@ -619,7 +619,8 @@
                     <div class="col-md-2 border-right pt-2 pb-2">
                         <h2 class="bg-info text-light">Nodi Precedenti</h2>
                         <button class="btn btn-secondary btn-block" v-for="prev in previewdata.in_mainquest ? getPrevNodes : renderQuest.requires_sub"
-                        data-toggle="tooltip" :title="gamedata.mainQuest[prev].title" v-on:click="jumpToQuest('main',prev)">
+                        data-toggle="tooltip" :title="previewdata.in_mainquest ? gamedata.mainQuest[prev].title : gamedata.subQuests[prev].title"
+                        v-on:click="previewdata.in_mainquest ? jumpToQuest('main',prev) : jumpToQuest('sub',prev)">
                             {{ previewdata.in_mainquest ? ( gamedata.mainQuest[prev].title || prev ) : ( gamedata.subQuests[prev].title || prev ) }}
                         </button>
                     </div>
