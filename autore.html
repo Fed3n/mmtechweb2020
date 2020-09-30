@@ -595,7 +595,7 @@
                     <div id="current-answer" v-if="previewdata.picked" class="overflow-auto m-3" style="word-wrap:break-word;">
                         <p>Risposta corrente: {{ previewdata.picked }}</p>
                         <div v-if="previewdata.in_mainquest">
-                            <button class="btn btn-secondary" v-if="renderQuest.goto.length > 0" data-toggle="tooltip"
+                            <button class="btn btn-secondary" v-if="getCurrentGotos" data-toggle="tooltip"
                             :title="gamedata.mainQuest[getAnswerGoto].title" v-on:click="jumpToQuest('main',getAnswerGoto)">
                                 {{ "Questa risposta porterà a " + (gamedata.mainQuest[getAnswerGoto].title || getAnswerGoto)}}
                             </button>
