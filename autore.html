@@ -969,7 +969,7 @@
                                         </div>
                                     </div>
                                     <!--Reward REMOVED OPTIONS-->
-                                    <label for="rmoptsub" v-if="renderQuest.type=='choice'">Opzioni Rimosse</label>
+                                    <label for="rmoptsub" v-if="renderQuest.type=='choice'" class="mt-3">Opzioni Rimosse</label>
                                     <div name="rmoptsub" v-if="renderQuest.type=='choice'">
                                         <div v-for="opt in renderQuest.options">
                                             <input readonly class="form-control" :value="opt">
@@ -980,7 +980,7 @@
                                         </div>
                                     </div>
                                     <!--Reward ADDED GOTOS-->
-                                    <label for="addedgotosub">Destinazioni Aggiuntive</label>
+                                    <label for="addedgotosub" class="mt-3">Destinazioni Aggiuntive</label>
                                     <div name="addedgotosub">
                                         <div class="form-group row" v-for="goto in sub.added_goto">
                                             <input class="form-control col-md-6" type="text" v-model="goto[0]" placeholder="Risposta">
@@ -1064,11 +1064,11 @@
                                 <p>O clicka su un punto della preview e imposta un raggio per generare la risposta corretta dell'immagine.</p>
                                 <div class="btn-group">
                                     <div class="form-group">
-                                        <label for="goto-radius">Radius</label>
+                                        <label for="goto-radius">Raggio</label>
                                         <input class="form-control" type="text" v-model="radiusInput">
                                     </div>
                                     <p v-if="previewdata.picked">Risposta corretta impostata a {{ previewdata.picked }} con raggio {{ radiusInput }}.</p>
-                                    <button class="btn btn-primary" v-on:click="addSolution('image')">Aggiungi</button>
+                                    <button class="btn btn-primary" v-on:click="addSolution('draw')">Aggiungi</button>
                                 </div>
                             </div>
                         </div>
