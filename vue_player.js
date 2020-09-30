@@ -427,8 +427,9 @@ var app = new Vue({
     },
     submitSub: function() {
       this.$refs.inputForm.reset();
-      let wrong_answer = true;
+      let wrong_answer = (this.renderQuest.type === "")? false : true;
       let subQuest = this.renderQuest;
+      if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
       if (subQuest.type == "draw") {
           for(ans of subQuest.solution){
               let x = ans[0];
@@ -449,8 +450,6 @@ var app = new Vue({
 
       this.time_inactive = 0;
       this.completedSubs.push(subQuest.number);
-      if (this.currentComponent != "")
-        this.$refs.help.classList.remove("disabled");
       this.help_message = "";
       this.help_received = false;
       this.in_mainquest = true;
@@ -458,7 +457,6 @@ var app = new Vue({
       this.picked = null;
       //If per ragioni di compatibilità...
       if(this.renderQuest.sub_score) this.score += parseInt(this.renderQuest.sub_score);
-      if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
       this.$refs.questname.focus();
       this.sendGameData();
 	  //Aggiorno lo status dei Cookies
