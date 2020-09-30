@@ -204,9 +204,9 @@
                                 <div id="imageEditor" class="panel-collapse collapse stylepanelcollapse">
                                   <div class="panel-body border-bottom mt-2 px-4 pb-3">
                                     <label for="select-image">Scegli l'immagine: </label>
-                                    <select ref="selectimages" name="select-image" class="form-control" @change="setImage">
-                                        <option ref="emptyOptionImages" value=""></option>
-                                        <option v-for="imgname in imagesList" :value="imgname">{{ imgname }}</option>
+                                    <select ref="selectimages" name="select-image" class="form-control" v-model="gamedata.css_style.background.url">
+
+                                        <option v-for="imgname in imagesList" :value=`url('story/${metadata.name}/images/${imgname}')`>{{ imgname }}</option>
                                     </select>
                                     <small v-if="!imagesList" class="text-muted">Non sono presenti immagini in questa storia, caricane una nella sezione "area dati"</small>
                                   </div>
@@ -595,7 +595,7 @@
                     <div id="current-answer" v-if="previewdata.picked" class="overflow-auto m-3" style="word-wrap:break-word;">
                         <p>Risposta corrente: {{ previewdata.picked }}</p>
                         <div v-if="previewdata.in_mainquest">
-                            <button class="btn btn-secondary" v-if="getCurrentGotos" data-toggle="tooltip"
+                            <button class="btn btn-secondary" v-if="getCurrentGotos.length > 0" data-toggle="tooltip"
                             :title="gamedata.mainQuest[getAnswerGoto].title" v-on:click="jumpToQuest('main',getAnswerGoto)">
                                 {{ "Questa risposta porterà a " + (gamedata.mainQuest[getAnswerGoto].title || getAnswerGoto)}}
                             </button>

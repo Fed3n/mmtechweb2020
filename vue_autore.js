@@ -397,6 +397,10 @@
                   this.previewdata.currentSub = number;
                   this.previewdata.picked = null;
               }
+              //removes all form past selections
+              this.$refs.inputForm.reset();
+              if(this.currentComponent != "")
+                this.$refs.help.classList.remove("disabled");
           },
           switchView: function(mobile){
       	     this.mobileView = mobile;
@@ -698,7 +702,7 @@
           },
           createQR: function() {
                   let qrname = this.metadata.name;
-		  let qrcontent = this.metadata.name;
+		              let qrcontent = this.metadata.name;
                   qr.clear();
                   qr.makeCode(qrcontent);
                   var node = this.$refs.qrcode;
@@ -810,12 +814,16 @@
              $('.stylepanelcollapse').collapse('hide');
           },
           //style functions
-          setImage: function(event){
+          setImage: function(event) {
+             this.gamedata.css_style.background.url =  `url('story/${this.metadata.name}/images/${event.target.value}')`;
+          },
+          /*setImage: function(event){
             console.log("caricamento");
-            if (this.$refs.selectimages.contains(this.$refs.emptyOptionImages))
-              this.$refs.selectimages.removeChild(this.$refs.emptyOptionImages);
+      //      if (this.$refs.selectimages.contains(this.$refs.emptyOptionImages))
+      //        this.$refs.selectimages.removeChild(this.$refs.emptyOptionImages);
             this.gamedata.css_style.background.url =  `url('story/${this.metadata.name}/images/${event.target.value}')`;
           },
+          */
           fontSize: function(event) {
 						this.gamedata.css_style.mainStyle["font-size"] = event.target.value+"px";
 					},
