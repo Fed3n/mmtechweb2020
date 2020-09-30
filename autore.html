@@ -567,7 +567,7 @@
                                       <p style="white-space: pre-line;">{{ renderQuest.text }}</p>
                                       <p style="white-space: pre-line;">{{ renderQuest.description || "" }}</p>
                                       <ul v-if="previewdata.in_mainquest && getCurrentClues.length > 0">
-                                              <li v-for="clue in getCurrentClues">{{ clue }}</li>
+                                              <li v-for="clue in getCurrentClues" v-if="clue">{{ clue }}</li>
                                       </ul>
                                       <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
                                       <div id="gameinput">
