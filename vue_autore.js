@@ -124,6 +124,14 @@
   var qr = new QRCode(document.getElementById("qrcode"), "placeholder");
   this.qr.clear();
 
+/*
+  Vue.filter('subtract_px', function (value) {
+    if (!value) return '';
+    value = value.toString();
+    return value.charAt(0).toUpperCase() + value.slice(1);
+  });
+*/
+
   var app = new Vue({
       el: "#app",
       components: {
@@ -812,16 +820,6 @@
              $('.stylepanelcollapse').collapse('hide');
           },
           //style functions
-          setImage: function(event) {
-             this.gamedata.css_style.background.url =  `url('story/${this.metadata.name}/images/${event.target.value}')`;
-          },
-          /*setImage: function(event){
-            console.log("caricamento");
-      //      if (this.$refs.selectimages.contains(this.$refs.emptyOptionImages))
-      //        this.$refs.selectimages.removeChild(this.$refs.emptyOptionImages);
-            this.gamedata.css_style.background.url =  `url('story/${this.metadata.name}/images/${event.target.value}')`;
-          },
-          */
           fontSize: function(event) {
 						this.gamedata.css_style.mainStyle["font-size"] = event.target.value+"px";
 					},
