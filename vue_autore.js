@@ -399,7 +399,7 @@
               }
               //removes all form past selections
               this.$refs.inputForm.reset();
-              if(this.currentComponent != "")
+              if(this.$refs.help)
                 this.$refs.help.classList.remove("disabled");
           },
           switchView: function(mobile){
@@ -781,8 +781,9 @@
           },
           submitSub: function() {
             this.$refs.inputForm.reset();
-            let wrong_answer = true;
+            let wrong_answer = (this.renderQuest.type === "")? false : true;
             let subQuest = this.renderQuest;
+            if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
             if (subQuest.type == "draw") {
                 for(ans of subQuest.solution){
                     let x = ans[0];
@@ -801,12 +802,9 @@
             }
             if (wrong_answer) return;
             this.previewdata.completedSubs.push(subQuest.number);
-            if (this.currentComponent != "")
-              this.$refs.help.classList.remove("disabled");
             this.previewdata.in_mainquest = true;
             this.upgradeSubmitStyle(true);
             this.previewdata.picked = null;
-            if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
             this.$refs.questname.focus();
             //window.scrollTo(0,0);
           },
