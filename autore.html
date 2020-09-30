@@ -756,7 +756,7 @@
                                 <button class="btn btn-outline-primary" v-on:click="addRmOptions('rm')">Rimuovi</button>
                             </div>
                             <div class="btn-group">
-                                <button class="btn btn-outline-primary" v-on:click="generateChoiceGotos">Genera Goto</button>
+                                <button class="btn btn-outline-primary" v-on:click="generateChoiceGotos">Genera Destinazioni</button>
                             </div>
                         </div>
                         <!-- Quest CHOOSE IMAGE (only if type is draw)-->
@@ -979,7 +979,7 @@
                                         </div>
                                     </div>
                                     <!--Reward ADDED GOTOS-->
-                                    <label for="addedgotosub">Goto Aggiuntivi</label>
+                                    <label for="addedgotosub">Destinazioni Aggiuntive</label>
                                     <div name="addedgotosub">
                                         <div class="form-group row" v-for="goto in sub.added_goto">
                                             <input class="form-control col-md-6" type="text" v-model="goto[0]" placeholder="Risposta">
@@ -1006,7 +1006,7 @@
                             <div v-if="previewdata.in_mainquest">
                                 <p>Se nessuna risposta è corretta verrà scelta automaticamente l'ultima</p>
                                 <div class="container-fluid border-bottom pb-4">
-                                    <h2 class="bg-info text-light">Goto di Default</h2>
+                                    <h2 class="bg-info text-light">Destinazioni di Default</h2>
                                     <div class="form-group" v-for="opt in renderQuest.goto">
                                         <input class="form-control" type="text" v-model="opt[0]" placeholder="Risposta">
                                         <select class="form-control" name="quests" v-model="opt[1]">
@@ -1027,19 +1027,19 @@
                                         <button class="btn btn-danger" v-on:click="rmGoto">Rimuovi</button>
                                     </div>
                                     <div v-if="renderQuest.type=='draw'" class="container-fluid pt-2">
-                                        <p>O clicka su un punto della preview e imposta un raggio per generare un goto per l'immagine.</p>
+                                        <p>O clicka su un punto della preview e imposta un raggio per generare la risposta corretta dell'immagine.</p>
                                         <div class="btn-group">
                                             <div class="form-group">
                                                 <label for="goto-radius">Raggio</label>
                                                 <input class="form-control" type="text" v-model="radiusInput">
                                             </div>
-                                            <p v-if="previewdata.picked">Goto settato a {{ previewdata.picked }} con raggio {{ radiusInput }}.</p>
+                                            <p v-if="previewdata.picked">Risposta corretta impostata a {{ previewdata.picked }} con raggio {{ radiusInput }}.</p>
                                             <button class="btn btn-primary" v-on:click="addGoto('image')">Aggiungi</button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="container-fluid">
-                                    <h2 class="bg-info text-light mt-2">Goto Aggiuntivi</h2>
+                                    <h2 class="bg-info text-light mt-2">Destinazioni Aggiuntive</h2>
                                     <!--getAddedGotos restituisce coppia [indice subquest, goto]-->
                                     <div v-for="opt in getAddedGotos">
                                         <input type="text" v-model="renderQuest.subquest_rewards[opt[0]].added_goto[renderQuest.subquest_rewards[opt[0]].added_goto.indexOf(opt[1])][0]">
@@ -1060,13 +1060,13 @@
                                 <button class="btn btn-primary" v-on:click="addSolution">Aggiungi</button>
                             </div>
                             <div v-if="renderQuest.type=='draw'" class="container-fluid pt-2">
-                                <p>O clicka su un punto della preview e imposta un raggio per generare un goto per l'immagine.</p>
+                                <p>O clicka su un punto della preview e imposta un raggio per generare la risposta corretta dell'immagine.</p>
                                 <div class="btn-group">
                                     <div class="form-group">
                                         <label for="goto-radius">Radius</label>
                                         <input class="form-control" type="text" v-model="radiusInput">
                                     </div>
-                                    <p v-if="previewdata.picked">Goto settato a {{ previewdata.picked }} con raggio {{ radiusInput }}.</p>
+                                    <p v-if="previewdata.picked">Risposta corretta impostata a {{ previewdata.picked }} con raggio {{ radiusInput }}.</p>
                                     <button class="btn btn-primary" v-on:click="addSolution('image')">Aggiungi</button>
                                 </div>
                             </div>
