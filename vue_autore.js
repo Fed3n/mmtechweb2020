@@ -172,7 +172,9 @@
           currentMainStyleColor: "#000000",
           mobileView: true,
           onLink: [],
-          submitStyleObject: {}
+          submitStyleObject: {},
+          alertBackgroundTransparent: false,
+          lastAlertBackgroundColor: "#000000"
       },
       created: function() {
           this.updateFs();
@@ -830,6 +832,15 @@
           alertBorderSize: function(event){
               this.gamedata.css_style.background.style.alert.customized['border-width']= event.target.value+"px";
 					},
+          alertBackground: function(event){
+            if (this.alertBackgroundTransparent){
+              this.lastAlertBackgroundColor = this.gamedata.css_style.background.style.alert.customized['background-color'];
+              this.gamedata.css_style.background.style.alert.customized['background-color'] = "rgba(0,0,0,0)";
+            } else {
+              this.gamedata.css_style.background.style.alert.customized['background-color'] = this.lastAlertBackgroundColor;
+            }
+            console.log(this.gamedata.css_style.background.style.alert.customized['background-color']+" colore con lastAlertBackgroundColor: "+this.lastAlertBackgroundColor+" con alertBackgroundTransparent: "+this.alertBackgroundTransparent);
+          },
 					editMainColor: function(event){
 						if (this.mainStyleColor)
 							this.gamedata.css_style.mainStyle['color'] = this.currentMainStyleColor;
@@ -1202,7 +1213,8 @@
               //apply mainstyle in any case
               styles = this.overwriteMainStyle(styles);
               //alert color is more important that maincolor
-              styles = Object.assign(styles, { 'color': temp['color'] } );
+              if (this.gamedata.css_style.background.style.alert.custom)
+                styles = Object.assign(styles, { 'color': temp['color'] } );
            /*   if (this.gamedata.css_style.background.style.alert.customized["apply-color"] === false){
                 console.log("entrato");
                 styles = Object.assign(styles, { 'color': temp['color'] } );

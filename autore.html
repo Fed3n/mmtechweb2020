@@ -408,8 +408,14 @@
                                     </div>
                                     <div class="form-group row pl-3 my-0">
                                       <label for="backgroundColorAlertCustom" class="col-md-6">Colore di Sfondo</label>
-                                      <div class="col-md-6">
-                                        <input name="backgroundColorAlertCustom" type="color" v-model="gamedata.css_style.background.style.alert.customized['background-color']">
+                                      <div class="col-md-6 row">
+                                        <div class="col-4">
+                                          <input :disabled="alertBackgroundTransparent" name="backgroundColorAlertCustom" type="color" v-model="gamedata.css_style.background.style.alert.customized['background-color']">
+                                        </div>
+                                        <div class="col-8">
+                  												<label for="transparentAlert">trasparente</label>
+                  												<input id="transparentAlert" type="checkbox" v-model="alertBackgroundTransparent" @change="alertBackground">
+                  											</div>
                                       </div>
                                     </div>
                                     <div class="form-group row pl-3 my-0 mb-1">
