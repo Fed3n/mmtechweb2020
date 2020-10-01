@@ -15,7 +15,6 @@
     </head>
     <body class="h-100">
         <div id="app" :style="loadImage">
-		<button type="button" v-on:click="logout();">Logout!</button>
 			<center>
 				<div v-if="!questname" id="questloader" ref="questloader">
 					<h1 class="display-2">QUEST LOADER</h1>
@@ -115,7 +114,7 @@
 			<div class="card-header col-3" id="head2">
 				<h3 id="questchat" ref="questchat" :style="removePredefinedStylesCard">
 					<button type="button" id="chatbutton" ref="chatbtn" class="btn btn-warning btn-lg" data-toggle="collapse" data-target="#renderchat" v-on:click="chatAppear(true)">
-						Chat
+						<nobr>Chat</nobr>
 					</button>
 				</h3>
 			</div>
