@@ -205,7 +205,7 @@
                                   <div class="panel-body border-bottom mt-2 px-4 pb-3">
                                     <label for="select-image">Scegli l'immagine: </label>
                                     <select ref="selectimages" name="select-image" class="form-control" v-model="gamedata.css_style.background.url">
-                                        <option v-if="imagesList.length > 0" value="">nessuna immagine selezionata</option>
+                                        <option v-if="(imagesList ? imagesList.length > 0 : false)" value="">nessuna immagine selezionata</option>
                                         <option v-for="imgname in imagesList" :value=`url('story/${metadata.name}/images/${imgname}')`>{{ imgname }}</option>
                                     </select>
                                     <small v-if="!imagesList" class="text-muted">Non sono presenti immagini in questa storia, caricane una nella sezione "area dati"</small>

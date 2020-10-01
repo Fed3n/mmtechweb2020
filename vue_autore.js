@@ -242,16 +242,15 @@
                       _this.getVideosList();
                       _this.loadedStory = this.$refs.selectedStory.value;
                       _this.updateFs();
+                      //è necessario riaggiornare lo stile principale
                       console.log(_this.gamedata);
+                      console.log("prima di entrare inizio: mainStyleColor- "+this.mainStyleColor+" gamedata: "+this.gamedata.css_style.mainStyle['color']+" currentMainStyleColor: "+this.currentMainStyleColor);
+                      this.mainStyleColor = (this.gamedata.css_style.mainStyle['color'] !== "");
+                      this.currentMainStyleColor = (this.mainStyleColor ? this.gamedata.css_style.mainStyle['color'] : "#000000" );
+                      console.log("prima di entrare: mainStyleColor- "+this.mainStyleColor+" gamedata: "+this.gamedata.css_style.mainStyle['color']+" currentMainStyleColor: "+this.currentMainStyleColor);
+                      this.editMainColor();
                   })
               }
-              //è necessario riaggiornare lo stile principale
-              //console.log(this.gamedata);
-              console.log("prima di entrare inizio: mainStyleColor- "+this.mainStyleColor+" gamedata: "+this.gamedata.css_style.mainStyle['color']+" currentMainStyleColor: "+this.currentMainStyleColor);
-              this.mainStyleColor = (this.gamedata.css_style.mainStyle['color'] !== "");
-              this.currentMainStyleColor = (this.mainStyleColor ? this.gamedata.css_style.mainStyle['color'] : "#000000" );
-              console.log("prima di entrare: mainStyleColor- "+this.mainStyleColor+" gamedata: "+this.gamedata.css_style.mainStyle['color']+" currentMainStyleColor: "+this.currentMainStyleColor);
-              this.editMainColor();
               //inizializzazione di altre variabili di stile
               this.lastAlertBackgroundColor = "#000000";
               this.lastTextSize = 0;
