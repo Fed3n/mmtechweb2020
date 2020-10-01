@@ -134,7 +134,8 @@ var app = new Vue({
     received_feedback: false,
     chat: [],
     chat_msg: "",
-	  bool_inchat: false,
+	firstclick: true,
+	bool_inchat: false,
     gamedata: gamedata_pholder,
     metadata: metadata_pholder,
     questname: null,
@@ -166,15 +167,20 @@ var app = new Vue({
   methods: {
 	chatAppear: function(fromHelp) {
 		let node = this.$refs.chatbtn.innerHTML;
-		if(this.bool_inchat) {
-			this.bool_inchat = false;
-			node = "Chat";
+		if(this.firstclick && fromHelp) {
+			this.firstclick = false;
+			this.$refs.chatbtn.click();
+		} else {
+			if(this.bool_inchat) {
+				this.bool_inchat = false;
+				node = "Chat";
+			}
+			else if((!this.bool_inchat && fromHelp)) {
+				this.bool_inchat = true;
+				node = "X";
+			}
+			this.$refs.chatbtn.innerHTML = node;
 		}
-		else if((!this.bool_inchat && fromHelp)) {
-			this.bool_inchat = true;
-			node = "X";
-		}
-		this.$refs.chatbtn.innerHTML = node;
 	},
     requestHelp: function() {
       if (!this.help_message) {
@@ -568,16 +574,16 @@ var app = new Vue({
     renderQuest: function() {
       if(this.gamedata == null) return null;
 	  if(Cookies.get('logged') === 'true' && this.restored == false) {
-		this.user_id = Cookies.get('user_id'); //1
-		this.questname = Cookies.get('questname'); //2
-		this.time_played = Cookies.get('time_played'); //3
-		this.time_inactive = Cookies.get('time_inactive'); //4
-		this.score = Cookies.get('score'); //5
-		this.currentQuest = Cookies.get('currentQuest'); //6
+		this.user_id = Cookies.get('user_id');
+		this.questname = Cookies.get('questname');
+		this.time_played = Cookies.get('time_played');
+		this.time_inactive = Cookies.get('time_inactive');
+		this.score = Cookies.get('score');
+		this.currentQuest = Cookies.get('currentQuest');
 		//I Cookies vengono salvati solo come stringhe, e non come booleani
-		if(Cookies.get('in_mainquest') === 'true') this.in_mainquest = true; //7
+		if(Cookies.get('in_mainquest') === 'true') this.in_mainquest = true;
 		else this.in_mainquest = false; //7
-		this.currentSub = Cookies.get('currentSub'); //8
+		this.currentSub = Cookies.get('currentSub');
 		if(Cookies.getJSON('completedSubs')) this.completedSubs = Cookies.getJSON('completedSubs'); //9
 		console.log("Sono loggato: " + this.user_id + this.questname + this.in_mainquest);
 		this.changeQuest();
