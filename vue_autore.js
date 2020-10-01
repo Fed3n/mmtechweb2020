@@ -1040,10 +1040,10 @@
               sols = this.renderQuest.solution;
               if(this.renderQuest.type == "draw"){
                   for(sol of sols){
-                      if(sol[0]){
-                          let x = sol[0][0];
-                          let y = sol[0][1];
-                          let radius = sol[0][2];
+                      if(sol){
+                          let x = sol[0];
+                          let y = sol[1];
+                          let radius = parseInt(sol[2]);
                           if (this.previewdata.picked[0] >= (x - radius) && this.previewdata.picked[0] <= (x + radius) &&
                           this.previewdata.picked[1] >= (y - radius) && this.previewdata.picked[1] <= (y + radius)) {
                               return true;

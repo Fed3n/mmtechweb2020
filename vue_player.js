@@ -134,7 +134,8 @@ var app = new Vue({
     received_feedback: false,
     chat: [],
     chat_msg: "",
-	  bool_inchat: false,
+	firstclick: true,
+	bool_inchat: false,
     gamedata: gamedata_pholder,
     metadata: metadata_pholder,
     questname: null,
@@ -166,15 +167,20 @@ var app = new Vue({
   methods: {
 	chatAppear: function(fromHelp) {
 		let node = this.$refs.chatbtn.innerHTML;
-		if(this.bool_inchat) {
-			this.bool_inchat = false;
-			node = "Chat";
+		if(this.firstclick && fromHelp) {
+			this.firstclick = false;
+			this.$refs.chatbtn.click();
+		} else {
+			if(this.bool_inchat) {
+				this.bool_inchat = false;
+				node = "Chat";
+			}
+			else if((!this.bool_inchat && fromHelp)) {
+				this.bool_inchat = true;
+				node = "X";
+			}
+			this.$refs.chatbtn.innerHTML = node;
 		}
-		else if((!this.bool_inchat && fromHelp)) {
-			this.bool_inchat = true;
-			node = "X";
-		}
-		this.$refs.chatbtn.innerHTML = node;
 	},
     requestHelp: function() {
       if (!this.help_message) {
@@ -299,15 +305,15 @@ var app = new Vue({
                 axios.get("/uid", {params: {story_name: this.metadata.name}}).then(res => {
                   this.user_id = res.data;
 				  //Creo Cookies sull'utente
-					Cookies.set('logged','true');
-					Cookies.set('user_id',this.user_id);
-					Cookies.set('questname',this.questname);
-					Cookies.set('time_played',this.time_played);
-					Cookies.set('time_inactive',this.time_inactive);
-					Cookies.set('score',this.score);
-					Cookies.set('in_mainquest',true);
-					Cookies.set('currentQuest',0);
-					Cookies.set('currentSub',0);
+					Cookies.set('logged',true,{ expires: 1});
+					Cookies.set('user_id',this.user_id,{ expires: 1});
+					Cookies.set('questname',this.questname,{ expires: 1});
+					Cookies.set('time_played',this.time_played,{ expires: 1});
+					Cookies.set('time_inactive',this.time_inactive,{ expires: 1});
+					Cookies.set('score',this.score,{ expires: 1});
+					Cookies.set('in_mainquest',true,{ expires: 1});
+					Cookies.set('currentQuest',0,{ expires: 1});
+					Cookies.set('currentSub',0,{ expires: 1});
 					//Con restored il sistema non dovrà ripristinare i cookies.
 					//Se la pagina viene ricaricata, restored va a false per default e i cookies vengono ripristinati.
 					this.restored = true;
@@ -340,8 +346,8 @@ var app = new Vue({
     this.help_received = false;
     this.sendGameData();
 	//Aggiorno status Cookies
-	Cookies.set('in_mainquest',this.in_mainquest);
-	Cookies.set('currentSub',this.currentSub);
+	Cookies.set('in_mainquest',this.in_mainquest,{ expires: 1});
+	Cookies.set('currentSub',this.currentSub,{ expires: 1});
     resetDivScrolling();
     },
     goToMainQuest: function(){
@@ -355,8 +361,8 @@ var app = new Vue({
     this.help_received = false;
     this.sendGameData();
 	//Aggiorno lo stato dei cookies
-	Cookies.set('in_mainquest',this.in_mainquest);
-	Cookies.set('currentQuest',this.currentQuest);
+	Cookies.set('in_mainquest',this.in_mainquest,{ expires: 1});
+	Cookies.set('currentQuest',this.currentQuest,{ expires: 1});
     resetDivScrolling();
     },
     submitMain: function() {
@@ -418,8 +424,8 @@ var app = new Vue({
       this.picked = null;
       if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
 	  //Aggiorno lo stato dei cookies
-	  Cookies.set('in_mainquest',this.in_mainquest);
-	  Cookies.set('currentQuest',this.currentQuest);
+	  Cookies.set('in_mainquest',this.in_mainquest,{ expires: 1});
+	  Cookies.set('currentQuest',this.currentQuest,{ expires: 1});
       this.$refs.questname.focus();
     },
     submitSub: function() {
@@ -429,12 +435,15 @@ var app = new Vue({
       if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
       if (subQuest.type == "draw") {
           for(ans of subQuest.solution){
+	      console.log(ans);
               let x = ans[0];
               let y = ans[1];
               let radius = parseInt(ans[2]);
+	      console.log(`Risposta: ${x},${y},${radius}`)
               if(this.picked[0] >= x-radius && this.picked[0] <= x+radius &&
                 this.picked[1] >= y-radius && this.picked[1] <= y+radius){
                   wrong_answer = false;
+		  console.log("giusta");
               }
           }
       }
@@ -457,10 +466,10 @@ var app = new Vue({
       this.$refs.questname.focus();
       this.sendGameData();
 	  //Aggiorno lo status dei Cookies
-	  Cookies.set('in_mainquest',this.in_mainquest);
-	  Cookies.set('currentSub',this.currentSub);
+	  Cookies.set('in_mainquest',this.in_mainquest,{ expires: 1});
+	  Cookies.set('currentSub',this.currentSub,{ expires: 1});
 	  let obj = JSON.stringify(this.completedSubs);
-	  Cookies.set('completedSubs',obj);
+	  Cookies.set('completedSubs',obj,{ expires: 1});
       resetDivScrolling();
     },
     overwriteMainStyle: function(styles){
@@ -568,16 +577,16 @@ var app = new Vue({
     renderQuest: function() {
       if(this.gamedata == null) return null;
 	  if(Cookies.get('logged') === 'true' && this.restored == false) {
-		this.user_id = Cookies.get('user_id'); //1
-		this.questname = Cookies.get('questname'); //2
-		this.time_played = Cookies.get('time_played'); //3
-		this.time_inactive = Cookies.get('time_inactive'); //4
-		this.score = Cookies.get('score'); //5
-		this.currentQuest = Cookies.get('currentQuest'); //6
+		this.user_id = Cookies.get('user_id');
+		this.questname = Cookies.get('questname');
+		this.time_played = Cookies.get('time_played');
+		this.time_inactive = Cookies.get('time_inactive');
+		this.score = Cookies.get('score');
+		this.currentQuest = Cookies.get('currentQuest');
 		//I Cookies vengono salvati solo come stringhe, e non come booleani
-		if(Cookies.get('in_mainquest') === 'true') this.in_mainquest = true; //7
+		if(Cookies.get('in_mainquest') === 'true') this.in_mainquest = true;
 		else this.in_mainquest = false; //7
-		this.currentSub = Cookies.get('currentSub'); //8
+		this.currentSub = Cookies.get('currentSub');
 		if(Cookies.getJSON('completedSubs')) this.completedSubs = Cookies.getJSON('completedSubs'); //9
 		console.log("Sono loggato: " + this.user_id + this.questname + this.in_mainquest);
 		this.changeQuest();
