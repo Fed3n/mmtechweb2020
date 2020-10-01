@@ -478,8 +478,12 @@
       									</div>
       									<div class="form-group row">
       										<label for="fontSizeField" class="col-md-4 col-form-label">Dimensione del Testo</label>
-      										<div class="col-md-4">
-      											<input class="form-control" type="number" step="1" min="1" value="gamedata.css_style.mainStyle['font-size'].slice(0,-2)" @change="fontSize">
+      										<div class="col-md-8 ml-0 row">
+      											<input class="form-control col-6" type="number" step="1" min="1" :disabled="textSizeNotSpecified" value="15" :value="gamedata.css_style.mainStyle['font-size'].slice(0,-2)" @change="fontSize">
+                            <div class="col-6 pt-2 pl-3">
+                              <label for="setTextSize">non specificare</label>
+                              <input id="setTextSize" type="checkbox" v-model="textSizeNotSpecified" @change="textSizeSetting">
+                            </div>
       										</div>
       									</div>
       									<div class="form-group row">

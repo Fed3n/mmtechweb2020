@@ -52,8 +52,8 @@
               "font-family": "Arial",
               "font-style": "normal",
               "font-weight": "normal",
-              "font-size": "20",
-              "color": "#000000"
+              "font-size": "",
+              "color": ""
           },
           "background": {
               "image": false,
@@ -169,18 +169,24 @@
               "sub": null
           },
           mainStyleColor: false,
-          currentMainStyleColor: "#000000",
+          currentMainStyleColor: "",
           mobileView: true,
           onLink: [],
           submitStyleObject: {},
           alertBackgroundTransparent: false,
-          lastAlertBackgroundColor: "#000000"
+          lastAlertBackgroundColor: "#000000",
+          textSizeNotSpecified: false,
+          lastTextSize: 0
       },
       created: function() {
           this.updateFs();
           this.upgradeSubmitStyle(false);
+          console.log("created: mainStyleColor- "+this.mainStyleColor+" gamedata: "+this.gamedata.css_style.mainStyle['color']+" currentMainStyleColor: "+this.currentMainStyleColor);
+   /*       //variables initialization
+          this.mainStyleColor = (this.gamedata.css_style.mainStyle['color']);
+          this.currentMainStyleColor = this.mainStyleColor ? this.gamedata.css_style.mainStyle['color'] : "#000000" ;
           this.editMainColor();
-      },
+    */  },
       methods: {
           resetData: function() {
               this.loadedStory = "";
@@ -234,12 +240,23 @@
                       _this.metadata = res.data.meta;
                       _this.getImagesList();
                       _this.getVideosList();
-                      this.loadedStory = this.$refs.selectedStory.value;
+                      _this.loadedStory = this.$refs.selectedStory.value;
                       _this.updateFs();
+                      console.log(_this.gamedata);
                   })
               }
               //è necessario riaggiornare lo stile principale
+              //console.log(this.gamedata);
+              console.log("prima di entrare inizio: mainStyleColor- "+this.mainStyleColor+" gamedata: "+this.gamedata.css_style.mainStyle['color']+" currentMainStyleColor: "+this.currentMainStyleColor);
+              this.mainStyleColor = (this.gamedata.css_style.mainStyle['color'] !== "");
+              this.currentMainStyleColor = (this.mainStyleColor ? this.gamedata.css_style.mainStyle['color'] : "#000000" );
+              console.log("prima di entrare: mainStyleColor- "+this.mainStyleColor+" gamedata: "+this.gamedata.css_style.mainStyle['color']+" currentMainStyleColor: "+this.currentMainStyleColor);
               this.editMainColor();
+              //inizializzazione di altre variabili di stile
+              this.lastAlertBackgroundColor = "#000000";
+              this.lastTextSize = 0;
+              this.alertBackgroundTransparent = false;
+              this.textSizeNotSpecified = false;
           },
           postStory: function() {
               data = {
@@ -824,8 +841,15 @@
           },
           //style functions
           fontSize: function(event) {
-						this.gamedata.css_style.mainStyle["font-size"] = event.target.value+"px";
+            this.gamedata.css_style.mainStyle["font-size"] = event.target.value+"px";
 					},
+          textSizeSetting: function(event) {
+            if (this.textSizeNotSpecified){
+              this.lastTextSize = this.gamedata.css_style.mainStyle["font-size"];
+              this.gamedata.css_style.mainStyle["font-size"] = "";
+            } else
+              this.gamedata.css_style.mainStyle["font-size"] = this.lastTextSize;
+          },
           badgeBorderSize: function(event){
 							this.gamedata.css_style.background.style.badge.customized['border-width']= event.target.value+"px";
           },
@@ -839,9 +863,9 @@
             } else {
               this.gamedata.css_style.background.style.alert.customized['background-color'] = this.lastAlertBackgroundColor;
             }
-            console.log(this.gamedata.css_style.background.style.alert.customized['background-color']+" colore con lastAlertBackgroundColor: "+this.lastAlertBackgroundColor+" con alertBackgroundTransparent: "+this.alertBackgroundTransparent);
           },
 					editMainColor: function(event){
+            console.log("sono entrato: mainStyleColor- "+this.mainStyleColor+" gamedata: "+this.gamedata.css_style.mainStyle['color']+" currentMainStyleColor: "+this.currentMainStyleColor);
 						if (this.mainStyleColor)
 							this.gamedata.css_style.mainStyle['color'] = this.currentMainStyleColor;
 						else
@@ -1435,7 +1459,6 @@
           },
           cardStyle: function() {
               var styles = {};
-              var inutile = this.mainStyleColor;
               if (!this.gamedata.css_style.background.image) {
                   var temp = this.gamedata.css_style.background.style.card.customized;
                   if (this.gamedata.css_style.background.style.card.custom)
