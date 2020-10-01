@@ -8,6 +8,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<!--<link href="external.css" rel="stylesheet">-->
     <title>Ambiente Valutatore</title>
   </head>
   <body>
@@ -160,18 +161,27 @@
               </div>
             </div>
 
-            <div v-if="players_data" class="container border" id="chat">
+            <div v-if="players_data" class="container border" style="min-height: 25%; max-height: 40%; overflow-x: scroll;" id="chat">
               <div class="row justify-content-center bg-secondary text-white rounded py-2"><h3>Inizia una chat con i giocatori</h3></div>
               <div class="btn-group p-2">
                 <button class="btn btn-outline-secondary" v-for="(chat,id) in players_chat_from_story[activeStories[0]]" :class="chat_notify[id] ? 'btn-warning' : ''" v-on:click="switchIndex(id)">{{ id }}</button>
               </div>
-              <div v-if="players_chat[current_chat_id]" v-for="msg in players_chat[current_chat_id]">
-                {{ msg.sender }} scrive: {{ msg.text }}
-              </div>
-              <form class="btn-group" v-if="players_chat[current_chat_id]" v-on:submit.prevent>
-                <input type="text" v-model="chat_msg[current_chat_id]">
-                <button class="btn btn-success" v-on:click="sendChatMsg">Send</button>
-              </form>
+				<div class="container border" style="min-height: 1vh; max-height: 40vh; overflow-y: scroll;">
+				  <!--<div style="border: 3px dotted red; width: 80%; float: right;">-->
+					  <div v-if="players_chat[current_chat_id]" v-for="msg in players_chat[current_chat_id]" style="width: 80%; float: right;" v-bind:class="{ 'float-left' : (msg.sender != 'Valutatore') }">
+						<div class="card">
+							<div class="card-body">
+								<div class="card-subtitle text-muted">{{ msg.sender }}</div>
+								<div class="card-text">{{ msg.text }}</div>
+							</div>
+						</div>
+					  </div>
+				  <!--</div>-->
+				  <form class="btn-group w-100" v-if="players_chat[current_chat_id]" v-on:submit.prevent>
+					<input class="w-75" type="text" v-model="chat_msg[current_chat_id]">
+					<button class="btn btn-success" v-on:click="sendChatMsg">Invia</button>
+				  </form>
+				</div>
             </div>
             <div class="container border" id="answers">
               <div v-for="id in waitingForFeedback">

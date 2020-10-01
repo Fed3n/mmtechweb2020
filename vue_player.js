@@ -120,7 +120,6 @@ var app = new Vue({
   },
   data: {
 	restored: false,
-	restoredSubs : false,
     user_id: "",
     time_played: 0,
     time_inactive: 0,    // entrambe in secondi
@@ -282,15 +281,20 @@ var app = new Vue({
 		Cookies.remove('currentSub'); //8
 		Cookies.remove('completedSubs'); //9
 		Cookies.remove('in_mainquest'); //10
-		Cookies.remove('subQuestList'); //11
 		console.log("SESSION CLEARED");
 	},
     changeQuest: function() {
         if(this.questname) {
+			//Inizialmente la variabile è a false, ed in tal caso il sistema prova a ripristinare i cookies preesistenti.
+			//Se la variabile restored è a true, il sistema non prova a ripristinare i cookies.
+			this.restored = true;
             axios.get(`/stories/${this.questname}`).then(response => {
               this.gamedata = response.data.json;
               this.metadata = response.data.meta;
-	      document.getElementById("questname").focus();
+			  console.log("PROVA");
+			  document.getElementById("questname").focus();
+			  console.log("Gamedata dopo:");
+			  console.log(this.gamedata);
 	      
 			  if(!Cookies.get('logged')) {
                 //Chiedo al server il mio user id che è in formato nome_storia$numero
@@ -306,9 +310,6 @@ var app = new Vue({
 					Cookies.set('in_mainquest',true);
 					Cookies.set('currentQuest',0);
 					Cookies.set('currentSub',0);
-					//Con restored il sistema non dovrà ripristinare i cookies. 
-					//Se la pagina viene ricaricata, restored va a false per default e i cookies vengono ripristinati.
-					this.restored = true;
                   //E mi faccio assegnare uno starting point
                   //this.currentQuest = this.parseStart(this.user_id);    //_------------------------------------------------DA TOGLIERE IL COMMENTO --------------------------------------------------
 				});
@@ -463,6 +464,9 @@ var app = new Vue({
 	  Cookies.set('in_mainquest',this.in_mainquest);
 	  Cookies.set('currentSub',this.currentSub);
 	  let obj = JSON.stringify(this.completedSubs);
+	  console.log("COMPLETED SUBSSS:");
+	  console.log(this.completedSubs);
+	  console.log(obj);
 	  Cookies.set('completedSubs',obj);
       resetDivScrolling();
     },
@@ -576,8 +580,10 @@ var app = new Vue({
 		console.log("Renderquest If 0");
         return null;
 	  }
-	  if(Cookies.get('logged') == 'true' && this.restored == false) {
-		this.restored = true;
+	  if(Cookies.get('logged') === 'true' && this.restored == false) {
+		  console.log("Renderquest if 1!");
+		  console.log("Gamedata prima:");
+		  console.log(this.gamedata);
 		this.user_id = Cookies.get('user_id'); //1
 		this.questname = Cookies.get('questname'); //2
 		this.time_played = Cookies.get('time_played'); //3
@@ -588,7 +594,9 @@ var app = new Vue({
 		if(Cookies.get('in_mainquest') === 'true') this.in_mainquest = true; //7
 		else this.in_mainquest = false; //7
 		this.currentSub = Cookies.get('currentSub'); //8
-		this.completedSubs = Cookies.getJSON('completedSubs'); //9
+		if(Cookies.getJSON('completedSubs')) this.completedSubs = Cookies.getJSON('completedSubs'); //9
+		console.log(this.completedSubs);
+		console.log(Cookies.getJSON("completedSubs"));
 		console.log("Sono loggato: " + this.user_id + this.questname + this.in_mainquest);
 		this.changeQuest();
 	  }
@@ -598,28 +606,36 @@ var app = new Vue({
     getSubquests: function() {
       var subQuestList = [];
       if(!this.gamedata) {
+		  console.log("SUBQUESTLIST NON HO ANCORA CARICATO IL GAMEDATA!");
 		  return subQuestList;
-	  }
-	  if(Cookies.get('logged') == 'true' && this.restoredSubs == false) {
-		restoredSubs = true;
-		console.log("Cookies delle subs trovato! Ripristino...");
-		subQuestList = Cookies.getJSON('subQuestList');
-		console.log(subQuestList);
-	  }
-	  else {
+	  } else {
+		  if(this.gamedata == gamedata_pholder) {
+			  console.log("QUESTLIST PLACEHOLDER!");
+			  return subQuestList;
+		  }
+		  console.log("SUBQUESTLIST GAMEDATA: ");
+		  console.log(this.gamedata);
+		  console.log(this.completedSubs);
+		  console.log(this.gamedata.subQuests);
+		  console.log(this.currentQuest);
+		  
+		  console.log("INIZIO FOR SUBQUEST_");
+		  for(sub of this.gamedata.subQuests) {
+			  //if(sub.available_on.includes(this.currentQuest)) {
+				console.log(sub.number);
+				console.log("Available on: ");
+				console.log(sub.available_on);
+				console.log("Current quest: " + this.currentQuest);
+			  //}			
+		  }
+		  
 		  for(sub of this.gamedata.subQuests){
-			if (!this.completedSubs.includes(sub.number) && sub.available_on.includes(this.currentQuest)
+			if (!this.completedSubs.includes(sub.number) && sub.available_on.includes(parseInt(this.currentQuest))
 			  && sub.requires_sub.every( val => this.completedSubs.includes(val) ))
 				  subQuestList.push(sub);
 		  }
 		  console.log("SUBQUEST DISPONIBILI: ");
 		  console.log(subQuestList);
-		  this.restoredSubs = true;
-		  let obj = JSON.stringify(subQuestList);
-		  console.log(obj);
-		  console.log("Converto in cookies: ");
-		  Cookies.set('subQuestList',obj); //10
-		  console.log(Cookies.getJSON('subQuestList'));
 	  }
       return subQuestList;
     },
@@ -632,6 +648,8 @@ var app = new Vue({
       return clues;
     },
     getCurrentOptions: function() {
+	console.log("CURRENT OPTION!");
+	console.log(this.renderQuest);
       if(this.renderQuest.options){
         options = [];
         for(opt of this.renderQuest.options)

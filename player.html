@@ -15,6 +15,7 @@
     </head>
     <body class="h-100">
         <div id="app" :style="loadImage">
+		<button type="button" v-on:click="logout();">Logout!</button>
 			<center>
 				<div v-if="!questname" id="questloader" ref="questloader">
 					<h1 class="display-2">QUEST LOADER</h1>
@@ -39,13 +40,13 @@
                             <div class="dropdown-menu" id="quest-menu-list" :class="menuBootstrapStyle" :style="menuStyle" style="margin-bottom: 10px">
                                 <a class="dropdown-item" :style="menuLinkStyle(0,true)" v-on:mouseover="menuLinkEvent(0,true)" v-on:mouseleave="menuLinkEvent(0,false)"
 				role="menuitem" href="#" v-on:click="goToMainQuest()">
-					Quest principale: {{ gamedata.mainQuest[currentQuest].title || gamedata.mainQuest[currentQuest].number }}
+					Quest principale: {{ gamedata.mainQuest[currentQuest] ? (gamedata.mainQuest[currentQuest].title || gamedata.mainQuest[currentQuest].number) : "LOADING" }}
 				</a>
                                 <div v-if="getSubquests.length > 0" role="none">
                                     <div class="dropdown-divider" :style="dividerStyle"></div>
                                     <a class="dropdown-item" role="menuitem" :style="menuLinkStyle(index+1,true)" v-on:mouseover="menuLinkEvent(index+1,true)"
 				    v-on:mouseleave="menuLinkEvent(index+1,false)" v-for="(quest,index) in getSubquests" href="#" v-on:click="goToSubQuest(quest)">
-					Quest secondaria: {{ quest.title || quest.number }}
+					Quest secondaria: {{ quest ? (quest.title || quest.number) : "LOADING" }}
 				    </a>
                                 </div>
                             </div>
