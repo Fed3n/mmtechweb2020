@@ -423,6 +423,7 @@
               this.$refs.inputForm.reset();
               if(this.$refs.help)
                 this.$refs.help.classList.remove("disabled");
+              this.$refs.cardbody.scrollTop = 0;
           },
           switchView: function(mobile){
       	     this.mobileView = mobile;
@@ -744,19 +745,15 @@
             this.$refs.inputForm.reset();
             this.previewdata.currentSub = quest.number;
             this.previewdata.in_mainquest = false;
-            this.$refs.questname.focus();
             if (this.$refs.help)
               this.$refs.help.classList.remove("disabled");
-            //window.scrollTo(0,0);
           },
           goToMainQuest: function() {
             this.previewdata.picked = null;
         	  this.$refs.inputForm.reset();
             this.previewdata.in_mainquest = true;
-            this.$refs.questname.focus();
             if (this.$refs.help)
               this.$refs.help.classList.remove("disabled");
-            //window.scrollTo(0,0);
           },
           submitMain: function() {
             //Caso particolare in cui il submit si comporta diversamente perché non usa il valore picked
@@ -797,9 +794,8 @@
             this.$refs.inputForm.reset();
             this.upgradeSubmitStyle(true);
             this.previewdata.picked = null;
-            //window.scrollTo(0,0);
             if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
-            this.$refs.questname.focus();
+            this.$refs.cardbody.scrollTop = 0;
           },
           submitSub: function() {
             this.$refs.inputForm.reset();
@@ -827,8 +823,7 @@
             this.previewdata.in_mainquest = true;
             this.upgradeSubmitStyle(true);
             this.previewdata.picked = null;
-            this.$refs.questname.focus();
-            //window.scrollTo(0,0);
+            this.$refs.cardbody.scrollTop = 0;
           },
           styleMenuCollapse: function(){
              $('.stylepanelcollapse').collapse('hide');
