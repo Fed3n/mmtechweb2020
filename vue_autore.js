@@ -183,14 +183,8 @@
           this.upgradeSubmitStyle(false);
           this.mainStyleColor = (this.gamedata.css_style.mainStyle['color'] !== "");
           this.currentMainStyleColor = (this.mainStyleColor ? this.gamedata.css_style.mainStyle['color'] : "#000000" );
-          console.log("prima di entrare: mainStyleColor- "+this.mainStyleColor+" gamedata: "+this.gamedata.css_style.mainStyle['color']+" currentMainStyleColor: "+this.currentMainStyleColor);
           this.editMainColor();
-          //console.log("created: mainStyleColor- "+this.mainStyleColor+" gamedata: "+this.gamedata.css_style.mainStyle['color']+" currentMainStyleColor: "+this.currentMainStyleColor);
-   /*       //variables initialization
-          this.mainStyleColor = (this.gamedata.css_style.mainStyle['color']);
-          this.currentMainStyleColor = this.mainStyleColor ? this.gamedata.css_style.mainStyle['color'] : "#000000" ;
-          this.editMainColor();
-    */  },
+      },
       methods: {
           resetData: function() {
               this.loadedStory = "";
@@ -247,11 +241,8 @@
                       _this.loadedStory = this.$refs.selectedStory.value;
                       _this.updateFs();
                       //è necessario riaggiornare lo stile principale
-                      console.log(_this.gamedata);
-                      console.log("prima di entrare inizio: mainStyleColor- "+this.mainStyleColor+" gamedata: "+this.gamedata.css_style.mainStyle['color']+" currentMainStyleColor: "+this.currentMainStyleColor);
                       this.mainStyleColor = (this.gamedata.css_style.mainStyle['color'] !== "");
                       this.currentMainStyleColor = (this.mainStyleColor ? this.gamedata.css_style.mainStyle['color'] : "#000000" );
-                      console.log("prima di entrare: mainStyleColor- "+this.mainStyleColor+" gamedata: "+this.gamedata.css_style.mainStyle['color']+" currentMainStyleColor: "+this.currentMainStyleColor);
                       this.editMainColor();
                   })
               }
@@ -868,7 +859,6 @@
             }
           },
 					editMainColor: function(event){
-            console.log("sono entrato: mainStyleColor- "+this.mainStyleColor+" gamedata: "+this.gamedata.css_style.mainStyle['color']+" currentMainStyleColor: "+this.currentMainStyleColor);
 						if (this.mainStyleColor)
 							this.gamedata.css_style.mainStyle['color'] = this.currentMainStyleColor;
 						else
