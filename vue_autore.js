@@ -181,7 +181,11 @@
       created: function() {
           this.updateFs();
           this.upgradeSubmitStyle(false);
-          console.log("created: mainStyleColor- "+this.mainStyleColor+" gamedata: "+this.gamedata.css_style.mainStyle['color']+" currentMainStyleColor: "+this.currentMainStyleColor);
+          this.mainStyleColor = (this.gamedata.css_style.mainStyle['color'] !== "");
+          this.currentMainStyleColor = (this.mainStyleColor ? this.gamedata.css_style.mainStyle['color'] : "#000000" );
+          console.log("prima di entrare: mainStyleColor- "+this.mainStyleColor+" gamedata: "+this.gamedata.css_style.mainStyle['color']+" currentMainStyleColor: "+this.currentMainStyleColor);
+          this.editMainColor();
+          //console.log("created: mainStyleColor- "+this.mainStyleColor+" gamedata: "+this.gamedata.css_style.mainStyle['color']+" currentMainStyleColor: "+this.currentMainStyleColor);
    /*       //variables initialization
           this.mainStyleColor = (this.gamedata.css_style.mainStyle['color']);
           this.currentMainStyleColor = this.mainStyleColor ? this.gamedata.css_style.mainStyle['color'] : "#000000" ;
