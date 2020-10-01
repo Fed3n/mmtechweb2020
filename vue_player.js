@@ -305,15 +305,15 @@ var app = new Vue({
                 axios.get("/uid", {params: {story_name: this.metadata.name}}).then(res => {
                   this.user_id = res.data;
 				  //Creo Cookies sull'utente
-					Cookies.set('logged','true');
-					Cookies.set('user_id',this.user_id);
-					Cookies.set('questname',this.questname);
-					Cookies.set('time_played',this.time_played);
-					Cookies.set('time_inactive',this.time_inactive);
-					Cookies.set('score',this.score);
-					Cookies.set('in_mainquest',true);
-					Cookies.set('currentQuest',0);
-					Cookies.set('currentSub',0);
+					Cookies.set('logged',true,{ expires: 1});
+					Cookies.set('user_id',this.user_id,{ expires: 1});
+					Cookies.set('questname',this.questname,{ expires: 1});
+					Cookies.set('time_played',this.time_played,{ expires: 1});
+					Cookies.set('time_inactive',this.time_inactive,{ expires: 1});
+					Cookies.set('score',this.score,{ expires: 1});
+					Cookies.set('in_mainquest',true,{ expires: 1});
+					Cookies.set('currentQuest',0,{ expires: 1});
+					Cookies.set('currentSub',0,{ expires: 1});
 					//Con restored il sistema non dovrà ripristinare i cookies.
 					//Se la pagina viene ricaricata, restored va a false per default e i cookies vengono ripristinati.
 					this.restored = true;
@@ -346,8 +346,8 @@ var app = new Vue({
     this.help_received = false;
     this.sendGameData();
 	//Aggiorno status Cookies
-	Cookies.set('in_mainquest',this.in_mainquest);
-	Cookies.set('currentSub',this.currentSub);
+	Cookies.set('in_mainquest',this.in_mainquest,{ expires: 1});
+	Cookies.set('currentSub',this.currentSub,{ expires: 1});
     resetDivScrolling();
     },
     goToMainQuest: function(){
@@ -361,8 +361,8 @@ var app = new Vue({
     this.help_received = false;
     this.sendGameData();
 	//Aggiorno lo stato dei cookies
-	Cookies.set('in_mainquest',this.in_mainquest);
-	Cookies.set('currentQuest',this.currentQuest);
+	Cookies.set('in_mainquest',this.in_mainquest,{ expires: 1});
+	Cookies.set('currentQuest',this.currentQuest,{ expires: 1});
     resetDivScrolling();
     },
     submitMain: function() {
@@ -424,8 +424,8 @@ var app = new Vue({
       this.picked = null;
       if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
 	  //Aggiorno lo stato dei cookies
-	  Cookies.set('in_mainquest',this.in_mainquest);
-	  Cookies.set('currentQuest',this.currentQuest);
+	  Cookies.set('in_mainquest',this.in_mainquest,{ expires: 1});
+	  Cookies.set('currentQuest',this.currentQuest,{ expires: 1});
       this.$refs.questname.focus();
     },
     submitSub: function() {
@@ -466,10 +466,10 @@ var app = new Vue({
       this.$refs.questname.focus();
       this.sendGameData();
 	  //Aggiorno lo status dei Cookies
-	  Cookies.set('in_mainquest',this.in_mainquest);
-	  Cookies.set('currentSub',this.currentSub);
+	  Cookies.set('in_mainquest',this.in_mainquest,{ expires: 1});
+	  Cookies.set('currentSub',this.currentSub,{ expires: 1});
 	  let obj = JSON.stringify(this.completedSubs);
-	  Cookies.set('completedSubs',obj);
+	  Cookies.set('completedSubs',obj,{ expires: 1});
       resetDivScrolling();
     },
     overwriteMainStyle: function(styles){
