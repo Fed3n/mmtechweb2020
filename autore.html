@@ -574,7 +574,7 @@
                                   {{ previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub }}: {{ renderQuest.title || "no_name" }}
                               </h3>
                           </div>
-                          <div class="card-body overflow-auto" :style="removePredefinedStylesCard">
+                          <div ref="cardbody" class="card-body overflow-auto" :style="removePredefinedStylesCard">
                               <form ref="inputForm" v-on:submit.prevent="previewdata.in_mainquest? submitMain() : submitSub()">
                                       <p style="white-space: pre-line;">{{ renderQuest.text }}</p>
                                       <p style="white-space: pre-line;">{{ renderQuest.description || "" }}</p>
@@ -1047,7 +1047,7 @@
                                                 <input class="form-control" type="text" v-model="radiusInput">
                                             </div>
                                             <p v-if="previewdata.picked">Risposta corretta impostata a {{ previewdata.picked }} con raggio {{ radiusInput }}.</p>
-                                            <button class="btn btn-primary" v-on:click="addGoto('image')">Aggiungi</button>
+                                            <button class="btn btn-primary" v-on:click="addGoto('draw')">Aggiungi</button>
                                         </div>
                                     </div>
                                 </div>

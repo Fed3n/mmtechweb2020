@@ -435,12 +435,15 @@ var app = new Vue({
       if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
       if (subQuest.type == "draw") {
           for(ans of subQuest.solution){
+	      console.log(ans);
               let x = ans[0];
               let y = ans[1];
               let radius = parseInt(ans[2]);
+	      console.log(`Risposta: ${x},${y},${radius}`)
               if(this.picked[0] >= x-radius && this.picked[0] <= x+radius &&
                 this.picked[1] >= y-radius && this.picked[1] <= y+radius){
                   wrong_answer = false;
+		  console.log("giusta");
               }
           }
       }
