@@ -95,7 +95,8 @@
                           "border-width": "0px",
                           "border-style": "solid",
                           "border-color": "#000000",
-                          "color": "#000000"
+                          "color": "#000000" /*,
+                          "apply-color": true*/
                       }
                   },
                   "card": {
@@ -1200,7 +1201,13 @@
                   styles = Object.assign(styles, temp);
               //apply mainstyle in any case
               styles = this.overwriteMainStyle(styles);
-              if (!this.mobileView)
+              //alert color is more important that maincolor
+              styles = Object.assign(styles, { 'color': temp['color'] } );
+           /*   if (this.gamedata.css_style.background.style.alert.customized["apply-color"] === false){
+                console.log("entrato");
+                styles = Object.assign(styles, { 'color': temp['color'] } );
+              }
+            */  if (!this.mobileView)
                   styles = Object.assign(styles, {
                       "margin-top": "-10px"
                   });

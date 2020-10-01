@@ -82,7 +82,8 @@ gamedata_pholder = {
                 "border-width": "",
                 "border-style": "",
                 "border-color": "",
-                "color" : ""
+                "color" : "" /*,
+								"apply-color": true*/
             }
           },
           "card": {
@@ -291,7 +292,7 @@ var app = new Vue({
               this.gamedata = response.data.json;
               this.metadata = response.data.meta;
 	      document.getElementById("questname").focus();
-	      
+
 			  if(!Cookies.get('logged')) {
                 //Chiedo al server il mio user id che è in formato nome_storia$numero
                 axios.get("/uid", {params: {story_name: this.metadata.name}}).then(res => {
@@ -306,7 +307,7 @@ var app = new Vue({
 					Cookies.set('in_mainquest',true);
 					Cookies.set('currentQuest',0);
 					Cookies.set('currentSub',0);
-					//Con restored il sistema non dovrà ripristinare i cookies. 
+					//Con restored il sistema non dovrà ripristinare i cookies.
 					//Se la pagina viene ricaricata, restored va a false per default e i cookies vengono ripristinati.
 					this.restored = true;
                   //E mi faccio assegnare uno starting point
