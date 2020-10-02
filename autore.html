@@ -455,14 +455,21 @@
       							<div id="mainStyles" class="col-md-6 pl-4">
       									<div class="form-group row">
       										<label for="fontFamilyField" class="col-md-4 col-form-label">Font</label>
-      										<div class="col-md-8 row">
-                            <div class="col-6">
-      										     <input name="fontFamilyField" type="text" readyonly v-model="gamedata.css_style.mainStyle['font-family']">
+      										<div class="col-md-8 row form-group m-0 pr-0">
+                            <div class="col-6 m-0 p-0 pr-1">
+      										     <input name="fontFamilyField" class="form-control m-0" type="text" readyonly v-model="gamedata.css_style.mainStyle['font-family']">
       										  </div>
                             <div class="col-6">
-      										     <input name="fontUrlField" type="text" readyonly v-model="gamedata.css_style.mainStyle['font-url']" @change="setFontUrl">
+                             <div class="col-12 row m-0 p-0">
+      										     <input name="fontUrlField" class="form-control row" type="text" readyonly v-model="gamedata.css_style.mainStyle['font-url']" @change="setFontUrl"
+                                      data-toggle="tooltip" title="se il font non viene visualizzato inserire il link di google font">
+                             </div>
+                             <small v-if="gamedata.css_style.mainStyle['font-url'] === ' '" class="row text-muted mt-2">
+                                se il font non viene visualizzato inserire il link di google font
+                             </small>
                             </div>
       										</div>
+
       									</div>
       									<div class="form-group row">
       										<label for="fontStyleField" class="col-md-4 col-form-label">Stile del Testo</label>
