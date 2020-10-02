@@ -14,7 +14,7 @@ var togglerbutton_default_linesWidth = "2";
 
 var badge_default_style = {	"background-color": "orange" };
 
-var submit_button_style = { "background-color": "rgba(255,255,255,0.3)" };
+var submit_button_style = { "background-color": "rgba(255,255,255,0.18)" };
 var submit_button_style_disabled = { "background-color": "rgba(0,0,0,0.15)" };
 var submit_button_border = "1px solid white";
 

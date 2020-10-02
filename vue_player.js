@@ -159,7 +159,6 @@ var app = new Vue({
     }
   },
   created: function(){
-    this.upgradeSubmitStyle(false);
 		this.setFontUrl();
   },
   mounted: function() {
@@ -423,7 +422,6 @@ var app = new Vue({
         }
       }
       this.$refs.inputForm.reset();
-      this.upgradeSubmitStyle(true);
       this.picked = null;
       if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
 	  //Aggiorno lo stato dei cookies
@@ -462,7 +460,6 @@ var app = new Vue({
       this.help_message = "";
       this.help_received = false;
       this.in_mainquest = true;
-      this.upgradeSubmitStyle(true);
       this.picked = null;
       //If per ragioni di compatibilità...
       if(this.renderQuest.sub_score) this.score += parseInt(this.renderQuest.sub_score);
@@ -659,14 +656,17 @@ var app = new Vue({
         return ("story/" + this.metadata.name + (this.renderQuest.media.type=="image" ? "/images/" : "/videos/") + this.renderQuest.media.uri);
     },
     submitDisabled: function() {
-        //Se il tipo è "" (none) è sempre abilitato
-        if(!this.renderQuest.type) return false;
-        //In un type ending è sempre disabilitato (il gioco è finito)
-        if(this.renderQuest.type == "ending") return true;
-        //Se siamo in human input allora il submit è abilitato se ho ricevuto feedback dal valutatore
-        if(this.renderQuest.type == "human") return !this.ans_feedback;
-        //Altrimenti è abilitato se c'è una risposta inserita
-        else return !this.picked;
+			let disabled = false;
+			//Se il tipo è "" (none) è sempre abilitato
+			if(!this.renderQuest.type) disabled = false;
+			//In un type ending è sempre disabilitato (il gioco è finito)
+			else if(this.renderQuest.type == "ending") disabled = true;
+			//Se siamo in human input allora il submit è abilitato se ho ricevuto feedback dal valutatore
+			else if(this.renderQuest.type == "human") disabled = !this.ans_feedback;
+			//Altrimenti è abilitato se c'è una risposta inserita
+			else disabled = !this.picked;
+			this.upgradeSubmitStyle(disabled);
+			return disabled;
     },
     //styleObjects
     loadImage: function(){
@@ -730,6 +730,9 @@ var app = new Vue({
       styles = Object.assign(styles,temp);
     //apply mainstyle in any case
     styles = this.overwriteMainStyle(styles);
+		//alert color is more important than maincolor
+		if (this.gamedata.css_style.background.style.alert.custom)
+			styles = Object.assign(styles, { 'color': temp['color'] } );
     if (!this.togglerButtonVisible)
       styles = Object.assign(styles, {
          "margin-top" : "-10px"

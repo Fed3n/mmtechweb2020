@@ -1124,14 +1124,13 @@
           submitDisabled: function() {
               let disabled = false;
               //Se il tipo è "" (none) è sempre abilitato
-              if(!this.renderQuest.type)
-                disabled = false;
+              if(!this.renderQuest.type) disabled = false;
               //In un type ending è sempre disabilitato (il gioco è finito)
-              else if(this.renderQuest.type == "ending")
-                disabled = true;
+              else if(this.renderQuest.type == "ending") disabled = true;
+              //Se siamo in human input allora il submit è abilitato se ho ricevuto feedback dal valutatore
+              else if(this.renderQuest.type == "human") disabled = !this.ans_feedback;
               //Altrimenti è abilitato se c'è una risposta inserita
-              else
-                disabled = !this.previewdata.picked;
+              else disabled = !this.previewdata.picked;
               this.upgradeSubmitStyle(disabled);
               return disabled;
           },
@@ -1222,7 +1221,7 @@
                   styles = Object.assign(styles, temp);
               //apply mainstyle in any case
               styles = this.overwriteMainStyle(styles);
-              //alert color is more important that maincolor
+              //alert color is more important than maincolor
               if (this.gamedata.css_style.background.style.alert.custom)
                 styles = Object.assign(styles, { 'color': temp['color'] } );
               if (!this.mobileView)
