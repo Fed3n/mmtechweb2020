@@ -234,9 +234,10 @@
                       _this.loadedStory = this.$refs.selectedStory.value;
                       _this.updateFs();
                       //è necessario riaggiornare lo stile principale
-                      this.mainStyleColor = (this.gamedata.css_style.mainStyle['color'] !== "");
-                      this.currentMainStyleColor = (this.mainStyleColor ? this.gamedata.css_style.mainStyle['color'] : "#000000" );
-                      this.editMainColor();
+                      _this.mainStyleColor = (_this.gamedata.css_style.mainStyle['color'] !== "");
+                      _this.currentMainStyleColor = (_this.mainStyleColor ? _this.gamedata.css_style.mainStyle['color'] : "#000000" );
+                      _this.editMainColor();
+                      _this.setFontUrl();
                   })
               }
               //inizializzazione di altre variabili di stile
@@ -820,7 +821,7 @@
              $('.stylepanelcollapse').collapse('hide');
           },
           //style functions
-          setFontUrl: function(event){
+          setFontUrl: function(){
             document.getElementById("externalFontUrl").setAttribute('href',this.gamedata.css_style.mainStyle['font-url']);
           },
           fontSize: function(event) {

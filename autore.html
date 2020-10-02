@@ -461,11 +461,11 @@
       										  </div>
                             <div class="col-6">
                              <div class="col-12 row m-0 p-0">
-      										     <input name="fontUrlField" class="form-control row" type="text" readyonly v-model="gamedata.css_style.mainStyle['font-url']" @change="setFontUrl"
-                                      data-toggle="tooltip" title="se il font non viene visualizzato inserire il link di google font">
+      										     <input name="fontUrlField" class="form-control row" type="text" readyonly v-model="gamedata.css_style.mainStyle['font-url']" @input="setFontUrl()"
+                                      data-toggle="tooltip" title="se il font non è disponibile inserire il link di google fonts">
                              </div>
                              <small v-if="gamedata.css_style.mainStyle['font-url'] === ' '" class="row text-muted mt-2">
-                                se il font non viene visualizzato inserire il link di google font
+                                se il font non è disponibile inserire il link di google fonts
                              </small>
                             </div>
       										</div>
