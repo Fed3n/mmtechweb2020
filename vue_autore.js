@@ -95,8 +95,7 @@
                           "border-width": "0px",
                           "border-style": "solid",
                           "border-color": "#000000",
-                          "color": "#000000" /*,
-                          "apply-color": true*/
+                          "color": "#000000"
                       }
                   },
                   "card": {
@@ -124,14 +123,6 @@
 
   var qr = new QRCode(document.getElementById("qrcode"), "placeholder");
   this.qr.clear();
-
-/*
-  Vue.filter('subtract_px', function (value) {
-    if (!value) return '';
-    value = value.toString();
-    return value.charAt(0).toUpperCase() + value.slice(1);
-  });
-*/
 
   var app = new Vue({
       el: "#app",
@@ -410,6 +401,16 @@
           //########################################//
 
           jumpToQuest: function(type, number) {
+              if(this.$refs.help)
+                if (this.$refs.requestedHelp.style.display !== "none"){
+                  console.log("lili per entrare");
+                  console.log("type: "+type+" currentQuest: "+this.previewdata.currentQuest+" number: "+number+" currentSub: "+this.previewdata.currentSub);
+                  if (!((this.previewdata.in_mainquest && type == 'main' && this.previewdata.currentQuest == number) || (type == 'sub' && this.previewdata.currentSub == number))){
+                    console.log("entrato");
+                    this.$refs.requestedHelp.style.display = "none";
+                    this.$refs.help.classList.remove("disabled");
+                  }
+                }
               if (type == "main") {
                   this.previewdata.in_mainquest = true;
                   this.previewdata.currentQuest = number;
@@ -421,8 +422,6 @@
               }
               //removes all form past selections
               this.$refs.inputForm.reset();
-              if(this.$refs.help)
-                this.$refs.help.classList.remove("disabled");
               this.$refs.cardbody.scrollTop = 0;
           },
           switchView: function(mobile){
@@ -734,28 +733,11 @@
                   node.click();
           },
           requestHelp: function() {
-                  if (!this.help_msg) {
-                      this.$refs.requestedHelp.style.display = "inline-block";
-                      this.$refs.help.classList.add("disabled");
-                      this.help_requested = true;
-                  }
-          },
-          goToSubQuest: function(quest) {
-            this.previewdata.picked = null;
-            this.$refs.inputForm.reset();
-            this.previewdata.currentSub = quest.number;
-            this.previewdata.in_mainquest = false;
-            if (this.$refs.help)
-              this.$refs.help.classList.remove("disabled");
-          },
-          goToMainQuest: function() {
-            this.previewdata.picked = null;
-        	  this.$refs.inputForm.reset();
-            this.previewdata.in_mainquest = true;
-            if (this.$refs.help)
-              this.$refs.help.classList.remove("disabled");
+              this.$refs.requestedHelp.style.display = "inline-block";
+              this.$refs.help.classList.add("disabled");
           },
           submitMain: function() {
+            let correctAnswer = true;
             //Caso particolare in cui il submit si comporta diversamente perché non usa il valore picked
             if(this.renderQuest.type == "human") {
                 this.previewdata.picked = this.ans_feedback;
@@ -773,22 +755,18 @@
                 if(this.previewdata.picked[0] >= x-radius && this.previewdata.picked[0] <= x+radius &&
                   this.previewdata.picked[1] >= y-radius && this.previewdata.picked[1] <= y+radius){
                     this.previewdata.currentQuest = opt[1];
-                    this.$refs.help.classList.remove("disabled");
                     break;
                   }
               }
               //Formato standard che controlla se opt[0] == picked
               else if(opt[0] == this.previewdata.picked){
-                if(this.currentComponent != "")
-                  this.$refs.help.classList.remove("disabled");
                 this.previewdata.currentQuest = opt[1];
                 break;
               }
               //L'opzione di default se non ci sono corrispondenze è sempre l'ultima
               if(options.indexOf(opt) == options.length-1){
-                if(this.currentComponent != "")
-                  this.$refs.help.classList.remove("disabled");
                 this.previewdata.currentQuest = opt[1];
+                correctAnswer = false;
               }
             }
             this.$refs.inputForm.reset();
@@ -796,6 +774,12 @@
             this.previewdata.picked = null;
             if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
             this.$refs.cardbody.scrollTop = 0;
+            if (correctAnswer)
+              if(this.$refs.help)
+                if (this.$refs.requestedHelp.style.display !== "none"){
+                  this.$refs.requestedHelp.style.display = "none";
+                  this.$refs.help.classList.remove("disabled");
+                }
           },
           submitSub: function() {
             this.$refs.inputForm.reset();
@@ -824,6 +808,11 @@
             this.upgradeSubmitStyle(true);
             this.previewdata.picked = null;
             this.$refs.cardbody.scrollTop = 0;
+            if(this.$refs.help)
+              if (this.$refs.requestedHelp.style.display !== "none"){
+                this.$refs.requestedHelp.style.display = "none";
+                this.$refs.help.classList.remove("disabled");
+              }
           },
           styleMenuCollapse: function(){
              $('.stylepanelcollapse').collapse('hide');
@@ -1227,11 +1216,7 @@
               //alert color is more important that maincolor
               if (this.gamedata.css_style.background.style.alert.custom)
                 styles = Object.assign(styles, { 'color': temp['color'] } );
-           /*   if (this.gamedata.css_style.background.style.alert.customized["apply-color"] === false){
-                console.log("entrato");
-                styles = Object.assign(styles, { 'color': temp['color'] } );
-              }
-            */  if (!this.mobileView)
+              if (!this.mobileView)
                   styles = Object.assign(styles, {
                       "margin-top": "-10px"
                   });
