@@ -53,7 +53,8 @@
               "font-style": "normal",
               "font-weight": "normal",
               "font-size": "",
-              "color": ""
+              "color": "",
+              "font-url": ""
           },
           "background": {
               "image": false,
@@ -171,6 +172,7 @@
       },
       created: function() {
           this.updateFs();
+          this.setFontUrl();
           this.upgradeSubmitStyle(false);
           this.mainStyleColor = (this.gamedata.css_style.mainStyle['color'] !== "");
           this.currentMainStyleColor = (this.mainStyleColor ? this.gamedata.css_style.mainStyle['color'] : "#000000" );
@@ -818,6 +820,9 @@
              $('.stylepanelcollapse').collapse('hide');
           },
           //style functions
+          setFontUrl: function(event){
+            document.getElementById("externalFontUrl").setAttribute('href',this.gamedata.css_style.mainStyle['font-url']);
+          },
           fontSize: function(event) {
             this.gamedata.css_style.mainStyle["font-size"] = event.target.value+"px";
 					},

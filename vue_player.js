@@ -40,7 +40,8 @@ gamedata_pholder = {
           "font-style": "",
           "font-weight": "",
           "font-size": "",
-          "color" : ""
+          "color" : "",
+					"font-url": ""
       },
       "background": {
           "image": null,
@@ -157,8 +158,9 @@ var app = new Vue({
         }
     }
   },
-  created: function (){
+  created: function(){
     this.upgradeSubmitStyle(false);
+		this.setFontUrl();
   },
   mounted: function() {
       this.updatesEvery5Seconds();
@@ -276,6 +278,7 @@ var app = new Vue({
 		this.deleteCookies();
 		let reload = confirm("Perderai tutti i progressi di gioco, vuoi uscire?");
 		if(reload) location.reload();
+		this.setFontUrl();
 	},
 	deleteCookies: function() {
 		Cookies.remove('user_id'); //1
@@ -477,11 +480,14 @@ var app = new Vue({
       var main_style_cleaned = {};
       Object.entries(main_style).forEach( entry => {
       const[key,value] = entry;
-      if (value != "")
+      if (value != "" && key != "font-url")
         main_style_cleaned[key] = value;
     });
     return Object.assign(styles,main_style_cleaned);
     },
+		setFontUrl: function(){
+			document.getElementById("externalFontUrl").setAttribute('href',this.gamedata.css_style.mainStyle['font-url']);
+		},
     //method that returns if navbar button is visible
     buttonChangedVisibility: function(isVisible, entry) {
         this.togglerButtonVisible = isVisible

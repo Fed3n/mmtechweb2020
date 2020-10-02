@@ -12,8 +12,9 @@
     <link href="external.css" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <!-- FONT -->
-    <link href="https://fonts.googleapis.com/css2?family=Faster+One&display=swap" rel="stylesheet">  <!-- font-family: 'Faster One', cursive; -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">   <!-- font-family: 'Orbitron', sans-serif; -->
+    <!--link href="https://fonts.googleapis.com/css2?family=Faster+One&display=swap" rel="stylesheet" -->  <!-- font-family: 'Faster One', cursive; -->
+    <!--link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet" -->   <!-- font-family: 'Orbitron', sans-serif; -->
+    <link id="externalFontUrl" href="" rel="stylesheet">
     <title>Ambiente Autore</title>
 </head>
 
@@ -454,8 +455,13 @@
       							<div id="mainStyles" class="col-md-6 pl-4">
       									<div class="form-group row">
       										<label for="fontFamilyField" class="col-md-4 col-form-label">Font</label>
-      										<div class="col-md-8">
-      										  <input name="fontFamilyField" type="text" readyonly v-model="gamedata.css_style.mainStyle['font-family']">
+      										<div class="col-md-8 row">
+                            <div class="col-6">
+      										     <input name="fontFamilyField" type="text" readyonly v-model="gamedata.css_style.mainStyle['font-family']">
+      										  </div>
+                            <div class="col-6">
+      										     <input name="fontUrlField" type="text" readyonly v-model="gamedata.css_style.mainStyle['font-url']" @change="setFontUrl">
+                            </div>
       										</div>
       									</div>
       									<div class="form-group row">
