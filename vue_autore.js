@@ -739,7 +739,6 @@
               this.$refs.help.classList.add("disabled");
           },
           submitMain: function() {
-            let correctAnswer = true;
             //Caso particolare in cui il submit si comporta diversamente perché non usa il valore picked
             if(this.renderQuest.type == "human") {
                 this.previewdata.picked = this.ans_feedback;
@@ -757,30 +756,38 @@
                 if(this.previewdata.picked[0] >= x-radius && this.previewdata.picked[0] <= x+radius &&
                   this.previewdata.picked[1] >= y-radius && this.previewdata.picked[1] <= y+radius){
                     this.previewdata.currentQuest = opt[1];
+                    if(this.$refs.help)
+                      if (this.$refs.requestedHelp.style.display !== "none"){
+                        this.$refs.requestedHelp.style.display = "none";
+                        this.$refs.help.classList.remove("disabled");
+                      }
                     break;
                   }
               }
               //Formato standard che controlla se opt[0] == picked
               else if(opt[0] == this.previewdata.picked){
                 this.previewdata.currentQuest = opt[1];
+                if(this.$refs.help)
+                  if (this.$refs.requestedHelp.style.display !== "none"){
+                    this.$refs.requestedHelp.style.display = "none";
+                    this.$refs.help.classList.remove("disabled");
+                  }
                 break;
               }
               //L'opzione di default se non ci sono corrispondenze è sempre l'ultima
               if(options.indexOf(opt) == options.length-1){
                 this.previewdata.currentQuest = opt[1];
-                correctAnswer = false;
+                if(this.$refs.help)
+                  if (this.$refs.requestedHelp.style.display !== "none"){
+                    this.$refs.requestedHelp.style.display = "none";
+                    this.$refs.help.classList.remove("disabled");
+                  }
               }
             }
             this.$refs.inputForm.reset();
             this.previewdata.picked = null;
             if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
             this.$refs.cardbody.scrollTop = 0;
-            if (correctAnswer)
-              if(this.$refs.help)
-                if (this.$refs.requestedHelp.style.display !== "none"){
-                  this.$refs.requestedHelp.style.display = "none";
-                  this.$refs.help.classList.remove("disabled");
-                }
           },
           submitSub: function() {
             this.$refs.inputForm.reset();
