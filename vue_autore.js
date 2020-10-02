@@ -173,7 +173,6 @@
       created: function() {
           this.updateFs();
           this.setFontUrl();
-          this.upgradeSubmitStyle(false);
           this.mainStyleColor = (this.gamedata.css_style.mainStyle['color'] !== "");
           this.currentMainStyleColor = (this.mainStyleColor ? this.gamedata.css_style.mainStyle['color'] : "#000000" );
           this.editMainColor();
@@ -773,7 +772,6 @@
               }
             }
             this.$refs.inputForm.reset();
-            this.upgradeSubmitStyle(true);
             this.previewdata.picked = null;
             if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
             this.$refs.cardbody.scrollTop = 0;
@@ -808,7 +806,6 @@
             if (wrong_answer) return;
             this.previewdata.completedSubs.push(subQuest.number);
             this.previewdata.in_mainquest = true;
-            this.upgradeSubmitStyle(true);
             this.previewdata.picked = null;
             this.$refs.cardbody.scrollTop = 0;
             if(this.$refs.help)
@@ -1125,12 +1122,18 @@
             return ("story/" + this.metadata.name + (this.renderQuest.media.type=="image" ? "/images/" : "/videos/") + this.renderQuest.media.uri);
           },
           submitDisabled: function() {
+              let disabled = false;
               //Se il tipo è "" (none) è sempre abilitato
-              if(!this.renderQuest.type) return false;
+              if(!this.renderQuest.type)
+                disabled = false;
               //In un type ending è sempre disabilitato (il gioco è finito)
-              if(this.renderQuest.type == "ending") return true;
+              else if(this.renderQuest.type == "ending")
+                disabled = true;
               //Altrimenti è abilitato se c'è una risposta inserita
-              else return !this.previewdata.picked;
+              else
+                disabled = !this.previewdata.picked;
+              this.upgradeSubmitStyle(disabled);
+              return disabled;
           },
           //STYLEOBJECTS
           previewStyle: function() {
@@ -1454,8 +1457,9 @@
                       return this.gamedata.css_style.background.style.card.bootstrap.textColor;
           },
           submitStyle: function() {
+              //questa funzione si occupa di gestire il colore del bottone submit
               styles = {};
-              //if the card uses bootstrap the related style is in the Object submitBootstrapStyle
+              //se la card utilizza bootstrap gli stili corrispondenti sono specificati in submitBootstrapStyle
               if (!this.gamedata.css_style.background.image)
                   if (this.gamedata.css_style.background.style.card.custom)
                       styles = Object.assign(styles, {
@@ -1465,8 +1469,8 @@
               styles = this.overwriteMainStyle(styles);
               if (this.gamedata.css_style.mainStyle["color"] && !this.gamedata.css_style.background.style.card.custom)
                   styles = Object.assign(styles, {
-                      "color": this.gamedata.css_style.mainStyle["color"] + "!important"
-                  }); //used in order to overwrite bootstrap text color
+                      "color": this.gamedata.css_style.mainStyle["color"] + "!important"  //è necessario per sovrascrivere il colore assegnato da bootstrap
+                  });
               return styles;
           },
           cardLimitStyle: function() {

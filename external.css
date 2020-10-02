@@ -97,3 +97,7 @@
 	position: sticky;
 	bottom: 0;
 }
+
+#questname > button {
+	font-size: 30px;
+}
