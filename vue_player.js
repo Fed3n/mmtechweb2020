@@ -1,6 +1,6 @@
 window.onload = function(){
 	let title = document.getElementById("questname");
-    if(title) title.focus();
+  if(title) title.focus();
 }
 
 //PLACEHOLDER OBJECTS//
@@ -158,9 +158,6 @@ var app = new Vue({
         }
     }
   },
-  created: function(){
-		this.setFontUrl();
-  },
   mounted: function() {
       this.updatesEvery5Seconds();
       this.trackTimeEverySecond();
@@ -277,7 +274,6 @@ var app = new Vue({
 		this.deleteCookies();
 		let reload = confirm("Perderai tutti i progressi di gioco, vuoi uscire?");
 		if(reload) location.reload();
-		this.setFontUrl();
 	},
 	deleteCookies: function() {
 		Cookies.remove('user_id'); //1
@@ -294,18 +290,18 @@ var app = new Vue({
 	},
     changeQuest: function() {
         if(this.questname) {
-			//Inizialmente la variabile è a false, ed in tal caso il sistema prova a ripristinare i cookies preesistenti.
-			//Se la variabile restored è a true, il sistema non prova a ripristinare i cookies.
-			this.restored = true;
-            axios.get(`/stories/${this.questname}`).then(response => {
-              this.gamedata = response.data.json;
-              this.metadata = response.data.meta;
+				//Inizialmente la variabile è a false, ed in tal caso il sistema prova a ripristinare i cookies preesistenti.
+				//Se la variabile restored è a true, il sistema non prova a ripristinare i cookies.
+				this.restored = true;
+        axios.get(`/stories/${this.questname}`).then(response => {
+        this.gamedata = response.data.json;
+        this.metadata = response.data.meta;
 			  document.getElementById("questname").focus();
-
+				this.setFontUrl();
 			  if(!Cookies.get('logged')) {
-                //Chiedo al server il mio user id che è in formato nome_storia$numero
-                axios.get("/uid", {params: {story_name: this.metadata.name}}).then(res => {
-                  this.user_id = res.data;
+          //Chiedo al server il mio user id che è in formato nome_storia$numero
+          axios.get("/uid", {params: {story_name: this.metadata.name}}).then(res => {
+          this.user_id = res.data;
 				  //Creo Cookies sull'utente
 					Cookies.set('logged',true,{ expires: 1});
 					Cookies.set('user_id',this.user_id,{ expires: 1});
@@ -316,11 +312,8 @@ var app = new Vue({
 					Cookies.set('in_mainquest',true,{ expires: 1});
 					Cookies.set('currentQuest',0,{ expires: 1});
 					Cookies.set('currentSub',0,{ expires: 1});
-					//Con restored il sistema non dovrà ripristinare i cookies.
-					//Se la pagina viene ricaricata, restored va a false per default e i cookies vengono ripristinati.
-					this.restored = true;
-                  //E mi faccio assegnare uno starting point
-                  //this.currentQuest = this.parseStart(this.user_id);    //_------------------------------------------------DA TOGLIERE IL COMMENTO --------------------------------------------------
+          //E mi faccio assegnare uno starting point
+          this.changeState(this.parseStart(this.user_id));
 				});
 			  }
             });
@@ -334,7 +327,7 @@ var app = new Vue({
         }
     },
     changeState: function (state){
-      this.currentQuest = state;
+			 this.currentQuest = this.gamedata.starting_points[state];
     },
     goToSubQuest: function (quest){
 	  this.picked = null;
@@ -935,7 +928,7 @@ var app = new Vue({
         return this.gamedata.css_style.background.style.card.bootstrap.textColor;
   },
   submitStyle: function() {
-    styles = {};
+    let styles = {};
     styles = Object.assign(styles, this.submitStyleObject);
     //if the card uses bootstrap the related style is in the Object submitBootstrapStyle
     if (!this.gamedata.css_style.background.image)
@@ -948,7 +941,7 @@ var app = new Vue({
     return styles;
   },
   cardLimitStyle: function() {
-    var styles = {};
+    let styles = {};
     if (!this.gamedata.css_style.background.image){
       styles = Object.assign(styles,card_headerFooter);
       var temp = this.gamedata.css_style.background.style.card;
