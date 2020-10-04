@@ -111,30 +111,30 @@
             </div>
 			</div>
        </div>
-	   <div class="card overflow-hidden">
-		<div class="row" >
+	   <div id="chat-card" class="card overflow-hidden" :class="chatBackgroundBootstrapStyle" :style="chatBackgroundStyle">
+		<div class="row">
 			<div class="card-header col-3" id="head2">
-				<h3 id="questchat" ref="questchat" :style="removePredefinedStylesCard">
-					<button type="button" id="chatbutton" ref="chatbtn" class="btn btn-warning btn-lg" data-toggle="collapse" data-target="#renderchat" v-on:click="chatAppear(true)">
-						<nobr>Chat</nobr>
+				<h3 id="questchat" ref="questchat">
+					<button type="button" id="chatbutton" ref="chatbtn" class="btn btn-warning btn-lg" data-toggle="collapse" data-target="#renderchat" v-on:click="chatAppear(true)" :style="overwriteMainStyle({},false)">
+						<span>Chat</span>
 					</button>
 				</h3>
 			</div>
 		   <div id="renderchat" class="collapse col-9" data-parent="#accordion">
 		   <div class="card-body player-body" id="chat">
-			 <div id="chatbox" ref="chatbox" class="overflow-auto border border-success rounded">
-				 <div class="card chat-message" v-bind:class="{ 'float-right' : (msg.sender != 'Valutatore') }" v-for="msg in chat">
+			 <div id="chatbox" ref="chatbox" class="overflow-auto">
+				 <div id="chat-message-div" class="card chat-message" v-bind:class="{ 'float-right' : (msg.sender != 'Valutatore') }" v-for="msg in chat">
 					<div class="card-body watch-msg">
-					   <div class="card-subtitle text-muted" id="senderbox">{{ msg.sender }}</div>
-					   <div class="card-text" id="contentbox">{{ msg.text }}</div>
+					   <div class="card-subtitle text-muted" id="senderbox" :style="overwriteMainStyle({},false)">{{ msg.sender }}</div>
+					   <div class="card-text" id="contentbox" :class="setBootstrapColorStylesChat" :style="setColorStylesChat">{{ msg.text }}</div>
 					</div>
 				 </div>
 				 <!--<div id="position" ref="anchorposition"></div>-->
 			 </div>
-				<div id="chatform" style="position: absolute; bottom: 0px;">
+				<div id="chatform">
 				 <form class="btn-group w-100" v-on:submit.prevent>
-				   <input type="text" style="width: 85%;" v-model="chat_msg">
-				   <button class="btn btn-success" v-on:click="sendChatMsg();" ref="sendmsg">Invia</button>
+				   <input type="text" :class="setBootstrapColorStylesChat" :style="setColorStylesChat" v-model="chat_msg">
+				   <button class="btn btn-success" v-on:click="sendChatMsg();" ref="sendmsg" :style="overwriteMainStyle({},false)">Invia</button>
 				 </form>
 				</div>
 			 </div>

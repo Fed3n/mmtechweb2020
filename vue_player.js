@@ -135,8 +135,8 @@ var app = new Vue({
     received_feedback: false,
     chat: [],
     chat_msg: "",
-	firstclick: true,
-	bool_inchat: false,
+		firstclick: true,
+		bool_inchat: false,
     gamedata: gamedata_pholder,
     metadata: metadata_pholder,
     questname: null,
@@ -147,7 +147,7 @@ var app = new Vue({
     picked: null,
     togglerButtonVisible: true,
     onLink: [],
-    submitStyleObject: {},
+    submitStyleObject: {}
   },
   watch: {
     //Se ans_feedback cambia e stavo aspettando un feedback
@@ -465,13 +465,17 @@ var app = new Vue({
 	  Cookies.set('completedSubs',obj,{ expires: 1});
       resetDivScrolling();
     },
-    overwriteMainStyle: function(styles){
+    overwriteMainStyle: function(styles,color){
       var main_style = this.gamedata.css_style.mainStyle;
       var main_style_cleaned = {};
       Object.entries(main_style).forEach( entry => {
       const[key,value] = entry;
-      if (value != "" && key != "font-url")
-        main_style_cleaned[key] = value;
+      if (value != "" && key != "font-url"){
+				if (key != "color")
+        	main_style_cleaned[key] = value;
+				else if (color)
+					main_style_cleaned[key] = value;
+			}
     });
     return Object.assign(styles,main_style_cleaned);
     },
@@ -488,7 +492,7 @@ var app = new Vue({
     this.onLink[num] = bool;
   },
   menuLinkStyle: function(num,apply) {
-    var styles = {};
+    let styles = {};
     if (!this.gamedata.css_style.background.image){
       if (!this.gamedata.css_style.background.style.nav.custom){
         //adding text color property
@@ -500,7 +504,7 @@ var app = new Vue({
             styles = Object.assign(styles,bootstrap_menu_color_light_text);
           else
             console.log(`error in JSON compilation: bootstrap navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
-        styles = this.overwriteMainStyle(styles);
+        styles = this.overwriteMainStyle(styles,true);
         //adding background color property
         if (apply){
           if (this.onLink[num]){
@@ -514,7 +518,7 @@ var app = new Vue({
       else {
         //adding text color property
         styles = Object.assign(styles, { "color" : this.gamedata.css_style.background.style.nav.customized.general["color"] } );
-        styles = this.overwriteMainStyle(styles);
+        styles = this.overwriteMainStyle(styles,true);
         //adding background color property
         if (apply){
           if (this.onLink[num])
@@ -527,7 +531,7 @@ var app = new Vue({
     }
     else {
       styles = Object.assign(styles, { "color" : default_image_menu_links_text_color } );
-      styles = this.overwriteMainStyle(styles);
+      styles = this.overwriteMainStyle(styles,true);
       //adding background color property
       if (apply){
         if (this.onLink[num])
@@ -688,7 +692,7 @@ var app = new Vue({
     }
   },
   navbarStyle: function() {
-    var styles = {};
+    let styles = {};
     if (!this.gamedata.css_style.background.image){
       if (this.gamedata.css_style.background.style.nav.custom)
         styles = Object.assign(styles,this.gamedata.css_style.background.style.nav.customized.general);
@@ -703,7 +707,7 @@ var app = new Vue({
       return "";
   },
   badgeStyle: function() {
-    var styles = {}
+    let styles = {}
     var temp = this.gamedata.css_style.background.style.badge.customized;
     if (this.gamedata.css_style.background.style.badge.custom)
       styles = Object.assign(styles,temp);
@@ -717,12 +721,12 @@ var app = new Vue({
       return "";
   },
   helpAlertStyle: function() {
-    var styles = {}
+    let styles = {}
     var temp = this.gamedata.css_style.background.style.alert.customized;
     if (this.gamedata.css_style.background.style.alert.custom)
       styles = Object.assign(styles,temp);
     //apply mainstyle in any case
-    styles = this.overwriteMainStyle(styles);
+    styles = this.overwriteMainStyle(styles,true);
 		//alert color is more important than maincolor
 		if (this.gamedata.css_style.background.style.alert.custom)
 			styles = Object.assign(styles, { 'color': temp['color'] } );
@@ -733,7 +737,7 @@ var app = new Vue({
     return styles;
   },
   helpAlertContainerStyle: function() {
-    var styles = {};
+    let styles = {};
     if (!this.gamedata.css_style.background.image) {
       if (!this.gamedata.css_style.background.style.nav.custom){
         var temp = this.gamedata.css_style.background.style.nav.bootstrap.textColor;
@@ -750,7 +754,7 @@ var app = new Vue({
       }
     } else
       styles = Object.assign(styles, { "color" : defaul_image_alert_color } );
-    styles = this.overwriteMainStyle(styles);
+    styles = this.overwriteMainStyle(styles,true);
     if (this.togglerButtonVisible)
       styles = Object.assign(styles, { "margin-top" : "-10px" });
     return styles;
@@ -805,7 +809,7 @@ var app = new Vue({
         return "";
   },
   menuStyle: function() {
-    var styles = {};
+    let styles = {};
     if (!this.gamedata.css_style.background.image){
       if (!this.gamedata.css_style.background.style.nav.custom){
         if (this.togglerButtonVisible)
@@ -858,7 +862,7 @@ var app = new Vue({
     return styles;
   },
   dividerStyle: function() {
-    var styles = {};
+    let styles = {};
     if (!this.gamedata.css_style.background.image){
       if (!this.gamedata.css_style.background.style.nav.custom)
         //if the bootstrap class is "navbar-light" the text will be dark
@@ -912,7 +916,7 @@ var app = new Vue({
     }
   },
   cardStyle: function() {
-    var styles = {};
+    let styles = {};
     if (!this.gamedata.css_style.background.image){
       var temp = this.gamedata.css_style.background.style.card.customized;
       if (this.gamedata.css_style.background.style.card.custom)
@@ -934,7 +938,7 @@ var app = new Vue({
     if (!this.gamedata.css_style.background.image)
       if (this.gamedata.css_style.background.style.card.custom)
         styles = Object.assign(styles, { "color" : this.gamedata.css_style.background.style.card.customized["color"] } );
-    styles = this.overwriteMainStyle(styles);
+    styles = this.overwriteMainStyle(styles,true);
     //overwrite bootstrap text color
     if (this.gamedata.css_style.mainStyle["color"] && !this.gamedata.css_style.background.style.card.custom)
       styles = Object.assign(styles, { "color" : this.gamedata.css_style.mainStyle["color"]+"!important" } );
@@ -952,44 +956,101 @@ var app = new Vue({
     return styles;
   },
   navbarBrandStyle: function() {
-    return this.overwriteMainStyle({});
+    return this.overwriteMainStyle({},true);
   },
   questsStyle: function() {
-    var styles = {};
+    let styles = {};
     if (this.gamedata.css_style.background.image) {
       styles = Object.assign(styles, { "color" : default_image_text_color } );
-      styles = this.overwriteMainStyle(styles);
+      styles = this.overwriteMainStyle(styles,true);
     }
     else
       if (!this.gamedata.css_style.background.style.nav.custom)
-        styles = this.overwriteMainStyle(styles);
+        styles = this.overwriteMainStyle(styles,true);
       else {
         styles = Object.assign(styles, { "color" : this.gamedata.css_style.background.style.nav.customized.general["color"] } );
-        styles = this.overwriteMainStyle(styles);
+        styles = this.overwriteMainStyle(styles,true);
       }
     return styles;
   },
   removePredefinedStylesCard: function() {
-    var styles = {};
+    let styles = {};
     var temp = this.gamedata.css_style.background;
     if (!temp.image)
       if (temp.style.card.custom)
         styles = Object.assign(styles, { "color" : temp.style.card.customized.color });
-    return this.overwriteMainStyle(styles);
+    return this.overwriteMainStyle(styles,true);
   },
   componentStyle: function() {
-    var styles = {}
+    let styles = {}
     if (this.currentComponent == "choiceinput")
       ;
-        if (this.currentComponent == "textinput")
-          style = this.overwriteMainStyle(styles);
-          style = Object.assign(styles,input_backgroundImage);
-          if (!this.gamedata.css_style.background.image)
-        if (!this.gamedata.css_style.mainStyle["color"])
-          styles = Object.assign(styles, { "color" : "inherit" } );
-        if (this.currentComponent == "imginput")
-         ;
+		if (this.currentComponent == "imginput")
+     ;
+    if (this.currentComponent == "textinput")
+      style = this.overwriteMainStyle(styles,true);
+    style = Object.assign(styles,input_backgroundImage);
+    if (!this.gamedata.css_style.background.image)
+      if (!this.gamedata.css_style.mainStyle["color"])
+        styles = Object.assign(styles, { "color" : "inherit" } );
         return styles;
-  }
-  }
+  	},
+		//if there is no image in background the default background color is white. This method adds proper chat background color
+		//@global param: navbar_color
+		//								true --> chat background color is navbar background textColor
+		//								false --> chat background color is card background textColor
+	chatBackgroundStyle: function() {
+		let styles = {};
+		let temp = this.gamedata.css_style.background.style;
+		if (!this.gamedata.css_style.background.image)
+			if (navbar_color){
+				if (temp.nav.custom)
+					styles = Object.assign(styles,{ "background-color" : temp.nav.customized.general['background-color'] } );
+			} else {
+				if (temp.card.custom)
+					styles = Object.assign(styles,{ "background-color" : temp.card.customized['background-color'] } );
+			}
+		return styles;
+  },
+	//same function of chatBackgroundStyle but for bootstrap styles
+	chatBackgroundBootstrapStyle: function() {
+		let temp = this.gamedata.css_style.background.style;
+		if (!this.gamedata.css_style.background.image)
+			if (navbar_color){
+				if (!temp.nav.custom)
+					return temp.nav.bootstrap.background;
+			} else {
+				if (!temp.card.custom)
+					return temp.card.bootstrap.background;
+			}
+		return ;
+	},
+ 	setColorStylesChat: function() {
+    let styles = {};
+    let temp = this.gamedata.css_style.background;
+    if (!temp.image)
+      if (navbar_color){
+				if (temp.style.nav.custom)
+        	styles = Object.assign(styles, { "color" : temp.style.nav.customized.general.color });
+			} else {
+				if (temp.style.card.custom)
+					styles = Object.assign(styles, { "color" : temp.style.card.customized.color });
+			}
+    return this.overwriteMainStyle(styles,true);
+  },
+	setBootstrapColorStylesChat: function() {
+    let temp = this.gamedata.css_style.background;
+    if (!temp.image)
+      if (navbar_color){
+				if (!temp.style.nav.custom)
+        	if (temp.style.nav.bootstrap.textColor == "navbar-dark")
+					 	return "text-light";
+					else
+						return "text-dark";
+			} else {
+				if (!temp.style.card.custom)
+					return temp.style.card.bootstrap.textColor;
+		  }
+  },
+}
 });
