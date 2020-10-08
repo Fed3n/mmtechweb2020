@@ -20,6 +20,29 @@
 	background: #555;
 }
 
+#logoutcontainer { 
+  display: none; 
+  text-align: center;
+  width: 45vw;
+  z-index: 1;
+  color: white; 
+  position: fixed; 
+  top: 50%;
+  left: 50%;
+  border-radius: 5px;
+  padding: 5px;
+  transform: translate(-50%, -50%);
+} 
+
+#logoutcontainer p {
+  font-size: 25px !important;
+  text-shadow: 1.5px 1px !important;
+}
+
+#logoutcontainer button {
+  width: 45%;
+}
+
 .dropdown-item:active{
 	background: transparent;
 }

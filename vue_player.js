@@ -271,10 +271,49 @@ var app = new Vue({
         });
     },
 	logout: function() {
-		this.deleteCookies();
-		let reload = confirm("Perderai tutti i progressi di gioco, vuoi uscire?");
-		if(reload) location.reload();
+    console.log(this.$refs.accord1);
+    this.$refs.logoutcontainer.style.display = "block";
+    this.$refs.questrender.style.filter = "blur(8px)";
+    this.$refs.questrender.style.pointerEvents = "none";
+    this.$refs.questrender.style.userSelect = "none";
+    this.$refs.accordion.style.filter = "blur(10px)";
+    this.$refs.accordion.style.pointerEvents = "none";
+    this.$refs.accordion.style.userSelect = "none";
+    if(!(this.$refs.accord1.classList.contains("show")) && !(this.$refs.accord2.classList.contains("show"))
+      && !(this.gamedata.css_style.background.image)) {
+        if(this.gamedata.css_style.background.style.card.custom == true) {
+          console.log(this.gamedata.css_style.background.style.card);
+          this.$refs.logoutcontainer.style.backgroundColor =
+            this.gamedata.css_style.background.style.card.customized["background-color"];
+          this.$refs.logoutcontainer.style.border = "2px solid " +
+            this.gamedata.css_style.background.style.card.customized.color;
+        }
+        else {
+          try {          
+            this.$refs.logoutcontainer.classList.add(this.gamedata.css_style.background.style.card.bootstrap.background);
+          } catch(error) {
+            this.$refs.logoutcontainer.style.backgroundColor = "transparent";
+            this.$refs.logoutcontainer.style.border = "none";
+          }
+        }
+    } else {
+      this.$refs.logoutcontainer.style.backgroundColor = "transparent";
+      this.$refs.logoutcontainer.style.border = "none";
+    }
 	},
+  logoutconfirm: function() {
+    this.deleteCookies();
+    location.reload();
+  },
+  logoutdecline: function() {
+    this.$refs.logoutcontainer.style.display = "none";
+    this.$refs.questrender.style.filter = "none";
+    this.$refs.questrender.style.pointerEvents = "auto";
+    this.$refs.questrender.style.userSelect = "auto";
+    this.$refs.accordion.style.filter = "none";
+    this.$refs.accordion.style.pointerEvents = "auto";
+    this.$refs.accordion.style.userSelect = "auto";
+  },
 	deleteCookies: function() {
 		Cookies.remove('user_id'); //1
 		Cookies.remove('questname'); //2
