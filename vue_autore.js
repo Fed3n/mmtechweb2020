@@ -405,10 +405,7 @@
           jumpToQuest: function(type, number) {
               if(this.$refs.help)
                 if (this.$refs.requestedHelp.style.display !== "none"){
-                  console.log("lili per entrare");
-                  console.log("type: "+type+" currentQuest: "+this.previewdata.currentQuest+" number: "+number+" currentSub: "+this.previewdata.currentSub);
                   if (!((this.previewdata.in_mainquest && type == 'main' && this.previewdata.currentQuest == number) || (type == 'sub' && this.previewdata.currentSub == number))){
-                    console.log("entrato");
                     this.$refs.requestedHelp.style.display = "none";
                     this.$refs.help.classList.remove("disabled");
                   }
@@ -1186,8 +1183,6 @@
 							else
 									;
 						 }
-						else
-							console.log("errore in JSON compiling: cannot use bootstrap's navbar when background image is set");
 					if (!this.mobileView)
 						classes = classes+" navbar-expand";
 					return classes;
@@ -1361,7 +1356,6 @@
                       });
                   else {
                       if (document.getElementById("submit").style.backdropFilter !== "") {
-                          console.log("ci siamo");
                           document.getElementById("quest-menu-list").style.background = this.gamedata.css_style.background["url"];
                           document.getElementById("quest-menu-list").style.mozBackgroundSize = "cover";
                           document.getElementById("quest-menu-list").style.backgroundSize = "cover";
@@ -1427,10 +1421,8 @@
                           return "";
                   } else
                       return "";
-              } else {
-                  console.log("errore in JSON compiling: cannot use bootstrap's navbar when background image is set");
-                  return "";
-              }
+              } else
+                   return "";
           },
           cardBootstrapStyle: function() {
               if (!this.gamedata.css_style.background.image) {
@@ -1440,10 +1432,8 @@
                   else {
                       return "";
                   }
-              } else {
-                  console.log("errore in JSON compiling: cannot use bootstrap's navbar when background image is set");
-                  return "";
-              }
+              } else
+                   return "";
           },
           cardStyle: function() {
               var styles = {};

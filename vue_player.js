@@ -289,7 +289,7 @@ var app = new Vue({
             this.gamedata.css_style.background.style.card.customized.color;
         }
         else {
-          try {          
+          try {
             this.$refs.logoutcontainer.classList.add(this.gamedata.css_style.background.style.card.bootstrap.background);
           } catch(error) {
             this.$refs.logoutcontainer.style.backgroundColor = "transparent";
@@ -725,10 +725,8 @@ var app = new Vue({
         return (temp.textColor+" "+temp.background);
       else
         return "";
-    else {
-      console.log("errore in JSON compiling: cannot use bootstrap's navbar when background image is set");
-      return "";
-    }
+    else
+		 		return "";
   },
   navbarStyle: function() {
     let styles = {};
@@ -935,10 +933,8 @@ var app = new Vue({
       } else
         return "";
     }
-    else{
-      console.log("errore in JSON compiling: cannot use bootstrap's navbar when background image is set");
-      return "";
-    }
+    else
+			return "";
   },
   cardBootstrapStyle: function() {
     if (!this.gamedata.css_style.background.image){
@@ -949,10 +945,8 @@ var app = new Vue({
         return "";
       }
     }
-    else{
-      console.log("errore in JSON compiling: cannot use bootstrap's navbar when background image is set");
-      return "";
-    }
+    else
+		   return "";
   },
   cardStyle: function() {
     let styles = {};
