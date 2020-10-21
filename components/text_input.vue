@@ -1,7 +1,7 @@
 <template>
   <div>
     <label for="input"> Risposta: </label>
-    <input ref="texts" type="text" name="prova" id="input" value="" autocomplete="off" :style="inputStyle" v-on:input="updateAns($event.target.value)">
+    <input ref="texts" type="text" name="prova" id="input" value="" class="willdisabled" autocomplete="off" :style="inputStyle" v-on:input="updateAns($event.target.value)">
   </div>
 </template>
 
