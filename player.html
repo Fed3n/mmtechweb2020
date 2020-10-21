@@ -24,60 +24,60 @@
 				</div>
 			</center>
             <!--Logout Prompt-->
-            <div role="dialog" aria-labelledby="dialogtext" aria-modal="true" id="logoutcontainer" ref="logoutcontainer">
+            <div tabindex="0" role="dialog" aria-labelledby="dialogtext" aria-modal="true" id="logoutcontainer" ref="logoutcontainer">
               <p id="dialogtext" :style="removePredefinedStylesCard">Perderai tutti i progressi di gioco, vuoi uscire?</p>
-              <button type="button" aria-labelledby="dialogtext" v-on:click="logoutconfirm" :style="submitStyle" ref="logoutbtn">Voglio<br>uscire</button>
+              <button type="button" v-on:click="logoutconfirm" :class="submitBootstrapStyle" :style="submitStyle" ref="logoutbtn">Voglio<br>uscire</button>
               <button type="button" v-on:click="logoutdecline" :style="submitStyle">Non<br>uscire</button>
             </div>
             <!--Area navbar-->
-            <div disabled id="questrender" ref="questrender" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
+            <div id="questrender" ref="questrender" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
                 <nav class="navbar navbar-expand-md" :class="navbarBootstrapStyle" :style="navbarStyle">
                 <div class="navbar-brand" :style="navbarBrandStyle">Menu
-                    <span class="badge" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert" aria-label="missioni disponibili nel menù">Subs!</span>
+                    <span class="badge willdisabled" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert" aria-label="missioni disponibili nel menù">Subs!</span>
                 </div>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsiblemenu" :style="toggleButtonContainer"
+                <button class="navbar-toggler willdisabled" type="button" data-toggle="collapse" data-target="#collapsiblemenu" :style="toggleButtonContainer"
 		v-observe-visibility="buttonChangedVisibility" aria-label="Apri il menu">
                     <span class="navbar-toggler-icon" :style="{ 'background-image': togglerButtonStyle }"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="collapsiblemenu">
-                    <ul class="navbar-nav" aria-labelledby="quest-menu-button">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" id="quest-menu-button" href="#" data-toggle="dropdown" :style="questsStyle"
+                    <ul class="navbar-nav willdisabled" aria-labelledby="quest-menu-button">
+                        <li class="nav-item dropdown willdisabled">
+                            <a class="nav-link dropdown-toggle willdisabled" id="quest-menu-button" href="#" data-toggle="dropdown" :style="questsStyle"
 			    role="button" aria-haspopup="true" role="menu" aria-controls="quest-menu-list" aria-label="lista quests">Quests</a>
-                            <div class="dropdown-menu" id="quest-menu-list" :class="menuBootstrapStyle" :style="menuStyle" style="margin-bottom: 10px">
-                                <a class="dropdown-item" :style="menuLinkStyle(0,true)" v-on:mouseover="menuLinkEvent(0,true)" v-on:mouseleave="menuLinkEvent(0,false)"
+                            <div class="dropdown-menu willdisabled" id="quest-menu-list" :class="menuBootstrapStyle" :style="menuStyle" style="margin-bottom: 10px">
+                                <a class="dropdown-item willdisabled" :style="menuLinkStyle(0,true)" v-on:mouseover="menuLinkEvent(0,true)" v-on:mouseleave="menuLinkEvent(0,false)"
 				role="menuitem" href="#" v-on:click="goToMainQuest()">
 					Quest principale: {{ gamedata.mainQuest[currentQuest] ? (gamedata.mainQuest[currentQuest].title || gamedata.mainQuest[currentQuest].number) : "LOADING" }}
 				</a>
                                 <div v-if="getSubquests.length > 0" role="none">
-                                    <div class="dropdown-divider" :style="dividerStyle"></div>
-                                    <a class="dropdown-item" role="menuitem" :style="menuLinkStyle(index+1,true)" v-on:mouseover="menuLinkEvent(index+1,true)"
+                                    <div class="dropdown-divider willdisabled" :style="dividerStyle"></div>
+                                    <a class="dropdown-item willdisabled" role="menuitem" :style="menuLinkStyle(index+1,true)" v-on:mouseover="menuLinkEvent(index+1,true)"
 				    v-on:mouseleave="menuLinkEvent(index+1,false)" v-for="(quest,index) in getSubquests" href="#" v-on:click="goToSubQuest(quest)">
 					Quest secondaria: {{ quest ? (quest.title || quest.number) : "LOADING" }}
 				    </a>
                                 </div>
                             </div>
                         </li>
-                        <li class="nav-item" v-if="renderQuest && currentComponent">
-                            <a id="helpAlertContainer" class="nav-link" ref="help" @click="requestHelp" :style="helpAlertContainerStyle">
+                        <li class="nav-item willdisabled" v-if="renderQuest && currentComponent">
+                            <a id="helpAlertContainer" class="nav-link willdisabled" ref="help" @click="requestHelp" :style="helpAlertContainerStyle">
                                 Chiedi aiuto
-                                <span ref="requestedHelp" class="alert" role="alert" :class="helpAlertBootstrapStyle" :style="helpAlertStyle"
+                                <span ref="requestedHelp" class="alert willdisabled" role="alert" :class="helpAlertBootstrapStyle" :style="helpAlertStyle"
                                 style="display:none; margin-left: 10px; margin-bottom: -10px; white-space: nowrap;">Aiuto richiesto! Attendi...</span>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" v-on:click="logout();" href="#" style="width: max-content" :style="menuLinkStyle(0,false)">LOGOUT</a>
+                        <li class="nav-item willdisabled">
+                            <a class="nav-link willdisabled" v-on:click="logout();" href="#" style="width: max-content" :style="menuLinkStyle(0,false)">LOGOUT</a>
                         </li>
                     </ul>
                 </div>
 				</nav>
 			</div>
         <!--Area quest-->
-		<div disabled v-if="questname" id="accordion" class="accordion" ref="accordion" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
+		<div v-if="questname" id="accordion" class="accordion" ref="accordion" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'" >
         <div class="card player-card" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
             <div class="card-header h-10" :style="cardLimitStyle">
                 <h3 id="questname" ref="questname" tabindex="-1">
-                    <button type="button" class="btn btn-lg btn-block border" :class="mainquestButtonBootstrapStyle" :style="removePredefinedStylesCard"
+                    <button type="button" class="btn btn-lg btn-block border willdisabled" :class="mainquestButtonBootstrapStyle" :style="removePredefinedStylesCard"
 		    data-toggle="collapse" data-target="#rendercard" v-on:click="chatAppear(false)">
 			{{ renderQuest ? (renderQuest.title || "renderQuest.number") : "" }}
 		    </button>
@@ -86,8 +86,8 @@
 			<div id="rendercard" ref="accord1" class="collapse show" data-parent="#accordion">
 				<div class="card-body player-body show overflow-auto" :style="removePredefinedStylesCard">
 					<form ref="inputForm" v-on:submit.prevent="in_mainquest? submitMain() : submitSub()" aria-label="descrizione quest">
-							<p style="white-space: pre-line;">{{ renderQuest ? renderQuest.text : "no_text" }}</p>
-							<p style="white-space: pre-line;">{{ renderQuest ? renderQuest.description : "" }}</p>
+							<p class="willdisabled" style="white-space: pre-line;">{{ renderQuest ? renderQuest.text : "no_text" }}</p>
+							<p class="willdisabled" style="white-space: pre-line;">{{ renderQuest ? renderQuest.description : "" }}</p>
 							<ul v-if="renderQuest && in_mainquest && getCurrentClues.length > 0">
 									<li v-for="clue in getCurrentClues" v-if="clue">{{ clue }}</li>
 							</ul>
@@ -100,9 +100,9 @@
 					</form>
 					<!--EVENTUALI MEDIA-->
 					<div v-if="renderQuest && renderQuest.media">
-              <img width="100%" v-if="renderQuest && renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
+              <img class="willdisabled" width="100%" v-if="renderQuest && renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
               <div v-if="renderQuest && renderQuest.media.type=='video'">
-                  <video width="100%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
+                  <video class="willdisabled" width="100%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
                   </video>
               </div>
           </div>
@@ -110,7 +110,7 @@
             </div>
 		            <div v-if="renderQuest && renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
 		<!--Bottone submit non c'è se siamo in un ending-->
-                <button id="submit" v-if="!(renderQuest.type == 'ending')" ref="submitbutton" class="btn-default" :class="submitBootstrapStyle"
+                <button id="submit" v-if="!(renderQuest.type == 'ending')" ref="submitbutton" class="btn-default willdisabled" :class="submitBootstrapStyle"
 		:disabled="submitDisabled" :style="submitStyle" v-on:click="in_mainquest? submitMain() : submitSub()">
                     Submit
                 </button>
@@ -121,7 +121,7 @@
 		<div class="row">
 			<div class="card-header col-3" id="head2">
 				<h3 id="questchat" ref="questchat">
-					<button type="button" id="chatbutton" ref="chatbtn" class="btn btn-warning btn-lg" data-toggle="collapse" data-target="#renderchat" v-on:click="chatAppear(true)" :style="overwriteMainStyle({},false)">
+					<button type="button" id="chatbutton" ref="chatbtn" class="btn btn-warning btn-lg willdisabled" data-toggle="collapse" data-target="#renderchat" v-on:click="chatAppear(true)" :style="overwriteMainStyle({},false)">
 						<span>Chat</span>
 					</button>
 				</h3>
@@ -139,8 +139,8 @@
 			 </div>
 				<div id="chatform">
 				 <form class="btn-group w-100" v-on:submit.prevent>
-				   <input type="text" :class="setBootstrapColorStylesChat" :style="setColorStylesChat" v-model="chat_msg">
-				   <button class="btn btn-success" v-on:click="sendChatMsg();" ref="sendmsg" :style="overwriteMainStyle({},false)">Invia</button>
+				   <input type="text" class="willdisabled" :class="setBootstrapColorStylesChat" :style="setColorStylesChat" v-model="chat_msg">
+				   <button class="btn btn-success willdisabled" v-on:click="sendChatMsg();" ref="sendmsg" :style="overwriteMainStyle({},false)">Invia</button>
 				 </form>
 				</div>
 			 </div>

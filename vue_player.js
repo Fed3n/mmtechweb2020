@@ -270,13 +270,13 @@ var app = new Vue({
     },
 	logout: function() {
     this.$refs.logoutcontainer.style.display = "block";
-    //this.$refs.questrender.style.filter = "blur(8px)";
-    //this.$refs.questrender.style.pointerEvents = "none";
-    //this.$refs.questrender.style.userSelect = "none";
+    this.$refs.questrender.style.filter = "blur(8px)";
+    this.$refs.questrender.style.pointerEvents = "none";
+    this.$refs.questrender.style.userSelect = "none";
     this.$refs.questrender.disabled = true;
-    //this.$refs.accordion.style.filter = "blur(10px)";
-    //this.$refs.accordion.style.pointerEvents = "none";
-    //this.$refs.accordion.style.userSelect = "none";
+    this.$refs.accordion.style.filter = "blur(10px)";
+    this.$refs.accordion.style.pointerEvents = "none";
+    this.$refs.accordion.style.userSelect = "none";
     this.$refs.accordion.disabled = true;
     if(!(this.$refs.accord1.classList.contains("show")) && !(this.$refs.accord2.classList.contains("show"))
       && !(this.gamedata.css_style.background.image)) {
@@ -299,8 +299,13 @@ var app = new Vue({
       this.$refs.logoutcontainer.style.border = "none";
     }
     this.bool_inlogout = true;
-    this.$refs.logoutbtn.focus();
-    console.log(document.activeElement);
+    var i;
+    var nodes = document.getElementsByClassName("willdisabled");
+    for(i=0; i<nodes.length; i++) {
+      nodes[i].disabled = true;
+      nodes[i].setAttribute("tabindex","-1");
+    }
+    this.$refs.logoutcontainer.focus();
 	},
   logoutconfirm: function() {
     this.deleteCookies();
@@ -314,6 +319,11 @@ var app = new Vue({
     this.$refs.accordion.style.filter = "none";
     this.$refs.accordion.style.pointerEvents = "auto";
     this.$refs.accordion.style.userSelect = "auto";
+    var nodes = document.getElementsByClassName("willdisabled")
+    for(var i=0; i<nodes.length; i++) {
+      nodes[i].disabled = false;
+      nodes[i].removeAttribute("tabindex");
+    }
     this.$refs.questname.focus();
   },
 	deleteCookies: function() {

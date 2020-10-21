@@ -139,3 +139,8 @@
 #questname > button {
 	font-size: 30px;
 }
+
+a.disabled {
+  pointer-events: none;
+  cursor: default;
+}
