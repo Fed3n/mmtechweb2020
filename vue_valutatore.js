@@ -63,7 +63,6 @@ var app = new Vue({
       let choice = confirm("Vuoi davvero cancellare tutti i dati di gioco? La pagina sarà ricaricata.");
       if(choice){
         axios.post("/clear/").then(response => {
-          console.log("we");
           location.reload();
         });
       }
