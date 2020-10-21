@@ -10,7 +10,6 @@ module.exports = {
   props: ["gamedata", "current", "value", "metadata","styles"],
   methods: {
     updateAns: function(picked){
-      console.log(picked);
       this.$emit('input', picked);
     }
   },

@@ -137,6 +137,7 @@ var app = new Vue({
     chat_msg: "",
 		firstclick: true,
 		bool_inchat: false,
+    bool_inlogout: false,
     gamedata: gamedata_pholder,
     metadata: metadata_pholder,
     questname: null,
@@ -218,7 +219,6 @@ var app = new Vue({
             time_played: this.time_played,
             newPlayerMsgs: this.newPlayerMsgs
           })
-        .then(res => {console.log(res)})
         .catch(err => {
 			console.log(err);
 			alert("Server riavviato, elimino la sessione...");
@@ -233,7 +233,6 @@ var app = new Vue({
           this[key] = response.data[key];
         }
         if (this.help_message !== "") {
-          console.log(this.help_message);
           this.help_received = true;
           this.help_requested = false;
         }
@@ -245,8 +244,7 @@ var app = new Vue({
           sender: `utente_${this.user_id}`,
           text: this.chat_msg
         };
-        axios.post(`chat/${this.user_id}`, msg)
-        .then(() => { console.log("sent message successfully :)")});
+        axios.post(`chat/${this.user_id}`, msg);
         this.chat.push(msg);
 		this.chat_msg = "";
         this.$nextTick(() => {
@@ -271,18 +269,18 @@ var app = new Vue({
         });
     },
 	logout: function() {
-    console.log(this.$refs.accord1);
     this.$refs.logoutcontainer.style.display = "block";
-    this.$refs.questrender.style.filter = "blur(8px)";
-    this.$refs.questrender.style.pointerEvents = "none";
-    this.$refs.questrender.style.userSelect = "none";
-    this.$refs.accordion.style.filter = "blur(10px)";
-    this.$refs.accordion.style.pointerEvents = "none";
-    this.$refs.accordion.style.userSelect = "none";
+    //this.$refs.questrender.style.filter = "blur(8px)";
+    //this.$refs.questrender.style.pointerEvents = "none";
+    //this.$refs.questrender.style.userSelect = "none";
+    this.$refs.questrender.disabled = true;
+    //this.$refs.accordion.style.filter = "blur(10px)";
+    //this.$refs.accordion.style.pointerEvents = "none";
+    //this.$refs.accordion.style.userSelect = "none";
+    this.$refs.accordion.disabled = true;
     if(!(this.$refs.accord1.classList.contains("show")) && !(this.$refs.accord2.classList.contains("show"))
       && !(this.gamedata.css_style.background.image)) {
         if(this.gamedata.css_style.background.style.card.custom == true) {
-          console.log(this.gamedata.css_style.background.style.card);
           this.$refs.logoutcontainer.style.backgroundColor =
             this.gamedata.css_style.background.style.card.customized["background-color"];
           this.$refs.logoutcontainer.style.border = "2px solid " +
@@ -300,6 +298,9 @@ var app = new Vue({
       this.$refs.logoutcontainer.style.backgroundColor = "transparent";
       this.$refs.logoutcontainer.style.border = "none";
     }
+    this.bool_inlogout = true;
+    this.$refs.logoutbtn.focus();
+    console.log(document.activeElement);
 	},
   logoutconfirm: function() {
     this.deleteCookies();
@@ -313,6 +314,7 @@ var app = new Vue({
     this.$refs.accordion.style.filter = "none";
     this.$refs.accordion.style.pointerEvents = "auto";
     this.$refs.accordion.style.userSelect = "auto";
+    this.$refs.questname.focus();
   },
 	deleteCookies: function() {
 		Cookies.remove('user_id'); //1
@@ -468,15 +470,13 @@ var app = new Vue({
       if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
       if (subQuest.type == "draw") {
           for(ans of subQuest.solution){
-	      console.log(ans);
               let x = ans[0];
               let y = ans[1];
               let radius = parseInt(ans[2]);
-	      console.log(`Risposta: ${x},${y},${radius}`)
+              console.log(`Risposta: ${x},${y},${radius}`)
               if(this.picked[0] >= x-radius && this.picked[0] <= x+radius &&
                 this.picked[1] >= y-radius && this.picked[1] <= y+radius){
                   wrong_answer = false;
-		  console.log("giusta");
               }
           }
       }
@@ -541,8 +541,6 @@ var app = new Vue({
             styles = Object.assign(styles,bootstrap_menu_color_dark_text);
           else if (this.gamedata.css_style.background.style.nav.bootstrap.textColor == "navbar-dark")
             styles = Object.assign(styles,bootstrap_menu_color_light_text);
-          else
-            console.log(`error in JSON compilation: bootstrap navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
         styles = this.overwriteMainStyle(styles,true);
         //adding background color property
         if (apply){
@@ -610,7 +608,7 @@ var app = new Vue({
 		  else if (type == "human") return "humaninput";
 		  else return "";
 		} catch(error) {
-			console.log("RELOAD COMPONENT!");
+			console.log("Loading component...");
 		}
     },
     renderQuest: function() {
@@ -627,7 +625,6 @@ var app = new Vue({
 		else this.in_mainquest = false; //7
 		this.currentSub = Cookies.get('currentSub');
 		if(Cookies.getJSON('completedSubs')) this.completedSubs = Cookies.getJSON('completedSubs'); //9
-		console.log("Sono loggato: " + this.user_id + this.questname + this.in_mainquest);
 		this.changeQuest();
 	  }
       if(this.in_mainquest) return this.gamedata.mainQuest[this.currentQuest];
@@ -782,8 +779,6 @@ var app = new Vue({
           styles = Object.assign(styles, { "color" : "black" } );
         else if (temp == "navbar-dark")
           styles = Object.assign(styles, { "color" : "white" } );
-        else
-          console.log(`error in JSON compiling: bootstrap's navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
       }
       else {
         var temp = this.gamedata.css_style.background.style.nav.customized.general;
@@ -858,8 +853,6 @@ var app = new Vue({
             styles = Object.assign(styles,bootstrap_menu_border_color_dark_text);
           else if (this.gamedata.css_style.background.style.nav.bootstrap.textColor == "navbar-dark")
             styles = Object.assign(styles,bootstrap_menu_border_color_light_text);
-          else
-            console.log(`error in JSON compiling: bootstrap's navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
           //overwrite occasional mainstyle
           if (this.gamedata.css_style.mainStyle["color"])
             styles = Object.assign(styles, { "border-color": this.gamedata.css_style.mainStyle["color"] } );

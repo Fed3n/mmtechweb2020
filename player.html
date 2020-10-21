@@ -23,13 +23,14 @@
 					<qrload style="height: 400px" :questname="questname"></qrload>
 				</div>
 			</center>
-            <!--Area navbar-->
-            <div id="logoutcontainer" ref="logoutcontainer">
-              <p :style="removePredefinedStylesCard">Perderai tutti i progressi di gioco, vuoi uscire?</p>
-              <button type="button" v-on:click="logoutconfirm" :style="submitStyle">Voglio<br>uscire</button>
+            <!--Logout Prompt-->
+            <div role="dialog" aria-labelledby="dialogtext" aria-modal="true" id="logoutcontainer" ref="logoutcontainer">
+              <p id="dialogtext" :style="removePredefinedStylesCard">Perderai tutti i progressi di gioco, vuoi uscire?</p>
+              <button type="button" aria-labelledby="dialogtext" v-on:click="logoutconfirm" :style="submitStyle" ref="logoutbtn">Voglio<br>uscire</button>
               <button type="button" v-on:click="logoutdecline" :style="submitStyle">Non<br>uscire</button>
             </div>
-            <div id="questrender" ref="questrender" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
+            <!--Area navbar-->
+            <div disabled id="questrender" ref="questrender" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
                 <nav class="navbar navbar-expand-md" :class="navbarBootstrapStyle" :style="navbarStyle">
                 <div class="navbar-brand" :style="navbarBrandStyle">Menu
                     <span class="badge" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert" aria-label="missioni disponibili nel menù">Subs!</span>
@@ -72,7 +73,7 @@
 				</nav>
 			</div>
         <!--Area quest-->
-		<div v-if="questname" id="accordion" class="accordion" ref="accordion" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
+		<div disabled v-if="questname" id="accordion" class="accordion" ref="accordion" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
         <div class="card player-card" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
             <div class="card-header h-10" :style="cardLimitStyle">
                 <h3 id="questname" ref="questname" tabindex="-1">
