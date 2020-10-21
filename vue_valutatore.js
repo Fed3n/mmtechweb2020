@@ -37,7 +37,6 @@ var app = new Vue({
             //Se c'è una storia nuova, si aggiunge
             let story = this.computeStory(id);
             if(!(story in this.ongoing_stories)){
-              console.log(`${story} missing from ongoing_stories! Now loading it...`);
               axios.get(`/stories/${story}/`).then((res) => {
                 this.ongoing_stories[story] = res.data.json;
               });
@@ -60,6 +59,15 @@ var app = new Vue({
         }
       });
     },
+    clearAllData: function(){
+      let choice = confirm("Vuoi davvero cancellare tutti i dati di gioco? La pagina sarà ricaricata.");
+      if(choice){
+        axios.post("/clear/").then(response => {
+          console.log("we");
+          location.reload();
+        });
+      }
+    },
     switchIndex: function(id){
       if(this.players_chat) {
         this.current_chat_id = id;
@@ -72,8 +80,7 @@ var app = new Vue({
           sender: "Valutatore",
           text: this.chat_msg[this.current_chat_id]
         };
-        axios.post(`chat/${this.current_chat_id}`, msg)
-        .then(() => { console.log("sent message successfully :)")});
+        axios.post(`chat/${this.current_chat_id}`, msg);
         this.players_chat[this.current_chat_id].push(msg);
         this.chat_msg[this.current_chat_id] = "";
       }
