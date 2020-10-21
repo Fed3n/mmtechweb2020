@@ -181,7 +181,7 @@ app.post('/feedback/', (req, res) => {
 app.post('/chat/:player_id/', (req,res) => {
   if(players_chat[req.params.player_id]){
     players_chat[req.params.player_id].push(req.body);
-    return res.send(":)");
+    return res.status(200).send("Message sent successfully");
   }
   else {
     return res.status(404).send("Could not find player id.");
@@ -195,6 +195,16 @@ app.get('/chat/', (req,res) => {
   else {
     return res.status(200).send(players_chat);
   }
+});
+
+//Clear server data
+app.post('/clear/', (req,res) => {
+  players_data = {};
+  players_chat = {};
+  players_ans = {};
+  players_deleted = [];
+  uid_generator = {};
+  return res.status(200).send("Data cleared successfully.");
 });
 
 //Stories Resources
