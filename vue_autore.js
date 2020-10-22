@@ -112,7 +112,7 @@
                   }
               }
           }
-       }
+      }
   };
 
   metadata_pholder = {
@@ -174,7 +174,7 @@
           this.updateFs();
           this.setFontUrl();
           this.mainStyleColor = (this.gamedata.css_style.mainStyle['color'] !== "");
-          this.currentMainStyleColor = (this.mainStyleColor ? this.gamedata.css_style.mainStyle['color'] : "#000000" );
+          this.currentMainStyleColor = (this.mainStyleColor ? this.gamedata.css_style.mainStyle['color'] : "#000000");
           this.editMainColor();
       },
       methods: {
@@ -234,7 +234,7 @@
                       _this.updateFs();
                       //è necessario riaggiornare lo stile principale
                       _this.mainStyleColor = (_this.gamedata.css_style.mainStyle['color'] !== "");
-                      _this.currentMainStyleColor = (_this.mainStyleColor ? _this.gamedata.css_style.mainStyle['color'] : "#000000" );
+                      _this.currentMainStyleColor = (_this.mainStyleColor ? _this.gamedata.css_style.mainStyle['color'] : "#000000");
                       _this.editMainColor();
                       _this.setFontUrl();
                   })
@@ -276,7 +276,7 @@
               }
           },
           uploadImg: function() {
-              if(this.$refs.img_upload.files[0] && this.loadedStory){
+              if (this.$refs.img_upload.files[0] && this.loadedStory) {
                   //Mando come multipart/form-data
                   let form = new FormData();
                   let imageFile = this.$refs.img_upload.files[0];
@@ -303,15 +303,19 @@
               });
           },
           deleteImg: function() {
-            let _this = this;
-            if(this.selectedImage)
-              axios.delete(`/stories/${this.metadata.name}/images`, { params: { img: this.selectedImage }}).then((res) => {
-                _this.getImagesList();
-                _this.selectedImage = "";
-              });
+              let _this = this;
+              if (this.selectedImage)
+                  axios.delete(`/stories/${this.metadata.name}/images`, {
+                      params: {
+                          img: this.selectedImage
+                      }
+                  }).then((res) => {
+                      _this.getImagesList();
+                      _this.selectedImage = "";
+                  });
           },
           uploadVid: function() {
-              if(this.$refs.vid_upload.files[0] && this.loadedStory){
+              if (this.$refs.vid_upload.files[0] && this.loadedStory) {
                   //Mando come multipart/form-data
                   let form = new FormData();
                   let videoFile = this.$refs.vid_upload.files[0];
@@ -338,14 +342,18 @@
           },
           deleteVid: function() {
               let _this = this;
-              if(this.selectedVideo)
-                axios.delete(`/stories/${this.metadata.name}/videos`, { params: { vid: this.selectedVideo }}).then((res) => {
-                  _this.getVideosList();
-                  _this.selectedVideo = "";
-                });
+              if (this.selectedVideo)
+                  axios.delete(`/stories/${this.metadata.name}/videos`, {
+                      params: {
+                          vid: this.selectedVideo
+                      }
+                  }).then((res) => {
+                      _this.getVideosList();
+                      _this.selectedVideo = "";
+                  });
           },
           getStyle: function() {
-            let _this = this;
+              let _this = this;
               axios.get(`/styles/interfaces/${this.$refs.select_style.value}`).then(res => {
                   this.gamedata.css_style = res.data;
               });
@@ -403,13 +411,13 @@
           //########################################//
 
           jumpToQuest: function(type, number) {
-              if(this.$refs.help)
-                if (this.$refs.requestedHelp.style.display !== "none"){
-                  if (!((this.previewdata.in_mainquest && type == 'main' && this.previewdata.currentQuest == number) || (type == 'sub' && this.previewdata.currentSub == number))){
-                    this.$refs.requestedHelp.style.display = "none";
-                    this.$refs.help.classList.remove("disabled");
+              if (this.$refs.help)
+                  if (this.$refs.requestedHelp.style.display !== "none") {
+                      if (!((this.previewdata.in_mainquest && type == 'main' && this.previewdata.currentQuest == number) || (type == 'sub' && this.previewdata.currentSub == number))) {
+                          this.$refs.requestedHelp.style.display = "none";
+                          this.$refs.help.classList.remove("disabled");
+                      }
                   }
-                }
               if (type == "main") {
                   this.previewdata.in_mainquest = true;
                   this.previewdata.currentQuest = number;
@@ -423,8 +431,8 @@
               this.$refs.inputForm.reset();
               this.$refs.cardbody.scrollTop = 0;
           },
-          switchView: function(mobile){
-      	     this.mobileView = mobile;
+          switchView: function(mobile) {
+              this.mobileView = mobile;
           },
           switchMainSub: function() {
               this.previewdata.in_mainquest = !this.previewdata.in_mainquest;
@@ -512,7 +520,7 @@
                           if (index != 0) this.previewdata.currentQuest--;
                       }
                       //Se sto cancellando una quest trovandomi sopra l'ultima devo cambiare schermata
-                      else if(this.previewdata.currentQuest == mains.length-1) this.previewdata.currentQuest--;
+                      else if (this.previewdata.currentQuest == mains.length - 1) this.previewdata.currentQuest--;
                       //Bisogna scalare in basso tutti i riferimenti ad indici con indice > index
                       //e cancellare i riferimenti con indice = index
                       //Non sto usando i for each perché mi serve il riferimento diretto all'array per cambiarne i valori...
@@ -571,8 +579,7 @@
                           if (this.previewdata.currentSub == index) {
                               //Se sto cancellando la 0 non è un problema
                               if (index != 0) this.previewdata.currentSub--;
-                          }
-                          else if(this.previewdata.currentSub == subs.length-1) this.previewdata.currentSub--;
+                          } else if (this.previewdata.currentSub == subs.length - 1) this.previewdata.currentSub--;
                           //Bisogna scalare in basso tutti i riferimenti ad indici con indice > index
                           //e cancellare i riferimenti con indice = index
                           //Non sto usando i for each perché mi serve il riferimento diretto all'mainsay per cambiarne i valori...
@@ -722,140 +729,139 @@
               link.click();
           },
           createQR: function() {
-                  let qrname = this.metadata.name;
-		              let qrcontent = this.metadata.name;
-                  qr.clear();
-                  qr.makeCode(qrcontent);
-                  var node = this.$refs.qrcode;
-                  node.href = `${qr._el.getElementsByTagName("img")[0].src}`;
-                  node.download = `${qrname}.png`;
-                  node.click();
+              let qrname = this.metadata.name;
+              let qrcontent = this.metadata.name;
+              qr.clear();
+              qr.makeCode(qrcontent);
+              var node = this.$refs.qrcode;
+              node.href = `${qr._el.getElementsByTagName("img")[0].src}`;
+              node.download = `${qrname}.png`;
+              node.click();
           },
           requestHelp: function() {
               this.$refs.requestedHelp.style.display = "inline-block";
               this.$refs.help.classList.add("disabled");
           },
           submitMain: function() {
-            //Caso particolare in cui il submit si comporta diversamente perché non usa il valore picked
-            if(this.renderQuest.type == "human") {
-                this.previewdata.picked = this.ans_feedback;
-                this.waiting_feedback = false;
-                this.received_feedback = false;
-                this.ans_feedback = "";
-            }
-            options = this.getCurrentGotos;
-            for(opt of options){
-              //Le risposte del tipo draw hanno un formato diverso
-              if(this.gamedata.mainQuest[this.previewdata.currentQuest].type == "draw"){
-                let x = opt[0][0];
-                let y = opt[0][1];
-                let radius = parseInt(opt[0][2]);
-                if(this.previewdata.picked[0] >= x-radius && this.previewdata.picked[0] <= x+radius &&
-                  this.previewdata.picked[1] >= y-radius && this.previewdata.picked[1] <= y+radius){
-                    this.previewdata.currentQuest = opt[1];
-                    if(this.$refs.help)
-                      if (this.$refs.requestedHelp.style.display !== "none"){
-                        this.$refs.requestedHelp.style.display = "none";
-                        this.$refs.help.classList.remove("disabled");
+              //Caso particolare in cui il submit si comporta diversamente perché non usa il valore picked
+              if (this.renderQuest.type == "human") {
+                  this.previewdata.picked = this.ans_feedback;
+                  this.waiting_feedback = false;
+                  this.received_feedback = false;
+                  this.ans_feedback = "";
+              }
+              options = this.getCurrentGotos;
+              for (opt of options) {
+                  //Le risposte del tipo draw hanno un formato diverso
+                  if (this.gamedata.mainQuest[this.previewdata.currentQuest].type == "draw") {
+                      let x = opt[0][0];
+                      let y = opt[0][1];
+                      let radius = parseInt(opt[0][2]);
+                      if (this.previewdata.picked[0] >= x - radius && this.previewdata.picked[0] <= x + radius &&
+                          this.previewdata.picked[1] >= y - radius && this.previewdata.picked[1] <= y + radius) {
+                          this.previewdata.currentQuest = opt[1];
+                          if (this.$refs.help)
+                              if (this.$refs.requestedHelp.style.display !== "none") {
+                                  this.$refs.requestedHelp.style.display = "none";
+                                  this.$refs.help.classList.remove("disabled");
+                              }
+                          break;
                       }
-                    break;
+                  }
+                  //Formato standard che controlla se opt[0] == picked
+                  else if (opt[0] == this.previewdata.picked) {
+                      this.previewdata.currentQuest = opt[1];
+                      if (this.$refs.help)
+                          if (this.$refs.requestedHelp.style.display !== "none") {
+                              this.$refs.requestedHelp.style.display = "none";
+                              this.$refs.help.classList.remove("disabled");
+                          }
+                      break;
+                  }
+                  //L'opzione di default se non ci sono corrispondenze è sempre l'ultima
+                  if (options.indexOf(opt) == options.length - 1) {
+                      this.previewdata.currentQuest = opt[1];
+                      if (this.$refs.help)
+                          if (this.$refs.requestedHelp.style.display !== "none") {
+                              this.$refs.requestedHelp.style.display = "none";
+                              this.$refs.help.classList.remove("disabled");
+                          }
                   }
               }
-              //Formato standard che controlla se opt[0] == picked
-              else if(opt[0] == this.previewdata.picked){
-                this.previewdata.currentQuest = opt[1];
-                if(this.$refs.help)
-                  if (this.$refs.requestedHelp.style.display !== "none"){
-                    this.$refs.requestedHelp.style.display = "none";
-                    this.$refs.help.classList.remove("disabled");
-                  }
-                break;
-              }
-              //L'opzione di default se non ci sono corrispondenze è sempre l'ultima
-              if(options.indexOf(opt) == options.length-1){
-                this.previewdata.currentQuest = opt[1];
-                if(this.$refs.help)
-                  if (this.$refs.requestedHelp.style.display !== "none"){
-                    this.$refs.requestedHelp.style.display = "none";
-                    this.$refs.help.classList.remove("disabled");
-                  }
-              }
-            }
-            this.$refs.inputForm.reset();
-            this.previewdata.picked = null;
-            if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
-            this.$refs.cardbody.scrollTop = 0;
+              this.$refs.inputForm.reset();
+              this.previewdata.picked = null;
+              if (this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
+              this.$refs.cardbody.scrollTop = 0;
           },
           submitSub: function() {
-            this.$refs.inputForm.reset();
-            let wrong_answer = (this.renderQuest.type === "")? false : true;
-            let subQuest = this.renderQuest;
-            if(this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
-            if (subQuest.type == "draw") {
-                for(ans of subQuest.solution){
-                    let x = ans[0];
-                    let y = ans[1];
-                    let radius = parseInt(ans[2]);
-                    if(this.previewdata.picked[0] >= x-radius && this.previewdata.picked[0] <= x+radius &&
-                      this.previewdata.picked[1] >= y-radius && this.previewdata.picked[1] <= y+radius){
-                        wrong_answer = false;
-                    }
-                }
-            }
-            else {
-                for(ans of subQuest.solution)
-                    if (this.previewdata.picked == ans)
-                    wrong_answer = false;
-            }
-            if (wrong_answer) return;
-            this.previewdata.completedSubs.push(subQuest.number);
-            this.previewdata.in_mainquest = true;
-            this.previewdata.picked = null;
-            this.$refs.cardbody.scrollTop = 0;
-            if(this.$refs.help)
-              if (this.$refs.requestedHelp.style.display !== "none"){
-                this.$refs.requestedHelp.style.display = "none";
-                this.$refs.help.classList.remove("disabled");
+              this.$refs.inputForm.reset();
+              let wrong_answer = (this.renderQuest.type === "") ? false : true;
+              let subQuest = this.renderQuest;
+              if (this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
+              if (subQuest.type == "draw") {
+                  for (ans of subQuest.solution) {
+                      let x = ans[0];
+                      let y = ans[1];
+                      let radius = parseInt(ans[2]);
+                      if (this.previewdata.picked[0] >= x - radius && this.previewdata.picked[0] <= x + radius &&
+                          this.previewdata.picked[1] >= y - radius && this.previewdata.picked[1] <= y + radius) {
+                          wrong_answer = false;
+                      }
+                  }
+              } else {
+                  for (ans of subQuest.solution)
+                      if (this.previewdata.picked == ans)
+                          wrong_answer = false;
               }
+              if (wrong_answer) return;
+              this.previewdata.completedSubs.push(subQuest.number);
+              this.previewdata.in_mainquest = true;
+              this.previewdata.picked = null;
+              this.$refs.cardbody.scrollTop = 0;
+              if (this.$refs.help)
+                  if (this.$refs.requestedHelp.style.display !== "none") {
+                      this.$refs.requestedHelp.style.display = "none";
+                      this.$refs.help.classList.remove("disabled");
+                  }
           },
-          styleMenuCollapse: function(){
-             $('.stylepanelcollapse').collapse('hide');
+          styleMenuCollapse: function() {
+              $('.stylepanelcollapse').collapse('hide');
           },
           //style functions
-          setFontUrl: function(){
-            if (this.gamedata.css_style.mainStyle['font-url'])
-              document.getElementById("externalFontUrl").setAttribute('href',this.gamedata.css_style.mainStyle['font-url']);
+          setFontUrl: function() {
+              if (this.gamedata.css_style.mainStyle['font-url'])
+                  document.getElementById("externalFontUrl").setAttribute('href', this.gamedata.css_style.mainStyle['font-url']);
           },
           fontSize: function(event) {
-            this.gamedata.css_style.mainStyle["font-size"] = event.target.value+"px";
-					},
+              this.gamedata.css_style.mainStyle["font-size"] = event.target.value + "px";
+          },
           textSizeSetting: function(event) {
-            if (this.textSizeNotSpecified){
-              this.lastTextSize = this.gamedata.css_style.mainStyle["font-size"];
-              this.gamedata.css_style.mainStyle["font-size"] = "";
-            } else
-              this.gamedata.css_style.mainStyle["font-size"] = this.lastTextSize;
+              if (this.textSizeNotSpecified) {
+                  this.lastTextSize = this.gamedata.css_style.mainStyle["font-size"];
+                  this.gamedata.css_style.mainStyle["font-size"] = "";
+              } else
+                  this.gamedata.css_style.mainStyle["font-size"] = this.lastTextSize;
           },
-          badgeBorderSize: function(event){
-							this.gamedata.css_style.background.style.badge.customized['border-width']= event.target.value+"px";
+          badgeBorderSize: function(event) {
+              this.gamedata.css_style.background.style.badge.customized['border-width'] = event.target.value + "px";
           },
-          alertBorderSize: function(event){
-              this.gamedata.css_style.background.style.alert.customized['border-width']= event.target.value+"px";
-					},
-          alertBackground: function(event){
-            if (this.alertBackgroundTransparent){
-              this.lastAlertBackgroundColor = this.gamedata.css_style.background.style.alert.customized['background-color'];
-              this.gamedata.css_style.background.style.alert.customized['background-color'] = "rgba(0,0,0,0)";
-            } else {
-              this.gamedata.css_style.background.style.alert.customized['background-color'] = this.lastAlertBackgroundColor;
-            }
+          alertBorderSize: function(event) {
+              this.gamedata.css_style.background.style.alert.customized['border-width'] = event.target.value + "px";
           },
-					editMainColor: function(event){
-						if (this.mainStyleColor)
-							this.gamedata.css_style.mainStyle['color'] = this.currentMainStyleColor;
-						else
-							this.gamedata.css_style.mainStyle['color'] = "";
-					},
+          alertBackground: function(event) {
+              if (this.alertBackgroundTransparent) {
+                  this.lastAlertBackgroundColor = this.gamedata.css_style.background.style.alert.customized['background-color'];
+                  this.gamedata.css_style.background.style.alert.customized['background-color'] = "rgba(0,0,0,0)";
+              } else {
+                  this.gamedata.css_style.background.style.alert.customized['background-color'] = this.lastAlertBackgroundColor;
+              }
+          },
+          editMainColor: function(event) {
+              if (this.mainStyleColor)
+                  this.gamedata.css_style.mainStyle['color'] = this.currentMainStyleColor;
+              else
+                  this.gamedata.css_style.mainStyle['color'] = "";
+          },
           overwriteMainStyle: function(styles) {
               var main_style = this.gamedata.css_style.mainStyle;
               var main_style_cleaned = {};
@@ -875,7 +881,7 @@
               this.onLink.fill(false);
               this.onLink[num] = bool;
           },
-          menuLinkStyle: function(num,apply) {
+          menuLinkStyle: function(num, apply) {
               var styles = {};
               if (!this.gamedata.css_style.background.image) {
                   if (!this.gamedata.css_style.background.style.nav.custom) {
@@ -890,18 +896,18 @@
                           console.log(`error in JSON compilation: bootstrap navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
                       styles = this.overwriteMainStyle(styles);
                       //adding background color property
-                      if (apply){
-                        if (this.onLink[num]) {
-                            if (this.gamedata.css_style.background.style.nav.bootstrap.background != "bg-light")
-                                styles = Object.assign(styles, {
-                                    "background-color": bootstrap_menu_links_light_background
-                                });
-                            else
-                                styles = Object.assign(styles, {
-                                    "background-color": bootstrap_menu_links_background
-                                });
-                        }
-                     }
+                      if (apply) {
+                          if (this.onLink[num]) {
+                              if (this.gamedata.css_style.background.style.nav.bootstrap.background != "bg-light")
+                                  styles = Object.assign(styles, {
+                                      "background-color": bootstrap_menu_links_light_background
+                                  });
+                              else
+                                  styles = Object.assign(styles, {
+                                      "background-color": bootstrap_menu_links_background
+                                  });
+                          }
+                      }
                   } else {
                       //adding text color property
                       styles = Object.assign(styles, {
@@ -909,16 +915,16 @@
                       });
                       styles = this.overwriteMainStyle(styles);
                       //adding background color property
-                      if (apply){
-                        if (this.onLink[num])
-                            if (this.gamedata.css_style.background.style.nav.customized.general["background-color"] == "white")
-                                styles = Object.assign(styles, {
-                                    "background-color": menu_links_white_background
-                                });
-                            else
-                                styles = Object.assign(styles, {
-                                    "background-color": menu_links
-                                });
+                      if (apply) {
+                          if (this.onLink[num])
+                              if (this.gamedata.css_style.background.style.nav.customized.general["background-color"] == "white")
+                                  styles = Object.assign(styles, {
+                                      "background-color": menu_links_white_background
+                                  });
+                              else
+                                  styles = Object.assign(styles, {
+                                      "background-color": menu_links
+                                  });
                       }
                   }
               } else {
@@ -927,11 +933,11 @@
                   });
                   styles = this.overwriteMainStyle(styles);
                   //adding background color property
-                  if (apply){
-                    if (this.onLink[num])
-                        styles = Object.assign(styles, {
-                            "background-color": default_image_menu_links_hover_backgroud_color
-                        });
+                  if (apply) {
+                      if (this.onLink[num])
+                          styles = Object.assign(styles, {
+                              "background-color": default_image_menu_links_hover_backgroud_color
+                          });
                   }
               }
               //used for menu responsivness
@@ -1033,24 +1039,23 @@
               return "";
           },
           getAnswerCorrectness: function() {
-              if(!this.previewdata.picked) return "";
+              if (!this.previewdata.picked) return "";
               sols = this.renderQuest.solution;
-              if(this.renderQuest.type == "draw"){
-                  for(sol of sols){
-                      if(sol){
+              if (this.renderQuest.type == "draw") {
+                  for (sol of sols) {
+                      if (sol) {
                           let x = sol[0];
                           let y = sol[1];
                           let radius = parseInt(sol[2]);
                           if (this.previewdata.picked[0] >= (x - radius) && this.previewdata.picked[0] <= (x + radius) &&
-                          this.previewdata.picked[1] >= (y - radius) && this.previewdata.picked[1] <= (y + radius)) {
+                              this.previewdata.picked[1] >= (y - radius) && this.previewdata.picked[1] <= (y + radius)) {
                               return true;
                           }
                       }
                   }
-              }
-              else {
-                  for(sol of sols){
-                      if(this.previewdata.picked == sol) return true;
+              } else {
+                  for (sol of sols) {
+                      if (this.previewdata.picked == sol) return true;
                   }
               }
               return false;
@@ -1124,16 +1129,16 @@
               return gotos;
           },
           getMediaSrc: function() {
-            return ("story/" + this.metadata.name + (this.renderQuest.media.type=="image" ? "/images/" : "/videos/") + this.renderQuest.media.uri);
+              return ("story/" + this.metadata.name + (this.renderQuest.media.type == "image" ? "/images/" : "/videos/") + this.renderQuest.media.uri);
           },
           submitDisabled: function() {
               let disabled = false;
               //Se il tipo è "" (none) è sempre abilitato
-              if(!this.renderQuest.type) disabled = false;
+              if (!this.renderQuest.type) disabled = false;
               //In un type ending è sempre disabilitato (il gioco è finito)
-              else if(this.renderQuest.type == "ending") disabled = true;
+              else if (this.renderQuest.type == "ending") disabled = true;
               //Se siamo in human input allora il submit è abilitato se ho ricevuto feedback dal valutatore
-              else if(this.renderQuest.type == "human") disabled = !this.ans_feedback;
+              else if (this.renderQuest.type == "human") disabled = !this.ans_feedback;
               //Altrimenti è abilitato se c'è una risposta inserita
               else disabled = !this.previewdata.picked;
               this.upgradeSubmitStyle(disabled);
@@ -1170,24 +1175,24 @@
           //modifica la dimensione della preview
           previewMode: function() {
               if (this.mobileView)
-                return "col-md-4";
+                  return "col-md-4";
               else
-                return "col-md-8";
+                  return "col-md-8";
           },
           //oggetti presenti anche nel player
           navbarBootstrapStyle: function() {
-						var classes = "";
-						var temp = this.gamedata.css_style.background.style.nav.bootstrap;
-						if (!this.gamedata.css_style.background.image) {
-							if (!this.gamedata.css_style.background.style.nav.custom)
-								classes = classes+temp.textColor+" "+temp.background;
-							else
-									;
-						 }
-					if (!this.mobileView)
-						classes = classes+" navbar-expand";
-					return classes;
-					},
+              var classes = "";
+              var temp = this.gamedata.css_style.background.style.nav.bootstrap;
+              if (!this.gamedata.css_style.background.image) {
+                  if (!this.gamedata.css_style.background.style.nav.custom)
+                      classes = classes + temp.textColor + " " + temp.background;
+                  else
+                  ;
+              }
+              if (!this.mobileView)
+                  classes = classes + " navbar-expand";
+              return classes;
+          },
           navbarStyle: function() {
               var styles = {};
               if (!this.gamedata.css_style.background.image) {
@@ -1226,7 +1231,9 @@
               styles = this.overwriteMainStyle(styles);
               //alert color is more important than maincolor
               if (this.gamedata.css_style.background.style.alert.custom)
-                styles = Object.assign(styles, { 'color': temp['color'] } );
+                  styles = Object.assign(styles, {
+                      'color': temp['color']
+                  });
               if (!this.mobileView)
                   styles = Object.assign(styles, {
                       "margin-top": "-10px"
@@ -1423,7 +1430,7 @@
                   } else
                       return "";
               } else
-                   return "";
+                  return "";
           },
           cardBootstrapStyle: function() {
               if (!this.gamedata.css_style.background.image) {
@@ -1434,7 +1441,7 @@
                       return "";
                   }
               } else
-                   return "";
+                  return "";
           },
           cardStyle: function() {
               var styles = {};
@@ -1466,7 +1473,7 @@
               styles = this.overwriteMainStyle(styles);
               if (this.gamedata.css_style.mainStyle["color"] && !this.gamedata.css_style.background.style.card.custom)
                   styles = Object.assign(styles, {
-                      "color": this.gamedata.css_style.mainStyle["color"] + "!important"  //è necessario per sovrascrivere il colore assegnato da bootstrap
+                      "color": this.gamedata.css_style.mainStyle["color"] + "!important" //è necessario per sovrascrivere il colore assegnato da bootstrap
                   });
               return styles;
           },
