@@ -137,7 +137,6 @@ var app = new Vue({
     chat_msg: "",
 		firstclick: true,
 		bool_inchat: false,
-    bool_inlogout: false,
     gamedata: gamedata_pholder,
     metadata: metadata_pholder,
     questname: null,
@@ -298,7 +297,6 @@ var app = new Vue({
       this.$refs.logoutcontainer.style.backgroundColor = "transparent";
       this.$refs.logoutcontainer.style.border = "none";
     }
-    this.bool_inlogout = true;
     var i;
     var nodes = document.getElementsByClassName("willdisabled");
     for(i=0; i<nodes.length; i++) {
