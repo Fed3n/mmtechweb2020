@@ -1033,7 +1033,7 @@ var app = new Vue({
         return styles;
   	},
 		//if there is no image in background the default background color is white. This method adds proper chat background color
-		//@global param: navbar_color
+		//@global param: navbar_color (style_consts.js)
 		//								true --> chat background color is navbar background textColor
 		//								false --> chat background color is card background textColor
 	chatBackgroundStyle: function() {
