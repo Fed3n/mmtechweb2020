@@ -979,6 +979,18 @@ var app = new Vue({
       styles = Object.assign(styles, { "color" : this.gamedata.css_style.mainStyle["color"]+"!important" } );
     return styles;
   },
+  logoutBtnStyle: function() {
+    let styles = {};
+    styles = Object.assign(styles, { "background-color": "rgba(255,255,255,0.18)" });
+    styles = this.overwriteMainStyle(styles,true);
+    if (!this.gamedata.css_style.background.image)
+      if (this.gamedata.css_style.background.style.card.custom)
+        styles = Object.assign(styles, { "color" : this.gamedata.css_style.background.style.card.customized["color"] } );
+    styles = this.overwriteMainStyle(styles,true);
+    if (this.gamedata.css_style.mainStyle["color"] && !this.gamedata.css_style.background.style.card.custom)
+      styles = Object.assign(styles, { "color" : this.gamedata.css_style.mainStyle["color"]+"!important" } );
+    return styles;
+  },
   cardLimitStyle: function() {
     let styles = {};
     if (!this.gamedata.css_style.background.image){

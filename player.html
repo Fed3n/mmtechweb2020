@@ -23,12 +23,6 @@
 					<qrload style="height: 400px" :questname="questname"></qrload>
 				</div>
 			</center>
-            <!--Logout Prompt-->
-            <div tabindex="0" role="dialog" aria-labelledby="dialogtext" aria-modal="true" id="logoutcontainer" ref="logoutcontainer">
-              <p id="dialogtext" :style="removePredefinedStylesCard">Perderai tutti i progressi di gioco, vuoi uscire?</p>
-              <button type="button" v-on:click="logoutconfirm" :class="submitBootstrapStyle" :style="submitStyle" ref="logoutbtn">Voglio<br>uscire</button>
-              <button type="button" v-on:click="logoutdecline" :style="submitStyle">Non<br>uscire</button>
-            </div>
             <!--Area navbar-->
             <div id="questrender" ref="questrender" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
                 <nav class="navbar navbar-expand-md" :class="navbarBootstrapStyle" :style="navbarStyle">
@@ -148,6 +142,12 @@
 		   </div>
 		</div>
 		</div>
+    <!--Logout Prompt-->
+    <div tabindex="0" role="dialog" aria-labelledby="dialogtext" aria-modal="true" id="logoutcontainer" ref="logoutcontainer">
+      <p id="dialogtext" :style="removePredefinedStylesCard">Perderai tutti i progressi di gioco, vuoi uscire?</p>
+      <button type="button" v-on:click="logoutconfirm" :class="submitBootstrapStyle" :style="logoutBtnStyle" ref="logoutbtn">Voglio<br>uscire</button>
+      <button type="button" v-on:click="logoutdecline" :class="submitBootstrapStyle" :style="logoutBtnStyle">Non<br>uscire</button>
+    </div>
 		</div>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
