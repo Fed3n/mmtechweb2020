@@ -823,7 +823,8 @@
           },
           //style functions
           setFontUrl: function(){
-            document.getElementById("externalFontUrl").setAttribute('href',this.gamedata.css_style.mainStyle['font-url']);
+            if (this.gamedata.css_style.mainStyle['font-url'])
+              document.getElementById("externalFontUrl").setAttribute('href',this.gamedata.css_style.mainStyle['font-url']);
           },
           fontSize: function(event) {
             this.gamedata.css_style.mainStyle["font-size"] = event.target.value+"px";

@@ -529,7 +529,8 @@ var app = new Vue({
     return Object.assign(styles,main_style_cleaned);
     },
 		setFontUrl: function(){
-			document.getElementById("externalFontUrl").setAttribute('href',this.gamedata.css_style.mainStyle['font-url']);
+			if (this.gamedata.css_style.mainStyle['font-url'])
+				document.getElementById("externalFontUrl").setAttribute('href',this.gamedata.css_style.mainStyle['font-url']);
 		},
     //method that returns if navbar button is visible
     buttonChangedVisibility: function(isVisible, entry) {
