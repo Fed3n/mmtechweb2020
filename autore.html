@@ -12,8 +12,10 @@
     <link href="external.css" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <!-- FONT -->
-    <!--link href="https://fonts.googleapis.com/css2?family=Faster+One&display=swap" rel="stylesheet" -->  <!-- font-family: 'Faster One', cursive; -->
-    <!--link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet" -->   <!-- font-family: 'Orbitron', sans-serif; -->
+    <!--link href="https://fonts.googleapis.com/css2?family=Faster+One&display=swap" rel="stylesheet" -->
+    <!-- font-family: 'Faster One', cursive; -->
+    <!--link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet" -->
+    <!-- font-family: 'Orbitron', sans-serif; -->
     <link id="externalFontUrl" href="" rel="stylesheet">
     <title>Ambiente Autore</title>
 </head>
@@ -39,8 +41,7 @@
                     <!--GET / DELETE IN FS-->
                     <label for="select-story">Storie Registrate</label>
                     <select name="select-story" class="custom-select" size="6" ref="selectedStory">
-                        <option v-for="story in storyList" :value="story" data-toggle="tooltip" :title="activeStoryList.includes(story) ? 'Attiva' : 'Inattiva'"
-                        :style="{ color: activeStoryList.includes(story) ? 'green' : 'red' }">{{ story }}</option>
+                        <option v-for="story in storyList" :value="story" data-toggle="tooltip" :title="activeStoryList.includes(story) ? 'Attiva' : 'Inattiva'" :style="{ color: activeStoryList.includes(story) ? 'green' : 'red' }">{{ story }}</option>
                     </select>
                     <div class="btn btn-group">
                         <button class="btn btn-success" v-on:click="getStory">GET</button>
@@ -100,7 +101,7 @@
                 <h2 class="bg-info text-light">Creazione QR Code e file .json della storia</h2>
                 <div id="jsonLoader" class="container border-bottom pb-3 m-3">
                     <div class="form-group row">
-                        <label for="file-loader" class="col-md-5" >caricamento storia da file</label>
+                        <label for="file-loader" class="col-md-5">caricamento storia da file</label>
                         <div class="col-7"><input name="file-loader" class="form-control-file" type="file" ref="toLoad"></div>
                     </div>
                     <button class="btn btn-success" v-on:click="loadJson">CARICA STORIA</button>
@@ -166,8 +167,7 @@
                     <label for="questlistcontainer">Accesso diretto:</label>
                     <div name="questlistcontainer" class="container border-top p-2 mx-25 overflow-auto">
                         <div v-for="quest in questList" class="btn-group container-fluid pb-1">
-                            <button class="btn btn-block bg-white border border-dark"
-                            v-on:click="previewdata.in_mainquest ? jumpToQuest('main',quest.number) : jumpToQuest('sub',quest.number)">
+                            <button class="btn btn-block bg-white border border-dark" v-on:click="previewdata.in_mainquest ? jumpToQuest('main',quest.number) : jumpToQuest('sub',quest.number)">
                                 {{ quest.title || quest.number }}
                             </button>
                             <button class="btn btn-danger" v-on:click="previewdata.in_mainquest ? rmMainNode(quest.number) : rmSubNode(quest.number)">Cancella</button>
@@ -184,458 +184,449 @@
                 <!--MODIFICA STILI-->
                 <button class="btn btn-block btn-info" type="button" data-toggle="collapse" data-target="#stylepanel">MODIFICA LO STILE</button>
                 <!-- stili principali -->
-      					<div id="stylepanel" class="row container-fluid collapse p-3 border-bottom">
-      						<div class="row container-fluid">
-        						<!-- IMMAGINE O SFONDO -->
-      							<div id="backgroundStyle" class="col-md-6">
-      									<div class="btn-group container-fluid mb-4">
-      						        <button class="btn btn-light" v-on:click="gamedata.css_style.background.image = true" :disabled="gamedata.css_style.background.image">Immagine</button>
-      						        <button class="btn btn-light" v-on:click="gamedata.css_style.background.image = false" :disabled="!gamedata.css_style.background.image">Colore</button>
-                  			</div>
-                        <div class="container-fluid">
-                          <div id="setStyle" class="panel-group mb-3">
-                            <!-- scegli l'immagine -->
-                  					<div v-if="gamedata.css_style.background.image">
-                              <div class="panel panel-default">
-                                <div class="panel-heading py-2 border-bottom border-top">
-                                  <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#imageEditor" @click="styleMenuCollapse">
-                                    <label>Immagine di Sfondo</label>
-                                  </div>
-                                </div>
-                                <div id="imageEditor" class="panel-collapse collapse stylepanelcollapse">
-                                  <div class="panel-body border-bottom mt-2 px-4 pb-3">
-                                    <label for="select-image">Scegli l'immagine: </label>
-                                    <select ref="selectimages" name="select-image" class="form-control" v-model="gamedata.css_style.background.url">
-                                        <option v-if="(imagesList ? imagesList.length > 0 : false)" value="">nessuna immagine selezionata</option>
-                                        <option v-for="imgname in imagesList" :value=`url('story/${metadata.name}/images/${imgname}')`>{{ imgname }}</option>
-                                    </select>
-                                    <small v-if="!imagesList" class="text-muted">Non sono presenti immagini in questa storia, caricane una nella sezione "area dati"</small>
-                                  </div>
-                                </div>
-                              </div>
-                  					</div>
-                            <div v-if="!gamedata.css_style.background.image">
-                              <!-- NAVBAR -->
-                              <div class="panel panel-default">
-                                <div class="panel-heading py-2 border-bottom border-top">
-                                  <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#navigationBarEditor" @click="styleMenuCollapse">
-                                    <label>Barra di Navigazione</label>
-                                  </div>
-                                </div>
-                                <div id="navigationBarEditor" class="panel-collapse collapse stylepanelcollapse">
-                                  <div class="panel-body border-bottom mt-2">
-                                    <!-- colori predefiniti -->
-                                    <div v-if="!gamedata.css_style.background.style.nav.custom">
-          														<div class="form-group row pl-4 my-0">
-          															<label class="col col-form-label">Colore del Testo</label>
-          															<div class="col">
-          																<select class="form-control" name="navigationBarStyle" v-model="gamedata.css_style.background.style.nav.bootstrap.textColor">
-          																	<option v-for="styles in bootstrapConsts.navTextColors" :value="styles.value">{{ styles.name }}</option>
-          																</select>
-          															</div>
-          														</div>
-          														<div class="form-group row pl-4 my-0">
-          															<label class="col col-form-label">Colore di Sfondo</label>
-          															<div class="col">
-          																<select class="form-control" name="navigationBarStyle" v-model="gamedata.css_style.background.style.nav.bootstrap.background">
-          																	<option v-for="styles in bootstrapConsts.navCardBackgroundColors" :value="styles.value">{{ styles.name }}</option>
-          																</select>
-          															</div>
-          														</div>
-                                    </div>
-                                    <!-- colori a scelta -->
-                                    <div v-if="gamedata.css_style.background.style.nav.custom">
-                                      <div class="form-group row pl-3 my-0">
-                                        <label for="textColorNavCustom" class="col-md-6">Colore del Testo</label>
-                                        <div class="col-md-6">
-                                          <input name="textColorNavCustom" type="color" v-model="gamedata.css_style.background.style.nav.customized.general['color']">
-                                        </div>
-                                      </div>
-                                      <div class="form-group row pl-3 my-0">
-                                        <label for="backgroundColorNavCustom" class="col-md-6">Colore di Sfondo</label>
-                                        <div class="col-md-6">
-                                          <input name="backgroundColorNavCustom" type="color" v-model="gamedata.css_style.background.style.nav.customized.general['background-color']">
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div class="container-fluid text-center mb-0 mt-2">
-               												<label for="navcheckbox">Altri Colori</label>
-               												<input id="navcheckbox" type="checkbox" v-model="gamedata.css_style.background.style.nav.custom">
-               											</div>
-                                  </div>
-                                </div>
-                              </div>
-                              <!-- CARD -->
-                              <div class="panel panel-default">
-                                <div class="panel-heading py-2 border-bottom">
-                                  <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#cardStyleEditor" @click="styleMenuCollapse">
-                                    <label>Corpo Centrale</label>
-                                  </div>
-                                </div>
-                                <div id="cardStyleEditor" class="panel-collapse collapse stylepanelcollapse">
-                                  <div class="panel-body border-bottom mt-2">
-                                    <!-- colori predefiniti -->
-                                    <div v-if="!gamedata.css_style.background.style.card.custom">
-                                      <div class="form-group row pl-4 my-0">
-                                        <label class="col col-form-label">Colore del Testo</label>
-                                        <div class="col">
-                                          <select class="form-control" name="cardTextStyle" v-model="gamedata.css_style.background.style.card.bootstrap.textColor">
-                                            <option v-for="styles in bootstrapConsts.cardTextColors" :value="styles.value">{{ styles.name }}</option>
-                                          </select>
-                                        </div>
-                                      </div>
-                                      <div class="form-group row pl-4 my-0">
-                                        <label class="col col-form-label">Colore di Sfondo</label>
-                                        <div class="col">
-                                          <select class="form-control" name="cardBackgroundStyle" v-model="gamedata.css_style.background.style.card.bootstrap.background">
-                                            <option v-for="styles in bootstrapConsts.navCardBackgroundColors" :value="styles.value">{{ styles.name }}</option>
-                                          </select>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <!-- colori a scelta -->
-                                    <div v-if="gamedata.css_style.background.style.card.custom">
-                                      <div class="form-group row pl-3 my-0">
-                                        <label for="textColorCardCustom" class="col-md-6">Colore del Testo</label>
-                                        <div class="col-md-6">
-                                          <input name="textColorCardCustom" type="color" v-model="gamedata.css_style.background.style.card.customized['color']">
-                                        </div>
-                                      </div>
-                                      <div class="form-group row pl-3 my-0">
-                                        <label for="backgroundColorCardCustom" class="col-md-6">Colore di Sfondo</label>
-                                        <div class="col-md-6">
-                                          <input name="backgroundColorCardCustom" type="color" v-model="gamedata.css_style.background.style.card.customized['background-color']">
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div class="container-fluid text-center mb-0 mt-2">
-                                      <label for="cardcheckbox">Altri Colori</label>
-                                      <input id="cardcheckbox" type="checkbox" v-model="gamedata.css_style.background.style.card.custom">
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+                <div id="stylepanel" class="row container-fluid collapse p-3 border-bottom">
+                    <div class="row container-fluid">
+                        <!-- IMMAGINE O SFONDO -->
+                        <div id="backgroundStyle" class="col-md-6">
+                            <div class="btn-group container-fluid mb-4">
+                                <button class="btn btn-light" v-on:click="gamedata.css_style.background.image = true" :disabled="gamedata.css_style.background.image">Immagine</button>
+                                <button class="btn btn-light" v-on:click="gamedata.css_style.background.image = false" :disabled="!gamedata.css_style.background.image">Colore</button>
                             </div>
-                            <!-- BADGE -->
-                            <div class="panel panel-default">
-                              <div class="panel-heading py-2 border-bottom">
-                                <div class="panel-title" data-toggle="collapse" rata-parent="#setStyle" href="#badgeStyleEditor" @click="styleMenuCollapse">
-                                  <label>Etichetta obiettivi secondari(Sub) disponibili</label>
-                                </div>
-                              </div>
-                              <div id="badgeStyleEditor" class="panel-collapse collapse stylepanelcollapse">
-                                <div class="panel-body border-bottom mt-2">
-                                  <!-- tipologia predefinita -->
-                                  <div v-if="!gamedata.css_style.background.style.badge.custom">
-                                    <div class="form-group row pl-4 my-0">
-                                      <label class="col col-form-label">Tipologia</label>
-                                      <div class="col">
-                                        <select class="form-control" name="badgeBootstrapEditor" v-model="gamedata.css_style.background.style.badge.bootstrap.type">
-                                          <option v-for="styles in bootstrapConsts.badgeColors" :value="styles.value">{{ styles.name }}</option>
-                                        </select>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <!-- stile personalizzato -->
-                                  <div v-if="gamedata.css_style.background.style.badge.custom">
-                                    <div class="form-group row pl-3 my-0">
-                                      <label for="textColorBadgeCustom" class="col-md-6">Colore del Testo</label>
-                                      <div class="col-md-6">
-                                        <input name="textColorBadgeCustom" type="color" v-model="gamedata.css_style.background.style.badge.customized['color']">
-                                      </div>
-                                    </div>
-                                    <div class="form-group row pl-3 my-0">
-                                      <label for="backgroundColorBadgeCustom" class="col-md-6">Colore di Sfondo</label>
-                                      <div class="col-md-6">
-                                        <input name="backgroundColorBadgeCustom" type="color" v-model="gamedata.css_style.background.style.badge.customized['background-color']">
-                                      </div>
-                                    </div>
-                                    <div class="form-group row pl-3 my-0 mb-1">
-                                      <label for="borderWidthBadgeCustom" class="col-md-6 pt-1">Spessore del Bordo</label>
-                                      <div class="col-md-6">
-                                        <input name="borderWidthBadgeCustom" type="number" step="1" min="0" @change="badgeBorderSize"
-                                               :value="gamedata.css_style.background.style.badge.customized['border-width'].slice(0,-2)">
-                                      </div>
-                                    </div>
-                                    <div class="form-group row pl-3 my-0">
-                                      <label for="borderColorBadgeCustom" class="col-md-6">Colore del Bordo</label>
-                                      <div class="col-md-6">
-                                        <input name="borderColorBadgeCustom" type="color" v-model="gamedata.css_style.background.style.badge.customized['border-color']">
-                                      </div>
-                                    </div>
-                                    <div class="form-group row pl-3 my-0">
-                                      <label class="col-md-6 pt-2">Tipo di Bordo</label>
-                                      <div class="col-md-6">
-                                        <select class="form-control" name="borderStyleBadgeCustom" v-model="gamedata.css_style.background.style.badge.customized['border-style']">
-                                          <option v-for="styles in bootstrapConsts.badgeAlertBorderStyles" :value="styles.value">{{ styles.name }}</option>
-                                        </select>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div class="container-fluid text-center mb-0 mt-2">
-                                    <label for="badgeCheckbox">Personalizza</label>
-                                    <input id="badgeCheckbox" type="checkbox" v-model="gamedata.css_style.background.style.badge.custom">
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <!-- ALERT -->
-                            <div class="panel panel-default">
-                              <div class="panel-heading py-2 border-bottom">
-                                <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#alertStyleEditor" @click="styleMenuCollapse">
-                                  <label>Etichetta aiuto richiesto</label>
-                                </div>
-                              </div>
-                              <div id="alertStyleEditor" class="panel-collapse collapse stylepanelcollapse">
-                                <div class="panel-body border-bottom mt-2">
-                                  <!-- tipologia predefinita -->
-                                  <div v-if="!gamedata.css_style.background.style.alert.custom">
-                                    <div class="form-group row pl-4 my-0">
-                                      <label class="col col-form-label">Tipologia</label>
-                                      <div class="col">
-                                        <select class="form-control" name="alertBootstrapEditor" v-model="gamedata.css_style.background.style.alert.bootstrap.type">
-                                          <option v-for="styles in bootstrapConsts.alertColors" :value="styles.value">{{ styles.name }}</option>
-                                        </select>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <!-- stile personalizzato -->
-                                  <div v-if="gamedata.css_style.background.style.alert.custom">
-                                    <div class="form-group row pl-3 my-0">
-                                      <label for="textColorAlertCustom" class="col-md-6">Colore del Testo</label>
-                                      <div class="col-md-6">
-                                        <input name="textColorAlertCustom" type="color" v-model="gamedata.css_style.background.style.alert.customized['color']">
-                                      </div>
-                                    </div>
-                                    <div class="form-group row pl-3 my-0">
-                                      <label for="backgroundColorAlertCustom" class="col-md-6">Colore di Sfondo</label>
-                                      <div class="col-md-6 row">
-                                        <div class="col-4">
-                                          <input :disabled="alertBackgroundTransparent" name="backgroundColorAlertCustom" type="color" v-model="gamedata.css_style.background.style.alert.customized['background-color']">
+                            <div class="container-fluid">
+                                <div id="setStyle" class="panel-group mb-3">
+                                    <!-- scegli l'immagine -->
+                                    <div v-if="gamedata.css_style.background.image">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading py-2 border-bottom border-top">
+                                                <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#imageEditor" @click="styleMenuCollapse">
+                                                    <label>Immagine di Sfondo</label>
+                                                </div>
+                                            </div>
+                                            <div id="imageEditor" class="panel-collapse collapse stylepanelcollapse">
+                                                <div class="panel-body border-bottom mt-2 px-4 pb-3">
+                                                    <label for="select-image">Scegli l'immagine: </label>
+                                                    <select ref="selectimages" name="select-image" class="form-control" v-model="gamedata.css_style.background.url">
+                                                        <option v-if="(imagesList ? imagesList.length > 0 : false)" value="">nessuna immagine selezionata</option>
+                                                        <option v-for="imgname in imagesList" :value=`url('story/${metadata.name}/images/${imgname}')`>{{ imgname }}</option>
+                                                    </select>
+                                                    <small v-if="!imagesList" class="text-muted">Non sono presenti immagini in questa storia, caricane una nella sezione "area dati"</small>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-8">
-                  												<label for="transparentAlert">trasparente</label>
-                  												<input id="transparentAlert" type="checkbox" v-model="alertBackgroundTransparent" @change="alertBackground">
-                  											</div>
-                                      </div>
                                     </div>
-                                    <div class="form-group row pl-3 my-0 mb-1">
-                                      <label for="borderWidthAlertCustom" class="col-md-6 pt-1">Spessore del Bordo</label>
-                                      <div class="col-md-6">
-                                        <input name="borderWidthAlertCustom" type="number" step="1" min="0" value="0" @change="alertBorderSize"
-                                               :value="gamedata.css_style.background.style.alert.customized['border-width'].slice(0,-2)">
-                                      </div>
+                                    <div v-if="!gamedata.css_style.background.image">
+                                        <!-- NAVBAR -->
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading py-2 border-bottom border-top">
+                                                <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#navigationBarEditor" @click="styleMenuCollapse">
+                                                    <label>Barra di Navigazione</label>
+                                                </div>
+                                            </div>
+                                            <div id="navigationBarEditor" class="panel-collapse collapse stylepanelcollapse">
+                                                <div class="panel-body border-bottom mt-2">
+                                                    <!-- colori predefiniti -->
+                                                    <div v-if="!gamedata.css_style.background.style.nav.custom">
+                                                        <div class="form-group row pl-4 my-0">
+                                                            <label class="col col-form-label">Colore del Testo</label>
+                                                            <div class="col">
+                                                                <select class="form-control" name="navigationBarStyle" v-model="gamedata.css_style.background.style.nav.bootstrap.textColor">
+                                                                    <option v-for="styles in bootstrapConsts.navTextColors" :value="styles.value">{{ styles.name }}</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row pl-4 my-0">
+                                                            <label class="col col-form-label">Colore di Sfondo</label>
+                                                            <div class="col">
+                                                                <select class="form-control" name="navigationBarStyle" v-model="gamedata.css_style.background.style.nav.bootstrap.background">
+                                                                    <option v-for="styles in bootstrapConsts.navCardBackgroundColors" :value="styles.value">{{ styles.name }}</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- colori a scelta -->
+                                                    <div v-if="gamedata.css_style.background.style.nav.custom">
+                                                        <div class="form-group row pl-3 my-0">
+                                                            <label for="textColorNavCustom" class="col-md-6">Colore del Testo</label>
+                                                            <div class="col-md-6">
+                                                                <input name="textColorNavCustom" type="color" v-model="gamedata.css_style.background.style.nav.customized.general['color']">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row pl-3 my-0">
+                                                            <label for="backgroundColorNavCustom" class="col-md-6">Colore di Sfondo</label>
+                                                            <div class="col-md-6">
+                                                                <input name="backgroundColorNavCustom" type="color" v-model="gamedata.css_style.background.style.nav.customized.general['background-color']">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="container-fluid text-center mb-0 mt-2">
+                                                        <label for="navcheckbox">Altri Colori</label>
+                                                        <input id="navcheckbox" type="checkbox" v-model="gamedata.css_style.background.style.nav.custom">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- CARD -->
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading py-2 border-bottom">
+                                                <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#cardStyleEditor" @click="styleMenuCollapse">
+                                                    <label>Corpo Centrale</label>
+                                                </div>
+                                            </div>
+                                            <div id="cardStyleEditor" class="panel-collapse collapse stylepanelcollapse">
+                                                <div class="panel-body border-bottom mt-2">
+                                                    <!-- colori predefiniti -->
+                                                    <div v-if="!gamedata.css_style.background.style.card.custom">
+                                                        <div class="form-group row pl-4 my-0">
+                                                            <label class="col col-form-label">Colore del Testo</label>
+                                                            <div class="col">
+                                                                <select class="form-control" name="cardTextStyle" v-model="gamedata.css_style.background.style.card.bootstrap.textColor">
+                                                                    <option v-for="styles in bootstrapConsts.cardTextColors" :value="styles.value">{{ styles.name }}</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row pl-4 my-0">
+                                                            <label class="col col-form-label">Colore di Sfondo</label>
+                                                            <div class="col">
+                                                                <select class="form-control" name="cardBackgroundStyle" v-model="gamedata.css_style.background.style.card.bootstrap.background">
+                                                                    <option v-for="styles in bootstrapConsts.navCardBackgroundColors" :value="styles.value">{{ styles.name }}</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- colori a scelta -->
+                                                    <div v-if="gamedata.css_style.background.style.card.custom">
+                                                        <div class="form-group row pl-3 my-0">
+                                                            <label for="textColorCardCustom" class="col-md-6">Colore del Testo</label>
+                                                            <div class="col-md-6">
+                                                                <input name="textColorCardCustom" type="color" v-model="gamedata.css_style.background.style.card.customized['color']">
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row pl-3 my-0">
+                                                            <label for="backgroundColorCardCustom" class="col-md-6">Colore di Sfondo</label>
+                                                            <div class="col-md-6">
+                                                                <input name="backgroundColorCardCustom" type="color" v-model="gamedata.css_style.background.style.card.customized['background-color']">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="container-fluid text-center mb-0 mt-2">
+                                                        <label for="cardcheckbox">Altri Colori</label>
+                                                        <input id="cardcheckbox" type="checkbox" v-model="gamedata.css_style.background.style.card.custom">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="form-group row pl-3 my-0">
-                                      <label for="borderColorAlertCustom" class="col-md-6">Colore del Bordo</label>
-                                      <div class="col-md-6">
-                                        <input name="borderColorAlertCustom" type="color" v-model="gamedata.css_style.background.style.alert.customized['border-color']">
-                                      </div>
+                                    <!-- BADGE -->
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading py-2 border-bottom">
+                                            <div class="panel-title" data-toggle="collapse" rata-parent="#setStyle" href="#badgeStyleEditor" @click="styleMenuCollapse">
+                                                <label>Etichetta obiettivi secondari(Sub) disponibili</label>
+                                            </div>
+                                        </div>
+                                        <div id="badgeStyleEditor" class="panel-collapse collapse stylepanelcollapse">
+                                            <div class="panel-body border-bottom mt-2">
+                                                <!-- tipologia predefinita -->
+                                                <div v-if="!gamedata.css_style.background.style.badge.custom">
+                                                    <div class="form-group row pl-4 my-0">
+                                                        <label class="col col-form-label">Tipologia</label>
+                                                        <div class="col">
+                                                            <select class="form-control" name="badgeBootstrapEditor" v-model="gamedata.css_style.background.style.badge.bootstrap.type">
+                                                                <option v-for="styles in bootstrapConsts.badgeColors" :value="styles.value">{{ styles.name }}</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- stile personalizzato -->
+                                                <div v-if="gamedata.css_style.background.style.badge.custom">
+                                                    <div class="form-group row pl-3 my-0">
+                                                        <label for="textColorBadgeCustom" class="col-md-6">Colore del Testo</label>
+                                                        <div class="col-md-6">
+                                                            <input name="textColorBadgeCustom" type="color" v-model="gamedata.css_style.background.style.badge.customized['color']">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row pl-3 my-0">
+                                                        <label for="backgroundColorBadgeCustom" class="col-md-6">Colore di Sfondo</label>
+                                                        <div class="col-md-6">
+                                                            <input name="backgroundColorBadgeCustom" type="color" v-model="gamedata.css_style.background.style.badge.customized['background-color']">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row pl-3 my-0 mb-1">
+                                                        <label for="borderWidthBadgeCustom" class="col-md-6 pt-1">Spessore del Bordo</label>
+                                                        <div class="col-md-6">
+                                                            <input name="borderWidthBadgeCustom" type="number" step="1" min="0" @change="badgeBorderSize" :value="gamedata.css_style.background.style.badge.customized['border-width'].slice(0,-2)">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row pl-3 my-0">
+                                                        <label for="borderColorBadgeCustom" class="col-md-6">Colore del Bordo</label>
+                                                        <div class="col-md-6">
+                                                            <input name="borderColorBadgeCustom" type="color" v-model="gamedata.css_style.background.style.badge.customized['border-color']">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row pl-3 my-0">
+                                                        <label class="col-md-6 pt-2">Tipo di Bordo</label>
+                                                        <div class="col-md-6">
+                                                            <select class="form-control" name="borderStyleBadgeCustom" v-model="gamedata.css_style.background.style.badge.customized['border-style']">
+                                                                <option v-for="styles in bootstrapConsts.badgeAlertBorderStyles" :value="styles.value">{{ styles.name }}</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="container-fluid text-center mb-0 mt-2">
+                                                    <label for="badgeCheckbox">Personalizza</label>
+                                                    <input id="badgeCheckbox" type="checkbox" v-model="gamedata.css_style.background.style.badge.custom">
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="form-group row pl-3 my-0">
-                                      <label class="col pt-2">Tipo di Bordo</label>
-                                      <div class="col">
-                                        <select class="form-control" name="borderStyleAlertCustom" v-model="gamedata.css_style.background.style.alert.customized['border-style']">
-                                          <option v-for="styles in bootstrapConsts.badgeAlertBorderStyles" :value="styles.value">{{ styles.name }}</option>
-                                        </select>
-                                      </div>
+                                    <!-- ALERT -->
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading py-2 border-bottom">
+                                            <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#alertStyleEditor" @click="styleMenuCollapse">
+                                                <label>Etichetta aiuto richiesto</label>
+                                            </div>
+                                        </div>
+                                        <div id="alertStyleEditor" class="panel-collapse collapse stylepanelcollapse">
+                                            <div class="panel-body border-bottom mt-2">
+                                                <!-- tipologia predefinita -->
+                                                <div v-if="!gamedata.css_style.background.style.alert.custom">
+                                                    <div class="form-group row pl-4 my-0">
+                                                        <label class="col col-form-label">Tipologia</label>
+                                                        <div class="col">
+                                                            <select class="form-control" name="alertBootstrapEditor" v-model="gamedata.css_style.background.style.alert.bootstrap.type">
+                                                                <option v-for="styles in bootstrapConsts.alertColors" :value="styles.value">{{ styles.name }}</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- stile personalizzato -->
+                                                <div v-if="gamedata.css_style.background.style.alert.custom">
+                                                    <div class="form-group row pl-3 my-0">
+                                                        <label for="textColorAlertCustom" class="col-md-6">Colore del Testo</label>
+                                                        <div class="col-md-6">
+                                                            <input name="textColorAlertCustom" type="color" v-model="gamedata.css_style.background.style.alert.customized['color']">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row pl-3 my-0">
+                                                        <label for="backgroundColorAlertCustom" class="col-md-6">Colore di Sfondo</label>
+                                                        <div class="col-md-6 row">
+                                                            <div class="col-4">
+                                                                <input :disabled="alertBackgroundTransparent" name="backgroundColorAlertCustom" type="color" v-model="gamedata.css_style.background.style.alert.customized['background-color']">
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <label for="transparentAlert">trasparente</label>
+                                                                <input id="transparentAlert" type="checkbox" v-model="alertBackgroundTransparent" @change="alertBackground">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row pl-3 my-0 mb-1">
+                                                        <label for="borderWidthAlertCustom" class="col-md-6 pt-1">Spessore del Bordo</label>
+                                                        <div class="col-md-6">
+                                                            <input name="borderWidthAlertCustom" type="number" step="1" min="0" value="0" @change="alertBorderSize" :value="gamedata.css_style.background.style.alert.customized['border-width'].slice(0,-2)">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row pl-3 my-0">
+                                                        <label for="borderColorAlertCustom" class="col-md-6">Colore del Bordo</label>
+                                                        <div class="col-md-6">
+                                                            <input name="borderColorAlertCustom" type="color" v-model="gamedata.css_style.background.style.alert.customized['border-color']">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row pl-3 my-0">
+                                                        <label class="col pt-2">Tipo di Bordo</label>
+                                                        <div class="col">
+                                                            <select class="form-control" name="borderStyleAlertCustom" v-model="gamedata.css_style.background.style.alert.customized['border-style']">
+                                                                <option v-for="styles in bootstrapConsts.badgeAlertBorderStyles" :value="styles.value">{{ styles.name }}</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="container-fluid text-center mb-0 mt-2">
+                                                    <label for="alertCheckbox">Personalizza</label>
+                                                    <input id="alertCheckbox" type="checkbox" v-model="gamedata.css_style.background.style.alert.custom">
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                  </div>
-                                  <div class="container-fluid text-center mb-0 mt-2">
-                                    <label for="alertCheckbox">Personalizza</label>
-                                    <input id="alertCheckbox" type="checkbox" v-model="gamedata.css_style.background.style.alert.custom">
-                                  </div>
                                 </div>
-                              </div>
-                            </div>
-                          </div>
-                  			</div>
-      							</div>
-      							<!-- STILI GLOBALI DEL TESTO -->
-      							<div id="mainStyles" class="col-md-6 pl-4">
-      									<div class="form-group row">
-      										<label for="fontFamilyField" class="col-md-4 col-form-label">Font</label>
-      										<div class="col-md-8 row form-group m-0 pr-0">
-                            <div class="col-6 m-0 p-0 pr-1">
-      										     <input name="fontFamilyField" class="form-control m-0" type="text" readyonly v-model="gamedata.css_style.mainStyle['font-family']">
-      										  </div>
-                            <div class="col-6">
-                             <div class="col-12 row m-0 p-0">
-      										     <input name="fontUrlField" class="form-control row" type="text" readyonly v-model="gamedata.css_style.mainStyle['font-url']" @input="setFontUrl()"
-                                      data-toggle="tooltip" title="se il font non è disponibile inserire il link di google fonts">
-                             </div>
-                             <small v-if="gamedata.css_style.mainStyle['font-url'] === ' '" class="row text-muted mt-2">
-                                se il font non è disponibile inserire il link di google fonts
-                             </small>
-                            </div>
-      										</div>
-
-      									</div>
-      									<div class="form-group row">
-      										<label for="fontStyleField" class="col-md-4 col-form-label">Stile del Testo</label>
-      										<div class="col-md-8">
-      											<select name="fontStyleField" class="form-control col-md-8" v-model="gamedata.css_style.mainStyle['font-style']">
-                      		  	<option value="normal">normale</option>
-                      		  	<option value="italic">obliquo</option>
-                     				</select>
-      										</div>
-      									</div>
-      									<div class="form-group row">
-      										<label for="fontWeightField" class="col-md-4 col-form-label">Peso del Testo</label>
-      										<div class="col-md-8">
-      											<select name="fontWeightField" class="form-control col-md-8" v-model="gamedata.css_style.mainStyle['font-weight']">
-                      		  	<option value="normal">normale</option>
-                      		  	<option value="bold">grassetto</option>
-                     				</select>
-      										</div>
-      									</div>
-      									<div class="form-group row">
-      										<label for="fontSizeField" class="col-md-4 col-form-label">Dimensione del Testo</label>
-      										<div class="col-md-8 ml-0 row">
-      											<input class="form-control col-6" type="number" step="1" min="1" :disabled="textSizeNotSpecified" value="15" :value="gamedata.css_style.mainStyle['font-size'].slice(0,-2)" @change="fontSize">
-                            <div class="col-6 pt-2 pl-3">
-                              <label for="setTextSize">non specificare</label>
-                              <input id="setTextSize" type="checkbox" v-model="textSizeNotSpecified" @change="textSizeSetting">
-                            </div>
-      										</div>
-      									</div>
-      									<div class="form-group row">
-      										  <label class="col-4">Colore del Testo</label>
-                            <div class="col-8 row">
-        				              <div class="col-4">
-        												<input type="color" v-model="currentMainStyleColor" @change="editMainColor">
-        											</div>
-        											<div class="col-8">
-        												<label for="applyMainColor">Applica</label>
-        												<input id="applyMainColor" type="checkbox" v-model="mainStyleColor" @change="editMainColor">
-        											</div>
-                              <small v-if="mainStyleColor && !gamedata.css_style.background.image" class="row form-text text-muted ml-6">
-                                 Verranno sovrascritti tutti i colori del testo specificati in altre sezioni
-                              </small>
-                            </div>
-      								  </div>
-      							</div>
-    		          </div>
-                  <!-- caricamento e salvataggio stili -->
-                  <div class="container-fluid row border-top">
-                    <div id="saveload-style" class="col-md-8 row mt-3 ml-3">
-                        <div class="col-md-6">
-                            <label for="select-style">Stili Salvati</label>
-                            <select name="select-style" ref="select_style">
-                                <option v-for="style in styleList" :value="style">{{ style }}</option>
-                            </select>
-                            <div class="btn btn-group">
-                                <button class="btn btn-success" v-on:click="getStyle">GET</button>
-                                <button class="btn btn-danger" v-on:click="deleteStyle">DELETE</button>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <label for="name_style">Salva come:</label>
-                            <input name="name_style" type="text" ref="style_name">
-                            <div class="btn btn-group">
-                                <button class="btn btn-primary" v-on:click="saveStyle">SAVE</button>
+                        <!-- STILI GLOBALI DEL TESTO -->
+                        <div id="mainStyles" class="col-md-6 pl-4">
+                            <div class="form-group row">
+                                <label for="fontFamilyField" class="col-md-4 col-form-label">Font</label>
+                                <div class="col-md-8 row form-group m-0 pr-0">
+                                    <div class="col-6 m-0 p-0 pr-1">
+                                        <input name="fontFamilyField" class="form-control m-0" type="text" readyonly v-model="gamedata.css_style.mainStyle['font-family']">
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="col-12 row m-0 p-0">
+                                            <input name="fontUrlField" class="form-control row" type="text" readyonly v-model="gamedata.css_style.mainStyle['font-url']" @input="setFontUrl()" data-toggle="tooltip" title="se il font non è disponibile inserire il link di google fonts">
+                                        </div>
+                                        <small v-if="gamedata.css_style.mainStyle['font-url'] === ' '" class="row text-muted mt-2">
+                                            se il font non è disponibile inserire il link di google fonts
+                                        </small>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-group row">
+                                <label for="fontStyleField" class="col-md-4 col-form-label">Stile del Testo</label>
+                                <div class="col-md-8">
+                                    <select name="fontStyleField" class="form-control col-md-8" v-model="gamedata.css_style.mainStyle['font-style']">
+                                        <option value="normal">normale</option>
+                                        <option value="italic">obliquo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="fontWeightField" class="col-md-4 col-form-label">Peso del Testo</label>
+                                <div class="col-md-8">
+                                    <select name="fontWeightField" class="form-control col-md-8" v-model="gamedata.css_style.mainStyle['font-weight']">
+                                        <option value="normal">normale</option>
+                                        <option value="bold">grassetto</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="fontSizeField" class="col-md-4 col-form-label">Dimensione del Testo</label>
+                                <div class="col-md-8 ml-0 row">
+                                    <input class="form-control col-6" type="number" step="1" min="1" :disabled="textSizeNotSpecified" value="15" :value="gamedata.css_style.mainStyle['font-size'].slice(0,-2)" @change="fontSize">
+                                    <div class="col-6 pt-2 pl-3">
+                                        <label for="setTextSize">non specificare</label>
+                                        <input id="setTextSize" type="checkbox" v-model="textSizeNotSpecified" @change="textSizeSetting">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-4">Colore del Testo</label>
+                                <div class="col-8 row">
+                                    <div class="col-4">
+                                        <input type="color" v-model="currentMainStyleColor" @change="editMainColor">
+                                    </div>
+                                    <div class="col-8">
+                                        <label for="applyMainColor">Applica</label>
+                                        <input id="applyMainColor" type="checkbox" v-model="mainStyleColor" @change="editMainColor">
+                                    </div>
+                                    <small v-if="mainStyleColor && !gamedata.css_style.background.image" class="row form-text text-muted ml-6">
+                                        Verranno sovrascritti tutti i colori del testo specificati in altre sezioni
+                                    </small>
+                                </div>
                             </div>
                         </div>
                     </div>
-                  </div>
+                    <!-- caricamento e salvataggio stili -->
+                    <div class="container-fluid row border-top">
+                        <div id="saveload-style" class="col-md-8 row mt-3 ml-3">
+                            <div class="col-md-6">
+                                <label for="select-style">Stili Salvati</label>
+                                <select name="select-style" ref="select_style">
+                                    <option v-for="style in styleList" :value="style">{{ style }}</option>
+                                </select>
+                                <div class="btn btn-group">
+                                    <button class="btn btn-success" v-on:click="getStyle">GET</button>
+                                    <button class="btn btn-danger" v-on:click="deleteStyle">DELETE</button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="name_style">Salva come:</label>
+                                <input name="name_style" type="text" ref="style_name">
+                                <div class="btn btn-group">
+                                    <button class="btn btn-primary" v-on:click="saveStyle">SAVE</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!--PREVIEW-->
                 <div id="preview-container" class="container-fluid py-3 row border-bottom">
-                  <div id="preview" :class="previewMode" :style="previewStyle" class="p-0">
-                      <nav class="navbar" :class="navbarBootstrapStyle" :style="navbarStyle">
-                          <div class="navbar-brand" :style="navbarBrandStyle">Menu
-                              <span class="badge" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert">Subs!</span>
-                          </div>
-                          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsiblemenu" :style="toggleButtonContainer" v-observe-visibility="buttonChangedVisibility" aria-label="Apri il menu">
-                              <span class="navbar-toggler-icon" :style="{ 'background-image': togglerButtonStyle }"></span> <!-- v-observe-visibility="buttonChangedVisibility" -->
-                          </button>
-                          <div class="collapse navbar-collapse" id="collapsiblemenu">
-                              <ul class="navbar-nav" aria-labelledby="quest-menu-button">
-                                  <li class="nav-item dropdown">
-                                      <a class="nav-link dropdown-toggle" id="quest-menu-button" data-toggle="dropdown" :style="questsStyle" role="button"
-                                      aria-haspopup="true" role="menu" aria-controls="quest-menu-list">Quests</a>
-                                      <div class="dropdown-menu" id="quest-menu-list" :class="menuBootstrapStyle" :style="menuStyle" style="margin-bottom: 10px">
-                                          <a class="dropdown-item" :style="menuLinkStyle(0,true)" v-on:mouseover="menuLinkEvent(0,true)" v-on:mouseleave="menuLinkEvent(0,false)" role="menuitem"
-                                           v-on:click="jumpToQuest('main',previewdata.currentQuest)">MainQuest {{ previewdata.currentQuest }}</a>
-                                          <div v-if="getSubquests.length > 0" role="none">
-                                              <div class="dropdown-divider" :style="dividerStyle"></div>
-                                              <a class="dropdown-item" role="menuitem" :style="menuLinkStyle(index+1,true)" v-on:mouseover="menuLinkEvent(index+1,true)"
-                                              v-on:mouseleave="menuLinkEvent(index+1,false)" v-for="(quest,index) in getSubquests" v-on:click="jumpToQuest('sub',quest.number)">
-                                                  Subquest {{quest.number}}: {{quest.title}}
-                                              </a>
-                                          </div>
-                                      </div>
-                                  </li>
-                                  <li class="nav-item" v-if="currentComponent">
-                                      <a id="helpAlertContainer" class="nav-link" ref="help" @click="requestHelp" :style="helpAlertContainerStyle">
-                                          Chiedi aiuto
-                                          <span ref="requestedHelp" class="alert" role="alert" :class="helpAlertBootstrapStyle" :style="helpAlertStyle"
-                                          style="display:none; margin-left: 10px; margin-bottom: -10px;  white-space: nowrap;">Aiuto richiesto! Attendi...</span>
-                                      </a>
-                                  </li>
-                                  <li class="nav-item">
-                                      <a class="nav-link" style="width: max-content" :style="menuLinkStyle(0,false)">LOGOUT</a>
-                                  </li>
-                              </ul>
-                          </div>
-                      </nav>
-                      <!--Area quest-->
-                      <div ref="questrender" class="card player-card-author overflow-auto" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
-                          <div class="card-header" :style="cardLimitStyle">
-                              <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">
-                                  {{previewdata.in_mainquest ? "Quest" : "Subquest"}}
-                                  {{ previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub }}: {{ renderQuest.title || "no_name" }}
-                              </h3>
-                          </div>
-                          <div ref="cardbody" class="card-body overflow-auto" :style="removePredefinedStylesCard">
-                              <form ref="inputForm" v-on:submit.prevent="previewdata.in_mainquest? submitMain() : submitSub()">
-                                      <p style="white-space: pre-line;">{{ renderQuest.text }}</p>
-                                      <p style="white-space: pre-line;">{{ renderQuest.description || "" }}</p>
-                                      <ul v-if="previewdata.in_mainquest && getCurrentClues.length > 0">
-                                              <li v-for="clue in getCurrentClues" v-if="clue">{{ clue }}</li>
-                                      </ul>
-                                      <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
-                                      <div id="gameinput">
-                                        <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub"
-                                        :options="previewdata.in_mainquest ? getCurrentOptions : renderQuest.options" v-model="previewdata.picked" @change="upgradeSubmitStyle(false)" ref="inputComponent" :styles="componentStyle"></component>
-                                      </div>
-                              </form>
-                              <!--EVENTUALI MEDIA-->
-                              <div v-if="renderQuest.media">
-                                  <img width="100%" v-if="renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
-                                  <div v-if="renderQuest.media.type=='video'">
-                                      <video width="100%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
-                                      </video>
-                                  </div>
-                              </div>
-                          </div>
-                          <div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
-                              <button id="submit" ref="submitbutton" class="btn-default" :disabled="submitDisabled" :class="submitBootstrapStyle" :style="submitStyle" v-on:click="previewdata.in_mainquest? submitMain() : submitSub()">
-                                  Submit
-                              </button>
-                          </div>
-                      </div>
-                  </div>
-                  <div id="preview-options" class="col-md-4">
-                    <div id="current-answer" v-if="previewdata.picked" class="overflow-auto m-3" style="word-wrap:break-word;">
-                        <p>Risposta corrente: {{ previewdata.picked }}</p>
-                        <div v-if="previewdata.in_mainquest">
-                            <button class="btn btn-secondary" v-if="getCurrentGotos.length > 0" data-toggle="tooltip"
-                            :title="gamedata.mainQuest[getAnswerGoto].title" v-on:click="jumpToQuest('main',getAnswerGoto)">
-                                {{ "Questa risposta porterà a " + (gamedata.mainQuest[getAnswerGoto].title || getAnswerGoto)}}
+                    <div id="preview" :class="previewMode" :style="previewStyle" class="p-0">
+                        <nav class="navbar" :class="navbarBootstrapStyle" :style="navbarStyle">
+                            <div class="navbar-brand" :style="navbarBrandStyle">Menu
+                                <span class="badge" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert">Subs!</span>
+                            </div>
+                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsiblemenu" :style="toggleButtonContainer" v-observe-visibility="buttonChangedVisibility" aria-label="Apri il menu">
+                                <span class="navbar-toggler-icon" :style="{ 'background-image': togglerButtonStyle }"></span> <!-- v-observe-visibility="buttonChangedVisibility" -->
                             </button>
-                        </div>
-                        <div v-if="!previewdata.in_mainquest">
-                            <p>La risposta è {{ getAnswerCorrectness ? "giusta" : "sbagliata" }}!</p>
+                            <div class="collapse navbar-collapse" id="collapsiblemenu">
+                                <ul class="navbar-nav" aria-labelledby="quest-menu-button">
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" id="quest-menu-button" data-toggle="dropdown" :style="questsStyle" role="button" aria-haspopup="true" role="menu" aria-controls="quest-menu-list">Quests</a>
+                                        <div class="dropdown-menu" id="quest-menu-list" :class="menuBootstrapStyle" :style="menuStyle" style="margin-bottom: 10px">
+                                            <a class="dropdown-item" :style="menuLinkStyle(0,true)" v-on:mouseover="menuLinkEvent(0,true)" v-on:mouseleave="menuLinkEvent(0,false)" role="menuitem" v-on:click="jumpToQuest('main',previewdata.currentQuest)">MainQuest {{ previewdata.currentQuest }}</a>
+                                            <div v-if="getSubquests.length > 0" role="none">
+                                                <div class="dropdown-divider" :style="dividerStyle"></div>
+                                                <a class="dropdown-item" role="menuitem" :style="menuLinkStyle(index+1,true)" v-on:mouseover="menuLinkEvent(index+1,true)" v-on:mouseleave="menuLinkEvent(index+1,false)" v-for="(quest,index) in getSubquests" v-on:click="jumpToQuest('sub',quest.number)">
+                                                    Subquest {{quest.number}}: {{quest.title}}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="nav-item" v-if="currentComponent">
+                                        <a id="helpAlertContainer" class="nav-link" ref="help" @click="requestHelp" :style="helpAlertContainerStyle">
+                                            Chiedi aiuto
+                                            <span ref="requestedHelp" class="alert" role="alert" :class="helpAlertBootstrapStyle" :style="helpAlertStyle" style="display:none; margin-left: 10px; margin-bottom: -10px;  white-space: nowrap;">Aiuto richiesto! Attendi...</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" style="width: max-content" :style="menuLinkStyle(0,false)">LOGOUT</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </nav>
+                        <!--Area quest-->
+                        <div ref="questrender" class="card player-card-author overflow-auto" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
+                            <div class="card-header" :style="cardLimitStyle">
+                                <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">
+                                    {{previewdata.in_mainquest ? "Quest" : "Subquest"}}
+                                    {{ previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub }}: {{ renderQuest.title || "no_name" }}
+                                </h3>
+                            </div>
+                            <div ref="cardbody" class="card-body overflow-auto" :style="removePredefinedStylesCard">
+                                <form ref="inputForm" v-on:submit.prevent="previewdata.in_mainquest? submitMain() : submitSub()">
+                                    <p style="white-space: pre-line;">{{ renderQuest.text }}</p>
+                                    <p style="white-space: pre-line;">{{ renderQuest.description || "" }}</p>
+                                    <ul v-if="previewdata.in_mainquest && getCurrentClues.length > 0">
+                                        <li v-for="clue in getCurrentClues" v-if="clue">{{ clue }}</li>
+                                    </ul>
+                                    <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
+                                    <div id="gameinput">
+                                        <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub" :options="previewdata.in_mainquest ? getCurrentOptions : renderQuest.options" v-model="previewdata.picked" @change="upgradeSubmitStyle(false)" ref="inputComponent" :styles="componentStyle"></component>
+                                    </div>
+                                </form>
+                                <!--EVENTUALI MEDIA-->
+                                <div v-if="renderQuest.media">
+                                    <img width="100%" v-if="renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
+                                    <div v-if="renderQuest.media.type=='video'">
+                                        <video width="100%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
+                                        </video>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
+                                <button id="submit" ref="submitbutton" class="btn-default" :disabled="submitDisabled" :class="submitBootstrapStyle" :style="submitStyle" v-on:click="previewdata.in_mainquest? submitMain() : submitSub()">
+                                    Submit
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div class="m-3">
-						          <div class="btn-group">
-                       <button class="col btn btn-warning" v-on:click="switchView(false)">PC</button>
-                       <button class="col btn btn-danger" v-on:click="switchView(true)">MOBILE</button>
-                     </div>
+                    <div id="preview-options" class="col-md-4">
+                        <div id="current-answer" v-if="previewdata.picked" class="overflow-auto m-3" style="word-wrap:break-word;">
+                            <p>Risposta corrente: {{ previewdata.picked }}</p>
+                            <div v-if="previewdata.in_mainquest">
+                                <button class="btn btn-secondary" v-if="getCurrentGotos.length > 0" data-toggle="tooltip" :title="gamedata.mainQuest[getAnswerGoto].title" v-on:click="jumpToQuest('main',getAnswerGoto)">
+                                    {{ "Questa risposta porterà a " + (gamedata.mainQuest[getAnswerGoto].title || getAnswerGoto)}}
+                                </button>
+                            </div>
+                            <div v-if="!previewdata.in_mainquest">
+                                <p>La risposta è {{ getAnswerCorrectness ? "giusta" : "sbagliata" }}!</p>
+                            </div>
+                        </div>
+                        <div class="m-3">
+                            <div class="btn-group">
+                                <button class="col btn btn-warning" v-on:click="switchView(false)">PC</button>
+                                <button class="col btn btn-danger" v-on:click="switchView(true)">MOBILE</button>
+                            </div>
+                        </div>
                     </div>
-                  </div>
                 </div>
                 <!--FINE PREVIEW-->
                 <!--OBJECT EDITOR-->
@@ -643,9 +634,7 @@
                     <!--PREV-->
                     <div class="col-md-2 border-right pt-2 pb-2">
                         <h2 class="bg-info text-light">Nodi Precedenti</h2>
-                        <button class="btn btn-secondary btn-block" v-for="prev in previewdata.in_mainquest ? getPrevNodes : renderQuest.requires_sub"
-                        data-toggle="tooltip" :title="previewdata.in_mainquest ? gamedata.mainQuest[prev].title : gamedata.subQuests[prev].title"
-                        v-on:click="previewdata.in_mainquest ? jumpToQuest('main',prev) : jumpToQuest('sub',prev)">
+                        <button class="btn btn-secondary btn-block" v-for="prev in previewdata.in_mainquest ? getPrevNodes : renderQuest.requires_sub" data-toggle="tooltip" :title="previewdata.in_mainquest ? gamedata.mainQuest[prev].title : gamedata.subQuests[prev].title" v-on:click="previewdata.in_mainquest ? jumpToQuest('main',prev) : jumpToQuest('sub',prev)">
                             {{ previewdata.in_mainquest ? ( gamedata.mainQuest[prev].title || prev ) : ( gamedata.subQuests[prev].title || prev ) }}
                         </button>
                     </div>
@@ -857,13 +846,13 @@
                                                 <input name="bordercolor" type="color" v-model="renderQuest.key_style.border_color">
                                             </div>
                                             <div class="col-lg-4">
-                                                <label for="bordersize" >Spessore Bordo</label>
+                                                <label for="bordersize">Spessore Bordo</label>
                                                 <input name="bordersize" class="form-control" type="number" step="1" min="0" v-model="renderQuest.key_style.border_size">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-3">
                                             <div class="col-lg-4">
-                                                <label for="borderrad" >Raggio Bordo</label>
+                                                <label for="borderrad">Raggio Bordo</label>
                                                 <input name="borderrad" class="form-control" type="number" step="1" min="0" v-model="renderQuest.key_style.radius">
                                             </div>
                                             <div class="col-lg-4">
@@ -873,10 +862,10 @@
                                         </div>
                                         <div class="form-group row">
                                             <div class="form-check col-lg-4">
-                                            <label for="shadow" class="form-check-label">
-                                                <input name="shadow" class="form-check-input" type="checkbox" v-model="renderQuest.key_style.shadow">
-                                                Ombreggiatura
-                                            </label>
+                                                <label for="shadow" class="form-check-label">
+                                                    <input name="shadow" class="form-check-input" type="checkbox" v-model="renderQuest.key_style.shadow">
+                                                    Ombreggiatura
+                                                </label>
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -902,8 +891,8 @@
                                         </div>
                                         <div class="form-group form-check mb-3">
                                             <label for="screenbold" class="form-check-label">
-                                            <input name="screenbold" class="form-check-input" type="checkbox" v-model="renderQuest.key_style.screen_bold">
-                                            Grassetto
+                                                <input name="screenbold" class="form-check-input" type="checkbox" v-model="renderQuest.key_style.screen_bold">
+                                                Grassetto
                                             </label>
                                         </div>
                                         <div class="form-group row mb-3">
