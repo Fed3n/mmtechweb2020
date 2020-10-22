@@ -294,7 +294,7 @@ app.delete('/stories/:storyName/images/', (req, res) => {
     let imgdir = path.join(__dirname + `/story/${req.params.storyName}/images/`);
     let img = req.query.img;
     console.log(path.join(imgdir+img));
-    fs.unlinkSync(path.join(imgdir+img)); 
+    fs.unlinkSync(path.join(imgdir+img));
     res.status(200).send("Image deleted successfully.");
 });
 
@@ -316,7 +316,7 @@ app.post('/stories/:storyName/videos', (req, res) => {
 app.delete('/stories/:storyName/videos/', (req, res) => {
     let viddir = path.join(__dirname + `/story/${req.params.storyName}/videos/`);
     let vid = req.query.vid;
-    fs.unlinkSync(path.join(viddir+vid)); 
+    fs.unlinkSync(path.join(viddir+vid));
     res.status(200).send("Video deleted successfully.");
 });
 
