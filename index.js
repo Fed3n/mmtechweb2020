@@ -14,7 +14,7 @@ function recursiveRm(path){
     if(fs.statSync(path).isDirectory){
         files = fs.readdirSync(path);
         for(f of files){
-            recursiveRm(path + `/${f}`);
+            recursiveRm(path + "/f");
         }
         fs.rmdirSync(path);
     }
