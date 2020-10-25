@@ -14,7 +14,7 @@ function recursiveRm(path){
     if(fs.statSync(path).isDirectory){
         files = fs.readdirSync(path);
         for(f of files){
-            recursiveRm(path + "/f");
+            recursiveRm(path + `/${f}`);
         }
         fs.rmdirSync(path);
     }
@@ -151,7 +151,7 @@ app.get('/players/', (req, res) => {
     var id = req.query.user_id;
     if (id) {
         if (!players_deleted.includes(id))
-            return res.status(200).send(players_data[req.query.user_id]);
+            retun res.status(200).send(players_data[req.query.user_id]);
         else
             return res.status(404).send("Player data not available anymore");
     } else {
@@ -307,11 +307,17 @@ app.delete('/stories', (req, res) => {
     console.log("Deleting story: " + story);
     let storydir = path.join(__dirname + "/story");
     let dir = path.join(storydir + "/" + story);
+    try {
+        recursiveRm(dir);
+    } catch(err) { throw err; }
+    /*
     fs.rmdir(dir, {
         recursive: true
     }, (error) => {
         if (error) throw error;
     });
+    */
+
     console.log("Deleted story " + story);
     res.status(200).send("Story delete successfully.");
 });
