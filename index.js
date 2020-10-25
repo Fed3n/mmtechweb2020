@@ -23,6 +23,12 @@ function recursiveRm(path){
     }
 }
 
+function recursiveMkDir(path){
+    if(!fs.existsSync(path)){
+        fs.mkdirSync(path);
+    }
+}
+
 function recursiveChmod(path, dirp, filep){
     if(fs.lstatSync(path).isDirectory()){
         files = fs.readdirSync(path);
@@ -280,9 +286,7 @@ app.post('/stories', (req, res) => {
     let storydir = path.join(__dirname + "/story");
     let newdir = path.join(storydir + "/" + storyName);
     //Se la directory c'è già non la ricrea
-    fs.mkdirSync(newdir, {
-        recursive: true
-    });
+    recursiveMkDir(newdir);
     fs.writeFile(path.join(newdir + "/" + storyName + ".json"), JSON.stringify(json), (error) => {
         if (error) {
             throw error;
@@ -293,12 +297,8 @@ app.post('/stories', (req, res) => {
             throw error;
         }
     });
-    fs.mkdirSync(path.join(newdir + "/images"), {
-        recursive: true
-    });
-    fs.mkdirSync(path.join(newdir + "/videos"), {
-        recursive: true
-    });
+    recursiveMkDir(newdir + "/images");
+    recursiveMkDir(newdir + "/videos");
     res.status(201).send("Story posted successfully.");
 });
 
