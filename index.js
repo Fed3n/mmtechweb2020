@@ -9,6 +9,34 @@ const favicon = require('serve-favicon');
 const fileUpload = require('express-fileupload');
 const app = express();
 
+//##FUNZIONI AUSILIARIE PER COMPENSARE ALLA VERSIONE VECCHIA DI NODE DEL DIPARTIMENTO//
+function recursiveRm(path){
+    if(fs.lstatSync(path).isDirectory()){
+        files = fs.readdirSync(path);
+        for(f of files){
+            recursiveRm(path + `/${f}`);
+        }
+        fs.rmdirSync(path);
+    }
+    else {
+        fs.unlinkSync(path);
+    }
+}
+
+function recursiveChmod(path, dirp, filep){
+    if(fs.lstatSync(path).isDirectory()){
+        files = fs.readdirSync(path);
+        for(f of files){
+            recursiveChmod(path + `/${f}`);
+        }
+        fs.chmodSync(path, `0o${dirp}`);
+    }
+    else {
+        fs.chmodSync(path, `0o${filep}`);
+    } 
+}
+//####################
+
 //##HOST SETTINGS##//
 const serverOpened = false;
 const host = "localhost";
@@ -279,26 +307,31 @@ app.delete('/stories', (req, res) => {
     console.log("Deleting story: " + story);
     let storydir = path.join(__dirname + "/story");
     let dir = path.join(storydir + "/" + story);
+    try {
+        recursiveRm(dir);
+    } catch(err) { throw err; }
+    /*
     fs.rmdir(dir, {
         recursive: true
     }, (error) => {
         if (error) throw error;
-        console.log("Deleted story " + story);
-        res.status(200).send("Story delete successfully.");
     });
+    */
+
+    console.log("Deleted story " + story);
+    res.status(200).send("Story delete successfully.");
 });
 
 app.get('/stories/:storyName/images', (req, res) => {
     let imgdir = path.join(__dirname + `/story/${req.params.storyName}/images/`);
-    let entrylist = fs.readdirSync(imgdir);
-    res.status(200).send(entrylist);
-});
+    try {
+        let entrylist = fs.readdirSync(imgdir);
+        return res.status(200).send(entrylist);
+    } catch(err) { return res.status(200).send([]); }
+    });
 
 app.post('/stories/:storyName/images', (req, res) => {
     let imgdir = path.join(__dirname + `/story/${req.params.storyName}/images/`);
-    fs.mkdirSync(imgdir, {
-        recursive: true
-    });
     fs.writeFile(path.join(imgdir + req.files.image.name), req.files.image.data, (error) => {
         if (error) throw error;
     });
@@ -315,15 +348,14 @@ app.delete('/stories/:storyName/images/', (req, res) => {
 
 app.get('/stories/:storyName/videos', (req, res) => {
     let viddir = path.join(__dirname + `/story/${req.params.storyName}/videos/`);
-    let entrylist = fs.readdirSync(viddir);
-    res.status(200).send(entrylist);
+    try {
+        let entrylist = fs.readdirSync(viddir);
+        return res.status(200).send(entrylist);
+    } catch { return res.status(200).send([]); }
 });
 
 app.post('/stories/:storyName/videos', (req, res) => {
     let viddir = path.join(__dirname + `/story/${req.params.storyName}/videos/`);
-    fs.mkdirSync(viddir, {
-        recursive: true
-    });
     fs.writeFile(path.join(viddir + req.files.video.name), req.files.video.data, (error) => {
         if (error) throw error;
     });
