@@ -332,9 +332,6 @@ app.get('/stories/:storyName/images', (req, res) => {
 
 app.post('/stories/:storyName/images', (req, res) => {
     let imgdir = path.join(__dirname + `/story/${req.params.storyName}/images/`);
-    fs.mkdirSync(imgdir, {
-        recursive: true
-    });
     fs.writeFile(path.join(imgdir + req.files.image.name), req.files.image.data, (error) => {
         if (error) throw error;
     });
@@ -359,9 +356,6 @@ app.get('/stories/:storyName/videos', (req, res) => {
 
 app.post('/stories/:storyName/videos', (req, res) => {
     let viddir = path.join(__dirname + `/story/${req.params.storyName}/videos/`);
-    fs.mkdirSync(viddir, {
-        recursive: true
-    });
     fs.writeFile(path.join(viddir + req.files.video.name), req.files.video.data, (error) => {
         if (error) throw error;
     });
