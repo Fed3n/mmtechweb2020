@@ -11,10 +11,10 @@ const app = express();
 
 //##FUNZIONI AUSILIARIE PER COMPENSARE ALLA VERSIONE VECCHIA DI NODE DEL DIPARTIMENTO//
 function recursiveRm(path){
-    if(fs.statSync(path).isDirectory){
+    if(fs.lstatSync(path).isDirectory()){
         files = fs.readdirSync(path);
         for(f of files){
-            recursiveRm(path + "/f");
+            recursiveRm(path + `/${f}`);
         }
         fs.rmdirSync(path);
     }
@@ -24,10 +24,10 @@ function recursiveRm(path){
 }
 
 function recursiveChmod(path, dirp, filep){
-    if(fs.statSync(path).isDirectory){
+    if(fs.lstatSync(path).isDirectory()){
         files = fs.readdirSync(path);
         for(f of files){
-            recursiveChmod(path + "/f");
+            recursiveChmod(path + `/${f}`);
         }
         fs.chmodSync(path, `0o${dirp}`);
     }
