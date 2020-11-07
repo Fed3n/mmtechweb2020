@@ -47,6 +47,10 @@
           "solution": []
       }],
       "starting_points": [],
+      "author_order": {
+          "main": [0],
+          "sub": [0]
+      },
       "css_style": {
           "mainStyle": {
               "font-family": "Arial",
@@ -228,6 +232,15 @@
                       _this.resetData();
                       _this.gamedata = res.data.json;
                       _this.metadata = res.data.meta;
+                      //Ordine di visualizzazione in autore
+                      if(!_this.gamedata.author_order){
+                          _this.gamedata.author_order = {
+                              "main": [],
+                              "sub": []
+                          }
+                          for(let i = 0; i < _this.gamedata.mainQuest.length; i++) _this.gamedata.author_order.main[i] = i;
+                          for(let i = 0; i < _this.gamedata.subQuests.length; i++) _this.gamedata.author_order.sub[i] = i;
+                      }
                       _this.getImagesList();
                       _this.getVideosList();
                       _this.loadedStory = this.$refs.selectedStory.value;
@@ -437,7 +450,7 @@
           switchMainSub: function() {
               this.previewdata.in_mainquest = !this.previewdata.in_mainquest;
           },
-          addNode: function() {
+          addNode: function(pos) {
               num = this.previewdata.in_mainquest ? this.gamedata.mainQuest.length : this.gamedata.subQuests.length;
               mq = {
                   "number": num,
@@ -483,8 +496,14 @@
                   },
                   "solution": []
               };
-              if (this.previewdata.in_mainquest) this.gamedata.mainQuest.push(mq);
-              else this.gamedata.subQuests.push(sq)
+              if (this.previewdata.in_mainquest) {
+                  this.gamedata.mainQuest.push(mq);
+                  this.gamedata.author_order.main.splice(pos,0,num);
+              }
+              else {
+                  this.gamedata.subQuests.push(sq)
+                  this.gamedata.author_order.sub.splice(pos,0,num);
+              }
           },
           copyStory: function() {
               if (this.previewdata.in_mainquest) this.questClipboard.main = this.renderQuest;
@@ -564,6 +583,12 @@
                           }
                       }
                       mains.splice(index, 1);
+                      //author_order.main[]
+                      let order = this.gamedata.author_order.main; 
+                      order.splice(order.indexOf(index),1);
+                      for(let i = 0; i < order.length; i++){
+                          if(order[i] >= index) order[i]--;
+                      }
                   } else alert("Non puoi avere meno di una quest!");
               }
           },
@@ -607,6 +632,12 @@
                           }
                       }
                       subs.splice(index, 1);
+                      //author_order.main[]
+                      let order = this.gamedata.author_order.sub; 
+                      order.splice(order.indexOf(index),1);
+                      for(let i = 0; i < order.length; i++){
+                          if(order[i] >= index) order[i]--;
+                      }
                   } else alert("Non puoi avere meno di una quest!");
               }
           },
@@ -704,15 +735,24 @@
               }
           },
           loadJson: function() {
-              var path = this.$refs.toLoad.files[0];
-              var fileReader = new FileReader();
-              _this = this;
-              fileReader.onload = function(event) {
-                  var text = event.target.result;
-                  var json = JSON.parse(text);
-                  _this.gamedata = json;
-              };
-              fileReader.readAsText(path, "utf-8");
+              if(this.$refs.toLoad.files[0]){
+                  var path = this.$refs.toLoad.files[0];
+                  var fileReader = new FileReader();
+                  _this = this;
+                  fileReader.onload = function(event) {
+                      try{
+                      var text = event.target.result;
+                      var json = JSON.parse(text);
+                      _this.gamedata = json;
+                      } catch(err) {
+                          window.alert("Il file deve essere di tipo JSON!");
+                      }
+                  };
+                  fileReader.readAsText(path, "utf-8");
+              }
+              else{
+                  window.alert("Inserire un file da caricare");
+              }
           },
           saveJson: function() {
               var text = JSON.stringify(this.gamedata);
@@ -970,9 +1010,16 @@
           }
       },
       computed: {
+          //We dont talk about this one pls dont ask about this one but briefly it computes another array to view quests in different order ~ fede
           questList: function() {
-              if (this.previewdata.in_mainquest) return this.gamedata.mainQuest;
-              else return this.gamedata.subQuests;
+              let arr = [];
+              if (this.previewdata.in_mainquest) {
+                  for(let i = 0; i < this.gamedata.author_order.main.length; i++) arr[i] = this.gamedata.mainQuest[this.gamedata.author_order.main[i]];
+              }
+              else {
+                  for(let i = 0; i < this.gamedata.author_order.sub.length; i++) arr[i] = this.gamedata.subQuests[this.gamedata.author_order.sub[i]];
+              }
+            return arr;
           },
           //Restituisco una coppia [index,goto], l'index serve per accedere al v-model
           getAddedGotos: function() {
