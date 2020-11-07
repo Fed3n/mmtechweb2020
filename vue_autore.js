@@ -933,7 +933,7 @@
                           else if (this.gamedata.css_style.background.style.nav.bootstrap.textColor == "navbar-dark")
                           styles = Object.assign(styles, bootstrap_menu_color_light_text);
                       else
-                          console.log(`error in JSON compilation: bootstrap navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
+                          ;
                       styles = this.overwriteMainStyle(styles);
                       //adding background color property
                       if (apply) {
@@ -1301,7 +1301,7 @@
                               "color": "white"
                           });
                       else
-                          console.log(`error in JSON compiling: bootstrap's navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
+                          ;
                   } else {
                       var temp = this.gamedata.css_style.background.style.nav.customized.general;
                       styles = Object.assign(styles, {
@@ -1376,7 +1376,7 @@
                           else if (this.gamedata.css_style.background.style.nav.bootstrap.textColor == "navbar-dark")
                               styles = Object.assign(styles, bootstrap_menu_border_color_light_text);
                           else
-                              console.log(`error in JSON compiling: bootstrap's navbar textcolor properties available are 'navbar-light' and 'navbar-dark', ${color} is not supported`);
+                              ;
                           //overwrite occasional mainstyle
                           if (this.gamedata.css_style.mainStyle["color"])
                               styles = Object.assign(styles, {
