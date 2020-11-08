@@ -148,6 +148,9 @@
           vidsList: null,
           selectedImage: "",
           selectedVideo: "",
+          //swapping storie in board
+          swapping: false,
+          swap_selected: null,
           custom_keys: "",
           radiusInput: 10, //valore di default
           previewdata: {
@@ -172,7 +175,8 @@
           alertBackgroundTransparent: false,
           lastAlertBackgroundColor: "#000000",
           textSizeNotSpecified: false,
-          lastTextSize: 0
+          lastTextSize: 0,
+          force_recompute: 0
       },
       created: function() {
           this.updateFs();
@@ -443,12 +447,52 @@
               //removes all form past selections
               this.$refs.inputForm.reset();
               this.$refs.cardbody.scrollTop = 0;
+              this.swapping = false;
+              this.swap_selected = null;              
           },
           switchView: function(mobile) {
               this.mobileView = mobile;
           },
           switchMainSub: function() {
               this.previewdata.in_mainquest = !this.previewdata.in_mainquest;
+              this.swapping = false;
+              this.swap_selected = null;
+          },
+          switchSwap: function(){
+              if(swapping){
+                  swap_selected = null;
+                  swapping = false;
+              }
+              else {
+                  swapping = true;
+              }
+          },
+          swapQuests: function(pos, is_quest) {
+              //se e' il primo elemento che selezioniamo lo ricordiamo come da swappare
+              if(this.swap_selected === null){
+                  this.swap_selected = pos;
+              }
+              else{ 
+                  let order = this.previewdata.in_mainquest ? this.gamedata.author_order.main : this.gamedata.author_order.sub;
+                  //se abbiamo selezionato due quest le swappiamo
+                  if(is_quest){
+                      let tmp = order[this.swap_selected];
+                      this.$set(order, this.swap_selected, order[pos]);
+                      this.$set(order, pos, tmp);
+                      this.swapping = false;
+                      this.swap_selected = null;
+                  }
+                  //se abbiamo selezionato quest e posizione mettiamo quest in posizione
+                  else {
+                      let tmp = order[this.swap_selected];
+                      order.splice(this.swap_selected,1);
+                      order.splice(pos,0,tmp);
+                      this.swap_selected = null;
+                      this.swapping = false;
+                  }
+                //terribile hack perche' per qualche ragione pure usando i set correttamente il computed non aggiorna
+                this.force_recompute = !this.force_recompute;
+              }
           },
           addNode: function(pos) {
               num = this.previewdata.in_mainquest ? this.gamedata.mainQuest.length : this.gamedata.subQuests.length;
@@ -1012,6 +1056,8 @@
       computed: {
           //We dont talk about this one pls dont ask about this one but briefly it computes another array to view quests in different order ~ fede
           questList: function() {
+              //very bad hack vv
+              this.force_recompute;
               let arr = [];
               if (this.previewdata.in_mainquest) {
                   for(let i = 0; i < this.gamedata.author_order.main.length; i++) arr[i] = this.gamedata.mainQuest[this.gamedata.author_order.main[i]];

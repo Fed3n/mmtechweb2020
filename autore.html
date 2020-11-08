@@ -176,7 +176,7 @@
         </button>
         <div id="editor" class="row container-fluid collapse mt-2">
             <!--QUICK ACCESS/CREATION/REMOVAL-->
-            <div class="col-md-2 container pt-3 pb-3 border-right">
+            <div class="col-md-3 container pt-3 pb-3 border-right">
                 <!--Passaggio da schermata main a sub e viceversa-->
                 <div class="btn-group container-fluid pb-3">
                     <button class="btn btn-light" v-on:click="switchMainSub" :disabled="previewdata.in_mainquest">Main</button>
@@ -192,25 +192,42 @@
                 <div>
                     <label for="questlistcontainer">Accesso diretto:</label>
                     <div name="questlistcontainer" class="container border-top p-2 mx-25 overflow-auto">
-                        <div class="pb-2"><button class="btn btn-secondary border-dark" v-on:click="addNode(0)">+</button></div>
-                        <div v-for="(quest,pos) in questList" class="container-fluid row pb-2">
-                            <div class="btn-group">
-                                <button class="btn bg-white border border-dark" v-on:click="previewdata.in_mainquest ? jumpToQuest('main',quest.number) : jumpToQuest('sub',quest.number)">
-                                    {{ quest.title || 'Quest' }}
-                                </button>
-                                <button class="btn btn-danger border-dark" v-on:click="previewdata.in_mainquest ? rmMainNode(quest.number) : rmSubNode(quest.number)">X</button>
-                                <button class="btn btn-secondary border-dark" v-on:click="addNode(pos+1)">+</button>
+                        <div class="pb-2">
+                            <button class="btn btn-secondary border-dark" data-toggle="tooltip" title="Aggiungi" :disabled="swapping" v-on:click="addNode(0)">+</button>
+                            <button class="btn border-dark" data-toggle="tooltip" title="Scambia" :class="swapping ? 'btn-danger' : 'color-interact'"  v-on:click="swapping = !swapping">
+                                <i v-if="!swapping" class="fas fa-arrows-alt-h"></i>
+                                <i v-else class="fas fa-times"></i>
+                            </button>
+                            <div v-if="swapping && (swap_selected !== null)" class="container m-1">
+                                <button class="btn btn-sm btn-warning" data-toggle="tooltip" title="Scambia" v-on:click="swapQuests(0,false)"><i class="fas fa-arrow-right"></i></button> 
                             </div>
-                            <div class="col-2 form-check ml-1" id="subquestadd" v-if="!previewdata.in_mainquest">
-                                <input class="form-check-input" :name="'sub ' + quest.number" type="checkbox" :value="quest.number"
-                                v-model="previewdata.completedSubs" data-toggle="tooltip" title="Completa">
+                        </div>
+                        <div v-for="(quest,pos) in questList" class="container-fluid pb-3">
+                            <div class="row pb-2">
+                                <div class="btn-group col-10">
+                                    <button class="btn btn-block border border-dark" :class="swap_selected==pos ? 'btn-warning' : 'btn-light'"
+                                    v-on:click="!swapping ? (previewdata.in_mainquest ? jumpToQuest('main',quest.number) : jumpToQuest('sub',quest.number)) :
+                                    (swapQuests(pos,true))">
+                                        {{ quest.title || 'Quest' }}
+                                    </button>
+                                    <button class="btn btn-danger border-dark" :disabled="swapping" data-toggle="tooltip" title="Elimina" 
+                                    v-on:click="previewdata.in_mainquest ? rmMainNode(quest.number) : rmSubNode(quest.number)">X</button>
+                                    <button class="btn btn-secondary border-dark" data-toggle="tooltip" title="Aggiungi" :disabled="swapping" v-on:click="addNode(pos+1)">+</button>
+                                </div>
+                                <div class="form-check ml-1" id="subquestadd" v-if="!previewdata.in_mainquest">
+                                    <input class="form-check-input" :name="'sub ' + quest.number" type="checkbox" :value="quest.number"
+                                    v-model="previewdata.completedSubs" data-toggle="tooltip" title="Completa">
+                                </div>
+                            </div>
+                            <div v-if="swapping && (swap_selected !== null)" class="row">
+                                <button class="btn btn-sm btn-warning" v-on:click="swapQuests(pos+1,false)"><i class="fas fa-arrow-right"></i></button> 
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <!--PREVIEW E OBJECT EDITOR-->
-            <div class="col-md-10">
+            <div class="col-md-9">
                 <!--MODIFICA STILI-->
                 <button class="btn btn-block color-expand" type="button" data-toggle="collapse" data-target="#stylepanel">MODIFICA LO STILE
                     <i class="fas fa-angle-double-down"></i>
@@ -669,13 +686,6 @@
                     </div>
                     <!--CAMPI QUEST ATTUALE-->
                     <div class="col-md-6 border-right pt-2 pb-2">
-                        <!--Quest ID-->
-                        <div class="form-group row mb-2">
-                            <label for="numberfield" class="col-md-2 col-form-label">Numero</label>
-                            <div class="col-md-10">
-                                <input name="numberfield" type="text" readyonly class="form-control-plaintext" :value="renderQuest.number">
-                            </div>
-                        </div>
                         <!--Quest TITLE-->
                         <div class="form-group row mb-2">
                             <label for="titlefield" class="col-md-2 col-form-label">Titolo</label>
