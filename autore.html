@@ -38,82 +38,96 @@
         <button class="btn btn-block color-expand" type="button" data-toggle="collapse" data-target="#managedata">AREA STORIE
             <i class="fas fa-angle-double-down"></i>
         </button>
-        <div id="managedata" class="row container-fluid collapse p-3">
+        <div id="managedata" class="row container-fluid collapse p-3" v-observe-visibility="storiesPanelChange">
             <div id="server-manage" class="col-md-6 border-right">
                 <h2 class="color-static rounded p-2 text-light">Il tuo archivio</h2>
                 <div class="row container-fluid">
                 <!--GET / DELETE IN FS-->
-                    <div class="col-10-md">
-                        <label for="select-story">Storie Registrate</label>
-                        <select name="select-story" class="custom-select" size="6" ref="selectedStory">
-                            <option v-for="story in storyList" :value="story" data-toggle="tooltip" :title="activeStoryList.includes(story) ? 'Attiva' : 'Inattiva'" 
-                            :style="{ color: activeStoryList.includes(story) ? 'green' : 'red' }">{{ story }}</option>
-                        </select>
+                    <div class="col-12">
+                        <label for="select-story" class="form-headers">Storie Registrate</label>
                     </div>
-                    <div class="col-2-md">
-                        <div class="btn btn-group">
-                            <button class="btn color-interact" v-on:click="getStory">CARICA</button>
-                            <button class="btn btn-danger" v-on:click="deleteStory">RIMUOVI</button>
+                    <div class="col-10 row ml-1 mb-2">
+                        <div class="col-10-md">
+                            <select name="select-story" class="custom-select" size="6" ref="selectedStory">
+                                <option v-for="story in storyList" :value="story" data-toggle="tooltip" :title="activeStoryList.includes(story) ? 'Attiva' : 'Inattiva'"
+                                :style="{ color: activeStoryList.includes(story) ? 'green' : 'red' }">{{ story }}</option>
+                            </select>
+                        </div>
+                        <div class="col-2-md">
+                            <div class="btn btn-group">
+                                <button class="btn color-interact" v-on:click="getStory">CARICA</button>
+                                <button class="btn btn-danger" v-on:click="deleteStory">RIMUOVI</button>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!--IMMAGINI CARICATE-->
                 <div id="uploadimages" class="container-fluid border-top mt-2">
-                    <div class="row mt-2">
-                        <div class="col-md-8">
-                            <div class="form-group mb-2">
-                                <input class="form-control-file" type="file" accept="image/*" name="img_upload" ref="img_upload">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <button class="btn color-interact" v-on:click="uploadImg()">CARICA</button>
-                        </div>
+                    <div class="col-12 mt-2 pl-0">
+                        <label for="select-story" class="form-headers">Carica Immagini</label>
                     </div>
-                    <div class="row mt-2">
-                        <div class="col-md-8">
-                            <div class="form-group mb-2">
-                                <label for="select-image">Immagini nella storia corrente: </label>
-                                <select name="select-image" class="form-control" v-model="selectedImage">
-                                    <option v-for="imgname in imagesList" :value="imgname">{{ imgname }}</option>
-                                </select>
-                                <div id="image-preview" v-if="selectedImage" class="col mt-2">
-                                    <img class="img-thumbnail" width="60%" :src="'story/' + metadata.name + '/images/' + selectedImage" :alt="'Preview of ' + selectedImage">
+                    <div class="col-12 pl-0">
+                        <div class="row mt-2">
+                            <div class="col-md-8">
+                                <div class="form-group mb-2">
+                                    <input class="form-control-file" type="file" accept="image/*" name="img_upload" ref="img_upload">
                                 </div>
                             </div>
+                            <div class="col-md-4">
+                                <button class="btn color-interact" v-on:click="uploadImg()">CARICA</button>
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <button class="btn btn-danger" v-on:click="deleteImg()">RIMUOVI</button>
+                        <div class="row mt-2">
+                            <div class="col-md-8">
+                                <div class="form-group mb-2">
+                                    <label for="select-image">Immagini nella storia corrente: </label>
+                                    <select name="select-image" class="form-control" v-model="selectedImage">
+                                        <option v-for="imgname in imagesList" :value="imgname">{{ imgname }}</option>
+                                    </select>
+                                    <div id="image-preview" v-if="selectedImage" class="col mt-2">
+                                        <img class="img-thumbnail" width="60%" :src="'story/' + metadata.name + '/images/' + selectedImage" :alt="'Preview of ' + selectedImage">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-danger" v-on:click="deleteImg()">RIMUOVI</button>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <!--VIDEO CARICATI-->
                 <div id="uploadvideos" class="container-fluid border-top mt-2">
-                    <div class="row mt-2">
-                        <div class="col-md-8">
-                            <div class="form-group mb-2">
-                                <input class="form-control-file" type="file" accept="video/*" name="vid_upload" ref="vid_upload">
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <button class="btn color-interact" v-on:click="uploadVid()">CARICA</button>
-                        </div>
-                    </div>
-                    <div class="row mt-2">
-                        <div class="col-md-8">
-                            <div class="form-group mb-2">
-                                <label for="select-video">Video nella storia corrente: </label>
-                                <select name="select-video" class="form-control" v-model="selectedVideo">
-                                    <option v-for="vidname in vidsList" :value="vidname">{{ vidname }}</option>
-                                </select>
-                                <div id="video-preview" v-if="selectedVideo" class="container-fluid mt-2">
-                                    <video width="60%" controls :src="'story/' + metadata.name + '/videos/' + selectedVideo">Anteprima di {{ selectedVideo }}</video>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <button class="btn btn-danger" v-on:click="deleteVid()">RIMUOVI</button>
-                        </div>
-                    </div>
+                  <div class="col-12 mt-2 pl-0">
+                      <label for="select-story" class="form-headers">Carica Video</label>
+                  </div>
+                  <div class="col-12 pl-0">
+                      <div class="row mt-2">
+                          <div class="col-md-8">
+                              <div class="form-group mb-2">
+                                  <input class="form-control-file" type="file" accept="video/*" name="vid_upload" ref="vid_upload">
+                              </div>
+                          </div>
+                          <div class="col-md-4">
+                              <button class="btn color-interact" v-on:click="uploadVid()">CARICA</button>
+                          </div>
+                      </div>
+                      <div class="row mt-2">
+                          <div class="col-md-8">
+                              <div class="form-group mb-2">
+                                  <label for="select-video">Video nella storia corrente: </label>
+                                  <select name="select-video" class="form-control" v-model="selectedVideo">
+                                      <option v-for="vidname in vidsList" :value="vidname">{{ vidname }}</option>
+                                  </select>
+                                  <div id="video-preview" v-if="selectedVideo" class="container-fluid mt-2">
+                                      <video width="60%" controls :src="'story/' + metadata.name + '/videos/' + selectedVideo">Anteprima di {{ selectedVideo }}</video>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="col-md-4">
+                              <button class="btn btn-danger" v-on:click="deleteVid()">RIMUOVI</button>
+                          </div>
+                      </div>
+                   </div>
                 </div>
             </div>
             <div id="saveload" class="col-md-6 border-left">
@@ -145,7 +159,7 @@
         </div>
         <!--STORY METADATA-->
         <div class="container-fluid">
-            <div id="server-storyinfo" class="row container-fluid mt-2 mb-2 pt-2 pb-2 border-top border-bottom">
+            <div id="server-storyinfo" class="row container-fluid" :class="heavyBorder">
                 <div class="col form-group">
                     <label for="story-name">Nome della Storia</label>
                     <input name="story-name" class="form-control" type="text" v-model="metadata.name" ref="storyName">
@@ -166,10 +180,10 @@
                 </div>
                 <div class="btn-group">
                     <button class="col btn color-interact" v-on:click="postStory" data-toggle="tooltip" title="salva la tua storia">SALVA</button>
-                    <button class="col btn btn-secondary" v-on:click="resetData" data-toggle="tooltip" title="resetta i campi ed inizia una nuova storia">VUOTA</button>
+                    <button class="col btn btn-secondary" v-on:click="resetData" data-toggle="tooltip" title="resetta i campi ed inizia una nuova storia">SVUOTA</button>
                 </div>
             </div>
-        </div> 
+        </div>
         <!--AREA PREVIEW E STORY SETTING-->
         <button class="btn btn-block color-expand" type="button" data-toggle="collapse" data-target="#editor">AREA EDITOR
             <i class="fas fa-angle-double-down"></i>
@@ -199,7 +213,7 @@
                                 <i v-else class="fas fa-times"></i>
                             </button>
                             <div v-if="swapping && (swap_selected !== null)" class="container m-1">
-                                <button class="btn btn-sm btn-warning" data-toggle="tooltip" title="Scambia" v-on:click="swapQuests(0,false)"><i class="fas fa-arrow-right"></i></button> 
+                                <button class="btn btn-sm btn-warning" data-toggle="tooltip" title="Scambia" v-on:click="swapQuests(0,false)"><i class="fas fa-arrow-right"></i></button>
                             </div>
                         </div>
                         <div v-for="(quest,pos) in questList" class="container-fluid pb-3">
@@ -210,7 +224,7 @@
                                     (swapQuests(pos,true))">
                                         {{ quest.title || 'Quest' }}
                                     </button>
-                                    <button class="btn btn-danger border-dark" :disabled="swapping" data-toggle="tooltip" title="Elimina" 
+                                    <button class="btn btn-danger border-dark" :disabled="swapping" data-toggle="tooltip" title="Elimina"
                                     v-on:click="previewdata.in_mainquest ? rmMainNode(quest.number) : rmSubNode(quest.number)">X</button>
                                     <button class="btn btn-secondary border-dark" data-toggle="tooltip" title="Aggiungi" :disabled="swapping" v-on:click="addNode(pos+1)">+</button>
                                 </div>
@@ -220,7 +234,7 @@
                                 </div>
                             </div>
                             <div v-if="swapping && (swap_selected !== null)" class="row">
-                                <button class="btn btn-sm btn-warning" v-on:click="swapQuests(pos+1,false)"><i class="fas fa-arrow-right"></i></button> 
+                                <button class="btn btn-sm btn-warning" v-on:click="swapQuests(pos+1,false)"><i class="fas fa-arrow-right"></i></button>
                             </div>
                         </div>
                     </div>
@@ -234,9 +248,9 @@
                 </button>
                 <!-- stili principali -->
                 <div id="stylepanel" class="row container-fluid collapse p-3 border-bottom">
-                    <div class="row container-fluid">
+                    <div class="row container-fluid pb-2">
                         <!-- IMMAGINE O SFONDO -->
-                        <div id="backgroundStyle" class="col-md-6">
+                        <div id="backgroundStyle" class="col-md-6 border-right">
                             <div class="btn-group container-fluid mb-4">
                                 <button class="btn btn-light" v-on:click="gamedata.css_style.background.image = true" :disabled="gamedata.css_style.background.image">Immagine</button>
                                 <button class="btn btn-light" v-on:click="gamedata.css_style.background.image = false" :disabled="!gamedata.css_style.background.image">Colore</button>
@@ -248,7 +262,10 @@
                                         <div class="panel panel-default">
                                             <div class="panel-heading py-2 border-bottom border-top">
                                                 <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#imageEditor" @click="styleMenuCollapse">
-                                                    <label>Immagine di Sfondo</label>
+                                                    <label>
+                                                        <i class="far fa-arrow-alt-circle-down"></i>
+                                                          Immagine di Sfondo
+                                                    </label>
                                                 </div>
                                             </div>
                                             <div id="imageEditor" class="panel-collapse collapse stylepanelcollapse">
@@ -268,7 +285,10 @@
                                         <div class="panel panel-default">
                                             <div class="panel-heading py-2 border-bottom border-top">
                                                 <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#navigationBarEditor" @click="styleMenuCollapse">
-                                                    <label>Barra di Navigazione</label>
+                                                    <label>
+                                                         <i class="far fa-arrow-alt-circle-down"></i>
+                                                          Barra di Navigazione
+                                                    </label>
                                                 </div>
                                             </div>
                                             <div id="navigationBarEditor" class="panel-collapse collapse stylepanelcollapse">
@@ -308,7 +328,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="container-fluid text-center mb-0 mt-2">
-                                                        <label for="navcheckbox">Altri Colori</label>
+                                                        <label for="navcheckbox">Colori Personalizzati</label>
                                                         <input id="navcheckbox" type="checkbox" v-model="gamedata.css_style.background.style.nav.custom">
                                                     </div>
                                                 </div>
@@ -318,7 +338,10 @@
                                         <div class="panel panel-default">
                                             <div class="panel-heading py-2 border-bottom">
                                                 <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#cardStyleEditor" @click="styleMenuCollapse">
-                                                    <label>Corpo Centrale</label>
+                                                    <label>
+                                                        <i class="far fa-arrow-alt-circle-down"></i>
+                                                          Corpo Centrale
+                                                    </label>
                                                 </div>
                                             </div>
                                             <div id="cardStyleEditor" class="panel-collapse collapse stylepanelcollapse">
@@ -358,7 +381,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="container-fluid text-center mb-0 mt-2">
-                                                        <label for="cardcheckbox">Altri Colori</label>
+                                                        <label for="cardcheckbox">Colori Personalizzati</label>
                                                         <input id="cardcheckbox" type="checkbox" v-model="gamedata.css_style.background.style.card.custom">
                                                     </div>
                                                 </div>
@@ -369,7 +392,10 @@
                                     <div class="panel panel-default">
                                         <div class="panel-heading py-2 border-bottom">
                                             <div class="panel-title" data-toggle="collapse" rata-parent="#setStyle" href="#badgeStyleEditor" @click="styleMenuCollapse">
-                                                <label>Etichetta obiettivi secondari(Sub) disponibili</label>
+                                                <label>
+                                                    <i class="far fa-arrow-alt-circle-down"></i>
+                                                      Etichetta obiettivi secondari(Sub) disponibili
+                                                </label>
                                             </div>
                                         </div>
                                         <div id="badgeStyleEditor" class="panel-collapse collapse stylepanelcollapse">
@@ -377,7 +403,7 @@
                                                 <!-- tipologia predefinita -->
                                                 <div v-if="!gamedata.css_style.background.style.badge.custom">
                                                     <div class="form-group row pl-4 my-0">
-                                                        <label class="col col-form-label">Tipologia</label>
+                                                        <label class="col col-form-label">Colore</label>
                                                         <div class="col">
                                                             <select class="form-control" name="badgeBootstrapEditor" v-model="gamedata.css_style.background.style.badge.bootstrap.type">
                                                                 <option v-for="styles in bootstrapConsts.badgeColors" :value="styles.value">{{ styles.name }}</option>
@@ -431,7 +457,10 @@
                                     <div class="panel panel-default">
                                         <div class="panel-heading py-2 border-bottom">
                                             <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#alertStyleEditor" @click="styleMenuCollapse">
-                                                <label>Etichetta aiuto richiesto</label>
+                                                <label>
+                                                    <i class="far fa-arrow-alt-circle-down"></i>
+                                                      Etichetta aiuto richiesto
+                                                </label>
                                             </div>
                                         </div>
                                         <div id="alertStyleEditor" class="panel-collapse collapse stylepanelcollapse">
@@ -439,7 +468,7 @@
                                                 <!-- tipologia predefinita -->
                                                 <div v-if="!gamedata.css_style.background.style.alert.custom">
                                                     <div class="form-group row pl-4 my-0">
-                                                        <label class="col col-form-label">Tipologia</label>
+                                                        <label class="col col-form-label">Colore</label>
                                                         <div class="col">
                                                             <select class="form-control" name="alertBootstrapEditor" v-model="gamedata.css_style.background.style.alert.bootstrap.type">
                                                                 <option v-for="styles in bootstrapConsts.alertColors" :value="styles.value">{{ styles.name }}</option>

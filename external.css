@@ -148,3 +148,12 @@ a.disabled {
     pointer-events: none;
     cursor: default;
 }
+
+.form-headers {
+  font-weight: bold;
+  font-size: 150%;
+}
+
+.border-primary-3 {
+  border-top: 10px solid #0275d8;
+}

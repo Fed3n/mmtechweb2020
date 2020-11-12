@@ -167,6 +167,7 @@
               "main": null,
               "sub": null
           },
+          storiesPanelOpened: false,
           mainStyleColor: false,
           currentMainStyleColor: "",
           mobileView: true,
@@ -448,7 +449,7 @@
               this.$refs.inputForm.reset();
               this.$refs.cardbody.scrollTop = 0;
               this.swapping = false;
-              this.swap_selected = null;              
+              this.swap_selected = null;
           },
           switchView: function(mobile) {
               this.mobileView = mobile;
@@ -472,7 +473,7 @@
               if(this.swap_selected === null){
                   this.swap_selected = pos;
               }
-              else{ 
+              else{
                   let order = this.previewdata.in_mainquest ? this.gamedata.author_order.main : this.gamedata.author_order.sub;
                   //se abbiamo selezionato due quest le swappiamo
                   if(is_quest){
@@ -628,7 +629,7 @@
                       }
                       mains.splice(index, 1);
                       //author_order.main[]
-                      let order = this.gamedata.author_order.main; 
+                      let order = this.gamedata.author_order.main;
                       order.splice(order.indexOf(index),1);
                       for(let i = 0; i < order.length; i++){
                           if(order[i] >= index) order[i]--;
@@ -677,7 +678,7 @@
                       }
                       subs.splice(index, 1);
                       //author_order.main[]
-                      let order = this.gamedata.author_order.sub; 
+                      let order = this.gamedata.author_order.sub;
                       order.splice(order.indexOf(index),1);
                       for(let i = 0; i < order.length; i++){
                           if(order[i] >= index) order[i]--;
@@ -910,6 +911,9 @@
           },
           styleMenuCollapse: function() {
               $('.stylepanelcollapse').collapse('hide');
+          },
+          storiesPanelChange: function(isVisible, entry) {
+                this.storiesPanelOpened = isVisible;
           },
           //style functions
           setFontUrl: function() {
@@ -1238,6 +1242,14 @@
               return disabled;
           },
           //STYLEOBJECTS
+          //author
+          heavyBorder: function() {
+            if (this.storiesPanelOpened)
+                return "border-primary-3 mt-2 mb-2 pt-4 pb-2";
+            else
+                return "mt-2 mb-2 pt-2 pb-2";
+          },
+          //preview
           previewStyle: function() {
               var styles = {};
               //loading background image
