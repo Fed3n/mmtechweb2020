@@ -46,14 +46,14 @@
                     <div class="col-12">
                         <label for="select-story" class="form-headers">Storie Registrate</label>
                     </div>
-                    <div class="col-10 row ml-1 mb-2">
-                        <div class="col-10-md">
+                    <div class="row ml-1 mb-2">
+                        <div class="col-md-10">
                             <select name="select-story" class="custom-select" size="6" ref="selectedStory">
                                 <option v-for="story in storyList" :value="story" data-toggle="tooltip" :title="activeStoryList.includes(story) ? 'Attiva' : 'Inattiva'"
                                 :style="{ color: activeStoryList.includes(story) ? 'green' : 'red' }">{{ story }}</option>
                             </select>
                         </div>
-                        <div class="col-2-md">
+                        <div class="col-md-2">
                             <div class="btn btn-group">
                                 <button class="btn color-interact" v-on:click="getStory">CARICA</button>
                                 <button class="btn btn-danger" v-on:click="deleteStory">RIMUOVI</button>
