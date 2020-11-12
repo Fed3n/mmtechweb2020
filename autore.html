@@ -51,9 +51,9 @@
                         </select>
                     </div>
                     <div class="col-2-md">
-                        <div class="btn btn-group">
-                            <button class="btn color-interact" v-on:click="getStory">CARICA</button>
-                            <button class="btn btn-danger" v-on:click="deleteStory">RIMUOVI</button>
+                        <div class="container">
+                            <div class="mb-2"><button class="btn color-interact" v-on:click="getStory">CARICA</button></div>
+                            <div><button class="btn btn-danger" v-on:click="deleteStory">RIMUOVI</button></div>
                         </div>
                     </div>
                 </div>
@@ -208,7 +208,7 @@
                                     <button class="btn btn-block border border-dark" :class="swap_selected==pos ? 'btn-warning' : 'btn-light'"
                                     v-on:click="!swapping ? (previewdata.in_mainquest ? jumpToQuest('main',quest.number) : jumpToQuest('sub',quest.number)) :
                                     (swapQuests(pos,true))">
-                                        {{ quest.title || 'Quest' }}
+                                        {{ quest.title || 'Quest'+quest.number }}
                                     </button>
                                     <button class="btn btn-danger border-dark" :disabled="swapping" data-toggle="tooltip" title="Elimina" 
                                     v-on:click="previewdata.in_mainquest ? rmMainNode(quest.number) : rmSubNode(quest.number)">X</button>
@@ -248,7 +248,7 @@
                                         <div class="panel panel-default">
                                             <div class="panel-heading py-2 border-bottom border-top">
                                                 <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#imageEditor" @click="styleMenuCollapse">
-                                                    <label>Immagine di Sfondo</label>
+                                                    <label>Immagine di Sfondo <i class="fas fa-angle-double-down"></i></label>
                                                 </div>
                                             </div>
                                             <div id="imageEditor" class="panel-collapse collapse stylepanelcollapse">
@@ -268,7 +268,7 @@
                                         <div class="panel panel-default">
                                             <div class="panel-heading py-2 border-bottom border-top">
                                                 <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#navigationBarEditor" @click="styleMenuCollapse">
-                                                    <label>Barra di Navigazione</label>
+                                                    <label>Barra di Navigazione <i class="fas fa-angle-double-down"></i></label>
                                                 </div>
                                             </div>
                                             <div id="navigationBarEditor" class="panel-collapse collapse stylepanelcollapse">
@@ -318,7 +318,7 @@
                                         <div class="panel panel-default">
                                             <div class="panel-heading py-2 border-bottom">
                                                 <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#cardStyleEditor" @click="styleMenuCollapse">
-                                                    <label>Corpo Centrale</label>
+                                                    <label>Corpo Centrale <i class="fas fa-angle-double-down"></i></label>
                                                 </div>
                                             </div>
                                             <div id="cardStyleEditor" class="panel-collapse collapse stylepanelcollapse">
@@ -369,7 +369,7 @@
                                     <div class="panel panel-default">
                                         <div class="panel-heading py-2 border-bottom">
                                             <div class="panel-title" data-toggle="collapse" rata-parent="#setStyle" href="#badgeStyleEditor" @click="styleMenuCollapse">
-                                                <label>Etichetta obiettivi secondari(Sub) disponibili</label>
+                                                <label>Etichetta obiettivi secondari(Sub) disponibili <i class="fas fa-angle-double-down"></i></label>
                                             </div>
                                         </div>
                                         <div id="badgeStyleEditor" class="panel-collapse collapse stylepanelcollapse">
@@ -431,7 +431,7 @@
                                     <div class="panel panel-default">
                                         <div class="panel-heading py-2 border-bottom">
                                             <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#alertStyleEditor" @click="styleMenuCollapse">
-                                                <label>Etichetta aiuto richiesto</label>
+                                                <label>Etichetta aiuto richiesto <i class="fas fa-angle-double-down"></i></label>
                                             </div>
                                         </div>
                                         <div id="alertStyleEditor" class="panel-collapse collapse stylepanelcollapse">
@@ -508,7 +508,8 @@
                                     </div>
                                     <div class="col-6">
                                         <div class="col-12 row m-0 p-0">
-                                            <input name="fontUrlField" class="form-control row" type="text" readyonly v-model="gamedata.css_style.mainStyle['font-url']" @input="setFontUrl()" data-toggle="tooltip" title="se il font non è disponibile inserire il link di google fonts">
+                                            <input name="fontUrlField" class="form-control row" type="text" readyonly v-model="gamedata.css_style.mainStyle['font-url']" 
+                                            @input="setFontUrl()" data-toggle="tooltip" title="se il font non è disponibile inserire il link di google fonts">
                                         </div>
                                         <small v-if="gamedata.css_style.mainStyle['font-url'] === ' '" class="row text-muted mt-2">
                                             se il font non è disponibile inserire il link di google fonts
@@ -657,15 +658,15 @@
                             </div>
                         </div>
                         <div class="btn-group container-fluid mt-2">
-                            <button class="btn color-interact border" v-on:click="switchView(false)">PC</button>
-                            <button class="btn color-interact border" v-on:click="switchView(true)">MOBILE</button>
+                            <button class="btn color-interact border" v-on:click="switchView(false)" :disabled="!mobileView">PC</button>
+                            <button class="btn color-interact border" v-on:click="switchView(true)" :disabled="mobileView">MOBILE</button>
                         </div>
                     <div id="preview-options" class="col-md-4">
                         <div id="current-answer" v-if="previewdata.picked" class="overflow-auto m-3" style="word-wrap:break-word;">
                             <p>Risposta corrente: {{ previewdata.picked }}</p>
                             <div v-if="previewdata.in_mainquest">
                                 <button class="btn btn-secondary" v-if="getCurrentGotos.length > 0" data-toggle="tooltip" :title="gamedata.mainQuest[getAnswerGoto].title" v-on:click="jumpToQuest('main',getAnswerGoto)">
-                                    {{ "Questa risposta porterà a " + (gamedata.mainQuest[getAnswerGoto].title || getAnswerGoto)}}
+                                    {{ "Questa risposta porterà a " + (gamedata.mainQuest[getAnswerGoto].title || 'Quest'+getAnswerGoto)}}
                                 </button>
                             </div>
                             <div v-if="!previewdata.in_mainquest">
@@ -681,7 +682,7 @@
                     <div class="col-md-2 border-right pt-2 pb-2">
                         <h2 class="color-static p-2 text-light rounded">Nodi Precedenti</h2>
                         <button class="btn btn-secondary btn-block" v-for="prev in previewdata.in_mainquest ? getPrevNodes : renderQuest.requires_sub" data-toggle="tooltip" :title="previewdata.in_mainquest ? gamedata.mainQuest[prev].title : gamedata.subQuests[prev].title" v-on:click="previewdata.in_mainquest ? jumpToQuest('main',prev) : jumpToQuest('sub',prev)">
-                            {{ previewdata.in_mainquest ? ( gamedata.mainQuest[prev].title || prev ) : ( gamedata.subQuests[prev].title || prev ) }}
+                            {{ previewdata.in_mainquest ? ( gamedata.mainQuest[prev].title || 'Quest'+prev ) : ( gamedata.subQuests[prev].title || 'Subquest'+prev ) }}
                         </button>
                     </div>
                     <!--CAMPI QUEST ATTUALE-->
@@ -708,19 +709,27 @@
                             </label>
                         </div>
                         <!--Quest AVAILABLE_ON (subquests only)-->
-                        <label for="availableonfield" v-if="!previewdata.in_mainquest">Disponibile nelle Quest</label>
-                        <div name="availableonfield" v-if="!previewdata.in_mainquest">
-                            <div v-for="quest in gamedata.mainQuest" class="form-check form-check-inline" data-toggle="tooltip" :title="quest.title">
-                                <input type="checkbox" class="form-check-input" :name="'quest' + quest.number" :value="quest.number" v-model="renderQuest.available_on">
-                                <label for="'quest' + quest.number" class="form-check-label"> {{ quest.number }}</label>
+                        <div>
+                            <label for="availableonfield" v-if="!previewdata.in_mainquest" data-toggle="collapse" data-target="#availableonfield">
+                                Disponibile nelle Quest <i class="fas fa-angle-double-down"></i>
+                            </label>
+                            <div id="availableonfield" name="availableonfield" v-if="!previewdata.in_mainquest" class="collapse">
+                                <div v-for="quest in gamedata.mainQuest" class="form-check form-check" data-toggle="tooltip" :title="quest.title">
+                                    <input type="checkbox" class="form-check-input" :name="'quest' + quest.number" :value="quest.number" v-model="renderQuest.available_on">
+                                    <label for="'quest' + quest.number" class="form-check-label"> {{ quest.title || 'Quest'+quest.number }}</label>
+                                </div>
                             </div>
                         </div>
                         <!--Quest REQUIRES_SUBQUEST (subquests only)-->
-                        <label for="subreqfield" v-if="!previewdata.in_mainquest">Richiede le Subquest</label>
-                        <div name="subreqfield" v-if="!previewdata.in_mainquest">
-                            <div v-for="sub in gamedata.subQuests" class="form-check form-check-inline" data-toggle="tooltip" :title="sub.title">
-                                <input type="checkbox" class="form-check-input" :name="'sub' + sub.number" :value="sub.number" v-model="renderQuest.requires_sub">
-                                <label :for="'quest' + sub.number">{{ sub.number }}</label>
+                        <div>
+                            <label for="subreqfield" v-if="!previewdata.in_mainquest" data-toggle="collapse" data-target="#subreqfield">
+                                Richiede le Subquest <i class="fas fa-angle-double-down"></i>
+                            </label>
+                            <div id="subreqfield" name="subreqfield" v-if="!previewdata.in_mainquest" class="collapse">
+                                <div v-for="sub in gamedata.subQuests" class="form-check form-check-inline" data-toggle="tooltip" :title="sub.title">
+                                    <input type="checkbox" class="form-check-input" :name="'sub' + sub.number" :value="sub.number" v-model="renderQuest.requires_sub">
+                                    <label :for="'quest' + sub.number">{{ sub.title || 'Subquest'+sub.number }}</label>
+                                </div>
                             </div>
                         </div>
                         <!--Quest DESCRIPTION-->
@@ -806,11 +815,11 @@
                                 <input class="form-control" v-model="renderQuest.options[renderQuest.options.indexOf(opt)]">
                             </div>
                             <div class="btn-group">
-                                <button class="btn btn-outline-primary" v-on:click="addRmOptions('add')">Aggiungi</button>
-                                <button class="btn btn-outline-primary" v-on:click="addRmOptions('rm')">Rimuovi</button>
+                                <button class="btn color-interact" v-on:click="addRmOptions('add')">Aggiungi</button>
+                                <button class="btn btn-danger" v-on:click="addRmOptions('rm')">Rimuovi</button>
                             </div>
                             <div class="btn-group">
-                                <button class="btn btn-outline-primary" v-on:click="generateChoiceGotos">Genera Destinazioni</button>
+                                <button class="btn color-interact" v-on:click="generateChoiceGotos">Genera Destinazioni</button>
                             </div>
                         </div>
                         <!-- Quest CHOOSE IMAGE (only if type is draw)-->
@@ -828,7 +837,7 @@
                                 <label for="setImgAlt">Scegli un alt per l'immagine</label>
                                 <input name="setImgAlt" class="form-control" type="text" v-model="renderQuest.image.imgalt">
                             </div>
-                            <button class="btn btn-outline-secondary" v-on:click="setImageAsInput">Set</button>
+                            <button class="btn btn-secondary" v-on:click="setImageAsInput">Set</button>
                         </div>
                         <!-- Quest CUSTOMIZE KEYBOARD (only if type is keys)-->
                         <div v-if="renderQuest.type == 'keys'" class="border-top border-bottom p-2 m-2">
@@ -840,7 +849,7 @@
                                 </div>
                                 <div id="key-customization" class="collapse row p-2">
                                     <div name="button-customize" class="col-lg-6 border-right m-1">
-                                        <label for="keybutton-customize" class="font-weight-bold text-info mb-2">Personalizza Bottoni</label>
+                                        <label for="keybutton-customize" class="font-weight-bold color-static mb-2 rounded p-1">Personalizza Bottoni</label>
                                         <div class="form-group mb-3">
                                             <label class="mr-2" for="keys">Tasti</label>
                                             <textarea class="form-control mr-2" v-model="renderQuest.key_style.keys"></textarea>
@@ -870,7 +879,7 @@
                                                 <label for="textsize">Dimensione</label>
                                                 <input name="textsize" class="form-control" type="number" step="1" min="0" v-model="renderQuest.key_style.text_size">
                                             </div>
-                                            <div class="form-check">
+                                            <div class="col-lg-4">
                                                 <label for="bold" class="form-check-label">
                                                     <input name="bold" class="form-check-input" type="checkbox" v-model="renderQuest.key_style.bold">
                                                     Grassetto
@@ -921,7 +930,7 @@
                                         </div>
                                     </div>
                                     <div id="keyscreen-customize" class="col-lg-4 m-1">
-                                        <label class="mb-2 font-weight-bold text-info">Personalizza prompt</label>
+                                        <label class="mb-2 font-weight-bold color-static p-1 rounded">Personalizza prompt</label>
                                         <div class="form-group row mb-3">
                                             <label for="screenfont">Font</label>
                                             <input name="screenfont" class="form-control" type="text" v-model="renderQuest.key_style.screen_font">
@@ -953,7 +962,7 @@
                                             <div class="col-lg-3"><input name="screenlength" type="number" step="0.1" min="0" v-model="renderQuest.key_style.screen_length"></div>
                                         </div>
                                         <div class="mt-3 border-top">
-                                            <label for="description" class="font-weight-bold text-info">Descrizione per accessibilità</label>
+                                            <label for="description" class="font-weight-bold color-static rounded p-1">Descrizione per accessibilità</label>
                                             <div name="description" class="form-group mb-3">
                                                 <textarea class="form-control" v-model="renderQuest.key_style.description"></textarea>
                                             </div>
@@ -985,26 +994,19 @@
                         <label for="subrewardfield" v-if="previewdata.in_mainquest">Ricompense per le Subquest</label>
                         <div name="subrewardfield" v-if="previewdata.in_mainquest">
                             <div class="btn-group">
-                                <button class="btn btn-outline-primary" v-on:click="addSubReward">Aggiungi</button>
+                                <button class="btn color-interact" v-on:click="addSubReward">Aggiungi</button>
                                 <select name="subquests" class="form-control" ref="subtoadd">
-                                    <option v-for="sub in getRemainingSubs" :value="sub.number">{{ (sub.title || sub.number) }}</option>
+                                    <option v-for="sub in getRemainingSubs" :value="sub.number">{{ (sub.title || 'Quest'+sub.number) }}</option>
                                 </select>
                             </div>
                             <div v-for="sub in renderQuest.subquest_rewards" class="container-fluid pt-1">
                                 <div class="btn-group">
-                                    <button class="btn btn-outline-secondary" :data-target="'#' + 'reward' + sub.number" data-toggle="collapse">
-                                        Ricompensa per {{ (sub.title || sub.number) }}
+                                    <button class="btn btn-secondary" :data-target="'#' + 'reward' + sub.number" data-toggle="collapse">
+                                        Ricompensa per {{ (sub.title || 'Subquest'+sub.number) }} <i class="fas fa-angle-double-down"></i> 
                                     </button>
-                                    <button class="btn btn-outline-danger" v-on:click="rmSubReward(sub)">Rimuovi Ricompensa</button>
+                                    <button class="btn btn-danger" v-on:click="rmSubReward(sub)">Rimuovi Ricompensa</button>
                                 </div>
                                 <div :id="'reward' + sub.number" class="collapse container p-2 border-bottom">
-                                    <!--Reward NUMBER-->
-                                    <div class="form-group row">
-                                        <label class="col-md-2 col-form-label" for="subnumber">Numero</label>
-                                        <div class="col-md-10">
-                                            <input type="text" name="subnumber" readonly class="form-control-plaintext" :value="sub.number">
-                                        </div>
-                                    </div>
                                     <!--Reward CLUE-->
                                     <div class="form-group row">
                                         <label class="col-md-2 col-form-label" for="cluefield">Indizio</label>
@@ -1040,15 +1042,15 @@
                                         <div class="form-group row" v-for="goto in sub.added_goto">
                                             <input class="form-control col-md-6" type="text" v-model="goto[0]" placeholder="Risposta">
                                             <select class="form-control col-md-3" name="quests" v-model="goto[1]">
-                                                <option v-for="quest in questList" :value="quest.number">{{ (quest.title || quest.number) }}</option>
+                                                <option v-for="quest in questList" :value="quest.number">{{ (quest.title || 'Quest'+quest.number) }}</option>
                                             </select>
                                             <input v-if="goto[2] !== undefined" class="form-control col-md-6" v-model="goto[2]" placeholder="Punteggio">
                                             <div class="btn-group">
-                                                <button class="btn btn-outline-danger" v-on:click="rmAddedGoto(sub,goto)">Rimuovi</button>
+                                                <button class="btn btn-danger" v-on:click="rmAddedGoto(sub,goto)">Rimuovi</button>
                                             </div>
                                         </div>
                                         <div class="btn-group">
-                                            <button class="btn btn-outline-primary" v-on:click="addAddedGoto(sub)">Aggiungi</button>
+                                            <button class="btn color-interact" v-on:click="addAddedGoto(sub)">Aggiungi</button>
                                         </div>
                                     </div>
                                 </div>
@@ -1066,7 +1068,7 @@
                                     <div class="form-group" v-for="opt in renderQuest.goto">
                                         <input class="form-control" type="text" v-model="opt[0]" placeholder="Risposta">
                                         <select class="form-control" name="quests" v-model="opt[1]">
-                                            <option v-for="quest in questList" data-toggle="tooltip" :title="quest.title" :value="quest.number">{{ ( quest.title || quest.number ) }}</option>
+                                            <option v-for="quest in questList" data-toggle="tooltip" :title="quest.title" :value="quest.number">{{ ( quest.title || 'Quest'+quest.number ) }}</option>
                                         </select>
                                         <input v-if="opt[2] !== undefined" class="form-control" type="text" v-model="opt[2]" placeholder="Punteggio attribuito">
                                         <!--Removed gotos for subquest_rewards-->
@@ -1074,7 +1076,9 @@
                                         <div name="goto-remove">
                                             <div class="form-check form-check-inline" v-for="reward in renderQuest.subquest_rewards">
                                                 <input class="form-check-input" type="checkbox" :name="'sub' + renderQuest.subquest_rewards.indexOf(reward)" :value="opt" v-model="reward.removed_goto">
-                                                <label class="form-check-label" :for="'sub' + renderQuest.subquest_rewards.indexOf(reward)">Ricompensa {{ reward.number }}<label>
+                                                <label class="form-check-label" :for="'sub' + renderQuest.subquest_rewards.indexOf(reward)">
+                                                    Ricompensa per {{ gamedata.subQuests[reward.number].title || 'Subquest'+reward.number }}
+                                                <label>
                                             </div>
                                         </div>
                                     </div>
@@ -1100,7 +1104,7 @@
                                     <div v-for="opt in getAddedGotos">
                                         <input type="text" v-model="renderQuest.subquest_rewards[opt[0]].added_goto[renderQuest.subquest_rewards[opt[0]].added_goto.indexOf(opt[1])][0]">
                                         <select name="quests" v-model="renderQuest.subquest_rewards[opt[0]].added_goto[renderQuest.subquest_rewards[opt[0]].added_goto.indexOf(opt[1])][1]">
-                                            <option v-for="quest in questList" data-toggle="tooltip" :title="quest.title" :value="quest.number">{{ (quest.title || quest.number) }}</option>
+                                            <option v-for="quest in questList" data-toggle="tooltip" :title="quest.title" :value="quest.number">{{ (quest.title || 'Quest'+quest.number) }}</option>
                                         </select>
                                     </div>
                                 </div>
