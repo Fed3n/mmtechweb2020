@@ -158,6 +158,11 @@ a.disabled {
   border-top: 10px solid #0275d8;
 }
 
+:root {
+  --light: rgba(247,247,247,1);
+  --grei: rgba(213,213,213,1);
+}
+
 .panel-default {
-  background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(182,180,194,1) 50%, rgba(255,255,255,1) 100%);
+  background: linear-gradient(90deg, var(--light) 0%, var(--grei) 20%, var(--grei) 80%, var(--light) 100%);
 }
