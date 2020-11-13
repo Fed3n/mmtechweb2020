@@ -1248,7 +1248,7 @@
           //STYLEOBJECTS
           //author
           heavyBorder: function() {
-            if (this.storiesPanelOpened) 
+            if (this.storiesPanelOpened)
                 return "border-primary-3 mt-2 mb-2 pt-4 pb-2";
             else
                 return "mt-2 mb-2 pt-2 pb-2";
