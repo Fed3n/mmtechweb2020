@@ -44,7 +44,7 @@
                 <div class="row container-fluid">
                 <!--GET / DELETE IN FS-->
                     <div class="col-12">
-                        <label for="select-story" class="form-headers">Storie Registrate</label>
+                        <label class="form-headers">Storie Registrate</label>
                     </div>
                     <div class="row ml-1 mb-2">
                         <div class="col-md-10">
@@ -64,7 +64,7 @@
                 <!--IMMAGINI CARICATE-->
                 <div id="uploadimages" class="container-fluid border-top mt-2">
                     <div class="col-12 mt-2 pl-0">
-                        <label for="select-story" class="form-headers">Carica Immagini</label>
+                        <label class="form-headers">Carica Immagini</label>
                     </div>
                     <div class="col-12 pl-0">
                         <div class="row mt-2">
@@ -98,7 +98,7 @@
                 <!--VIDEO CARICATI-->
                 <div id="uploadvideos" class="container-fluid border-top mt-2">
                   <div class="col-12 mt-2 pl-0">
-                      <label for="select-story" class="form-headers">Carica Video</label>
+                      <label class="form-headers">Carica Video</label>
                   </div>
                   <div class="col-12 pl-0">
                       <div class="row mt-2">
@@ -193,8 +193,8 @@
             <div class="col-md-3 container pt-3 pb-3 border-right">
                 <!--Passaggio da schermata main a sub e viceversa-->
                 <div class="btn-group container-fluid pb-3">
-                    <button class="btn btn-light" v-on:click="switchMainSub" :disabled="previewdata.in_mainquest">Main</button>
-                    <button class="btn btn-light" v-on:click="switchMainSub" :disabled="!previewdata.in_mainquest">Sub</button>
+                    <button class="btn color-interact border" v-on:click="switchMainSub" :disabled="previewdata.in_mainquest">Main</button>
+                    <button class="btn color-interact border" v-on:click="switchMainSub" :disabled="!previewdata.in_mainquest">Sub</button>
                 </div>
                 <!--Aggiunta nuovo nodo main/sub-->
                 <div class="btn-group pt-1 pb-1">
@@ -247,13 +247,24 @@
                     <i class="fas fa-angle-double-down"></i>
                 </button>
                 <!-- stili principali -->
-                <div id="stylepanel" class="row container-fluid collapse p-3 border-bottom">
-                    <div class="row container-fluid pb-2">
+                <div id="stylepanel" class="container-fluid collapse border-bottom px-0">
+                    <div class="container container-fluid color-static text-light rounded mx-0 col-12 mt-2 mb-3">
+                        <div class="container-fluid py-5 pl-1">
+                            <h3>Realizza il tuo stile personalizzato</h3>
+                            <p>Crea lo stile che più preferisci!<br>
+                              Puoi personalizzare gli sfondi, il testo e molto altro; utilizza i colori già disponibili oppure crea colori personalizzati.<br>
+                              Una volta realizzato lo stile della tua storia portai salvarlo per riutilizzarlo in altre storie!</p>
+                        </div>
+                    </div>
+                    <div class="row container-fluid pb-2 pt-3 border-top">
                         <!-- IMMAGINE O SFONDO -->
                         <div id="backgroundStyle" class="col-md-6 border-right">
+                            <div class="d-flex justify-content-center mt-3 mb-4">
+                                <h4 class="font-weight-bold">Personalizza lo Sfondo</h4>
+                            </div>
                             <div class="btn-group container-fluid mb-4">
-                                <button class="btn btn-light" v-on:click="gamedata.css_style.background.image = true" :disabled="gamedata.css_style.background.image">Immagine</button>
-                                <button class="btn btn-light" v-on:click="gamedata.css_style.background.image = false" :disabled="!gamedata.css_style.background.image">Colore</button>
+                                <button class="btn color-interact border" v-on:click="gamedata.css_style.background.image = true" :disabled="gamedata.css_style.background.image">Immagine di Sfondo</button>
+                                <button class="btn color-interact border" v-on:click="gamedata.css_style.background.image = false" :disabled="!gamedata.css_style.background.image">Colore di Sfondo</button>
                             </div>
                             <div class="container-fluid">
                                 <div id="setStyle" class="panel-group mb-3">
@@ -285,10 +296,8 @@
                                         <div class="panel panel-default">
                                             <div class="panel-heading py-2 border-bottom border-top">
                                                 <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#navigationBarEditor" @click="styleMenuCollapse">
-                                                    <label>
-                                                         <i class="far fa-arrow-alt-circle-down"></i>
-                                                          Barra di Navigazione
-                                                    </label>
+                                                    <label><i class="far fa-arrow-alt-circle-down"></i>
+                                                    Barra di Navigazione</label>
                                                 </div>
                                             </div>
                                             <div id="navigationBarEditor" class="panel-collapse collapse stylepanelcollapse">
@@ -529,6 +538,9 @@
                         </div>
                         <!-- STILI GLOBALI DEL TESTO -->
                         <div id="mainStyles" class="col-md-6 pl-4">
+                            <div class="d-flex justify-content-center mt-3 mb-4">
+                                <h4 class="font-weight-bold">Personalizza il Testo</h4>
+                            </div>
                             <div class="form-group row">
                                 <label for="fontFamilyField" class="col-md-4 col-form-label">Font</label>
                                 <div class="col-md-8 row form-group m-0 pr-0">
