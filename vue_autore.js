@@ -168,6 +168,7 @@
               "sub": null
           },
           storiesPanelOpened: false,
+          stylesPanelOpened: false,
           mainStyleColor: false,
           currentMainStyleColor: "",
           mobileView: true,
@@ -915,6 +916,9 @@
           storiesPanelChange: function(isVisible, entry) {
                 this.storiesPanelOpened = isVisible;
           },
+          stylesPanelChange: function(isVisible, entry) {
+                this.stylesPanelOpened = isVisible;
+          },
           //style functions
           setFontUrl: function() {
               if (this.gamedata.css_style.mainStyle['font-url'])
@@ -1248,6 +1252,12 @@
                 return "border-primary-3 mt-2 mb-2 pt-4 pb-2";
             else
                 return "mt-2 mb-2 pt-2 pb-2";
+          },
+          marginTop: function() {
+            if (this.stylesPanelOpened)
+                return "mt-3 ml-3 pl-0";
+            else
+                return "";
           },
           //preview
           previewStyle: function() {

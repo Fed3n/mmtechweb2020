@@ -80,8 +80,6 @@ gamedata_pholder = {
                         "border-style": "",
                         "border-color": "",
                         "color": ""
-                        /*,
-								"apply-color": true*/
                     }
                 },
                 "card": {
@@ -1012,7 +1010,7 @@ var app = new Vue({
                         "border-color": temp["color"]
                     });
                 }
-                //overwrite occasional mainstyle
+                //overwrite mainstyle if present
                 if (this.gamedata.css_style.mainStyle["color"])
                     styles = Object.assign(styles, {
                         "border-color": this.gamedata.css_style.mainStyle["color"]

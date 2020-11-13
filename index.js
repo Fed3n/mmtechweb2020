@@ -39,7 +39,7 @@ function recursiveChmod(path, dirp, filep){
     }
     else {
         fs.chmodSync(path, `0o${filep}`);
-    } 
+    }
 }
 //####################
 
