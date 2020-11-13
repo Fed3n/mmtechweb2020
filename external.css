@@ -160,9 +160,11 @@ a.disabled {
 
 :root {
   --light: rgba(247,247,247,1);
-  --grei: rgba(213,213,213,1);
+  --colorGrei: rgba(224,224,224,1);
+  --colorBlue: rgba(214,231,250,1);
+  --color: var(--colorGrei);
 }
 
-.panel-default {
-  background: linear-gradient(90deg, var(--light) 0%, var(--grei) 20%, var(--grei) 80%, var(--light) 100%);
+.panel-heading {
+  background: linear-gradient(90deg, var(--light) 0%, var(--color) 20%, var(--color) 80%, var(--light) 100%);
 }

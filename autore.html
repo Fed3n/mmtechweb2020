@@ -247,13 +247,22 @@
                     <i class="fas fa-angle-double-down"></i>
                 </button>
                 <!-- stili principali -->
-                <div id="stylepanel" class="container-fluid collapse border-bottom px-0">
-                    <div class="container container-fluid color-static text-light rounded mx-0 col-12 mt-2 mb-3">
-                        <div class="container-fluid py-5 pl-1">
+                <div id="stylepanel" class="container-fluid collapse border-bottom px-0" v-observe-visibility="stylesPanelChange">
+                    <div class="container container-fluid color-static text-light rounded mx-0 col-12 mt-2 mb-2">
+                        <div class="container-fluid pt-5 pb-2 pl-1">
                             <h3>Realizza il tuo stile personalizzato</h3>
                             <p>Crea lo stile che più preferisci!<br>
                               Puoi personalizzare gli sfondi, il testo e molto altro; utilizza i colori già disponibili oppure crea colori personalizzati.<br>
                               Una volta realizzato lo stile della tua storia portai salvarlo per riutilizzarlo in altre storie!</p>
+                        </div>
+                        <div class="container-fluid pb-5 pt-0 pl-1 border-top">
+                            <h2></h2>
+                            <p>Nella sezione "Personalizza lo Sfondo" potrai scegliere se utilizzare un'immagine di sfondo oppure avere uno sfondo colorato;
+                            se scegli lo sfondo colorato avrai la possibilità di assegnare stili diversi al Menù ed al Corpo Centrale,
+                            quindi potrai modificare in modo indipendente il colore dello sfondo ed il colore del testo nelle due aree.<br>
+                            <br>
+                            Nella sezione "Personalizza il Testo" potrai scegliere lo stile del testo. In questa sezione la proprietà "Colore del Testo" viene applicata spuntando "Applica",
+                            in caso contrario verranno visualizzati i colori specificati nella sezione "Personalizza lo Sfondo - Colore di Sfondo" se selezionata.</p>
                         </div>
                     </div>
                     <div class="row container-fluid pb-2 pt-3 border-top">
@@ -271,7 +280,7 @@
                                     <!-- scegli l'immagine -->
                                     <div v-if="gamedata.css_style.background.image">
                                         <div class="panel panel-default">
-                                            <div class="panel-heading py-2 border-bottom border-top">
+                                            <div class="panel-heading py-2 border-bottom border-top border-dark">
                                                 <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#imageEditor" @click="styleMenuCollapse">
                                                     <label>
                                                         <i class="far fa-arrow-alt-circle-down"></i>
@@ -286,7 +295,7 @@
                                                         <option v-if="(imagesList ? imagesList.length > 0 : false)" value="">nessuna immagine selezionata</option>
                                                         <option v-for="imgname in imagesList" :value=`url('story/${metadata.name}/images/${imgname}')`>{{ imgname }}</option>
                                                     </select>
-                                                    <small v-if="!imagesList" class="text-muted">Non sono presenti immagini in questa storia, caricane una nella sezione "area dati"</small>
+                                                    <small v-if="!imagesList" class="text-muted">Non sono presenti immagini in questa storia, caricane una dalla sezione "AREA STORIE"</small>
                                                 </div>
                                             </div>
                                         </div>
@@ -294,10 +303,10 @@
                                     <div v-if="!gamedata.css_style.background.image">
                                         <!-- NAVBAR -->
                                         <div class="panel panel-default">
-                                            <div class="panel-heading py-2 border-bottom border-top">
+                                            <div class="panel-heading py-2 border-bottom border-top border-dark">
                                                 <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#navigationBarEditor" @click="styleMenuCollapse">
                                                     <label><i class="far fa-arrow-alt-circle-down"></i>
-                                                    Barra di Navigazione</label>
+                                                    Menù</label>
                                                 </div>
                                             </div>
                                             <div id="navigationBarEditor" class="panel-collapse collapse stylepanelcollapse">
@@ -345,7 +354,7 @@
                                         </div>
                                         <!-- CARD -->
                                         <div class="panel panel-default">
-                                            <div class="panel-heading py-2 border-bottom">
+                                            <div class="panel-heading py-2 border-bottom border-dark">
                                                 <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#cardStyleEditor" @click="styleMenuCollapse">
                                                     <label>
                                                         <i class="far fa-arrow-alt-circle-down"></i>
@@ -399,7 +408,7 @@
                                     </div>
                                     <!-- BADGE -->
                                     <div class="panel panel-default">
-                                        <div class="panel-heading py-2 border-bottom">
+                                        <div class="panel-heading py-2 border-bottom border-dark">
                                             <div class="panel-title" data-toggle="collapse" rata-parent="#setStyle" href="#badgeStyleEditor" @click="styleMenuCollapse">
                                                 <label>
                                                     <i class="far fa-arrow-alt-circle-down"></i>
@@ -464,7 +473,7 @@
                                     </div>
                                     <!-- ALERT -->
                                     <div class="panel panel-default">
-                                        <div class="panel-heading py-2 border-bottom">
+                                        <div class="panel-heading py-2 border-bottom border-dark">
                                             <div class="panel-title" data-toggle="collapse" data-parent="#setStyle" href="#alertStyleEditor" @click="styleMenuCollapse">
                                                 <label>
                                                     <i class="far fa-arrow-alt-circle-down"></i>
@@ -550,10 +559,10 @@
                                     <div class="col-6">
                                         <div class="col-12 row m-0 p-0">
                                             <input name="fontUrlField" class="form-control row" type="text" readyonly v-model="gamedata.css_style.mainStyle['font-url']"
-                                            @input="setFontUrl()" data-toggle="tooltip" title="se il font non è disponibile inserire il link di google fonts">
+                                            @input="setFontUrl()" data-toggle="tooltip" title="se il font non è disponibile inserire il link a google fonts">
                                         </div>
                                         <small v-if="gamedata.css_style.mainStyle['font-url'] === ' '" class="row text-muted mt-2">
-                                            se il font non è disponibile inserire il link di google fonts
+                                            se il font non è disponibile inserire il link a google fonts
                                         </small>
                                     </div>
                                 </div>
@@ -605,7 +614,7 @@
                         </div>
                     </div>
                     <!-- caricamento e salvataggio stili -->
-                    <div class="container-fluid row border-top">
+                    <div class="container-fluid row border-top pt-1 pb-3">
                         <div id="saveload-style" class="col-md-8 row mt-3 ml-3">
                             <div class="col-md-6">
                                 <label for="select-style">Stili Salvati</label>
@@ -628,7 +637,7 @@
                     </div>
                 </div>
                 <!--PREVIEW-->
-                <div id="preview-container" class="container-fluid py-3 row border-bottom">
+                <div id="preview-container" class="container-fluid py-3 row border-bottom" :class="marginTop">
                     <div id="preview" :class="previewMode" :style="previewStyle" class="p-0">
                         <nav class="navbar" :class="navbarBootstrapStyle" :style="navbarStyle">
                             <div class="navbar-brand" :style="navbarBrandStyle">Menu
