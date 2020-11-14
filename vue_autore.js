@@ -486,11 +486,18 @@
                   }
                   //se abbiamo selezionato quest e posizione mettiamo quest in posizione
                   else {
-                      let tmp = order[this.swap_selected];
-                      order.splice(this.swap_selected,1);
-                      order.splice(pos,0,tmp);
-                      this.swap_selected = null;
-                      this.swapping = false;
+                      //se non sto provando a metterlo gia' dove si trova
+                      if(this.swap_selected != pos-1){
+                        let tmp = order[this.swap_selected];
+                        order.splice(this.swap_selected,1);
+                        order.splice(pos,0,tmp);
+                        this.swap_selected = null;
+                        this.swapping = false;
+                      }
+                      else{
+                        this.swap_selected = null;
+                        this.swapping = false;
+                      }
                   }
                 //terribile hack perche' per qualche ragione pure usando i set correttamente il computed non aggiorna
                 this.force_recompute = !this.force_recompute;
@@ -557,17 +564,22 @@
           },
           pasteStory: function() {
               num = this.previewdata.in_mainquest ? this.gamedata.mainQuest.length : this.gamedata.subQuests.length;
+              pos = this.previewdata.in_mainquest ? this.gamedata.author_order.main.indexOf(this.previewdata.currentQuest) : this.gamedata.author_order.sub.indexOf(this.previewdata.currentSub);
               if (this.previewdata.in_mainquest) {
                   if (this.questClipboard.main) {
-                      var quest = JSON.parse(JSON.stringify(this.renderQuest));
+                      var quest = JSON.parse(JSON.stringify(this.questClipboard.main));
                       quest.number = num;
                       this.gamedata.mainQuest.push(quest);
+                      this.gamedata.author_order.main.splice(pos+1,0,num);
+                      this.force_recompute = !this.force_recompute;
                   }
               } else {
                   if (this.questClipboard.sub) {
-                      var quest = JSON.parse(JSON.stringify(this.renderQuest));
+                      var quest = JSON.parse(JSON.stringify(this.questClipboard.sub));
                       quest.number = num;
                       this.gamedata.subQuests.push(quest);
+                      this.gamedata.author_order.sub.splice(pos+1,0,num);
+                      this.force_recompute = !this.force_recompute;
                   }
               }
           },
@@ -1290,9 +1302,9 @@
           //modifica la dimensione della preview
           previewMode: function() {
               if (this.mobileView)
-                  return "col-md-4";
+                  return "col-8";
               else
-                  return "col-md-8";
+                  return "col-12";
           },
           //oggetti presenti anche nel player
           navbarBootstrapStyle: function() {
