@@ -249,6 +249,7 @@ app.post('/clear/', (req, res) => {
     players_ans = {};
     players_deleted = [];
     uid_generator = {};
+    pnames = fs.readFileSync(path.join(__dirname + "/namelist.txt"), "utf-8").split(',');
     return res.status(200).send("Data cleared successfully.");
 });
 
