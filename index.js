@@ -56,6 +56,8 @@ var players_ans = {};
 var players_deleted = [];
 var uid_generator = {};
 
+var pnames = [];
+
 //##EXPRESS MIDDLEWARE AND OPTIONS##
 app.use(fileUpload());
 app.use(express.json());
@@ -118,7 +120,9 @@ app.get('/uid', (req, res) => {
     if (uid_generator[name] !== undefined) uid_generator[name]++;
     else uid_generator[name] = 0;
     uid = name + "$" + uid_generator[name];
-    console.log(`New user: ${uid}`);
+    let nindex = Math.floor(Math.random() * pnames.length);
+    let pname = pnames[nindex];
+    pnames.slice(nindex,1);
     players_data[uid] = {};
     players_chat[uid] = [];
     players_ans[uid] = {
@@ -126,7 +130,8 @@ app.get('/uid', (req, res) => {
         'answer': {},
         'feedback': ""
     };
-    return res.status(200).send(uid);
+    console.log(`New user: ${uid}, ${pname}`);
+    return res.status(200).send({ "id":uid, "pname":pname });
 });
 
 app.patch('/players/:player_id', (req, res) => {
@@ -168,6 +173,7 @@ app.get('/players/', (req, res) => {
 app.delete('/players/:player_id', (req, res) => {
     var id = req.params.player_id;
     players_deleted.push(id);
+    names.push(players_data[name]);
     delete players_data[id];
 });
 
@@ -443,5 +449,8 @@ app.delete('/styles/keyboards/', (req, res) => {
 
 //Server Start
 app.listen(port, (req, res) => {
+    //Parse available names from file...
+    pnames = fs.readFileSync(path.join(__dirname + "/namelist.txt"), "utf-8").split(',');
+
     console.log(`Listening at ${serverOpened ? 'https' : 'http'}://${serverOpened ? openhost : host}:${port}`)
 });

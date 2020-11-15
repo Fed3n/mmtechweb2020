@@ -118,6 +118,7 @@ var app = new Vue({
     data: {
         restored: false,
         user_id: "",
+        user_name: "",
         time_played: 0,
         time_inactive: 0, // entrambe in secondi
         score: 0,
@@ -154,7 +155,7 @@ var app = new Vue({
         }
     },
     mounted: function() {
-        this.updatesEvery5Seconds();
+        this.updateEverySecond();
         this.trackTimeEverySecond();
     },
     methods: {
@@ -181,7 +182,7 @@ var app = new Vue({
                 this.help_requested = true;
             }
         },
-        updatesEvery5Seconds: function() {
+        updateEverySecond: function() {
             let timerId = setInterval(() => {
                 this.sendGameData();
                 this.getGameData();
@@ -189,7 +190,7 @@ var app = new Vue({
                 if (this.waiting_feedback) this.checkAnsFeedback();
                 if (this.currentComponent && this.help_received)
                     this.$refs.requestedHelp.style.display = "none";
-            }, 5000);
+            }, 1000);
         },
         trackTimeEverySecond: function() {
             let timerId = setInterval(() => {
@@ -200,6 +201,7 @@ var app = new Vue({
         sendGameData: function() {
             axios.patch(`/players/${this.user_id}`, {
                     user_id: this.user_id,
+                    user_name: this.user_name,
                     in_mainquest: this.in_mainquest,
                     currentQuest: this.currentQuest,
                     currentSub: this.currentSub,
@@ -237,7 +239,8 @@ var app = new Vue({
         sendChatMsg: function() {
             if (this.chat_msg) {
                 msg = {
-                    sender: `utente_${this.user_id}`,
+                    sender_id: `utente_${this.user_id}`,
+                    sender: this.user_name,
                     text: this.chat_msg
                 };
                 axios.post(`chat/${this.user_id}`, msg);
@@ -358,7 +361,8 @@ var app = new Vue({
                                 story_name: this.metadata.name
                             }
                         }).then(res => {
-                            this.user_id = res.data;
+                            this.user_id = res.data.id;
+                            this.user_name = res.data.pname;
                             //Creo Cookies sull'utente
                             Cookies.set('logged', true, {
                                 expires: 1
