@@ -209,11 +209,11 @@
                         <button class="btn btn-secondary" v-on:click="copyStory">Copia</button>
                         <button class="btn btn-secondary" v-on:click="pasteStory">Incolla</button>
                     </div>
-                    <!--Accesso rapido alle quest usando v-for buttons-->
+                    <!--Accesso rapido alle quest usando v-for but  tons-->
                     <!--TODO Chiuderlo in un box con overflow a scorrimento maybe?-->
                     <div>
                         <label for="questlistcontainer">Accesso diretto:</label>
-                        <div name="questlistcontainer" class="container border-top pl-2 pr-0 mx-25 overflow-auto">
+                        <div name="questlistcontainer" class="container border-top pl-2 pr-0 pt-2 mx-25 overflow-auto">
                             <div class="pb-2">
                                 <button class="btn btn-secondary border-dark" data-toggle="tooltip" title="Aggiungi" :disabled="swapping" v-on:click="addNode(0)">+</button>
                                 <button class="btn border-dark" data-toggle="tooltip" title="Scambia" :class="swapping ? 'btn-danger' : 'color-interact'"  v-on:click="swapping = !swapping">
