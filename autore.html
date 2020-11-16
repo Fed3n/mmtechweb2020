@@ -85,7 +85,7 @@
                                         <option v-for="imgname in imagesList" :value="imgname">{{ imgname }}</option>
                                     </select>
                                     <div id="image-preview" v-if="selectedImage" class="col mt-2">
-                                        <img class="img-thumbnail" width="60%" :src="'story/' + metadata.name + '/images/' + selectedImage" :alt="'Preview of ' + selectedImage">
+                                        <img class="img-thumbnail" width="60%" :src="'story/' + metadata.name + '/images/' + selectedImage" :alt="'Anteprima di ' + selectedImage">
                                     </div>
                                 </div>
                             </div>
@@ -895,7 +895,7 @@
                                 </select>
                             </div>
                             <div id="image-preview" v-if="renderQuest.image.imguri" class="container p-1">
-                                <img class="img-thumbnail" :src="'story/' + metadata.name + '/images/' + renderQuest.image.imguri" :alt="'Preview of ' + renderQuest.image.imguri">
+                                <img class="img-thumbnail" :src="'story/' + metadata.name + '/images/' + renderQuest.image.imguri" :alt="'Anteprima di ' + renderQuest.image.imguri">
                             </div>
                             <div class="form-group">
                                 <label for="setImgAlt">Scegli un alt per l'immagine</label>
@@ -1151,7 +1151,7 @@
                                         <button class="btn btn-danger" v-on:click="rmGoto">Rimuovi</button>
                                     </div>
                                     <div v-if="renderQuest.type=='draw'" class="container-fluid pt-2">
-                                        <p>O clicka su un punto della preview e imposta un raggio per generare la risposta corretta dell'immagine.</p>
+                                        <p>O clicca su un punto dell'anteprima e imposta un raggio per generare la risposta corretta dell'immagine.</p>
                                         <div class="btn-group">
                                             <div class="form-group">
                                                 <label for="goto-radius">Raggio</label>
@@ -1184,7 +1184,7 @@
                                 <button class="btn color-interact" v-on:click="addSolution">Aggiungi</button>
                             </div>
                             <div v-if="renderQuest.type=='draw'" class="container-fluid pt-2">
-                                <p>O clicka su un punto della preview e imposta un raggio per generare la risposta corretta dell'immagine.</p>
+                                <p>O clicca su un punto dell'anteprima e imposta un raggio per generare la risposta corretta dell'immagine.</p>
                                 <div class="btn-group">
                                     <div class="form-group">
                                         <label for="goto-radius">Raggio</label>

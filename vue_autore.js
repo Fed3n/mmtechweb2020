@@ -1269,7 +1269,7 @@
             if (this.stylesPanelOpened)
                 return "mt-3 ml-3 pl-0";
             else
-                return "";
+                return "mt-3 ml-3";
           },
           //preview
           previewStyle: function() {
