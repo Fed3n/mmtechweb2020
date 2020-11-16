@@ -190,51 +190,60 @@
         </button>
         <div id="editor" class="row container-fluid collapse mt-2">
             <!--QUICK ACCESS/CREATION/REMOVAL-->
-            <div class="col-md-3 container pt-3 pb-3 border-right">
-                <!--Passaggio da schermata main a sub e viceversa-->
-                <div class="btn-group container-fluid pb-3">
-                    <button class="btn color-interact border" v-on:click="switchMainSub" :disabled="previewdata.in_mainquest">Main</button>
-                    <button class="btn color-interact border" v-on:click="switchMainSub" :disabled="!previewdata.in_mainquest">Sub</button>
+            <div class="col-md-3 container border-right p-0 pr-2">
+                <!--Messaggio di spiegazione-->
+                <div class="container container-fluid color-static text-light rounded mx-0 my-0 px-4 py-4">
+                    <h3>Crea la tua Storia</h3>
+                    <p>Una storia è composta da una serie di attività. Un'attività può essere principale (MainQuest) o secondaria (Subquest).<br><br>
+                       Puoi utilizzare le MainQuest per creare il flusso principale della storia; puoi utilizzare le Subquest per inserire obiettivi secondari; questi possono essere completati
+                       solo in determinati punti della storia ed il loro completamento aiuta il giocatore oppure gli permette di proseguire</p>
                 </div>
-                <!--Aggiunta nuovo nodo main/sub-->
-                <div class="btn-group pt-1 pb-1">
-                    <button class="btn btn-secondary" v-on:click="copyStory">Copia</button>
-                    <button class="btn btn-secondary" v-on:click="pasteStory">Incolla</button>
-                </div>
-                <!--Accesso rapido alle quest usando v-for buttons-->
-                <!--TODO Chiuderlo in un box con overflow a scorrimento maybe?-->
-                <div>
-                    <label for="questlistcontainer">Accesso diretto:</label>
-                    <div name="questlistcontainer" class="container border-top p-2 mx-25 overflow-auto">
-                        <div class="pb-2">
-                            <button class="btn btn-secondary border-dark" data-toggle="tooltip" title="Aggiungi" :disabled="swapping" v-on:click="addNode(0)">+</button>
-                            <button class="btn border-dark" data-toggle="tooltip" title="Scambia" :class="swapping ? 'btn-danger' : 'color-interact'"  v-on:click="swapping = !swapping">
-                                <i v-if="!swapping" class="fas fa-arrows-alt-h"></i>
-                                <i v-else class="fas fa-times"></i>
-                            </button>
-                            <div v-if="swapping && (swap_selected !== null)" class="container m-1">
-                                <button class="btn btn-sm btn-warning" data-toggle="tooltip" title="Scambia" v-on:click="swapQuests(0,false)"><i class="fas fa-arrow-right"></i></button>
-                            </div>
-                        </div>
-                        <div v-for="(quest,pos) in questList" class="container-fluid pb-3">
-                            <div class="row pb-2">
-                                <div class="btn-group col-10">
-                                    <button class="btn btn-block border border-dark" :class="swap_selected==pos ? 'btn-warning' : 'btn-light'"
-                                    v-on:click="!swapping ? (previewdata.in_mainquest ? jumpToQuest('main',quest.number) : jumpToQuest('sub',quest.number)) :
-                                    (swapQuests(pos,true))">
-                                        {{ quest.title || 'Quest'+quest.number }}
-                                    </button>
-                                    <button class="btn btn-danger border-dark" :disabled="swapping" data-toggle="tooltip" title="Elimina"
-                                    v-on:click="previewdata.in_mainquest ? rmMainNode(quest.number) : rmSubNode(quest.number)">X</button>
-                                    <button class="btn btn-secondary border-dark" data-toggle="tooltip" title="Aggiungi" :disabled="swapping" v-on:click="addNode(pos+1)">+</button>
-                                </div>
-                                <div class="form-check ml-1" id="subquestadd" v-if="!previewdata.in_mainquest">
-                                    <input class="form-check-input" :name="'sub ' + quest.number" type="checkbox" :value="quest.number"
-                                    v-model="previewdata.completedSubs" data-toggle="tooltip" title="Completa">
+                <div class="container pt-3 pb-3">
+                    <!--Passaggio da schermata main a sub e viceversa-->
+                    <div class="btn-group container-fluid pb-3">
+                        <button class="btn color-interact border" v-on:click="switchMainSub" :disabled="previewdata.in_mainquest">Main</button>
+                        <button class="btn color-interact border" v-on:click="switchMainSub" :disabled="!previewdata.in_mainquest">Sub</button>
+                    </div>
+                    <!--Aggiunta nuovo nodo main/sub-->
+                    <div class="btn-group pt-1 pb-1">
+                        <button class="btn btn-secondary" v-on:click="copyStory">Copia</button>
+                        <button class="btn btn-secondary" v-on:click="pasteStory">Incolla</button>
+                    </div>
+                    <!--Accesso rapido alle quest usando v-for buttons-->
+                    <!--TODO Chiuderlo in un box con overflow a scorrimento maybe?-->
+                    <div>
+                        <label for="questlistcontainer">Accesso diretto:</label>
+                        <div name="questlistcontainer" class="container border-top pl-2 pr-0 mx-25 overflow-auto">
+                            <div class="pb-2">
+                                <button class="btn btn-secondary border-dark" data-toggle="tooltip" title="Aggiungi" :disabled="swapping" v-on:click="addNode(0)">+</button>
+                                <button class="btn border-dark" data-toggle="tooltip" title="Scambia" :class="swapping ? 'btn-danger' : 'color-interact'"  v-on:click="swapping = !swapping">
+                                    <i v-if="!swapping" class="fas fa-arrows-alt-h"></i>
+                                    <i v-else class="fas fa-times"></i>
+                                </button>
+                                <div v-if="swapping && (swap_selected !== null)" class="container m-1">
+                                    <button class="btn btn-sm btn-warning" data-toggle="tooltip" title="Scambia" v-on:click="swapQuests(0,false)"><i class="fas fa-arrow-right"></i></button>
                                 </div>
                             </div>
-                            <div v-if="swapping && (swap_selected !== null)" class="row">
-                                <button class="btn btn-sm btn-warning" v-on:click="swapQuests(pos+1,false)"><i class="fas fa-arrow-right"></i></button>
+                            <div v-for="(quest,pos) in questList" class="container-fluid pb-3">
+                                <div class="row pb-2">
+                                    <div class="btn-group col-10">
+                                        <button class="btn btn-block border border-dark" :class="swap_selected==pos ? 'btn-warning' : 'btn-light'"
+                                        v-on:click="!swapping ? (previewdata.in_mainquest ? jumpToQuest('main',quest.number) : jumpToQuest('sub',quest.number)) :
+                                        (swapQuests(pos,true))">
+                                            {{ quest.title || 'Quest'+quest.number }}
+                                        </button>
+                                        <button class="btn btn-danger border-dark" :disabled="swapping" data-toggle="tooltip" title="Elimina"
+                                        v-on:click="previewdata.in_mainquest ? rmMainNode(quest.number) : rmSubNode(quest.number)">X</button>
+                                        <button class="btn btn-secondary border-dark" data-toggle="tooltip" title="Aggiungi" :disabled="swapping" v-on:click="addNode(pos+1)">+</button>
+                                    </div>
+                                    <div class="form-check ml-1" id="subquestadd" v-if="!previewdata.in_mainquest">
+                                        <input class="form-check-input" :name="'sub ' + quest.number" type="checkbox" :value="quest.number"
+                                        v-model="previewdata.completedSubs" data-toggle="tooltip" title="spunta per rendere la subQuest completata">
+                                    </div>
+                                </div>
+                                <div v-if="swapping && (swap_selected !== null)" class="row">
+                                    <button class="btn btn-sm btn-warning" v-on:click="swapQuests(pos+1,false)"><i class="fas fa-arrow-right"></i></button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1117,7 +1126,7 @@
                         <!--GOTOS in caso di mainquest-->
                         <div id="goto-management" v-if="previewdata.in_mainquest">
                             <div v-if="previewdata.in_mainquest">
-                                <p class="alert-primary rounded p-1">Se nessuna risposta è corretta verrà scelta automaticamente l'ultima</p>
+                                <p class="color-static-light rounded m-1 mb-3 pl-3 p-2">Se nessuna risposta è corretta verrà scelta automaticamente l'ultima</p>
                                 <div class="container-fluid border-bottom pb-4">
                                     <h2 class="color-static text-light rounded p-2">Destinazioni di Default</h2>
                                     <div class="form-group" v-for="opt in renderQuest.goto">
