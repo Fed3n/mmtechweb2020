@@ -69,7 +69,7 @@
             <div class="card player-card" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
                 <div class="card-header h-10" :style="cardLimitStyle">
                     <h3 id="questname" ref="questname" tabindex="-1">
-                        <button type="button" class="btn btn-lg btn-block border willdisabled" :class="mainquestButtonBootstrapStyle" :style="removePredefinedStylesCard" data-toggle="collapse" data-target="#rendercard" v-on:click="chatAppear(false)">
+                        <button type="button" ref="questnamebutton" class="btn btn-lg btn-block border willdisabled" :class="mainquestButtonBootstrapStyle" :style="removePredefinedStylesCard" data-toggle="collapse" data-target="#rendercard" v-on:click="chatAppear(false)">
                             {{ renderQuest ? (renderQuest.title || "renderQuest.number") : "" }}
                         </button>
                     </h3>
