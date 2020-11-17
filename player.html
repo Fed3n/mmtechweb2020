@@ -100,8 +100,8 @@
                     </div>
                     <div v-if="renderQuest && renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
                         <!--Bottone submit non c'è se siamo in un ending-->
-                        <button id="submit" v-if="!(renderQuest.type == 'ending')" ref="submitbutton" class="btn-default willdisabled" :class="submitBootstrapStyle" :disabled="submitDisabled" :style="submitStyle" v-on:click="in_mainquest? submitMain() : submitSub()">
-                            Submit
+                        <button id="submit" v-if="!(renderQuest.type == 'ending')" ref="submitbutton" type="button" class="btn willdisabled" :class="submitBootstrapStyle" :disabled="submitDisabled" :style="submitStyle" v-on:click="in_mainquest? submitMain() : submitSub()">
+                            Conferma
                         </button>
                     </div>
                 </div>
