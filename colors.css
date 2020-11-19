@@ -12,6 +12,11 @@
     color: white;
 }
 
+.color-static-light {
+    background-color: #b6dafc;
+    color: #404040;
+}
+
 .color-expand {
     background-color: #1565C0;
     color: white;

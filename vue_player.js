@@ -168,6 +168,7 @@ var app = new Vue({
                 if (this.bool_inchat) {
                     this.bool_inchat = false;
                     node = "Chat";
+                    this.$refs.questnamebutton.click();
                 } else if ((!this.bool_inchat && fromHelp)) {
                     this.bool_inchat = true;
                     node = "X";
