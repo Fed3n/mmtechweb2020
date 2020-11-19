@@ -228,7 +228,9 @@ var app = new Vue({
             };
             axios.get('/players/', uid).then(response => {
                 for (let key in response.data) {
-                    this[key] = response.data[key];
+                    //Se arriva un help msg vuoto non sovrascrivo il vecchio
+                    if(key == "help_message" && response.data[key] != "")
+                        this[key] = response.data[key];
                 }
                 if (this.help_message !== "") {
                     this.help_received = true;

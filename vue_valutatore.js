@@ -24,11 +24,11 @@ var app = new Vue({
     methods: {
         updatesEvery5Seconds: function() {
             let timerId = setInterval(() => {
-                this.patchPlayersData();
                 this.getPlayersData();
+                this.patchPlayersData();
                 this.getCurrentChats();
                 this.getPlayerAnswers();
-            }, 5000);
+            }, 1000);
         },
         getPlayersData: function() {
             axios.get("/players/").then(response => {
@@ -45,6 +45,7 @@ var app = new Vue({
                     if (this.players_data[id].help_received && this.players_data[id].help_message != "") {
                         this.players_data_changing[id] = this.players_data_changing[id] || {};
                         this.players_data_changing[id].help_sent = false;
+                        this.players_data_changing[id].help_message = "";
                     }
                     // Se un giocatore ha finito, faccio partire un timer che lo rimuove dopo 2 minuti
                     if (this.players_data[id].finished === true) {
