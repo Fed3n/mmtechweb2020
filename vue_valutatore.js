@@ -13,7 +13,8 @@ var app = new Vue({
             in_mainquest: true,
             currentQuest: 0,
             currentSub: 0
-        }
+        },
+        activeStory: null
     },
     mounted: function() {
         this.updatesEvery5Seconds();
@@ -176,6 +177,11 @@ var app = new Vue({
         getQuestData: function(story) {
             if (this.previewdata.in_mainquest) return this.ongoing_stories[story].mainQuest[this.previewdata.currentQuest];
             else return this.ongoing_stories[story].subQuests[this.previewdata.currentSub];
+        },
+        setActiveStory: function(story) {
+          this.activeStory = story;
+          if (story !=== "this.activeStories[0]")
+            this.$refs.story.href = "#"+story;
         }
     },
     computed: {

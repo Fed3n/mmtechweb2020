@@ -28,8 +28,8 @@
             </div>
         </div>
         <div class="row container-fluid mt-3">
-            <div class="container-fluid col-md-3 border-right">
-                <div class="d-flex justify-content-center mb-2 mt-0">
+            <div class="container-fluid col-md-3 border-right pl-2 pr-3">
+                <div class="d-flex justify-content-center my-2">
                     <h2 class="font-weight-bold">Storie in gioco</h2>
                 </div>
                 <ul class="nav nav-pills col-12 d-flex justify-content-center p-0" role="tablist">
@@ -39,17 +39,14 @@
                       <div class="col-8"><button class="btn color-interact border btn-block" v-on:click="switchView(true)" :disabled="mobileView"></button></div>
                   </div-->
 
-                   //SISTEMA I MARGINI PER FARLO UN PO PIU' BELLO (Margine DESTRO 2)
-                   //FAI DISABLED DEL BOTTONE selezionato
-
                     <li class="nav-item col-12 m-0 p-0">
-                        <button class="nav-link active btn color-interact border btn-block"
+                        <button class="nav-link active btn color-interact border btn-block" :disabled="activeStories[0] == activeStory" @click="setActiveStory(activeStories[0])"
                         :id="activeStories[0] + 'tab'" :href="'#' + activeStories[0]" data-toggle="tab" role="tab" :aria-controls="activeStories[0]" aria-selected="true">
                         {{ activeStories[0] }}</button>
                     </li>
                     <li v-for="story in activeStories.slice(1)" class="nav-item col-12 m-0 p-0">
-                        <button class="nav-link btn color-interact border btn-block"
-                        :id="story + 'tab'" :href="'#' + story" data-toggle="tab" role="tab" :aria-controls="story" aria-selected="false">{{ story }}</button>
+                        <button class="nav-link btn color-interact border btn-block" :disabled="story == activeStory" @click="setActiveStory(story)"
+                        :id="story + 'tab'" ref="story" data-toggle="tab" role="tab" :aria-controls="story" aria-selected="false">{{ story }}</button>
                     </li>
                 </ul>
             </div>
