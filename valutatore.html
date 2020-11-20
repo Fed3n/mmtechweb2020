@@ -52,8 +52,6 @@
                           <div class="table-title bg-primary text-white rounded">
                               <div class="row justify-content-around py-2">
                                   <h1>Giocatori attivi</h1>
-                                  <button v-if="players_data" @click="saveJson" class="btn btn-light"><span class="material-icons">&#xE24D;</span>Esporta statistiche in JSON</button>
-                                  <button class="btn btn-danger" @click="clearAllData">Cancella Dati</button>
                               </div>
                           </div>
                           <table v-if="players_data" class="table table-striped table-hover">
@@ -84,9 +82,6 @@
                           <div class="table-title bg-primary text-white rounded">
                               <div class="row justify-content-around py-2">
                                   <h1>Giocatori attivi</h1>
-                                  <div class="py-1">
-                                      <button v-if="players_data" @click="saveJson" class="btn btn-light"><span class="material-icons">&#xE24D;</span>Esporta statistiche in JSON</button>
-                                  </div>
                               </div>
                           </div>
                           <table v-if="players_data" class="table table-striped table-hover">
@@ -110,7 +105,14 @@
                       </div><br>
                   </div>
               </div>
-
+              <!-- bottoni cancella e scarica dati -->
+              <div class="d-flex justify-content-end">
+                  <div class="btn-group mx-2">
+                      <button v-if="players_data" class="col btn color-interact" @click="saveJson" data-toggle="tooltip" title="scarica statistiche in formato JSON">
+                          ESPORTA STATISTICHE</button>
+                      <button class="col btn btn-danger" @click="clearAllData" data-toggle="tooltip" title="rimuovi tutti i dati raccolti finora">CANCELLA DATI</button>
+                  </div>
+              </div>
               <!-- seconda parte con la preview e la chat -->
               <div class="container-fluid mt-5">
 
