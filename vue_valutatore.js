@@ -14,7 +14,7 @@ var app = new Vue({
             currentQuest: 0,
             currentSub: 0
         },
-        activeStory: null
+        currentStory: null
     },
     mounted: function() {
         this.updatesEvery5Seconds();
@@ -177,11 +177,6 @@ var app = new Vue({
         getQuestData: function(story) {
             if (this.previewdata.in_mainquest) return this.ongoing_stories[story].mainQuest[this.previewdata.currentQuest];
             else return this.ongoing_stories[story].subQuests[this.previewdata.currentSub];
-        },
-        setActiveStory: function(story) {
-          this.activeStory = story;
-          if (story !=== "this.activeStories[0]")
-            this.$refs.story.href = "#"+story;
         }
     },
     computed: {
@@ -233,6 +228,6 @@ var app = new Vue({
                 stories.add(playerID.split("$")[0]); // playerID = [story, id]
             }
             return Array.from(stories);
-        }
+       }
     }
 });
