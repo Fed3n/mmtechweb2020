@@ -45,42 +45,12 @@
                 </ul>
             </div>
             <div class="col-md-9 tab-content pl-3 pr-0">
-              <!-- Tab della prima storia------------------------------------------------------------------------------------------------------------------>
-              <div class="tab-pane fade show active" :id="activeStories[0]" :aria-labelledby="activeStories[0] + 'tab'" role="tabpanel">
+              <!-- Tab con le informazioni dei giocatori------------------------------------------------------------------------------------------------------------------>
+              <div v-for="story in activeStories" :class="(story == activeStories[0]) ? 'show active' : ' '" class="tab-pane fade" :id="story" :aria-labelledby="story + 'tab'" role="tabpanel">
                   <div class="container container-fluid col-12 p-0">
                       <div class="table-responsive table-wrapper">
                           <div class="container container-fluid color-static text-light rounded mx-0 my-0 py-3 pl-4 col-12">
                               <h2 class="m-0">Giocatori attivi</h2>
-                          </div>
-                          <table v-if="players_data" class="table table-striped table-hover">
-                              <thead>
-                                  <tr>
-                                      <th v-for="(value, key) in firstPlayer">{{ key }}</th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                  <tr v-for="player in players_data_shown_from_story[activeStories[0]]">
-                                      <td v-for="value in player">{{ value }}</td>
-                                      <td v-if="players_data[player.user_id].finished === false" class="float-right">
-                                          <div v-if="players_data[player.user_id].time_inactive > 60" class="badge badge-warning">Bloccato da tempo</div>
-                                          <div v-if="players_data[player.user_id].help_requested === true" class="badge badge-warning">Ha richiesto aiuto</div>
-                                          <button type="button" class="btn btn-sm btn-primary" @click="sendHelp(player.user_id)">Aiuta il giocatore</button>
-                                      </td>
-                                      <td v-else class="badge badge-success float-right">Ha finito!</td>
-                                  </tr>
-                              </tbody>
-                          </table>
-                      </div><br>
-                  </div>
-              </div>
-              <!-- Tab per le storie oltre la prima selezionata ------------------------------------------------------------------------------------------>
-              <div v-for="story in activeStories.slice(1)" class="tab-pane fade" :id="story" :aria-labelledby="story + 'tab'" role="tabpanel">
-                  <div class="container">
-                      <div class="table-responsive table-wrapper">
-                          <div class="table-title bg-primary text-white rounded">
-                              <div class="row justify-content-around py-2">
-                                  <h1>Giocatori attivi</h1>
-                              </div>
                           </div>
                           <table v-if="players_data" class="table table-striped table-hover">
                               <thead>
@@ -276,9 +246,6 @@
           </div>
         </div>
     <!--finito il blocco delle tab ------------------------------------------------------------------------------------->
-       <div>
-         <h1>{{ currentStory }}</h1>
-       </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

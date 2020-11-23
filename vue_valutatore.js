@@ -16,6 +16,12 @@ var app = new Vue({
         },
         currentStory: null
     },
+    created: function(){
+        this.patchPlayersData();
+        this.getPlayersData();
+        this.getCurrentChats();
+        this.getPlayerAnswers();
+    },
     mounted: function() {
         this.updatesEvery5Seconds();
     },
@@ -59,6 +65,7 @@ var app = new Vue({
                     }
                 }
             });
+            if (!this.currentStory) this.currentStory = this.activeStories[0];
         },
         clearAllData: function() {
             let choice = confirm("Vuoi davvero cancellare tutti i dati di gioco? La pagina sarà ricaricata.");
