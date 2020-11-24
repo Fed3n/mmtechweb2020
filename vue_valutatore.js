@@ -65,7 +65,6 @@ var app = new Vue({
                     }
                 }
             });
-            if (!this.currentStory) this.currentStory = this.activeStories[0];
         },
         clearAllData: function() {
             let choice = confirm("Vuoi davvero cancellare tutti i dati di gioco? La pagina sarà ricaricata.");
@@ -234,6 +233,8 @@ var app = new Vue({
             for (let playerID in this.players_data) {
                 stories.add(playerID.split("$")[0]); // playerID = [story, id]
             }
+            //inizializzo currentStory
+            if (!this.currentStory) this.currentStory = Array.from(stories)[0];
             return Array.from(stories);
        }
     }

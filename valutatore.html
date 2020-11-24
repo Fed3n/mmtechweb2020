@@ -68,7 +68,16 @@
                                       <td>{{ player.in_mainquest ? "mainQuest" : "Subquest"}}</td>
                                       <td v-if="player.in_mainquest">{{ ongoing_stories[currentStory] ? ongoing_stories[currentStory].mainQuest[player.currentQuest].title : " "}}</td>
                                       <td v-if="!player.in_mainquest">{{ ongoing_stories[currentStory] ? ongoing_stories[currentStory].subQuests[player.currentSub].title : " "}}</td>
-                                      <td>{{ player.completedSubs.length }}</td>
+                                      <td class="row">
+                                          <label class="">{{ player.completedSubs.length }}</label>
+                                          <div v-if="player.completedSubs.length > 0" class="dropdown">
+                                              <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+                                              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                <a v-for="sub in player.completedSubs" class="dropdown-item" href="#">
+                                                    {{ ongoing_stories[currentStory] ? ongoing_stories[currentStory].subQuests[sub].title : " " }}</a>
+                                              </div>
+                                          </div>
+                                      </td>
                                       <!-- banner di avvertimento -->
                                       <td v-if="players_data[player.user_id].finished === false" class="float-right">
                                           <div v-if="players_data[player.user_id].time_inactive > 60" class="badge badge-warning">Bloccato da tempo</div>
@@ -83,7 +92,7 @@
                   </div>
               </div>
               <!-- bottoni cancella e scarica dati -->
-              <div class="d-flex justify-content-end">
+              <div class="d-flex justify-content-end mr-4">
                   <div class="btn-group mx-2">
                       <button v-if="players_data" class="col btn color-interact" @click="saveJson" data-toggle="tooltip" title="scarica statistiche in formato JSON">
                           ESPORTA STATISTICHE</button>
