@@ -59,6 +59,7 @@
                                       <th>Tipo di Quest</th>
                                       <th>Nome della Quest</th>
                                       <th>Subquest completate</th>
+                                      <th></th>
                                   </tr>
                               </thead>
                               <tbody>
@@ -68,13 +69,16 @@
                                       <td>{{ player.in_mainquest ? "mainQuest" : "Subquest"}}</td>
                                       <td v-if="player.in_mainquest">{{ ongoing_stories[currentStory] ? ongoing_stories[currentStory].mainQuest[player.currentQuest].title : " "}}</td>
                                       <td v-if="!player.in_mainquest">{{ ongoing_stories[currentStory] ? ongoing_stories[currentStory].subQuests[player.currentSub].title : " "}}</td>
-                                      <td class="row">
-                                          <label class="">{{ player.completedSubs.length }}</label>
-                                          <div v-if="player.completedSubs.length > 0" class="dropdown">
-                                              <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
-                                              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                <a v-for="sub in player.completedSubs" class="dropdown-item" href="#">
-                                                    {{ ongoing_stories[currentStory] ? ongoing_stories[currentStory].subQuests[sub].title : " " }}</a>
+                                      <td>
+                                          <div class="d-inline-flex">
+                                              <label class="">{{ player.completedSubs.length }}</label>
+                                              <div v-if="player.completedSubs.length > 0" class="dropdown">
+                                                  <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+                                                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                    <a v-for="sub in player.completedSubs" class="dropdown-item" href="#">
+                                                        {{ ongoing_stories[currentStory] ? ( ongoing_stories[currentStory].subQuests[sub] ?
+                                                          ongoing_stories[currentStory].subQuests[sub].title : " " ) : " " }}</a>
+                                                  </div>
                                               </div>
                                           </div>
                                       </td>
@@ -84,7 +88,7 @@
                                           <div v-if="players_data[player.user_id].help_requested === true" class="badge badge-warning">Ha richiesto aiuto</div>
                                           <button type="button" class="btn btn-sm btn-primary" @click="sendHelp(player.user_id)">Aiuta il giocatore</button>
                                       </td>
-                                      <td v-else class="badge badge-success float-right">Ha finito!</td>
+                                      <td v-else class="badge badge-success">Ha finito!</td>
                                   </tr>
                               </tbody>
                           </table>
