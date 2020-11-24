@@ -40,3 +40,16 @@
     width: 80%;
     float: right;
 }
+
+.pre-button {
+    box-shadow: none !important;
+}
+
+.pre:active {
+    background-color: inherit;
+    color: inherit;
+}
+
+.pre:hover {
+    background-color: inherit;
+}

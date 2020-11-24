@@ -52,7 +52,7 @@
                           <div class="container container-fluid color-static text-light rounded mx-0 my-0 py-3 pl-4 col-12">
                               <h2 class="m-0">Giocatori attivi</h2>
                           </div>
-                          <table v-if="players_data" class="table table-striped table-hover">
+                          <table v-if="players_data" class="table table-striped">
                               <thead>
                                   <tr>
                                       <th>Nome del Giocatore</th>
@@ -70,17 +70,39 @@
                                       <td v-if="player.in_mainquest">{{ ongoing_stories[currentStory] ? ongoing_stories[currentStory].mainQuest[player.currentQuest].title : " "}}</td>
                                       <td v-if="!player.in_mainquest">{{ ongoing_stories[currentStory] ? ongoing_stories[currentStory].subQuests[player.currentSub].title : " "}}</td>
                                       <td>
-                                          <div class="d-inline-flex">
-                                              <label class="">{{ player.completedSubs.length }}</label>
-                                              <div v-if="player.completedSubs.length > 0" class="dropdown">
-                                                  <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
-                                                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                    <a v-for="sub in player.completedSubs" class="dropdown-item" href="#">
-                                                        {{ ongoing_stories[currentStory] ? ( ongoing_stories[currentStory].subQuests[sub] ?
-                                                          ongoing_stories[currentStory].subQuests[sub].title : " " ) : " " }}</a>
-                                                  </div>
-                                              </div>
+                                          <!--div class="d-inline-flex"-->
+
+                                            <!--
+
+                                            data-flip="false"
+                                          -->
+
+                                          <div v-if="player.completedSubs.length > 0" class="btn-group dropup">
+                                              <button type="button" class="btn btn-default dropdown-toggle pre-button" data-toggle="dropdown">
+                                                  {{ player.completedSubs.length }}&nbsp</button>
+                                              <ul class="dropdown-menu">
+                                                  <li v-for="sub in player.completedSubs" class="dropdown-item pre">
+                                                      {{ ongoing_stories[currentStory] ? ( ongoing_stories[currentStory].subQuests[sub] ?
+                                                        ongoing_stories[currentStory].subQuests[sub].title : " " ) : " " }}</li>
+                                              </ul>
                                           </div>
+                                          <div v-else>
+                                              <label class="ml-3">{{ player.completedSubs.length }}</label>
+                                          </div>
+
+                                            <!--
+                                              <label class="mr-2">{{ player.completedSubs.length }}</label>
+                                              <div v-if="player.completedSubs.length > 0" class="dropdown">
+                                                  <button class="btn btn-light dropdown-toggle color-dropdown" type="button" data-toggle="dropdown">
+                                                      <span class="caret"></button>
+                                                  <ul class="dropdown-menu dropdown-menu-left">
+                                                    <li v-for="sub in player.completedSubs" class="dropdown-item">
+                                                        <label>{{ ongoing_stories[currentStory] ? ( ongoing_stories[currentStory].subQuests[sub] ?
+                                                          ongoing_stories[currentStory].subQuests[sub].title : " " ) : " " }}</label>
+                                                    </li>
+                                                  </ul>
+                                              </div>
+                                          </div-->
                                       </td>
                                       <!-- banner di avvertimento -->
                                       <td v-if="players_data[player.user_id].finished === false" class="float-right">
