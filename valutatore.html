@@ -52,7 +52,7 @@
                           <div class="container container-fluid color-static text-light rounded mx-0 my-0 py-3 pl-4 col-12">
                               <h2 class="m-0">Giocatori attivi</h2>
                           </div>
-                          <table v-if="players_data" class="table table-striped">
+                          <table v-if="players_data" class="table table-striped border-bottom">
                               <thead>
                                   <tr>
                                       <th>Nome del Giocatore</th>
@@ -70,7 +70,8 @@
                                       <td>{{ player.in_mainquest ? "mainQuest" : "Subquest"}}</td>
                                       <td v-if="player.in_mainquest">{{ ongoing_stories[currentStory] ? ongoing_stories[currentStory].mainQuest[player.currentQuest].title : " "}}</td>
                                       <td v-if="!player.in_mainquest">{{ ongoing_stories[currentStory] ? ( ongoing_stories[currentStory].subQuests[player.currentSub] ?
-                                            ongoing_stories[currentStory].subQuests[player.currentSub].title : " " ) : " " }}</td>
+                                            ongoing_stories[currentStory].subQuests[player.currentSub].title : " " ) : " " }}
+                                      </td>
                                       <td>
                                           <div v-if="player.completedSubs.length > 0" class="btn-group dropup">
                                               <button type="button" class="btn btn-default dropdown-toggle pre-button" data-toggle="dropdown">
@@ -78,7 +79,8 @@
                                               <ul class="dropdown-menu">
                                                   <li v-for="sub in player.completedSubs" class="dropdown-item pre">
                                                       {{ ongoing_stories[currentStory] ? ( ongoing_stories[currentStory].subQuests[sub] ?
-                                                        ongoing_stories[currentStory].subQuests[sub].title : " " ) : " " }}</li>
+                                                        ongoing_stories[currentStory].subQuests[sub].title : " " ) : " " }}
+                                                  </li>
                                               </ul>
                                           </div>
                                           <div v-else>
@@ -87,12 +89,13 @@
                                       </td>
                                       <!-- banner di avvertimento -->
                                       <td v-if="players_data[player.user_id].finished === false">
-
                                           <div class="container-fluid p-0">
                                               <div class="col-11 p-0" v-if="players_data[player.user_id].time_inactive > 60">
-                                                  <button class="btn color-warning border btn-block pre-button p-1">Bloccato da tempo</button></div>
+                                                  <button class="btn color-warning border btn-block pre-button p-1">Bloccato da tempo</button>
+                                              </div>
                                               <div class="col-11 p-0" v-if="players_data[player.user_id].help_requested === true">
-                                                  <button class="btn color-warning border btn-block pre-button p-1">Ha richiesto aiuto</button></div>
+                                                  <button class="btn color-warning border btn-block pre-button p-1">Ha richiesto aiuto</button>
+                                              </div>
                                           </div>
                                       </td>
                                       <!-- serve per la tabulazione corretta-->
@@ -106,7 +109,7 @@
                                   </tr>
                               </tbody>
                           </table>
-                      </div><br>
+                      </div>
                   </div>
               </div>
               <!-- bottoni cancella e scarica dati -->
