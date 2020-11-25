@@ -59,6 +59,7 @@
                                       <th>Tipo di Quest</th>
                                       <th>Nome della Quest</th>
                                       <th>Subquest completate</th>
+                                      <th>Segnalazioni</th>
                                       <th></th>
                                   </tr>
                               </thead>
@@ -85,12 +86,23 @@
                                           </div>
                                       </td>
                                       <!-- banner di avvertimento -->
-                                      <td v-if="players_data[player.user_id].finished === false" class="float-right">
-                                          <div v-if="players_data[player.user_id].time_inactive > 60" class="badge badge-warning">Bloccato da tempo</div>
-                                          <div v-if="players_data[player.user_id].help_requested === true" class="badge badge-warning">Ha richiesto aiuto</div>
-                                          <button type="button" class="btn btn-sm btn-primary" @click="sendHelp(player.user_id)">Aiuta il giocatore</button>
+                                      <td v-if="players_data[player.user_id].finished === false">
+
+                                          <div class="container-fluid p-0">
+                                              <div class="col-11 p-0" v-if="players_data[player.user_id].time_inactive > 60">
+                                                  <button class="btn color-warning border btn-block pre-button p-1">Bloccato da tempo</button></div>
+                                              <div class="col-11 p-0" v-if="players_data[player.user_id].help_requested === true">
+                                                  <button class="btn color-warning border btn-block pre-button p-1">Ha richiesto aiuto</button></div>
+                                          </div>
                                       </td>
-                                      <td v-else class="badge badge-success">Ha finito!</td>
+                                      <!-- serve per la tabulazione corretta-->
+                                      <td v-else></td>
+                                      <td v-if="players_data[player.user_id].finished === false">
+                                          <button class="btn color-interact" @click="sendHelp(player.user_id)">Aiuta il giocatore</button>
+                                      </td>
+                                      <td v-else>
+                                          <button class="btn pre-button color-ended">Ha finito!</button>
+                                      </td>
                                   </tr>
                               </tbody>
                           </table>
