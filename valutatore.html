@@ -245,7 +245,7 @@
                 </div>
 
                 <!--
-                     TODO DA FARE !!!!!!!!------------------------------------------------------------------------------------
+                     TODO DA FARE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                      aggiungi il segnale di messaggio non ancora visto
                      sistema stilisticamente un pò meglio la struttura dei messaggi, così sono poco guardabili-->
 
@@ -263,9 +263,9 @@
                             <div id="chatmessagecontainer">
                                 <div v-if="players_chat[current_chat_id]" v-for="msg in players_chat[current_chat_id]" class="chatmessage" v-bind:class="{ 'float-left' : (msg.sender != 'Valutatore') }">
                                     <div class="card">
-                                        <div class="card-body">
-                                            <div class="card-subtitle text-muted">{{ msg.sender }}</div>
-                                            <div class="card-text">{{ msg.text }}</div>
+                                        <div class="card-body p-2">
+                                            <div class="card-subtitle text-muted px-1 pt-1 pb-0">{{ msg.sender }}</div>
+                                            <div class="card-text px-1 pb-1 pt-0">{{ msg.text }}</div>
                                         </div>
                                     </div>
                                 </div>
