@@ -9,6 +9,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link href="extvalutatore.css" rel="stylesheet">
     <link href="colors.css" rel="stylesheet">
     <title>Ambiente Valutatore</title>
@@ -45,243 +46,244 @@
                 </ul>
             </div>
             <div class="col-md-9 tab-content pl-3 pr-0">
-              <!-- Tab con le informazioni dei giocatori------------------------------------------------------------------------------------------------------------------>
-              <div v-for="story in activeStories" :class="(story == activeStories[0]) ? 'show active' : ' '" class="tab-pane" :id="story" :aria-labelledby="story + 'tab'" role="tabpanel">
-                  <div class="container container-fluid col-12 p-0">
-                      <div class="table-responsive table-wrapper">
-                          <div class="container container-fluid color-static text-light rounded mx-0 my-0 py-3 pl-4 col-12">
-                              <h2 class="m-0">Giocatori attivi</h2>
-                          </div>
-                          <table v-if="players_data" class="table table-striped border-bottom">
-                              <thead>
-                                  <tr>
-                                      <th>Nome del Giocatore</th>
-                                      <th>Tipo di Quest</th>
-                                      <th>Nome della Quest</th>
-                                      <th>Subquest completate</th>
-                                      <th>Segnalazioni</th>
-                                      <th></th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                  <tr v-for="player in players_data_shown_from_story[story]">
-                                      <!-- informazioni sullo stato del player -->
-                                      <td>{{ player.user_id }}</td>
-                                      <td>{{ player.in_mainquest ? "mainQuest" : "Subquest"}}</td>
-                                      <td v-if="player.in_mainquest">{{ ongoing_stories[currentStory] ? ongoing_stories[currentStory].mainQuest[player.currentQuest].title : " "}}</td>
-                                      <td v-if="!player.in_mainquest">{{ ongoing_stories[currentStory] ? ( ongoing_stories[currentStory].subQuests[player.currentSub] ?
-                                            ongoing_stories[currentStory].subQuests[player.currentSub].title : " " ) : " " }}
-                                      </td>
-                                      <td>
-                                          <div v-if="player.completedSubs.length > 0" class="btn-group dropup">
-                                              <button type="button" class="btn btn-default dropdown-toggle pre-button" data-toggle="dropdown">
-                                                  {{ player.completedSubs.length }}&nbsp</button>
-                                              <ul class="dropdown-menu">
-                                                  <li v-for="sub in player.completedSubs" class="dropdown-item pre">
-                                                      {{ ongoing_stories[currentStory] ? ( ongoing_stories[currentStory].subQuests[sub] ?
-                                                        ongoing_stories[currentStory].subQuests[sub].title : " " ) : " " }}
-                                                  </li>
-                                              </ul>
-                                          </div>
-                                          <div v-else>
-                                              <label class="ml-3">{{ player.completedSubs.length }}</label>
-                                          </div>
-                                      </td>
-                                      <!-- banner di avvertimento -->
-                                      <td v-if="players_data[player.user_id].finished === false">
-                                          <div class="container-fluid p-0">
-                                              <div class="col-11 p-0" v-if="players_data[player.user_id].time_inactive > 60">
-                                                  <button class="btn color-warning border btn-block pre-button p-1">Bloccato da tempo</button>
-                                              </div>
-                                              <div class="col-11 p-0" v-if="players_data[player.user_id].help_requested === true">
-                                                  <button class="btn color-warning border btn-block pre-button p-1">Ha richiesto aiuto</button>
-                                              </div>
-                                          </div>
-                                      </td>
-                                      <!-- serve per la tabulazione corretta-->
-                                      <td v-else></td>
-                                      <td v-if="players_data[player.user_id].finished === false">
-                                          <button class="btn color-interact" @click="sendHelp(player.user_id)">Aiuta il giocatore</button>
-                                      </td>
-                                      <td v-else>
-                                          <button class="btn pre-button color-ended">Ha finito!</button>
-                                      </td>
-                                  </tr>
-                              </tbody>
-                          </table>
-                      </div>
-                  </div>
-              </div>
-              <!-- bottoni cancella e scarica dati -->
-              <div class="d-flex justify-content-end mr-4">
-                  <div class="btn-group mx-2">
-                      <button v-if="players_data" class="col btn color-interact" @click="saveJson" data-toggle="tooltip" title="scarica statistiche in formato JSON">
-                          ESPORTA STATISTICHE</button>
-                      <button class="col btn btn-danger" @click="clearAllData" data-toggle="tooltip" title="rimuovi tutti i dati raccolti finora">CANCELLA DATI</button>
-                  </div>
-              </div>
-              <!-- seconda parte con la preview e la chat -->
-              <div class="container-fluid mt-5">
-
-                  <div id="previewblock" v-if="ongoing_stories[activeStories[0]]" class="container mt-3 mb-3">
-                      <button class="btn btn-block btn-outline-secondary" type="button" data-toggle="collapse" data-target="#story-preview">Preview Storia</button>
-                      <div id="story-preview" class="container-fluid collapse overflow-auto p-2">
-                          <div id="preview-menu" class="row">
-                              <div class="form-check col-md-3">
-                                  <label class="form-check-label">
-                                      <input type="checkbox" v-model="previewdata.in_mainquest">
-                                      Mainquest
-                                  </label>
-                              </div>
-                              <div class="form-group col-md-6">
-                                  <div v-if="previewdata.in_mainquest">
-                                      <label for="mainselect">Seleziona Main</label>
-                                      <select class="form-input" v-model="previewdata.currentQuest">
-                                          <option v-for="quest in ongoing_stories[currentStory].mainQuest" :value="quest.number">{{ quest.number }}: {{ ( quest.title || "" ) }}</option>
-                                      </select>
-                                  </div>
-                                  <div v-if="!previewdata.in_mainquest">
-                                      <label for="mainselect">Seleziona Sub</label>
-                                      <select class="form-input" v-model="previewdata.currentSub">
-                                          <option v-for="quest in ongoing_stories[currentStory].subQuests" :value="quest.number">{{ quest.number }}: {{ ( quest.title || "" ) }}</option>
-                                      </select>
-                                  </div>
-                              </div>
-                          </div>
-                          <div id="preview-view" v-if="getQuestData(currentStory)">
-                              <div class="row m-1">
-                                  <div class="bg-primary col-6">
-                                      <p class="text-light font-weight-bold">Titolo</p>
-                                  </div>
-                                  <div class="col-6">{{ (getQuestData(currentStory).title || "none") }}</div>
-                              </div>
-                              <div class="row m-1">
-                                  <div class="bg-primary col-6">
-                                      <p class="text-light font-weight-bold">Testo</p>
-                                  </div>
-                                  <div class="col-6">
-                                      <p>{{ (getQuestData(currentStory).text || "none") }}</p>
-                                  </div>
-                              </div>
-                              <div class="row m-1">
-                                  <div class="bg-primary col-6">
-                                      <p class="text-light font-weight-bold">Descrizione</p>
-                                  </div>
-                                  <div class="col-6">
-                                      <p>{{ (getQuestData(currentStory).description || "none") }}</p>
-                                  </div>
-                              </div>
-                              <div class="row m-1">
-                                  <div class="bg-primary col-6">
-                                      <p class="text-light font-weight-bold">Media</p>
-                                  </div>
-                                  <div class="col-6">
-                                      <p>{{ (getQuestData(currentStory).description || "none") }}</p>
-                                  </div>
-                              </div>
-                              <div v-if="getQuestData(currentStory).type=='choice'" class="container m-1">
-                                  <div class="row bg-primary">
-                                      <p class="text-light font-weight-bold">Opzioni standard</p>
-                                  </div>
-                                  <div v-for="opt in getQuestData(currentStory).options" class="row">
-                                      <p>{{ opt }}</p>
-                                  </div>
-                                  <div v-if="getQuestData(currentStory).subquest_rewards.length > 0">
-                                      <div class="row bg-primary">
-                                          <p class="text-light font-weight-bold">Opzioni aggiunte</p>
-                                      </div>
-                                      <div v-for="sub in getQuestData(currentStory).subquest_rewards">
-                                          <div v-for="opt in sub.added_options" class="row">
-                                              <div class="col-6">
-                                                  <p>Da: {{ sub.title || sub.number }}</p>
-                                              </div>
-                                              <div class="col-6">
-                                                  <p>{{ opt }}</p>
-                                              </div>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                              <div v-if="previewdata.in_mainquest" class="container m-1">
-                                  <div class="container row bg-primary">
-                                      <p class="text-light font-weight-bold">Goto standard</p>
-                                  </div>
-                                  <div v-for="goto in getQuestData(currentStory).goto" class="container row">
-                                      <div class="col-6">
-                                          <p>Risposta: {{ goto[0] }}</p>
-                                      </div>
-                                      <div class="col-6">
-                                          <p>Porta a: {{ goto[1] }}</p>
-                                      </div>
-                                  </div>
-                                  <div v-if="getQuestData(currentStory).subquest_rewards.length > 0">
-                                      <div class="container row bg-primary">
-                                          <p class="text-light font-weight-bold">Goto aggiunti</p>
-                                      </div>
-                                      <div v-for="sub in getQuestData(currentStory).subquest_rewards">
-                                          <div v-for="goto in sub.added_goto" class="container row">
-                                              <div class="col-4">
-                                                  <p>Da: {{ sub.title || sub.number }}</p>
-                                              </div>
-                                              <div class="col-4">
-                                                  <p>Risposta: {{ goto[0] || "No_risposta"  }}</p>
-                                              </div>
-                                              <div class="col-4">
-                                                  <p>Porta a: {{ goto[1] }}</p>
-                                              </div>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                              <div v-if="!previewdata.in_mainquest" class="container row m-1">
-                                  <div class="container row bg-primary">
-                                      <p class="text-light font-weight-bold">Soluzioni</p>
-                                  </div>
-                                  <div v-for="sol in getQuestData(currentStory).solution" class="container row">
-                                      <p>{{ sol }}</p>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-                  <div v-if="players_data" class="container border" id="chat">
-                      <div class="row justify-content-center bg-secondary text-white rounded py-2">
-                          <h3>Inizia una chat con i giocatori</h3>
-                      </div>
-                      <div class="btn-group p-2" id="chatbutton">
-                          <button class="btn btn-outline-secondary" v-for="(chat,id) in players_chat_from_story[currentStory]" :class="chat_notify[id] ? 'btn-warning' : ''" v-on:click="switchIndex(id)">{{ id }}</button>
-                      </div>
-                      <div class="container border" id="chatcontainer">
-                          <div v-if="players_chat[current_chat_id]" v-for="msg in players_chat[current_chat_id]" class="chatmessage" v-bind:class="{ 'float-left' : (msg.sender != 'Valutatore') }">
-                              <div class="card">
-                                  <div class="card-body">
-                                      <div class="card-subtitle text-muted">{{ msg.sender }}</div>
-                                      <div class="card-text">{{ msg.text }}</div>
-                                  </div>
-                              </div>
-                          </div>
-                          <form class="btn-group w-100" v-if="players_chat[current_chat_id]" v-on:submit.prevent>
-                              <input class="w-75" type="text" v-model="chat_msg[current_chat_id]">
-                              <button class="btn btn-success" v-on:click="sendChatMsg">Invia</button>
-                          </form>
-                      </div>
-                  </div>
-                  <div class="container border" id="answers">
-                      <div v-for="id in waitingForFeedback">
-                          <p>User: {{ id }}</p>
-                          <p>Text: {{ players_ans[id].answer.text }}</p>
-                          <img :src="players_ans[id].answer.imagedata">
-                          <form v-on:submit.prevent="sendFeedback(id, $event.target.elements.feedbackans.value)">
-                              <div class="form-group" v-for="opt in computeJson(id).mainQuest[players_data[id].currentQuest].goto">
-                                  <label>{{ opt[0] }}</label>
-                                  <input type="radio" name="feedbackans" :value="opt[0]">
-                              </div>
-                              <input type="submit" value="Submit">
-                          </form>
-                      </div>
-                  </div>
-
-              </div>
+                <!-- Tab con le informazioni dei giocatori------------------------------------------------------------------------------------------------------------------>
+                <div v-for="story in activeStories" :class="(story == activeStories[0]) ? 'show active' : ' '" class="tab-pane" :id="story" :aria-labelledby="story + 'tab'" role="tabpanel">
+                    <div class="container container-fluid col-12 p-0">
+                        <div class="table-responsive table-wrapper">
+                            <div class="container container-fluid color-static text-light rounded mx-0 my-0 py-3 pl-4 col-12">
+                                <h2 class="m-0">Giocatori attivi</h2>
+                            </div>
+                            <table v-if="players_data" class="table table-striped border-bottom">
+                                <thead>
+                                    <tr>
+                                        <th>Nome del Giocatore</th>
+                                        <th>Tipo di Quest</th>
+                                        <th>Nome della Quest</th>
+                                        <th>Subquest completate</th>
+                                        <th>Segnalazioni</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="player in players_data_shown_from_story[story]">
+                                        <!-- informazioni sullo stato del player -->
+                                        <td>{{ player.user_id }}</td>
+                                        <td>{{ player.in_mainquest ? "mainQuest" : "Subquest"}}</td>
+                                        <td v-if="player.in_mainquest">{{ ongoing_stories[currentStory] ? ongoing_stories[currentStory].mainQuest[player.currentQuest].title : " "}}</td>
+                                        <td v-if="!player.in_mainquest">{{ ongoing_stories[currentStory] ? ( ongoing_stories[currentStory].subQuests[player.currentSub] ?
+                                              ongoing_stories[currentStory].subQuests[player.currentSub].title : " " ) : " " }}
+                                        </td>
+                                        <td>
+                                            <div v-if="player.completedSubs.length > 0" class="btn-group dropup">
+                                                <button type="button" class="btn btn-default dropdown-toggle pre-button" data-toggle="dropdown">
+                                                    {{ player.completedSubs.length }}&nbsp</button>
+                                                <ul class="dropdown-menu">
+                                                    <li v-for="sub in player.completedSubs" class="dropdown-item pre">
+                                                        {{ ongoing_stories[currentStory] ? ( ongoing_stories[currentStory].subQuests[sub] ?
+                                                          ongoing_stories[currentStory].subQuests[sub].title : " " ) : " " }}
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div v-else>
+                                                <label class="ml-3">{{ player.completedSubs.length }}</label>
+                                            </div>
+                                        </td>
+                                        <!-- banner di avvertimento -->
+                                        <td v-if="players_data[player.user_id].finished === false">
+                                            <div class="container-fluid p-0">
+                                                <div class="col-11 p-0" v-if="players_data[player.user_id].time_inactive > 60">
+                                                    <button class="btn color-warning border btn-block pre-button p-1">Bloccato da tempo</button>
+                                                </div>
+                                                <div class="col-11 p-0" v-if="players_data[player.user_id].help_requested === true">
+                                                    <button class="btn color-warning border btn-block pre-button p-1">Ha richiesto aiuto</button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <!-- serve per la tabulazione corretta-->
+                                        <td v-else></td>
+                                        <td v-if="players_data[player.user_id].finished === false">
+                                            <button class="btn color-interact" @click="sendHelp(player.user_id)">Aiuta il giocatore</button>
+                                        </td>
+                                        <td v-else>
+                                            <button class="btn pre-button color-ended">Ha finito!</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- bottoni cancella e scarica dati -->
+                <div class="d-flex justify-content-end mr-4">
+                    <div class="btn-group mx-2">
+                        <button v-if="players_data" class="col btn color-interact" @click="saveJson" data-toggle="tooltip" title="scarica statistiche in formato JSON">
+                            ESPORTA STATISTICHE</button>
+                        <button class="col btn btn-danger" @click="clearAllData" data-toggle="tooltip" title="rimuovi tutti i dati raccolti finora">CANCELLA DATI</button>
+                    </div>
+                </div>
+                <!-- preview -->
+                <button class="btn btn-block color-expand mt-4 mx-0" type="button" data-toggle="collapse" data-target="#story-preview">ATTIVITA' DELLA STORIA
+                    <i class="fas fa-angle-double-down"></i>
+                </button>
+                <div id="story-preview" v-if="ongoing_stories[activeStories[0]]" class="container-fluid collapse overflow-auto mt-3 p-2">
+                    <div id="preview-menu" class="row">
+                        <div class="form-check col-md-3">
+                            <label class="form-check-label">
+                                <input type="checkbox" v-model="previewdata.in_mainquest">
+                                Mainquest
+                            </label>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div v-if="previewdata.in_mainquest">
+                                <label for="mainselect">Seleziona Main</label>
+                                <select class="form-input" v-model="previewdata.currentQuest">
+                                    <option v-for="quest in ongoing_stories[currentStory].mainQuest" :value="quest.number">{{ quest.number }}: {{ ( quest.title || "" ) }}</option>
+                                </select>
+                            </div>
+                            <div v-if="!previewdata.in_mainquest">
+                                <label for="mainselect">Seleziona Sub</label>
+                                <select class="form-input" v-model="previewdata.currentSub">
+                                    <option v-for="quest in ongoing_stories[currentStory].subQuests" :value="quest.number">{{ quest.number }}: {{ ( quest.title || "" ) }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="preview-view" v-if="getQuestData(currentStory)">
+                        <div class="row m-1">
+                            <div class="bg-primary col-6">
+                                <p class="text-light font-weight-bold">Titolo</p>
+                            </div>
+                            <div class="col-6">{{ (getQuestData(currentStory).title || "none") }}</div>
+                        </div>
+                        <div class="row m-1">
+                            <div class="bg-primary col-6">
+                                <p class="text-light font-weight-bold">Testo</p>
+                            </div>
+                            <div class="col-6">
+                                <p>{{ (getQuestData(currentStory).text || "none") }}</p>
+                            </div>
+                        </div>
+                        <div class="row m-1">
+                            <div class="bg-primary col-6">
+                                <p class="text-light font-weight-bold">Descrizione</p>
+                            </div>
+                            <div class="col-6">
+                                <p>{{ (getQuestData(currentStory).description || "none") }}</p>
+                            </div>
+                        </div>
+                        <div class="row m-1">
+                            <div class="bg-primary col-6">
+                                <p class="text-light font-weight-bold">Media</p>
+                            </div>
+                            <div class="col-6">
+                                <p>{{ (getQuestData(currentStory).description || "none") }}</p>
+                            </div>
+                        </div>
+                        <div v-if="getQuestData(currentStory).type=='choice'" class="container m-1">
+                            <div class="row bg-primary">
+                                <p class="text-light font-weight-bold">Opzioni standard</p>
+                            </div>
+                            <div v-for="opt in getQuestData(currentStory).options" class="row">
+                                <p>{{ opt }}</p>
+                            </div>
+                            <div v-if="getQuestData(currentStory).subquest_rewards.length > 0">
+                                <div class="row bg-primary">
+                                    <p class="text-light font-weight-bold">Opzioni aggiunte</p>
+                                </div>
+                                <div v-for="sub in getQuestData(currentStory).subquest_rewards">
+                                    <div v-for="opt in sub.added_options" class="row">
+                                        <div class="col-6">
+                                            <p>Da: {{ sub.title || sub.number }}</p>
+                                        </div>
+                                        <div class="col-6">
+                                            <p>{{ opt }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="previewdata.in_mainquest" class="container m-1">
+                            <div class="container row bg-primary">
+                                <p class="text-light font-weight-bold">Goto standard</p>
+                            </div>
+                            <div v-for="goto in getQuestData(currentStory).goto" class="container row">
+                                <div class="col-6">
+                                    <p>Risposta: {{ goto[0] }}</p>
+                                </div>
+                                <div class="col-6">
+                                    <p>Porta a: {{ goto[1] }}</p>
+                                </div>
+                            </div>
+                            <div v-if="getQuestData(currentStory).subquest_rewards.length > 0">
+                                <div class="container row bg-primary">
+                                    <p class="text-light font-weight-bold">Goto aggiunti</p>
+                                </div>
+                                <div v-for="sub in getQuestData(currentStory).subquest_rewards">
+                                    <div v-for="goto in sub.added_goto" class="container row">
+                                        <div class="col-4">
+                                            <p>Da: {{ sub.title || sub.number }}</p>
+                                        </div>
+                                        <div class="col-4">
+                                            <p>Risposta: {{ goto[0] || "No_risposta"  }}</p>
+                                        </div>
+                                        <div class="col-4">
+                                            <p>Porta a: {{ goto[1] }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="!previewdata.in_mainquest" class="container row m-1">
+                            <div class="container row bg-primary">
+                                <p class="text-light font-weight-bold">Soluzioni</p>
+                            </div>
+                            <div v-for="sol in getQuestData(currentStory).solution" class="container row">
+                                <p>{{ sol }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- chat -->
+                <button class="btn btn-block color-expand mt-2 mx-0" type="button" data-toggle="collapse" data-target="#chatroom">CHAT
+                    <i class="fas fa-angle-double-down"></i>
+                </button>
+                <div id="chatroom" class="container-fluid m-2 mt-3">
+                    <div v-if="players_data" class="row" id="chat">
+                        <div class="btn-group col-4 row p-2" id="chatbutton">
+                            <button class="btn btn-outline-secondary col-12" v-for="(chat,id) in players_chat_from_story[currentStory]" :class="chat_notify[id] ? 'btn-warning' : ''" v-on:click="switchIndex(id)">{{ id }}</button>
+                        </div>
+                        <div class="container col-8" id="chatcontainer">
+                            <div id="chatmessagecontainer">
+                                <div v-if="players_chat[current_chat_id]" v-for="msg in players_chat[current_chat_id]" class="chatmessage" v-bind:class="{ 'float-left' : (msg.sender != 'Valutatore') }">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="card-subtitle text-muted">{{ msg.sender }}</div>
+                                            <div class="card-text">{{ msg.text }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <form class="btn-group w-100 my-2 sendbutton" v-if="players_chat[current_chat_id]" v-on:submit.prevent>
+                                <input class="w-75" type="text" v-model="chat_msg[current_chat_id]">
+                                <button class="btn btn-success" v-on:click="sendChatMsg">Invia</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="container border" id="answers">
+                        <div v-for="id in waitingForFeedback">
+                            <p>User: {{ id }}</p>
+                            <p>Text: {{ players_ans[id].answer.text }}</p>
+                            <img :src="players_ans[id].answer.imagedata">
+                            <form v-on:submit.prevent="sendFeedback(id, $event.target.elements.feedbackans.value)">
+                                <div class="form-group" v-for="opt in computeJson(id).mainQuest[players_data[id].currentQuest].goto">
+                                    <label>{{ opt[0] }}</label>
+                                    <input type="radio" name="feedbackans" :value="opt[0]">
+                                </div>
+                                <input type="submit" value="Submit">
+                            </form>
+                        </div>
+                    </div>
+                </div>
           </div>
         </div>
     <!--finito il blocco delle tab ------------------------------------------------------------------------------------->
