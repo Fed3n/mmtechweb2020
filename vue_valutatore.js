@@ -75,9 +75,25 @@ var app = new Vue({
             }
         },
         switchIndex: function(id) {
-            if (this.players_chat) {
-                this.current_chat_id = id;
-                this.chat_notify[id] = false;
+            if (id){
+                if (this.players_chat) {
+                    this.current_chat_id = id;
+                    this.chat_notify[id] = false;
+                }
+                //remove class to all the other
+                let users = document.getElementsByClassName("chat-user");
+                for (let index = 0; index < users.length; index++){
+                    users[index].classList.remove("chat-user-selected");
+                }
+                //add class to the selected button
+                let userId = "userChatButton"+id;
+                document.getElementById(userId).classList.add("chat-user-selected");
+            } else {
+              //use the fuction with no parameters to initialize colors
+              let users = document.getElementsByClassName("chat-user");
+              for (let index = 0; index < users.length; index++){
+                  users[index].classList.remove("chat-user-selected");
+              }
             }
         },
         sendChatMsg: function() {

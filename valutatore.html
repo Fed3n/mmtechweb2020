@@ -35,12 +35,12 @@
                 </div>
                 <ul class="nav nav-pills col-12 d-flex justify-content-center p-0" role="tablist">
                     <li class="nav-item col-12 m-0 p-0">
-                        <button class="nav-link active btn color-interact border btn-block" @click="currentStory = activeStories[0]"
+                        <button class="nav-link active btn color-interact border btn-block" @click="currentStory = activeStories[0]; current_chat_id = null; switchIndex(null);"
                         :id="activeStories[0] + 'tab'" :href="'#' + activeStories[0]" data-toggle="tab" role="tab" :aria-controls="activeStories[0]" aria-selected="true">
                         {{ activeStories[0] }}</button>
                     </li>
                     <li v-for="story in activeStories.slice(1)" class="nav-item col-12 m-0 p-0">
-                        <button class="nav-link btn color-interact border btn-block" @click="currentStory = story"
+                        <button class="nav-link btn color-interact border btn-block" @click="currentStory = story; current_chat_id = null; switchIndex(null);"
                         :id="story + 'tab'" :href="'#'+story" data-toggle="tab" role="tab" :aria-controls="story" aria-selected="false">{{ story }}</button>
                     </li>
                 </ul>
@@ -243,16 +243,23 @@
                         </div>
                     </div>
                 </div>
+
+                <!--
+                     TODO DA FARE !!!!!!!!------------------------------------------------------------------------------------
+                     aggiungi il segnale di messaggio non ancora visto
+                     sistema stilisticamente un pò meglio la struttura dei messaggi, così sono poco guardabili-->
+
                 <!-- chat -->
                 <button class="btn btn-block color-expand mt-2 mx-0" type="button" data-toggle="collapse" data-target="#chatroom">CHAT
                     <i class="fas fa-angle-double-down"></i>
                 </button>
-                <div id="chatroom" class="container-fluid m-2 mt-3">
+                <div id="chatroom" class="container-fluid collapse m-2 mt-3">
                     <div v-if="players_data" class="row" id="chat">
-                        <div class="btn-group col-4 row p-2" id="chatbutton">
-                            <button class="btn btn-outline-secondary col-12" v-for="(chat,id) in players_chat_from_story[currentStory]" :class="chat_notify[id] ? 'btn-warning' : ''" v-on:click="switchIndex(id)">{{ id }}</button>
+                        <div class="list-group col-4 row pl-2 pr-0 border-right" id="chatbutton">
+                            <button type="button" class="list-group-item list-group-item-action chat-user" :id="'userChatButton'+id"
+                                    v-for="(chat,id) in players_chat_from_story[currentStory]" v-on:click="switchIndex(id)">{{ id }}</button>
                         </div>
-                        <div class="container col-8" id="chatcontainer">
+                        <div class="container col-8 p-0 pl-2" id="chatcontainer">
                             <div id="chatmessagecontainer">
                                 <div v-if="players_chat[current_chat_id]" v-for="msg in players_chat[current_chat_id]" class="chatmessage" v-bind:class="{ 'float-left' : (msg.sender != 'Valutatore') }">
                                     <div class="card">
@@ -263,7 +270,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <form class="btn-group w-100 my-2 sendbutton" v-if="players_chat[current_chat_id]" v-on:submit.prevent>
+                            <form class="btn-group w-100 mb-2 sendbutton" v-on:submit.prevent>
                                 <input class="w-75" type="text" v-model="chat_msg[current_chat_id]">
                                 <button class="btn btn-success" v-on:click="sendChatMsg">Invia</button>
                             </form>
