@@ -21,7 +21,7 @@ var app = new Vue({
         players_data: {},
         players_data_changing: {},
         ongoing_stories: {},
-        players_chat: {},
+        players_chat: {}, 
         players_ans: {},
         current_chat_id: null,
         chat_msg: {},
