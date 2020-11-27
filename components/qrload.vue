@@ -32,12 +32,26 @@ module.exports = {
   props: ["questname"],
   mounted: function() {
 	axios.get('/stories').then(response => {
-    questlist = [];
-		for(el of response.data) {
-			questlist.push(el);
-		}
-    this.questlist = questlist;
+		questlist = [];
+			for(el of response.data) {
+				questlist.push(el);
+			}
+		this.questlist = questlist;
 	});
+  },
+  watch: {
+	  questlist: function(newlist, oldlist) {
+		  let name = null;
+		  if(window.location.pathname.indexOf("/player_") != -1){
+			for(story of this.questlist){
+			  name = window.location.pathname.substring(8,window.location.pathname.length);
+			}
+		  }
+		  if(name != null) {
+			this.$parent.questname = name;
+			this.$parent.changeQuest();
+		  }
+	   }
   },
   methods: {
     check (result) {
