@@ -82,7 +82,7 @@
                             <ul v-if="renderQuest && in_mainquest && getCurrentClues.length > 0">
                                 <li v-for="clue in getCurrentClues" v-if="clue">{{ clue }}</li>
                             </ul>
-                            <div v-if="help_received && help_message">Hint: {{help_message}}</div>
+                            <div v-if="help_received && help_message">Aiuto: {{help_message}}</div>
                             <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
                             <div v-if="renderQuest" id="gameinput">
                                 <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :current="in_mainquest ? currentQuest : currentSub" :options="in_mainquest ? getCurrentOptions : renderQuest.options" v-model="picked" ref="inputComponent" :styles="componentStyle"></component>

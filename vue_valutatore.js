@@ -12,7 +12,12 @@ var app = new Vue({
         previewdata: {
             in_mainquest: true,
             currentQuest: 0,
-            currentSub: 0
+            currentSub: 0,
+            picked: null,
+            completedSubs: []
+        },
+        metadata: {
+            name: null
         },
         currentStory: null
     },
@@ -183,7 +188,46 @@ var app = new Vue({
         getQuestData: function(story) {
             if (this.previewdata.in_mainquest) return this.ongoing_stories[story].mainQuest[this.previewdata.currentQuest];
             else return this.ongoing_stories[story].subQuests[this.previewdata.currentSub];
+        },
+
+
+
+
+
+
+        //style METHODS
+        overwriteMainStyle: function(styles) {
+            var main_style = this.ongoing_stories[this.currentStory].css_style.mainStyle;
+            var main_style_cleaned = {};
+            Object.entries(main_style).forEach(entry => {
+                const [key, value] = entry;
+                if (value != "")
+                    main_style_cleaned[key] = value;
+            });
+            return Object.assign(styles, main_style_cleaned);
+        },
+        upgradeSubmitStyle: function(disabled) {
+            styles = {};
+            if (!disabled)
+                styles = Object.assign(styles, submit_button_style);
+            else {
+                styles = Object.assign(styles, submit_button_style_disabled);
+                var temp = this.ongoing_stories[this.currentStory].css_style.background.style.card;
+                if (!this.ongoing_stories[this.currentStory].css_style.background.image)
+                    if ((temp.custom && temp.customized["background-color"] == "black") || (!temp.custom && temp.bootstrap.background == "bg-dark"))
+                        styles = Object.assign(styles, {
+                            "border": submit_button_border
+                        });
+            }
+            this.submitStyleObject = styles;
         }
+
+
+
+
+
+
+
     },
     computed: {
         firstPlayer: function() {
@@ -237,11 +281,84 @@ var app = new Vue({
             if (!this.currentStory) this.currentStory = Array.from(stories)[0];
             return Array.from(stories);
        },
+       getCurrentQuestData: function() {
+         return this.getQuestData(this.currentStory);
+       },
+
+
+
+
+
+       getCurrentClues: function() {
+           clues = [];
+           for (reward of this.getCurrentQuestData.subquest_rewards) {
+               if (this.previewdata.completedSubs.includes(reward.number))
+                   clues.push(reward.clue);
+           }
+           return clues;
+       },
+       currentComponent: function() {
+           var type = this.getCurrentQuestData.type;
+           if (type == "choice") return "choiceinput";
+           else if (type == "input") return "textinput";
+           else if (type == "draw") return "imginput";
+           else if (type == "keys") return "keyboardinput";
+           else return "";
+       },
+       getCurrentOptions: function() {
+           if (this.getCurrentQuestData.options) {
+               options = [];
+               for (opt of this.getCurrentQuestData.options)
+                   options.push(opt);
+               for (reward of this.getCurrentQuestData.subquest_rewards) {
+                   if (this.previewdata.completedSubs.includes(reward.number)) {
+                       for (opt of reward.added_options)
+                           options.push(opt);
+                       for (opt of reward.removed_options) {
+                           if ((index = options.indexOf(opt)) != -1) {
+                               options.splice(index, 1);
+                           }
+                       }
+                   }
+               }
+           }
+           return options;
+       },
+
+
+
+
+
+
+
+
+
+       //preview della storia
+       /*
+       getMediaSrc: function() {
+           return ("story/" + this.metadata.name + (this.getCurrentQuestData.media.type == "image" ? "/images/" : "/videos/") + this.getCurrentQuestData.media.uri);
+       },*/
+       submitDisabled: function() {
+           let disabled = false;
+           //Se il tipo è "" (none) è sempre abilitato
+           if (!this.getCurrentQuestData.type) disabled = false;
+           //In un type ending è sempre disabilitato (il gioco è finito)
+           else if (this.getCurrentQuestData.type == "ending") disabled = true;
+           //Se siamo in human input allora il submit è abilitato se ho ricevuto feedback dal valutatore
+           else if (this.getCurrentQuestData.type == "human") disabled = !this.ans_feedback;
+           //Altrimenti è abilitato se c'è una risposta inserita
+           else disabled = !this.previewdata.picked;
+           this.upgradeSubmitStyle(disabled);
+           return disabled;
+       },
+
+
+
        //oggetti di stile per la preview
        previewStyle: function() {
            var styles = {};
            //loading background image
-           var temp = this.gamedata.css_style.background;
+           var temp = this.ongoing_stories[this.currentStory].css_style.background;
            if (temp.image) {
                styles = Object.assign(styles, {
                    "background-image": temp["url"],
@@ -264,5 +381,24 @@ var app = new Vue({
            });
            return styles;
        },
+       removePredefinedStylesCard: function() {
+           return this.overwriteMainStyle({});
+       },
+       componentStyle: function() {
+           var styles = {}
+           if (this.currentComponent == "choiceinput")
+           ;
+           if (this.currentComponent == "textinput")
+               style = this.overwriteMainStyle(styles);
+           style = Object.assign(styles, input_backgroundImage);
+           if (!this.ongoing_stories[this.currentStory].css_style.background.image)
+               if (!this.ongoing_stories[this.currentStory].css_style.mainStyle["color"])
+                   styles = Object.assign(styles, {
+                       "color": "inherit"
+                   });
+           if (this.currentComponent == "imginput")
+           ;
+           return styles;
+       }
     }
 });

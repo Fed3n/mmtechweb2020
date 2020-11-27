@@ -140,7 +140,7 @@
                                 Mainquest
                             </label>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-5">
                             <div v-if="previewdata.in_mainquest">
                                 <label for="mainselect">Seleziona Main</label>
                                 <select class="form-input" v-model="previewdata.currentQuest">
@@ -154,22 +154,29 @@
                                 </select>
                             </div>
                         </div>
+                        <div v-if="previewdata.in_mainquest && getCurrentQuestData.subquest_rewards.length > 0" class="col-md-4">
+                            <label for="subquestsCompletate">SubQuest Completate</label>
+                            <div id="subquestsCompletate" v-for="sub in getCurrentQuestData.subquest_rewards" class="form-check">
+                                <input type="checkbox" class="form-check-input" :name="'sub' + sub.number" :value="sub.number" v-model="previewdata.completedSubs">
+                                <label for="'sub' + sub.number" class="form-check-label"> {{ sub.title || "Subquest "+sub.number }}</label>
+                            </div>
+                        </div>
                     </div>
 
 
-                    <!--div id="preview-view" v-if="getQuestData(currentStory)">
+                    <!--div id="preview-view" v-if="getCurrentQuestData">
                         <div class="row m-1">
                             <div class="bg-primary col-6">
                                 <p class="text-light font-weight-bold">Titolo</p>
                             </div>
-                            <div class="col-6">{{ (getQuestData(currentStory).title || "none") }}</div>
+                            <div class="col-6">{{ (getCurrentQuestData.title || "none") }}</div>
                         </div>
                         <div class="row m-1">
                             <div class="bg-primary col-6">
                                 <p class="text-light font-weight-bold">Testo</p>
                             </div>
                             <div class="col-6">
-                                <p>{{ (getQuestData(currentStory).text || "none") }}</p>
+                                <p>{{ (getCurrentQuestData.text || "none") }}</p>
                             </div>
                         </div>
                         <div class="row m-1">
@@ -177,7 +184,7 @@
                                 <p class="text-light font-weight-bold">Descrizione</p>
                             </div>
                             <div class="col-6">
-                                <p>{{ (getQuestData(currentStory).description || "none") }}</p>
+                                <p>{{ (getCurrentQuestData.description || "none") }}</p>
                             </div>
                         </div>
                         <div class="row m-1">
@@ -185,21 +192,21 @@
                                 <p class="text-light font-weight-bold">Media</p>
                             </div>
                             <div class="col-6">
-                                <p>{{ (getQuestData(currentStory).description || "none") }}</p>
+                                <p>{{ (getCurrentQuestData.description || "none") }}</p>
                             </div>
                         </div>
-                        <div v-if="getQuestData(currentStory).type=='choice'" class="container m-1">
+                        <div v-if="getCurrentQuestData.type=='choice'" class="container m-1">
                             <div class="row bg-primary">
                                 <p class="text-light font-weight-bold">Opzioni standard</p>
                             </div>
-                            <div v-for="opt in getQuestData(currentStory).options" class="row">
+                            <div v-for="opt in getCurrentQuestData.options" class="row">
                                 <p>{{ opt }}</p>
                             </div>
-                            <div v-if="getQuestData(currentStory).subquest_rewards.length > 0">
+                            <div v-if="getCurrentQuestData.subquest_rewards.length > 0">
                                 <div class="row bg-primary">
                                     <p class="text-light font-weight-bold">Opzioni aggiunte</p>
                                 </div>
-                                <div v-for="sub in getQuestData(currentStory).subquest_rewards">
+                                <div v-for="sub in getCurrentQuestData.subquest_rewards">
                                     <div v-for="opt in sub.added_options" class="row">
                                         <div class="col-6">
                                             <p>Da: {{ sub.title || sub.number }}</p>
@@ -215,7 +222,7 @@
                             <div class="container row bg-primary">
                                 <p class="text-light font-weight-bold">Goto standard</p>
                             </div>
-                            <div v-for="goto in getQuestData(currentStory).goto" class="container row">
+                            <div v-for="goto in getCurrentQuestData.goto" class="container row">
                                 <div class="col-6">
                                     <p>Risposta: {{ goto[0] }}</p>
                                 </div>
@@ -223,11 +230,11 @@
                                     <p>Porta a: {{ goto[1] }}</p>
                                 </div>
                             </div>
-                            <div v-if="getQuestData(currentStory).subquest_rewards.length > 0">
+                            <div v-if="getCurrentQuestData.subquest_rewards.length > 0">
                                 <div class="container row bg-primary">
                                     <p class="text-light font-weight-bold">Goto aggiunti</p>
                                 </div>
-                                <div v-for="sub in getQuestData(currentStory).subquest_rewards">
+                                <div v-for="sub in getCurrentQuestData.subquest_rewards">
                                     <div v-for="goto in sub.added_goto" class="container row">
                                         <div class="col-4">
                                             <p>Da: {{ sub.title || sub.number }}</p>
@@ -246,7 +253,7 @@
                             <div class="container row bg-primary">
                                 <p class="text-light font-weight-bold">Soluzioni</p>
                             </div>
-                            <div v-for="sol in getQuestData(currentStory).solution" class="container row">
+                            <div v-for="sol in getCurrentQuestData.solution" class="container row">
                                 <p>{{ sol }}</p>
                             </div>
                         </div>
@@ -256,39 +263,46 @@
                     <!-- PREVIEW -->
                     <div id="preview-container" class="py-3 row border-bottom">
                         <div class="col-6">
-                            <div id="preview" class="col-8 p-0" :style="previewStyle">
+                            <div id="preview" class="col-8 p-0">
 
                                 <!--Area quest-->
-                                <div ref="questrender" class="card player-card-author overflow-auto" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
-                                    <div class="card-header" :style="cardLimitStyle">
+                                <div ref="questrender" class="card player-card-author overflow-auto" aria-live="polite">
+                                    <div class="card-header">
                                         <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">
                                             {{previewdata.in_mainquest ? "Quest" : "Subquest"}}
-                                            {{ previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub }}: {{ renderQuest.title || "Senza nome" }}
+                                            {{ previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub }}: {{ getCurrentQuestData.title || "Senza nome" }}
                                         </h3>
                                     </div>
                                     <div ref="cardbody" class="card-body overflow-auto" :style="removePredefinedStylesCard">
-                                        <form ref="inputForm" v-on:submit.prevent="previewdata.in_mainquest? submitMain() : submitSub()">
-                                            <p style="white-space: pre-line;">{{ renderQuest.text }}</p>
-                                            <p style="white-space: pre-line;">{{ renderQuest.description || "" }}</p>
+                                        <form ref="inputForm">
+                                            <p style="white-space: pre-line;">{{ getCurrentQuestData.text }}</p>
+                                            <p style="white-space: pre-line;">{{ getCurrentQuestData.description || "" }}</p>
                                             <ul v-if="previewdata.in_mainquest && getCurrentClues.length > 0">
                                                 <li v-for="clue in getCurrentClues" v-if="clue">{{ clue }}</li>
                                             </ul>
                                             <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
-                                            <div id="gameinput">
-                                                <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub" :options="previewdata.in_mainquest ? getCurrentOptions : renderQuest.options" v-model="previewdata.picked" @change="upgradeSubmitStyle(false)" ref="inputComponent" :styles="componentStyle"></component>
-                                            </div>
+
+                                                                                                                                                    <!-- :metadata="metadata" -->
+                                            <!--div id="gameinput">
+                                                <component v-bind:is="currentComponent" :gamedata="getCurrentQuestData"
+                                                  :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub"
+                                                  :options="previewdata.in_mainquest ? getCurrentOptions : getCurrentQuestData.options" v-model="previewdata.picked"
+                                                  @change="upgradeSubmitStyle(false)" ref="inputComponent" :styles="componentStyle"></component>
+                                            </div-->
                                         </form>
                                         <!--EVENTUALI MEDIA-->
-                                        <div v-if="renderQuest.media">
-                                            <img width="100%" v-if="renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
-                                            <div v-if="renderQuest.media.type=='video'">
-                                                <video width="100%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
+                                        <div v-if="getCurrentQuestData.media">
+                                            <!--img width="100%" v-if="getCurrentQuestData.media.type=='image'" :src="getMediaSrc" :alt="getCurrentQuestData.media.alt">
+                                            <div v-if="getCurrentQuestData.media.type=='video'">
+                                                <video width="100%" :aria-label="getCurrentQuestData.media.alt" controls :src="getMediaSrc">
                                                 </video>
-                                            </div>
+                                            </div-->
+                                            <p v-if="getCurrentQuestData.media.type=='image'" :alt="getCurrentQuestData.media.alt">Immagine: "{{ getCurrentQuestData.media.alt }}"</p>
+                                            <p v-if="getCurrentQuestData.media.type=='video'" :alt="getCurrentQuestData.media.alt">Video: "{{ getCurrentQuestData.media.alt }}"</p>
                                         </div>
                                     </div>
-                                    <div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
-                                        <button id="submit" ref="submitbutton" class="btn" type="button" :disabled="submitDisabled" :class="submitBootstrapStyle" :style="submitStyle" v-on:click="previewdata.in_mainquest? submitMain() : submitSub()">
+                                    <div v-if="getCurrentQuestData.type != 'ending'" class="card-footer">
+                                        <button id="submit" ref="submitbutton" class="btn" type="button" :disabled="submitDisabled">
                                             Conferma
                                         </button>
                                     </div>
@@ -371,6 +385,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <script type="text/javascript" src="vue_valutatore.js"></script>
     <script type="text/javascript" src="utils.js"></script>
+    <script type="text/javascript" src="style_consts.js"></script>
 </body>
 
 </html>
