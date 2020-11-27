@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link href="extvalutatore.css" rel="stylesheet">
     <link href="colors.css" rel="stylesheet">
+    <link id="externalFontUrl" href="" rel="stylesheet">
     <title>Ambiente Valutatore</title>
 </head>
 
@@ -266,7 +267,7 @@
 
                     <!-- PREVIEW -->
                     <div id="preview-container" class="py-3 row border-bottom" v-if="previewdata.in_mainquest || (!previewdata.in_mainquest && ongoing_stories[currentStory].subQuests.length > 1)">
-                        <div id="preview" class="col-8 p-0" v-cover :style="previewStyle">
+                        <div id="preview" class="p-0" v-cover :style="previewStyle">
 
                             <!--Area quest-->
                             <div ref="questrender" class="card player-card-author overflow-auto" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
@@ -303,7 +304,7 @@
                                     </div>
                                 </div>
                                 <div v-if="getCurrentQuestData.type != 'ending'" class="card-footer" :style="cardLimitStyle">
-                                    <button id="submit" ref="submitbutton" class="btn" type="button" :disabled="submitDisabled"
+                                    <button id="submit" ref="submitbutton" class="btn mb-3" type="button" :disabled="submitDisabled"
                                           :class="submitBootstrapStyle" :style="submitStyle" @click="previewdata.picked = null">
                                         Conferma
                                     </button>
@@ -384,9 +385,9 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="vue_valutatore.js"></script>
-    <script type="text/javascript" src="utils.js"></script>
     <script type="text/javascript" src="style_consts.js"></script>
+    <script type="text/javascript" src="vue_valutatore.js"></script>
+    <script type="text/javascript" src="utils.js"></script
 </body>
 
 </html>

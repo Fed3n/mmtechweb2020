@@ -21,7 +21,7 @@ var app = new Vue({
         players_data: {},
         players_data_changing: {},
         ongoing_stories: {},
-        players_chat: {}, 
+        players_chat: {},
         players_ans: {},
         current_chat_id: null,
         chat_msg: {},
@@ -369,6 +369,9 @@ var app = new Vue({
                "height": mobile_height,
                "overflow": "auto"
            });
+           //setting font URL
+           if (this.ongoing_stories[this.currentStory].css_style.mainStyle['font-url'])
+               document.getElementById("externalFontUrl").setAttribute('href', this.ongoing_stories[this.currentStory].css_style.mainStyle['font-url']);
            return styles;
        },
 

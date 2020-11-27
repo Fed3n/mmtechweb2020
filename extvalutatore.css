@@ -20,6 +20,11 @@
     background: #555;
 }
 
+.player-card-author {
+    position: relative;
+    height: 100%;
+}
+
 #chat {
     height: 60vh;
 }
