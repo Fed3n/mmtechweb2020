@@ -1,5 +1,16 @@
 var app = new Vue({
     el: "#app",
+    directives: {
+        //per settare la proprietà all'elemento del dom anche quando non è raggiungibile da refs
+      	cover: {
+        	inserted (el) {
+          	el.style.backgroundSize = "cover";
+            el.style.webkitBackgroundSize = "cover";
+            el.style.mozBackgroundSize = "cover";
+            el.style.oBackgroundSize = "cover";
+          }
+        }
+    },
     components: {
         "choiceinput": httpVueLoader("components/choice_input.vue"),
         "textinput": httpVueLoader("components/text_input.vue"),
@@ -195,12 +206,6 @@ var app = new Vue({
             if (this.previewdata.in_mainquest) return this.ongoing_stories[story].mainQuest[this.previewdata.currentQuest];
             else return this.ongoing_stories[story].subQuests[this.previewdata.currentSub];
         },
-
-
-
-
-
-
         //style METHODS
         overwriteMainStyle: function(styles) {
             var main_style = this.ongoing_stories[this.currentStory].css_style.mainStyle;
@@ -227,13 +232,6 @@ var app = new Vue({
             }
             this.submitStyleObject = styles;
         }
-
-
-
-
-
-
-
     },
     computed: {
         firstPlayer: function() {
@@ -290,11 +288,7 @@ var app = new Vue({
        getCurrentQuestData: function() {
          return this.getQuestData(this.currentStory);
        },
-
-
-
-
-
+       //oggetti della preview della storia
        getCurrentClues: function() {
            clues = [];
            for (reward of this.getCurrentQuestData.subquest_rewards) {
@@ -330,16 +324,6 @@ var app = new Vue({
            }
            return options;
        },
-
-
-
-
-
-
-
-
-
-       //preview della storia
        /*
        getMediaSrc: function() {
            return ("story/" + this.metadata.name + (this.getCurrentQuestData.media.type == "image" ? "/images/" : "/videos/") + this.getCurrentQuestData.media.uri);
@@ -370,10 +354,10 @@ var app = new Vue({
                    "background-image": temp["url"],
                    "background-position": "center center"
                });
-               document.getElementById("preview").style.webkitBackgroundSize = "cover";
-               document.getElementById("preview").style.mozBackgroundSize = "cover";
-               document.getElementById("preview").style.oBackgroundSize = "cover";
-               document.getElementById("preview").style.backgroundSize = "cover";
+               /*document.getElementById("preview-container").style.webkitBackgroundSize = "cover";
+               document.getElementById("preview-container").style.mozBackgroundSize = "cover";
+               document.getElementById("preview-container").style.oBackgroundSize = "cover";
+               document.getElementById("preview-container").style.backgroundSize = "cover";*/
            } else {
                styles = Object.assign(styles, {
                    "background-image": "none"
@@ -387,9 +371,38 @@ var app = new Vue({
            });
            return styles;
        },
+
+
+       cardBootstrapStyle: function() {
+           if (!this.ongoing_stories[this.currentStory].css_style.background.image) {
+               var temp = this.ongoing_stories[this.currentStory].css_style.background.style.card.bootstrap;
+               if (!this.ongoing_stories[this.currentStory].css_style.background.style.card.custom)
+                   return (temp.textColor + " " + temp.background);
+               else {
+                   return "";
+               }
+           } else
+               return "";
+       },
+
+
+       cardStyle: function() {
+           var styles = {};
+           if (!this.ongoing_stories[this.currentStory].css_style.background.image) {
+               var temp = this.ongoing_stories[this.currentStory].css_style.background.style.card.customized;
+               if (this.ongoing_stories[this.currentStory].css_style.background.style.card.custom)
+                   styles = Object.assign(styles, temp);
+           } else
+               styles = Object.assign(styles, {
+                   "background": "transparent"
+               });
+           return styles;
+       },
        removePredefinedStylesCard: function() {
            return this.overwriteMainStyle({});
        },
+
+
        componentStyle: function() {
            var styles = {}
            if (this.currentComponent == "choiceinput")
@@ -405,6 +418,42 @@ var app = new Vue({
            if (this.currentComponent == "imginput")
            ;
            return styles;
-       }
+       },
+
+
+       submitBootstrapStyle: function() {
+           if (!this.ongoing_stories[this.currentStory].css_style.background.image)
+               if (!this.ongoing_stories[this.currentStory].css_style.background.style.card.custom)
+                   return this.ongoing_stories[this.currentStory].css_style.background.style.card.bootstrap.textColor;
+       },
+       submitStyle: function() {
+           //questa funzione si occupa di gestire il colore del bottone submit
+           styles = {};
+           //se la card utilizza bootstrap gli stili corrispondenti sono specificati in submitBootstrapStyle
+           if (!this.ongoing_stories[this.currentStory].css_style.background.image)
+               if (this.ongoing_stories[this.currentStory].css_style.background.style.card.custom)
+                   styles = Object.assign(styles, {
+                       "color": this.ongoing_stories[this.currentStory].css_style.background.style.card.customized["color"]
+                   });
+           styles = Object.assign(styles, this.submitStyleObject);
+           styles = this.overwriteMainStyle(styles);
+           if (this.ongoing_stories[this.currentStory].css_style.mainStyle["color"] && !this.ongoing_stories[this.currentStory].css_style.background.style.card.custom)
+               styles = Object.assign(styles, {
+                   "color": this.ongoing_stories[this.currentStory].css_style.mainStyle["color"] + "!important" //è necessario per sovrascrivere il colore assegnato da bootstrap
+               });
+           return styles;
+       },
+
+       cardLimitStyle: function() {
+           var styles = {};
+           if (!this.ongoing_stories[this.currentStory].css_style.background.image) {
+               styles = Object.assign(styles, card_headerFooter);
+               var temp = this.ongoing_stories[this.currentStory].css_style.background.style.card;
+               if ((!temp.custom && temp.bootstrap.background == "bg-dark") || (temp.custom && temp.customized["background-color"] == "black"))
+                   styles = Object.assign(styles, bootstrap_card_headerFooter_black_background);
+           }
+           //stylistic choices lead us not to add this feature if there is a background image
+           return styles;
+       },
     }
 });

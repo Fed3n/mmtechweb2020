@@ -266,50 +266,47 @@
 
                     <!-- PREVIEW -->
                     <div id="preview-container" class="py-3 row border-bottom" v-if="previewdata.in_mainquest || (!previewdata.in_mainquest && ongoing_stories[currentStory].subQuests.length > 1)">
-                        <div class="col-6">
-                            <div id="preview" class="col-8 p-0">
+                        <div id="preview" class="col-8 p-0" v-cover :style="previewStyle">
 
-                                <!--Area quest-->
-                                <div ref="questrender" class="card player-card-author overflow-auto" aria-live="polite">
-                                    <div class="card-header">
-                                        <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">
-                                            {{previewdata.in_mainquest ? "Quest" : "Subquest"}}
-                                            {{ previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub }}: {{ getCurrentQuestData.title || "Senza nome" }}
-                                        </h3>
-                                    </div>
-                                    <div ref="cardbody" class="card-body overflow-auto" :style="removePredefinedStylesCard">
-                                        <form ref="inputForm" v-on:submit.prevent="previewdata.picked = null">
-                                            <p style="white-space: pre-line;">{{ getCurrentQuestData.text }}</p>
-                                            <p style="white-space: pre-line;">{{ getCurrentQuestData.description || "" }}</p>
-                                            <ul v-if="previewdata.in_mainquest && getCurrentClues.length > 0">
-                                                <li v-for="clue in getCurrentClues" v-if="clue">{{ clue }}</li>
-                                            </ul>
-                                            <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
-
-                                                                                                                                                    <!-- :metadata="metadata" -->
-                                            <div id="gameinput">
-                                                <component v-bind:is="currentComponent" :gamedata="getCurrentQuestData"
-                                                  :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub"
-                                                  :options="previewdata.in_mainquest ? getCurrentOptions : getCurrentQuestData.options" v-model="previewdata.picked"
-                                                  @change="upgradeSubmitStyle(false)" ref="inputComponent" :styles="componentStyle"></component>
-                                            </div>
-                                        </form>
-                                        <!--EVENTUALI MEDIA-->
-                                        <div v-if="getCurrentQuestData.media">
-                                            <!--img width="100%" v-if="getCurrentQuestData.media.type=='image'" :src="getMediaSrc" :alt="getCurrentQuestData.media.alt">
-                                            <div v-if="getCurrentQuestData.media.type=='video'">
-                                                <video width="100%" :aria-label="getCurrentQuestData.media.alt" controls :src="getMediaSrc">
-                                                </video>
-                                            </div-->
-                                            <p v-if="getCurrentQuestData.media.type=='image'" :alt="getCurrentQuestData.media.alt">Immagine: "{{ getCurrentQuestData.media.alt }}"</p>
-                                            <p v-if="getCurrentQuestData.media.type=='video'" :alt="getCurrentQuestData.media.alt">Video: "{{ getCurrentQuestData.media.alt }}"</p>
+                            <!--Area quest-->
+                            <div ref="questrender" class="card player-card-author overflow-auto" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
+                                <div class="card-header" :style="cardLimitStyle">
+                                    <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">
+                                        {{previewdata.in_mainquest ? "Quest" : "Subquest"}}
+                                        {{ previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub }}: {{ getCurrentQuestData.title || "Senza nome" }}
+                                    </h3>
+                                </div>
+                                <div ref="cardbody" class="card-body overflow-auto" :style="removePredefinedStylesCard">
+                                    <form ref="inputForm" v-on:submit.prevent="previewdata.picked = null">
+                                        <p style="white-space: pre-line;">{{ getCurrentQuestData.text }}</p>
+                                        <p style="white-space: pre-line;">{{ getCurrentQuestData.description || "" }}</p>
+                                        <ul v-if="previewdata.in_mainquest && getCurrentClues.length > 0">
+                                            <li v-for="clue in getCurrentClues" v-if="clue">{{ clue }}</li>
+                                        </ul>
+                                        <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->                                                                                                 <!-- :metadata="metadata" -->
+                                        <div id="gameinput">
+                                            <component v-bind:is="currentComponent" :gamedata="getCurrentQuestData"
+                                              :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub"
+                                              :options="previewdata.in_mainquest ? getCurrentOptions : getCurrentQuestData.options" v-model="previewdata.picked"
+                                              @change="upgradeSubmitStyle(false)" ref="inputComponent" :styles="componentStyle"></component>
                                         </div>
+                                    </form>
+                                    <!--EVENTUALI MEDIA-->
+                                    <div v-if="getCurrentQuestData.media">
+                                        <!--img width="100%" v-if="getCurrentQuestData.media.type=='image'" :src="getMediaSrc" :alt="getCurrentQuestData.media.alt">
+                                        <div v-if="getCurrentQuestData.media.type=='video'">
+                                            <video width="100%" :aria-label="getCurrentQuestData.media.alt" controls :src="getMediaSrc">
+                                            </video>
+                                        </div-->
+                                        <p v-if="getCurrentQuestData.media.type=='image'" :alt="getCurrentQuestData.media.alt">Immagine: "{{ getCurrentQuestData.media.alt }}"</p>
+                                        <p v-if="getCurrentQuestData.media.type=='video'" :alt="getCurrentQuestData.media.alt">Video: "{{ getCurrentQuestData.media.alt }}"</p>
                                     </div>
-                                    <div v-if="getCurrentQuestData.type != 'ending'" class="card-footer">
-                                        <button id="submit" ref="submitbutton" class="btn" type="button" :disabled="submitDisabled" @click="previewdata.picked = null">
-                                            Conferma
-                                        </button>
-                                    </div>
+                                </div>
+                                <div v-if="getCurrentQuestData.type != 'ending'" class="card-footer" :style="cardLimitStyle">
+                                    <button id="submit" ref="submitbutton" class="btn" type="button" :disabled="submitDisabled"
+                                          :class="submitBootstrapStyle" :style="submitStyle" @click="previewdata.picked = null">
+                                        Conferma
+                                    </button>
                                 </div>
                             </div>
                         </div>
