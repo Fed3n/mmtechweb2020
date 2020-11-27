@@ -29,6 +29,11 @@
     max-height: 70%;
 }
 
+#solutions-container {
+    height: 50%;
+    overflow-y: auto;
+}
+
 #chat {
     height: 60vh;
 }
