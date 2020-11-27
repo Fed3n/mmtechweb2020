@@ -1,5 +1,11 @@
 var app = new Vue({
     el: "#app",
+    components: {
+        "choiceinput": httpVueLoader("components/choice_input.vue"),
+        "textinput": httpVueLoader("components/text_input.vue"),
+        "imginput": httpVueLoader("components/img_input.vue"),
+        "keyboardinput": httpVueLoader("components/keyboard_input.vue")
+    },
     data: {
         players_data: {},
         players_data_changing: {},

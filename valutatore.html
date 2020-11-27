@@ -147,11 +147,15 @@
                                     <option v-for="quest in ongoing_stories[currentStory].mainQuest" :value="quest.number">{{ quest.number }}: {{ ( quest.title || "" ) }}</option>
                                 </select>
                             </div>
-                            <div v-if="!previewdata.in_mainquest">
+                            <div v-if="!previewdata.in_mainquest && ongoing_stories[currentStory].subQuests.length > 1">
                                 <label for="mainselect">Seleziona Sub</label>
                                 <select class="form-input" v-model="previewdata.currentSub">
                                     <option v-for="quest in ongoing_stories[currentStory].subQuests" :value="quest.number">{{ quest.number }}: {{ ( quest.title || "" ) }}</option>
                                 </select>
+                            </div>
+                            <div v-if="ongoing_stories[currentStory].subQuests.length == 1 && ongoing_stories[currentStory].subQuests[0].text == ' '
+                                && ongoing_stories[currentStory].subQuests[0].title == ' '">
+                                <label>Non sono presenti Subquests</label>
                             </div>
                         </div>
                         <div v-if="previewdata.in_mainquest && getCurrentQuestData.subquest_rewards.length > 0" class="col-md-4">
@@ -261,7 +265,7 @@
 
 
                     <!-- PREVIEW -->
-                    <div id="preview-container" class="py-3 row border-bottom">
+                    <div id="preview-container" class="py-3 row border-bottom" v-if="previewdata.in_mainquest || (!previewdata.in_mainquest && ongoing_stories[currentStory].subQuests.length > 1)">
                         <div class="col-6">
                             <div id="preview" class="col-8 p-0">
 
@@ -274,7 +278,7 @@
                                         </h3>
                                     </div>
                                     <div ref="cardbody" class="card-body overflow-auto" :style="removePredefinedStylesCard">
-                                        <form ref="inputForm">
+                                        <form ref="inputForm" v-on:submit.prevent="previewdata.picked = null">
                                             <p style="white-space: pre-line;">{{ getCurrentQuestData.text }}</p>
                                             <p style="white-space: pre-line;">{{ getCurrentQuestData.description || "" }}</p>
                                             <ul v-if="previewdata.in_mainquest && getCurrentClues.length > 0">
@@ -283,12 +287,12 @@
                                             <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
 
                                                                                                                                                     <!-- :metadata="metadata" -->
-                                            <!--div id="gameinput">
+                                            <div id="gameinput">
                                                 <component v-bind:is="currentComponent" :gamedata="getCurrentQuestData"
                                                   :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub"
                                                   :options="previewdata.in_mainquest ? getCurrentOptions : getCurrentQuestData.options" v-model="previewdata.picked"
                                                   @change="upgradeSubmitStyle(false)" ref="inputComponent" :styles="componentStyle"></component>
-                                            </div-->
+                                            </div>
                                         </form>
                                         <!--EVENTUALI MEDIA-->
                                         <div v-if="getCurrentQuestData.media">
@@ -302,7 +306,7 @@
                                         </div>
                                     </div>
                                     <div v-if="getCurrentQuestData.type != 'ending'" class="card-footer">
-                                        <button id="submit" ref="submitbutton" class="btn" type="button" :disabled="submitDisabled">
+                                        <button id="submit" ref="submitbutton" class="btn" type="button" :disabled="submitDisabled" @click="previewdata.picked = null">
                                             Conferma
                                         </button>
                                     </div>
