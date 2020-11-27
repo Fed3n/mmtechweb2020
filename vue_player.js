@@ -108,12 +108,12 @@ metadata_pholder = {
 var app = new Vue({
     el: "#app",
     components: {
-        "choiceinput": httpVueLoader("components/choice_input.vue"),
-        "textinput": httpVueLoader("components/text_input.vue"),
-        "imginput": httpVueLoader("components/img_input.vue"),
-        "keyboardinput": httpVueLoader("components/keyboard_input.vue"),
-        "humaninput": httpVueLoader("components/human_input.vue"),
-        "qrload": httpVueLoader("components/qrload.vue")
+        "choiceinput": choiceinput,
+        "textinput": textinput,
+        "imginput": imginput,
+        "keyboardinput": keyboardinput,
+        "humaninput": humaninput,
+        "qrload": qrload
     },
     data: {
         restored: false,

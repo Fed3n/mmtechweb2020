@@ -1,4 +1,4 @@
-Vue.component('choice_input'), {
+var choiceinput = Vue.component('choice_input', {
     props: ["gamedata", "current", "value", "options", "metadata"],
     methods: {
       updateAns: function(picked){
@@ -6,7 +6,7 @@ Vue.component('choice_input'), {
       }
     },
     template: `
-<div>
+<div class="choiceinput">
   <div class="answerContainer" v-for="opt in options">
     <input v-bind:name="current" type="radio" class="willdisabled" v-bind:value="opt" v-bind:id="opt" v-on:click="updateAns($event.target.value)">
     <label ref="radios" v-bind:for="opt">{{ opt }}</label>
@@ -15,14 +15,7 @@ Vue.component('choice_input'), {
 `
 });
 
-<template>
-</template>
-
-<script>
-module.exports = {
-}
-</script>
-
+/*
 <style scoped>
 label {
   display: inline;
@@ -31,3 +24,4 @@ label {
   margin-bottom: 0.7em;
 }
 </style>
+*/

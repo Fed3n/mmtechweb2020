@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/http-vue-loader"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://unpkg.com/vue-observe-visibility/dist/vue-observe-visibility.min.js"></script>
     <script src="qrcode.min.js"></script>
@@ -910,7 +909,17 @@
                                     <div name="button-customize" class="col-lg-6 border-right m-1">
                                         <label for="keybutton-customize" class="font-weight-bold color-static mb-2 rounded p-1">Personalizza Bottoni</label>
                                         <div class="form-group mb-3">
-                                            <label class="mr-2" for="keys">Tasti</label>
+                                            <label class="mr-2" for="keys">Tasti
+<i class="fas fa-question-circle"data-toggle="tooltip" title=
+"Inserisci sequenzialmente separati da , tasti della tastiera da creare:
+A,B,C
+Usa ; per andare a capo
+A,B,C;D,E,F
+I tasti _ lasciano uno spazio vuoto, i tasti che iniziano con !! sono tasti per cancellare:
+1,2,3;_,DEL,_
+Si possono creare tasti che stampano valori diversi dal loro nome:
+??A$$B"></i>
+                                            </label>
                                             <textarea class="form-control mr-2" v-model="renderQuest.key_style.keys"></textarea>
                                         </div>
                                         <div class="form-group row mb-3">
@@ -1206,6 +1215,12 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <script type="text/javascript" src="style_consts.js"></script>
     <script type="text/javascript" src="utils.js"></script>
+    <script type="text/javascript" src="components/choice_input.js"></script>
+    <script type="text/javascript" src="components/text_input.js"></script>
+    <script type="text/javascript" src="components/img_input.js"></script>
+    <script type="text/javascript" src="components/human_input.js"></script>
+    <script type="text/javascript" src="components/keyboard_input.js"></script>
+    <script type="text/javascript" src="components/qrload.js"></script>
     <script type="text/javascript" src="vue_autore.js"></script>
 </body>
 
