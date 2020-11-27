@@ -236,6 +236,33 @@ var app = new Vue({
             //inizializzo currentStory
             if (!this.currentStory) this.currentStory = Array.from(stories)[0];
             return Array.from(stories);
-       }
+       },
+       //oggetti di stile per la preview
+       previewStyle: function() {
+           var styles = {};
+           //loading background image
+           var temp = this.gamedata.css_style.background;
+           if (temp.image) {
+               styles = Object.assign(styles, {
+                   "background-image": temp["url"],
+                   "background-position": "center center"
+               });
+               document.getElementById("preview").style.webkitBackgroundSize = "cover";
+               document.getElementById("preview").style.mozBackgroundSize = "cover";
+               document.getElementById("preview").style.oBackgroundSize = "cover";
+               document.getElementById("preview").style.backgroundSize = "cover";
+           } else {
+               styles = Object.assign(styles, {
+                   "background-image": "none"
+               });
+           }
+           //loading mobile resolution
+           styles = Object.assign(styles, {
+               "width": mobile_width,
+               "height": mobile_height,
+               "overflow": "auto"
+           });
+           return styles;
+       },
     }
 });

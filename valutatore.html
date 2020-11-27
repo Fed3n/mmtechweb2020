@@ -24,8 +24,8 @@
             </div>
             <div class="container-fluid border-top pt-3">
                 <p>Avrai la possibilità di monitorare il punto in cui si trovano i giocatori e potrai aiutarli.<br>
-                   Utilizza a tal proposito l'anteprima della storia (con anche le risposte corrette) e la chat con i giocatori.
-                   Troverai questi pannelli cliccando sul bottone INTERAGISCI</p>
+                   Utilizza a tal proposito il pannello "attività della storia" per vedere l'attività in cui si trova il giocatore e le risposte che dovrebbe dare.
+                   Potrai anche utilizzare la chat per scambiare dei messaggi direttamente con il giocatore</p>
             </div>
         </div>
         <div class="row container-fluid mt-3 mx-0 p-0">
@@ -50,8 +50,15 @@
                 <div v-for="story in activeStories" :class="(story == activeStories[0]) ? 'show active' : ' '" class="tab-pane" :id="story" :aria-labelledby="story + 'tab'" role="tabpanel">
                     <div class="container container-fluid col-12 p-0">
                         <div class="table-responsive table-wrapper">
-                            <div class="container container-fluid color-static text-light rounded mx-0 my-0 py-3 pl-4 col-12">
-                                <h2 class="m-0">Giocatori attivi</h2>
+                            <div class="jumbotron jumbotron-fluid color-static text-light rounded py-2">
+                                <div class="container-fluid border-bottom">
+                                    <h2 class="ml-2 my-3">Giocatori attivi</h2>
+                                </div>
+                                <div class="container-fluid">
+                                    <p class="mt-3 mb-4 ml-2">Cliccando su "Aiuta il giocatore" avrai la possibilità di inserire un aiuto all'interno della storia. Questo aiuto verrà
+                                        mostrato come indizio aggiuntivo nella descrizione della storia.<br> In alternativa è possibile iniziare una vera e propria conversazione con
+                                        il giocatore cliccando sul bottone "Chat" in basso.</p>
+                                </div>
                             </div>
                             <table v-if="players_data" class="table table-striped border-bottom">
                                 <thead>
@@ -125,7 +132,7 @@
                 <button class="btn btn-block color-expand mt-4 mx-0" type="button" data-toggle="collapse" data-target="#story-preview">ATTIVITA' DELLA STORIA
                     <i class="fas fa-angle-double-down"></i>
                 </button>
-                <div id="story-preview" v-if="ongoing_stories[activeStories[0]]" class="container-fluid collapse overflow-auto mt-3 p-2">
+                <div id="story-preview" v-if="ongoing_stories[activeStories[0]]" class="container-fluid collapse mt-3 p-2">
                     <div id="preview-menu" class="row">
                         <div class="form-check col-md-3">
                             <label class="form-check-label">
@@ -148,7 +155,9 @@
                             </div>
                         </div>
                     </div>
-                    <div id="preview-view" v-if="getQuestData(currentStory)">
+
+
+                    <!--div id="preview-view" v-if="getQuestData(currentStory)">
                         <div class="row m-1">
                             <div class="bg-primary col-6">
                                 <p class="text-light font-weight-bold">Titolo</p>
@@ -241,7 +250,74 @@
                                 <p>{{ sol }}</p>
                             </div>
                         </div>
+                    </div-->
+
+
+                    <!-- PREVIEW -->
+                    <div id="preview-container" class="py-3 row border-bottom">
+                        <div class="col-6">
+                            <div id="preview" class="col-8 p-0" :style="previewStyle">
+
+                                <!--Area quest-->
+                                <div ref="questrender" class="card player-card-author overflow-auto" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
+                                    <div class="card-header" :style="cardLimitStyle">
+                                        <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">
+                                            {{previewdata.in_mainquest ? "Quest" : "Subquest"}}
+                                            {{ previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub }}: {{ renderQuest.title || "Senza nome" }}
+                                        </h3>
+                                    </div>
+                                    <div ref="cardbody" class="card-body overflow-auto" :style="removePredefinedStylesCard">
+                                        <form ref="inputForm" v-on:submit.prevent="previewdata.in_mainquest? submitMain() : submitSub()">
+                                            <p style="white-space: pre-line;">{{ renderQuest.text }}</p>
+                                            <p style="white-space: pre-line;">{{ renderQuest.description || "" }}</p>
+                                            <ul v-if="previewdata.in_mainquest && getCurrentClues.length > 0">
+                                                <li v-for="clue in getCurrentClues" v-if="clue">{{ clue }}</li>
+                                            </ul>
+                                            <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
+                                            <div id="gameinput">
+                                                <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub" :options="previewdata.in_mainquest ? getCurrentOptions : renderQuest.options" v-model="previewdata.picked" @change="upgradeSubmitStyle(false)" ref="inputComponent" :styles="componentStyle"></component>
+                                            </div>
+                                        </form>
+                                        <!--EVENTUALI MEDIA-->
+                                        <div v-if="renderQuest.media">
+                                            <img width="100%" v-if="renderQuest.media.type=='image'" :src="getMediaSrc" :alt="renderQuest.media.alt">
+                                            <div v-if="renderQuest.media.type=='video'">
+                                                <video width="100%" :aria-label="renderQuest.media.alt" controls :src="getMediaSrc">
+                                                </video>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div v-if="renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
+                                        <button id="submit" ref="submitbutton" class="btn" type="button" :disabled="submitDisabled" :class="submitBootstrapStyle" :style="submitStyle" v-on:click="previewdata.in_mainquest? submitMain() : submitSub()">
+                                            Conferma
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--div id="sidepreview" class="col-4">
+                            <div class="container-fluid mt-2">
+                                <div class="col-8"><button class="btn color-interact border btn-block" v-on:click="switchView(false)" :disabled="!mobileView">PC</button></div>
+                                <div class="col-8"><button class="btn color-interact border btn-block" v-on:click="switchView(true)" :disabled="mobileView">MOBILE</button></div>
+                            </div>
+                            <div id="preview-options">
+                                <div id="current-answer" v-if="previewdata.picked" class="overflow-auto m-3" style="word-wrap:break-word;">
+                                    <p>Risposta corrente: {{ previewdata.picked }}</p>
+                                    <div v-if="previewdata.in_mainquest">
+                                        <button class="btn btn-secondary" v-if="getCurrentGotos.length > 0" data-toggle="tooltip" :title="gamedata.mainQuest[getAnswerGoto].title" v-on:click="jumpToQuest('main',getAnswerGoto)">
+                                            {{ "Questa risposta porterà a " + (gamedata.mainQuest[getAnswerGoto].title || 'Quest'+getAnswerGoto)}}
+                                        </button>
+                                    </div>
+                                    <div v-if="!previewdata.in_mainquest">
+                                        <p>La risposta è {{ getAnswerCorrectness ? "giusta" : "sbagliata" }}!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div-->
                     </div>
+                    <!--FINE PREVIEW-->
+
+
                 </div>
                 <!-- chat -->
                 <button class="btn btn-block color-expand mt-2 mx-0" type="button" data-toggle="collapse" data-target="#chatroom">CHAT
