@@ -13,7 +13,14 @@ var app = new Vue({
             in_mainquest: true,
             currentQuest: 0,
             currentSub: 0
-        }
+        },
+        currentStory: null
+    },
+    created: function(){
+        this.patchPlayersData();
+        this.getPlayersData();
+        this.getCurrentChats();
+        this.getPlayerAnswers();
     },
     mounted: function() {
         this.updatesEvery5Seconds();
@@ -227,7 +234,9 @@ var app = new Vue({
             for (let playerID in this.players_data) {
                 stories.add(playerID.split("$")[0]); // playerID = [story, id]
             }
+            //inizializzo currentStory
+            if (!this.currentStory) this.currentStory = Array.from(stories)[0];
             return Array.from(stories);
-        }
+       }
     }
 });

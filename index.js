@@ -90,6 +90,31 @@ app.get('/', (req, res) => {
     }
 });
 
+app.get('/player_:storyname', (req, res) => {
+	let storylist = fs.readdirSync(path.join(__dirname + "/story"));
+    let found = false;
+    for (story of storylist) {
+        let info = fs.readFileSync(path.join(__dirname + "/story/" + story + "/info.json"));
+        info = JSON.parse(info);
+		if(req.params.storyname == info.name) found = true;
+    }
+	if(found) {
+		if ((req.protocol == "https" && serverOpened == true) || (serverOpened == false)) {
+			return res.sendFile(path.join(__dirname + "/player.html"));
+		} else if (req.protocol != "https" && serverOpened == true) {
+			res.writeHead(301, {
+				"Location": "https://" + req.headers['host'] + req.url
+			});
+			res.end();
+		}
+	} else {
+		res.writeHead(301, {
+			"Location": "http://" + req.headers['host']
+		});
+		res.end();
+	}		
+});
+
 app.get('/autore', (req, res) => {
     if ((req.protocol == "https" && serverOpened == true) || (serverOpened == false)) {
         return res.sendFile(path.join(__dirname + "/autore.html"));

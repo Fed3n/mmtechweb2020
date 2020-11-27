@@ -21,22 +21,58 @@
 }
 
 #chat {
-    min-height: 25%;
-    max-height: 40%;
+    height: 60vh;
 }
 
 #chatbutton {
     width: 100%;
-    overflow-x: scroll;
 }
 
 #chatcontainer {
-    min-height: 1vh;
-    max-height: 40vh;
+    height: 100%;
+}
+
+#chatmessagecontainer {
+    height: 90%;
     overflow-y: scroll;
 }
 
 .chatmessage {
     width: 80%;
     float: right;
+}
+
+.sendbutton{
+    height: 7%;
+}
+
+.chat-user {
+    border-left: none;
+    border-right: none;
+}
+
+.chat-user:hover {
+    background-color: #ebeced;
+}
+
+.chat-user-selected, .chat-user-selected:focus,
+.chat-user-selected:focus, .chat-user-selected:active{
+    background-color: #ebeced;
+}
+
+.chat-user.focus, .chat-user:focus {
+    outline: none !important;
+}
+
+.pre:active {
+    background-color: inherit;
+    color: inherit;
+}
+
+.pre:hover {
+    background-color: inherit;
+}
+
+.pre-button {
+    box-shadow: none !important;
 }

@@ -25,3 +25,22 @@
     background-color: #0D47A1;
     color: white;
 }
+
+.color-dropdown {
+    color: #0D47A1;
+}
+
+.color-ended {
+  color: white;
+  background-color: #42b461;
+}
+
+.color-ended:hover {
+  color: white;
+  background-color: #42b461;
+}
+
+.color-warning {
+  color: black;
+  background-color: #fbec6d;
+}
