@@ -25,6 +25,10 @@
     height: 100%;
 }
 
+#preview-menu-container {
+    max-height: 70%;
+}
+
 #chat {
     height: 60vh;
 }

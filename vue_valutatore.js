@@ -206,6 +206,10 @@ var app = new Vue({
             if (this.previewdata.in_mainquest) return this.ongoing_stories[story].mainQuest[this.previewdata.currentQuest];
             else return this.ongoing_stories[story].subQuests[this.previewdata.currentSub];
         },
+        getQuest: function(number){
+            if (this.previewdata.in_mainquest) return this.ongoing_stories[this.currentStory].mainQuest[number];
+            else return this.ongoing_stories[this.currentStory].subQuests[number];
+        },
         //style METHODS
         overwriteMainStyle: function(styles) {
             var main_style = this.ongoing_stories[this.currentStory].css_style.mainStyle;
@@ -323,6 +327,23 @@ var app = new Vue({
                }
            }
            return options;
+       },
+       getCurrentGotos: function() {
+           gotos = [];
+           for (goto of this.getCurrentQuestData.goto)
+               gotos.push(goto);
+           for (reward of this.getCurrentQuestData.subquest_rewards) {
+               if (this.previewdata.completedSubs.includes(reward.number)) {
+                   for (goto of reward.added_goto)
+                       //Aggiungo in penultima posizione
+                       gotos.splice(gotos.length - 1, 0, goto);
+                   for (goto of reward.removed_goto) {
+                       if ((index = myIndexOf(gotos, goto, arrCmp)) != -1)
+                           options.splice(index, 1);
+                   }
+               }
+           }
+           return gotos;
        },
        /*
        getMediaSrc: function() {
