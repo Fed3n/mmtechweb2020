@@ -342,14 +342,6 @@ app.delete('/stories', (req, res) => {
     try {
         recursiveRm(dir);
     } catch(err) { throw err; }
-    /*
-    fs.rmdir(dir, {
-        recursive: true
-    }, (error) => {
-        if (error) throw error;
-    });
-    */
-
     console.log("Deleted story " + story);
     res.status(200).send("Story delete successfully.");
 });
