@@ -30,13 +30,8 @@
     overflow-y: auto;
 }
 
-#solutions-container > div {
-
-}
-
 #preview-menu-container {
     height: 50%;
-    overflow-y: auto;
 }
 
 .principal {
