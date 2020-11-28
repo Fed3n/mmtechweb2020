@@ -33,9 +33,6 @@ var app = new Vue({
             picked: null,
             completedSubs: []
         },
-        metadata: {
-            name: null
-        },
         currentStory: null
     },
     created: function(){
@@ -345,10 +342,9 @@ var app = new Vue({
            }
            return gotos;
        },
-       /*
        getMediaSrc: function() {
            return ("story/" + this.metadata.name + (this.getCurrentQuestData.media.type == "image" ? "/images/" : "/videos/") + this.getCurrentQuestData.media.uri);
-       },*/
+       },
        submitDisabled: function() {
            let disabled = false;
            //Se il tipo è "" (none) è sempre abilitato
@@ -362,8 +358,11 @@ var app = new Vue({
            this.upgradeSubmitStyle(disabled);
            return disabled;
        },
-
-
+       metadata: function() {
+           return {
+                  name: this.currentStory
+                  };
+       },
 
        //oggetti di stile per la preview
        previewStyle: function() {
@@ -395,8 +394,6 @@ var app = new Vue({
                document.getElementById("externalFontUrl").setAttribute('href', this.ongoing_stories[this.currentStory].css_style.mainStyle['font-url']);
            return styles;
        },
-
-
        cardBootstrapStyle: function() {
            if (!this.ongoing_stories[this.currentStory].css_style.background.image) {
                var temp = this.ongoing_stories[this.currentStory].css_style.background.style.card.bootstrap;
@@ -408,8 +405,6 @@ var app = new Vue({
            } else
                return "";
        },
-
-
        cardStyle: function() {
            var styles = {};
            if (!this.ongoing_stories[this.currentStory].css_style.background.image) {
@@ -425,8 +420,6 @@ var app = new Vue({
        removePredefinedStylesCard: function() {
            return this.overwriteMainStyle({});
        },
-
-
        componentStyle: function() {
            var styles = {}
            if (this.currentComponent == "choiceinput")
@@ -443,8 +436,6 @@ var app = new Vue({
            ;
            return styles;
        },
-
-
        submitBootstrapStyle: function() {
            if (!this.ongoing_stories[this.currentStory].css_style.background.image)
                if (!this.ongoing_stories[this.currentStory].css_style.background.style.card.custom)
@@ -467,7 +458,6 @@ var app = new Vue({
                });
            return styles;
        },
-
        cardLimitStyle: function() {
            var styles = {};
            if (!this.ongoing_stories[this.currentStory].css_style.background.image) {

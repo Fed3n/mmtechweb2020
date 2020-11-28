@@ -176,17 +176,32 @@
                                             || getCurrentQuestData.type == 'choice' ) && getCurrentGotos.length > 0">
                                     <label class="font-weight-bold">Destinazioni</label>
                                     <ul>
-                                        <li v-for="sol in getCurrentGotos">La risposta <u>{{sol[0]}}</u> porta a <u>{{ ( getQuest(sol[1]).title || "MainQuest "+sol[1] ) }}</u><br>
-                                              <label v-if="sol[2] != ''">Punteggio: {{ sol[2] }}<label></li>
+                                        <li v-if="getCurrentQuestData.type != 'draw'" v-for="sol in getCurrentGotos">La risposta <span class="principal">{{ sol[0] }}</span> porta a
+                                              <span class="principal">{{ ( getQuest(sol[1]).title || "MainQuest "+sol[1] ) }}</span><br>
+                                              <label v-if="sol[2] != ''">Punteggio: {{ sol[2] }}<label><br>
+                                        </li>
+                                        <li v-if="getCurrentQuestData.type == 'draw'" v-for="sol in getCurrentGotos">
+                                              <span v-if="sol[0] != ''">tutti i punti all'interno della circonferenza con centro in <span class="principal">({{ sol[0][0] }},{{ sol[0][1] }})</span> e raggio <span class="principal">{{ sol[0][2] }}</span></span>
+                                              <span v-if="sol[0] == ''">tutti gli altri punti</span>
+                                              portano a <span class="principal">{{ ( getQuest(sol[1]).title || "MainQuest "+sol[1] ) }}</span><br>
+                                              <label v-if="sol[2] != ''">Punteggio: {{ sol[2] }}<label>
+                                        </li>
                                     </ul>
+                                    <label v-if="getCurrentQuestData.type == 'draw' && previewdata.picked">La selezione corrente è:
+                                          ({{ previewdata.picked[0] }},{{ previewdata.picked[1] }})<label>
                                 </div>
                             </div>
                             <div class="m-3" v-if="!previewdata.in_mainquest && ongoing_stories[currentStory].subQuests.length > 1">
                                 <div v-if="( getCurrentQuestData.type == 'input' || getCurrentQuestData.type == 'keys' || getCurrentQuestData.type == 'draw' )">
                                     <label class="font-weight-bold">Soluzioni</label>
                                     <ul>
-                                        <li v-for="sol in getCurrentQuestData.solution">{{ sol }}</li>
+                                        <li v-if=" getCurrentQuestData.type != 'draw' " v-for="sol in getCurrentQuestData.solution">{{ sol }}
+                                            <label v-if="sol[2] != ''">Punteggio: {{ sol[2] }}<label></li>
+                                        <li v-if=" getCurrentQuestData.type == 'draw' " v-for="sol in getCurrentQuestData.solution">tutti i punti all'interno della circonferenza con centro in
+                                            <span class="principal">({{ sol[0] }},{{ sol[1] }})</span> e raggio <span class="principal">{{ sol[2] }}</span></li>
                                     </ul>
+                                    <label v-if="getCurrentQuestData.type == 'draw' && previewdata.picked">La selezione corrente è:
+                                          ({{ previewdata.picked[0] }},{{ previewdata.picked[1] }})<label>
                                 </div>
                                 <div v-if="(  getCurrentQuestData.type == 'choice' )">
                                     <label class="font-weight-bold">La soluzione è:</label>
@@ -216,9 +231,9 @@
                                         <ul v-if="previewdata.in_mainquest && getCurrentClues.length > 0">
                                             <li v-for="clue in getCurrentClues" v-if="clue">{{ clue }}</li>
                                         </ul>
-                                        <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->                                                                                                 <!-- :metadata="metadata" -->
+                                        <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
                                         <div id="gameinput">
-                                            <component v-bind:is="currentComponent" :gamedata="getCurrentQuestData"
+                                            <component v-bind:is="currentComponent" :gamedata="getCurrentQuestData" :metadata="metadata"
                                               :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub"
                                               :options="previewdata.in_mainquest ? getCurrentOptions : getCurrentQuestData.options" v-model="previewdata.picked"
                                               @change="upgradeSubmitStyle(false)" ref="inputComponent" :styles="componentStyle"></component>
@@ -226,13 +241,13 @@
                                     </form>
                                     <!--EVENTUALI MEDIA-->
                                     <div v-if="getCurrentQuestData.media">
-                                        <!--img width="100%" v-if="getCurrentQuestData.media.type=='image'" :src="getMediaSrc" :alt="getCurrentQuestData.media.alt">
+                                        <img width="100%" v-if="getCurrentQuestData.media.type=='image'" :src="getMediaSrc" :alt="getCurrentQuestData.media.alt">
                                         <div v-if="getCurrentQuestData.media.type=='video'">
                                             <video width="100%" :aria-label="getCurrentQuestData.media.alt" controls :src="getMediaSrc">
                                             </video>
-                                        </div-->
-                                        <p v-if="getCurrentQuestData.media.type=='image'" :alt="getCurrentQuestData.media.alt">Immagine: "{{ getCurrentQuestData.media.alt }}"</p>
-                                        <p v-if="getCurrentQuestData.media.type=='video'" :alt="getCurrentQuestData.media.alt">Video: "{{ getCurrentQuestData.media.alt }}"</p>
+                                        </div>
+                                        <!--p v-if="getCurrentQuestData.media.type=='image'" :alt="getCurrentQuestData.media.alt">Immagine: "{{ getCurrentQuestData.media.alt }}"</p>
+                                        <p v-if="getCurrentQuestData.media.type=='video'" :alt="getCurrentQuestData.media.alt">Video: "{{ getCurrentQuestData.media.alt }}"</p-->
                                     </div>
                                 </div>
                                 <div v-if="getCurrentQuestData.type != 'ending'" class="card-footer" :style="cardLimitStyle">
