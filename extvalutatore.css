@@ -25,11 +25,16 @@
     height: 100%;
 }
 
-#preview-menu-container {
-    max-height: 70%;
+#solutions-container {
+    height: 50%;
+    overflow-y: auto;
 }
 
-#solutions-container {
+#solutions-container > div {
+
+}
+
+#preview-menu-container {
     height: 50%;
     overflow-y: auto;
 }

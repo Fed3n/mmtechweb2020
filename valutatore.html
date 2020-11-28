@@ -135,11 +135,11 @@
                 </button>
 
                 <div id="story-preview" v-if="ongoing_stories[activeStories[0]]" class="container-fluid collapse mt-3 p-2 row">
-                    <div id="preview-menu" class="col-md-6 p-3 mt-2 mb-3">
-                        <div class="pb-3 h-50" id="preview-menu-container" :class=" (!previewdata.in_mainquest && (ongoing_stories[currentStory].subQuests.length == 1 && ongoing_stories[currentStory].subQuests[0].text == ''
+                    <div id="preview-menu" class="col-md-6 p-3 mt-2 mb-1">
+                        <div class="pb-3" id="preview-menu-container" :class=" (!previewdata.in_mainquest && (ongoing_stories[currentStory].subQuests.length == 1 && ongoing_stories[currentStory].subQuests[0].text == ''
                                 && ongoing_stories[currentStory].subQuests[0].title == '') ) ? ' ' : 'border-bottom'">
                             <!-- selettori per il previewdata -->
-                            <div class="btn-group container-fluid m-3 col-8">
+                            <div class="btn-group container-fluid mx-3 mb-3 mt-2 col-8">
                                 <button class="btn color-interact border" v-on:click="previewdata.in_mainquest = true" :disabled="previewdata.in_mainquest">MainQuests</button>
                                 <button class="btn color-interact border" v-on:click="previewdata.in_mainquest = false" :disabled="!previewdata.in_mainquest">SubQuests</button>
                             </div>
@@ -161,7 +161,7 @@
                                     <label class="font-weight-bold">Non sono presenti Subquests</label>
                                 </div>
                             </div>
-                            <div v-if="previewdata.in_mainquest && getCurrentQuestData.subquest_rewards.length > 0" class="form-group m-3 mb-4 px-3">
+                            <div v-if="previewdata.in_mainquest && getCurrentQuestData.subquest_rewards.length > 0" class="form-group mx-3 mb-0 px-3">
                                 <label for="subquestsCompletate" class="font-weight-bold">SubQuest Completate</label>
                                 <div id="subquestsCompletate" v-for="sub in getCurrentQuestData.subquest_rewards" class="form-check">
                                     <input type="checkbox" class="form-check-input" :name="'sub' + sub.number" :value="sub.number" v-model="previewdata.completedSubs">
@@ -171,7 +171,7 @@
                         </div>
                         <!-- mostra soluzioni e destinazioni delle quests -->
                         <div class="p-3 my-1" id="solutions-container">
-                            <div class="m-3" v-if="previewdata.in_mainquest && !(getCurrentQuestData.goto.length == 1 && getCurrentQuestData.goto[0][0] == '')">
+                            <div class="mx-3" v-if="previewdata.in_mainquest && !(getCurrentQuestData.goto.length == 1 && getCurrentQuestData.goto[0][0] == '')">
                                 <div v-if="( getCurrentQuestData.type == 'input' || getCurrentQuestData.type == 'keys' || getCurrentQuestData.type == 'draw'
                                             || getCurrentQuestData.type == 'choice' ) && getCurrentGotos.length > 0">
                                     <label class="font-weight-bold">Destinazioni</label>
@@ -191,7 +191,7 @@
                                           ({{ previewdata.picked[0] }},{{ previewdata.picked[1] }})<label>
                                 </div>
                             </div>
-                            <div class="m-3" v-if="!previewdata.in_mainquest && ongoing_stories[currentStory].subQuests.length > 1">
+                            <div class="mx-3" v-if="!previewdata.in_mainquest && ongoing_stories[currentStory].subQuests.length > 1">
                                 <div v-if="( getCurrentQuestData.type == 'input' || getCurrentQuestData.type == 'keys' || getCurrentQuestData.type == 'draw' )">
                                     <label class="font-weight-bold">Soluzioni</label>
                                     <ul>
