@@ -81,8 +81,7 @@ var keyboardinput = Vue.component('keyboard_input', {
   template:`
   <div class="keyinput">
     <div class="row">
-      <div>
-      <span :style="textStyle" tabindex=0 aria-live="polite" aria-label="codice inserito">{{ text }}</span>
+      <p :style="textStyle" tabindex=0 aria-live="polite" aria-label="codice inserito">{{ text }}</p>
     </div>
     <div id="custom-keyboard" :aria-label="accessibleDescription" role="grid">
       <div role="row" v-for="(row,index) in genKeyboard" class="row" :aria-label="'riga'+index">

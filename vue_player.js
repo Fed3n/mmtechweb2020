@@ -238,7 +238,7 @@ var app = new Vue({
                     this.help_received = true;
                     this.help_requested = false;
                 }
-            }).catch(err => console.log(err));
+            }).catch(err => {});
         },
         sendChatMsg: function() {
             if (this.chat_msg) {
@@ -375,7 +375,7 @@ var app = new Vue({
                             Cookies.set('user_id', this.user_id, {
                                 expires: 1
                             });
-                            Cookies.set('user_name', this.user_id, {
+                            Cookies.set('user_name', this.user_name, {
                                 expires: 1
                             });
                             Cookies.set('questname', this.questname, {
@@ -706,6 +706,7 @@ var app = new Vue({
             if (this.gamedata == null) return null;
             if (Cookies.get('logged') === 'true' && this.restored == false) {
                 this.user_id = Cookies.get('user_id');
+                this.user_name = Cookies.get('user_name');
                 this.questname = Cookies.get('questname');
                 this.time_played = Cookies.get('time_played');
                 this.time_inactive = Cookies.get('time_inactive');
