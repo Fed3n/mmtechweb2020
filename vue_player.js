@@ -141,6 +141,7 @@ var app = new Vue({
         completedSubs: [],
         in_mainquest: true,
         picked: null,
+        wrong_sub_ans: false,
         togglerButtonVisible: true,
         onLink: [],
         submitStyleObject: {}
@@ -336,6 +337,7 @@ var app = new Vue({
         },
         deleteCookies: function() {
             Cookies.remove('user_id'); //1
+            Cookies.remove('user_name'); //1
             Cookies.remove('questname'); //2
             Cookies.remove('logged'); //3
             Cookies.remove('time_played'); //4
@@ -371,6 +373,9 @@ var app = new Vue({
                                 expires: 1
                             });
                             Cookies.set('user_id', this.user_id, {
+                                expires: 1
+                            });
+                            Cookies.set('user_name', this.user_id, {
                                 expires: 1
                             });
                             Cookies.set('questname', this.questname, {
@@ -413,6 +418,7 @@ var app = new Vue({
         },
         goToSubQuest: function(quest) {
             this.picked = null;
+            this.wrong_sub_ans = false;
             this.$refs.inputForm.reset();
             this.currentSub = quest.number;
             this.in_mainquest = false;
@@ -433,6 +439,7 @@ var app = new Vue({
         },
         goToMainQuest: function() {
             this.picked = null;
+            this.wrong_sub_ans = false;
             this.$refs.inputForm.reset();
             this.in_mainquest = true;
             this.$refs.questname.focus();
@@ -537,7 +544,11 @@ var app = new Vue({
                     if (this.picked == ans)
                         wrong_answer = false;
             }
-            if (wrong_answer) return;
+            //feedback in case of wrong answer
+            if (wrong_answer) {
+                this.wrong_sub_ans = true;
+                return;
+            }
 
             this.time_inactive = 0;
             this.completedSubs.push(subQuest.number);
@@ -545,6 +556,7 @@ var app = new Vue({
             this.help_received = false;
             this.in_mainquest = true;
             this.picked = null;
+            this.wrong_sub_ans = false;
             //If per ragioni di compatibilità...
             if (this.renderQuest.sub_score) this.score += parseInt(this.renderQuest.sub_score);
             this.$refs.questname.focus();

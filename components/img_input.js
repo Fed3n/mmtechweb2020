@@ -1,5 +1,5 @@
 var imginput = Vue.component('img_input', {
-  props: ["gamedata", "current", "value", "metadata"],
+  props: ["gamedata", "current", "value", "metadata","wrong"],
   methods: {
     updateAns: function(event){
       //La prima parte gestisce il disegno sul canvas
@@ -37,6 +37,7 @@ var imginput = Vue.component('img_input', {
   <div style="position: relative; margin-top: 2%; margin-bottom: 2%;  width: 20rem; height: 16rem;">
     <canvas style="position: absolute; left: 0; top: 0; z-index: 0;" width="300" height="250" ref="imgcanvas"></canvas>
     <canvas style="position: absolute; left: 0; top: 0; z-index: 1;" width="300" height="250" ref="drawcanvas" v-on:click="updateAns"></canvas>
+	<p v-if="wrong">Riprova!</p>
   </div>
   `
 });

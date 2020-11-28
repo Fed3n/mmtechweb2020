@@ -182,6 +182,7 @@ var app = new Vue({
         },
         selectInterfaceFields: function({
             user_id,
+            user_name,
             in_mainquest,
             currentQuest,
             currentSub,
@@ -189,6 +190,7 @@ var app = new Vue({
         }) {
             return {
                 user_id,
+                user_name,
                 in_mainquest,
                 currentQuest,
                 currentSub,

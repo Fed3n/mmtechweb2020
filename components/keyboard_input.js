@@ -1,5 +1,5 @@
 var keyboardinput = Vue.component('keyboard_input', {
-  props: ["gamedata", "current", "value", "metadata","styles","key_style"],
+  props: ["gamedata", "current", "value", "metadata","styles","key_style","wrong"],
   data: function() {
     return {
       text: ""
@@ -79,9 +79,10 @@ var keyboardinput = Vue.component('keyboard_input', {
     }
   },
   template:`
-  <div class="keyinpuy">
+  <div class="keyinput">
     <div class="row">
-      <p :style="textStyle" tabindex=0 aria-live="polite" aria-label="codice inserito">{{ text }}</p>
+      <div>
+      <span :style="textStyle" tabindex=0 aria-live="polite" aria-label="codice inserito">{{ text }}</span>
     </div>
     <div id="custom-keyboard" :aria-label="accessibleDescription" role="grid">
       <div role="row" v-for="(row,index) in genKeyboard" class="row" :aria-label="'riga'+index">
@@ -104,6 +105,7 @@ var keyboardinput = Vue.component('keyboard_input', {
         </div>
       </div>
     </div>
+	<p v-if="wrong">Riprova!</p>
   </div>
   `
 });

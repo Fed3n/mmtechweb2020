@@ -74,7 +74,7 @@
                                 <tbody>
                                     <tr v-for="player in players_data_shown_from_story[story]">
                                         <!-- informazioni sullo stato del player -->
-                                        <td>{{ player.user_id }}</td>
+                                        <td>{{ player.user_name }}</td>
                                         <td>{{ player.in_mainquest ? "mainQuest" : "Subquest"}}</td>
                                         <td v-if="player.in_mainquest">{{ ongoing_stories[currentStory] ? ongoing_stories[currentStory].mainQuest[player.currentQuest].title : " "}}</td>
                                         <td v-if="!player.in_mainquest">{{ ongoing_stories[currentStory] ? ( ongoing_stories[currentStory].subQuests[player.currentSub] ?
