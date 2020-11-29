@@ -1,6 +1,7 @@
 <!DOCTYPE html lang="it">
 
 <head>
+    <title>M&M!</title>
     <meta charset='utf-8'>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -97,7 +98,6 @@
                                 </video>
                             </div>
                         </div>
-                        <p v-if="renderQuest && renderQuest.type == 'ending'">Punteggio finale: {{ score }}</p>
                     </div>
                     <div v-if="renderQuest && renderQuest.type != 'ending'" class="card-footer" :style="cardLimitStyle">
                         <!--Bottone submit non c'è se siamo in un ending-->

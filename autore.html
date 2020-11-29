@@ -11,6 +11,7 @@
     <link href="external.css" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link href="comp.css" rel="stylesheet">
     <link href="colors.css" rel="stylesheet">
     <link id="externalFontUrl" href="" rel="stylesheet">
     <title>Ambiente Autore</title>
@@ -731,6 +732,25 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-9 border rounded m-4 p-3">
+                            <p class="color-static p-2 rounded">Valutazioni Punteggi</p>
+                            <p class="color-static-light rounded m-1 mb-3 pl-3 p-2">
+                                Queste valutazioni non verranno viste dal giocatore, ma saranno utilizzate come metrica dai valutatori.
+                                Si richiedono i punti minimi richiesti per avere valutazione A, B o C, altrimenti verrà assegnato D.
+                            </p>
+                            <div class="row m-2">
+                                <label for="ascore" class="font-weight-bold col-2 mt-2">A</label>
+                                <input name="ascore" class="form-control col-4" type="number" min=0 step=1 v-model="gamedata.scoretier.a">
+                            </div>      
+                            <div class="row m-2">
+                                <label for="bscore" class="font-weight-bold col-2 mt-2">B</label>
+                                <input name="bscore" class="form-control col-4" type="number" min=0 step=1 v-model="gamedata.scoretier.b">
+                            </div>      
+                            <div class="row m-2">
+                                <label for="cscore" class="font-weight-bold col-2 mt-2">C</label>
+                                <input name="cscore" class="form-control col-4" type="number" min=0 step=1 v-model="gamedata.scoretier.c">
+                            </div>      
+                        </div>
                     </div>
                 </div>
                 <!--FINE PREVIEW-->
@@ -829,7 +849,7 @@
                                 <input type="radio" id="keyschoice" class="form-check-input" name="typefield" value="keys" v-model="renderQuest.type">
                                 <label for="keyschoice" class="form-check-label">Tastiera</label>
                             </div>
-                            <div class="form-check form-check-inline">
+                            <div class="form-check form-check-inline" v-if="previewdata.in_mainquest">
                                 <input type="radio" id="humanchoice" class="form-check-input" name="typefield" value="human" v-model="renderQuest.type">
                                 <label for="humanchoice" class="form-check-label">Umano</label>
                             </div>

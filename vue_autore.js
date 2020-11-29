@@ -46,6 +46,11 @@
           },
           "solution": []
       }],
+      "scoretier": {
+          "a": 0,
+          "b": 0,
+          "c": 0 
+      },
       "starting_points": [],
       "author_order": {
           "main": [0],
@@ -208,7 +213,6 @@
           },
           //SERVER INTERACTION METHODS//
           updateFs: function() {
-              console.log("Requesting fs update...");
               var _this = this;
               //Storie
               axios.get("/stories").then(function(res) {
@@ -249,6 +253,12 @@
                           for(let i = 0; i < _this.gamedata.mainQuest.length; i++) _this.gamedata.author_order.main[i] = i;
                           for(let i = 0; i < _this.gamedata.subQuests.length; i++) _this.gamedata.author_order.sub[i] = i;
                       }
+                      if(!_this.gamedata.scoretier)
+                        _this.gamedata.scoretier = {
+                              "a": 0,
+                              "b": 0,
+                              "c": 0
+                        }
                       _this.getImagesList();
                       _this.getVideosList();
                       _this.loadedStory = this.$refs.selectedStory.value;
@@ -276,8 +286,6 @@
               axios.post("/stories", data)
                   .then((res) => {
                       _this.updateFs();
-                      console.log("Post successful with response: ");
-                      console.log(res);
                   });
           },
           deleteStory: function() {
@@ -310,16 +318,13 @@
                           }
                       })
                       .then((res) => {
-                          console.log(res);
                           _this.getImagesList();
                       });
               }
           },
           getImagesList: function() {
-              console.log("Getting images list...");
               let _this = this;
               axios.get(`/stories/${this.metadata.name}/images`).then((res) => {
-                  console.log(res.data);
                   _this.imagesList = res.data;
               });
           },
@@ -354,10 +359,8 @@
               }
           },
           getVideosList: function() {
-              console.log("Getting videos list...");
               let _this = this;
               axios.get(`/stories/${this.metadata.name}/videos`).then((res) => {
-                  console.log(res.data);
                   _this.vidsList = res.data;
               });
           },

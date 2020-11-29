@@ -139,7 +139,8 @@ var app = new Vue({
                 for (let id in answers) {
                     this.$set(this.players_ans, id, answers[id]);
                 }
-            });
+            })
+            .catch(err => {});
         },
         patchPlayersData: function() {
             axios.patch('/players/', this.players_data_changing)
@@ -147,7 +148,6 @@ var app = new Vue({
                     this.players_data_changing = {};
                 })
                 .catch(err => {
-                    console.log(err)
                 });
         },
         saveJson: function() {
@@ -183,6 +183,7 @@ var app = new Vue({
         selectInterfaceFields: function({
             user_id,
             user_name,
+            score,
             in_mainquest,
             currentQuest,
             currentSub,
@@ -191,6 +192,7 @@ var app = new Vue({
             return {
                 user_id,
                 user_name,
+                score,
                 in_mainquest,
                 currentQuest,
                 currentSub,
@@ -203,6 +205,18 @@ var app = new Vue({
         computeJson: function(id) {
             let story = this.computeStory(id);
             return this.ongoing_stories[story];
+        },
+        computeGrade: function(id) {
+            if(this.computeJson(id)){
+                let grading = this.computeJson(id).scoretier;
+                let player = this.players_data[id];
+                
+                if(player.score >= grading.a) return "A";
+                else if(player.score >= grading.b) return "B";
+                else if(player.score >= grading.c) return "C";
+                else return "D";
+            }
+            else return "";
         },
         getQuestData: function(story) {
             if (this.previewdata.in_mainquest) return this.ongoing_stories[story].mainQuest[this.previewdata.currentQuest];

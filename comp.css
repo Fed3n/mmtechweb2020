@@ -1,0 +1,52 @@
+
+/*CHOICE_INPUT*/
+.choiceinput label {
+    display: inline;
+}
+
+.choiceinput .answerContainer {
+    margin-bottom: 0.7em;
+}
+
+
+/*TEXT_INPUT*/
+.textinput input {
+    max-width: 90vw;
+}
+
+/*KEYBOARD_INPUT*/
+.keyinput .input-button{
+  overflow: hidden;
+  user-select: none;
+  text-align: center;
+  vertical-align: top;
+  outline: none;
+}
+
+.keyinput #button-line {
+  display: block;
+  font-size: 0px;
+}
+
+.keyinput .press-anim:active {
+  transform: translateY(0.1em);
+}
+
+.keyinput .flash-anim:active {
+  background-color: white !important;
+}
+
+/*QRLOAD*/
+.qrload .drop-area {
+  height: 300px;
+  color: #fff;
+  text-align: center;
+  font-weight: bold;
+  padding: 10px;
+  background-color: rgba(0,0,0,.5);
+}
+
+.qrload .dragover {
+  background-color: rgba(0,0,0,.8);
+}
+

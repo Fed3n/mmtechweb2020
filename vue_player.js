@@ -208,6 +208,7 @@ var app = new Vue({
                     currentQuest: this.currentQuest,
                     currentSub: this.currentSub,
                     completedSubs: this.completedSubs,
+                    score: this.score,
                     help_requested: this.help_requested,
                     help_received: this.help_received,
                     finished: this.renderQuest.type == 'ending',
@@ -216,7 +217,6 @@ var app = new Vue({
                     newPlayerMsgs: this.newPlayerMsgs
                 })
                 .catch(err => {
-                    console.log(err);
                     alert("Server riavviato, elimino la sessione...");
                     this.deleteCookies();
                     location.reload();
@@ -533,7 +533,6 @@ var app = new Vue({
                     let x = ans[0];
                     let y = ans[1];
                     let radius = parseInt(ans[2]);
-                    console.log(`Risposta: ${x},${y},${radius}`)
                     if (this.picked[0] >= x - radius && this.picked[0] <= x + radius &&
                         this.picked[1] >= y - radius && this.picked[1] <= y + radius) {
                         wrong_answer = false;

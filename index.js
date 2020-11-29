@@ -198,7 +198,7 @@ app.get('/players/', (req, res) => {
 app.delete('/players/:player_id', (req, res) => {
     var id = req.params.player_id;
     players_deleted.push(id);
-    names.push(players_data[name]);
+    pnames.push(players_data[id]);
     delete players_data[id];
 });
 
