@@ -100,6 +100,10 @@ var app = new Vue({
             if (this.players_chat) {
                 this.current_chat_id = id;
                 this.chat_notify[id] = false;
+                //set scroll of the chat to bottom
+                /*let el = this.$refs.chatmessagecontainer;
+                if (el.scrollHeight > el.clientHeight);
+                  */  //el.scrollTo(0,500);
             }
         },
         sendChatMsg: function() {
@@ -210,7 +214,7 @@ var app = new Vue({
             if(this.computeJson(id)){
                 let grading = this.computeJson(id).scoretier;
                 let player = this.players_data[id];
-                
+
                 if(player.score >= grading.a) return "A";
                 else if(player.score >= grading.b) return "B";
                 else if(player.score >= grading.c) return "C";
