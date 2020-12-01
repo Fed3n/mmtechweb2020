@@ -1,0 +1,7 @@
+In valutatore:
+~togliere subquestN/questN e metterci nomi
+~destinazione di default non come stringa nulla
+~punteggi nelle subquest sono errati (non vanno associati a risposta ma a subquest in generale)
+~usa i goto ma deve usare anche i goto potenziali dalle subquest
+~sempre errori in console ogni volta che si aggiunge un nuovo player alla lista
+~esporta statistiche prob dovrebbe essere un formato testuale (anche semplice)? json non e' decisamente leggibile per un non informatico/competente
