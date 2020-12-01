@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link href="extvalutatore.css" rel="stylesheet">
+    <link href="comp.css" rel="stylesheet">
     <link href="colors.css" rel="stylesheet">
     <link id="externalFontUrl" href="" rel="stylesheet">
     <title>Ambiente Valutatore</title>
@@ -270,11 +271,13 @@
                     <div v-if="players_data" class="row" id="chat">
                         <div class="list-group col-4 row pl-2 pr-0 border-right" id="chatbutton">
                             <button type="button" class="list-group-item list-group-item-action chat-user" :id="'userChatButton'+id"
-                                    v-for="(chat,id) in players_chat_from_story[currentStory]" :class="(chat_notify[id] ? 'color-warning' : ' ')+' '+(current_chat_id == id ? 'chat-user-selected' : ' ')" v-on:click="switchIndex(id)">{{ id }}</button>
+                                    v-for="(chat,id) in players_data_shown_from_story[currentStory]" v-on:click="switchIndex(id)"
+                                    :class="(chat_notify[id] ? 'color-warning' : ' ')+' '+(current_chat_id == id ? 'chat-user-selected' : ' ')" >{{ chat.user_name }}</button>
                         </div>
                         <div class="container col-8 p-0 pl-2" id="chatcontainer">
-                            <div id="chatmessagecontainer">
-                                <div v-if="players_chat[current_chat_id]" v-for="msg in players_chat[current_chat_id]" class="chatmessage" :class="{ 'float-left' : (msg.sender != 'Valutatore') }">
+                            <div id="chatmessagecontainer" ref="chatmessagecontainer">
+                                <div v-if="players_chat[current_chat_id]" v-for="msg in players_chat[current_chat_id]" class="chatmessage"
+                                    :class="{ 'float-left' : (msg.sender != 'Valutatore') }">
                                     <div class="card">
                                         <div class="card-body p-2">
                                             <div class="card-subtitle text-muted px-1 pt-1 pb-0">{{ msg.sender }}</div>
