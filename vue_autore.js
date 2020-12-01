@@ -833,7 +833,7 @@
           },
           createQR: function() {
               let qrname = this.metadata.name;
-              let qrcontent = this.metadata.name;
+              let qrcontent = window.location.protocol + "//" + window.location.hostname + "/" + this.metadata.name;
               qr.clear();
               qr.makeCode(qrcontent);
               var node = this.$refs.qrcode;
