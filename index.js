@@ -78,41 +78,6 @@ app.use(function(req, res, next) {
 //Enable the req.protocol to read and set the HTTP/S protocol properly
 app.enable('trust proxy');
 
-//##MAIN PAGES RESPONSES##//
-app.get('/', (req, res) => {
-    if ((req.protocol == "https" && serverOpened == true) || (serverOpened == false)) {
-        return res.sendFile(path.join(__dirname + "/player.html"));
-    } else if (req.protocol != "https" && serverOpened == true) {
-        res.writeHead(301, {
-            "Location": "https://" + req.headers['host'] + req.url
-        });
-        res.end();
-    }
-});
-
-app.get('/autore', (req, res) => {
-    if ((req.protocol == "https" && serverOpened == true) || (serverOpened == false)) {
-        return res.sendFile(path.join(__dirname + "/autore.html"));
-    } else if (req.protocol != "https" && serverOpened == true) {
-        res.writeHead(301, {
-            "Location": "https://" + req.headers['host'] + req.url
-        });
-        res.end();
-    }
-});
-
-app.get('/valutatore', (req, res) => {
-    if ((req.protocol == "https" && serverOpened == true) || (serverOpened == false)) {
-        return res.sendFile(path.join(__dirname + "/valutatore.html"));
-    } else if (req.protocol != "https" && serverOpened == true) {
-        res.writeHead(301, {
-            "Location": "https://" + req.headers['host'] + req.url
-        });
-        res.end();
-    }
-});
-
-
 //##PLAYER RESOURCES##//
 app.get('/uid', (req, res) => {
     name = req.query.story_name;
@@ -438,6 +403,42 @@ app.delete('/styles/keyboards/', (req, res) => {
     res.status(200).send("Keyboard deleted successfully.");
 });
 
+//#######################################################//
+
+//##MAIN PAGES RESPONSES##//
+app.get('/', (req, res) => {
+    if ((req.protocol == "https" && serverOpened == true) || (serverOpened == false)) {
+        return res.sendFile(path.join(__dirname + "/player.html"));
+    } else if (req.protocol != "https" && serverOpened == true) {
+        res.writeHead(301, {
+            "Location": "https://" + req.headers['host'] + req.url
+        });
+        res.end();
+    }
+});
+
+app.get('/autore', (req, res) => {
+    if ((req.protocol == "https" && serverOpened == true) || (serverOpened == false)) {
+        return res.sendFile(path.join(__dirname + "/autore.html"));
+    } else if (req.protocol != "https" && serverOpened == true) {
+        res.writeHead(301, {
+            "Location": "https://" + req.headers['host'] + req.url
+        });
+        res.end();
+    }
+});
+
+app.get('/valutatore', (req, res) => {
+    if ((req.protocol == "https" && serverOpened == true) || (serverOpened == false)) {
+        return res.sendFile(path.join(__dirname + "/valutatore.html"));
+    } else if (req.protocol != "https" && serverOpened == true) {
+        res.writeHead(301, {
+            "Location": "https://" + req.headers['host'] + req.url
+        });
+        res.end();
+    }
+});
+
 app.get('/:storyname', (req, res) => {
 	let storylist = fs.readdirSync(path.join(__dirname + "/story"));
     let found = false;
@@ -462,8 +463,6 @@ app.get('/:storyname', (req, res) => {
 		res.end();
 	}		
 });
-
-//#######################################################//
 
 //Server Start
 app.listen(port, (req, res) => {

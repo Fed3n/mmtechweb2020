@@ -19,7 +19,7 @@ var qrload = Vue.component('qrload', {
   watch: {
 	  questlist: function(newlist, oldlist) {
 		  let name = null;
-		  if(window.location.pathname.indexOf("/") != -1){
+		  if(window.location.pathname.indexOf("/") != -1 && window.location.pathname.indexOf("/#") == -1){
 			for(story of this.questlist){
 			  name = window.location.pathname.substring(1,window.location.pathname.length);
 			}
@@ -34,7 +34,7 @@ var qrload = Vue.component('qrload', {
     check (result) {
 		console.log(result);
 		console.log(this.questlist);
-		var name = result.pathname.substring(1);
+		var name = result.substring(result.lastIndexOf("/")+1,result.length);
 		console.log(name);
 		if(questlist.filter(el => el.name === name).length > 0) {
 			this.error = "Loading quest!";
@@ -45,7 +45,7 @@ var qrload = Vue.component('qrload', {
 	async onDetect (promise) {
       try {
         const { content } = await promise
-		var name = content.pathname.substring(1);
+		var name = content.substring(content.lastIndexOf("/")+1,content.length);
 		console.log(content);
 		console.log(this.questlist);
 		console.log(name);
