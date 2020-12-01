@@ -19,9 +19,9 @@ var qrload = Vue.component('qrload', {
   watch: {
 	  questlist: function(newlist, oldlist) {
 		  let name = null;
-		  if(window.location.pathname.indexOf("/player_") != -1){
+		  if(window.location.pathname.indexOf("/") != -1){
 			for(story of this.questlist){
-			  name = window.location.pathname.substring(8,window.location.pathname.length);
+			  name = window.location.pathname.substring(1,window.location.pathname.length);
 			}
 		  }
 		  if(name != null) {
@@ -34,21 +34,24 @@ var qrload = Vue.component('qrload', {
     check (result) {
 		console.log(result);
 		console.log(this.questlist);
-		if(questlist.filter(el => el.name === result).length > 0) {
+		var name = result.pathname.substring(1);
+		console.log(name);
+		if(questlist.filter(el => el.name === name).length > 0) {
 			this.error = "Loading quest!";
-			this.$parent.questname = result;
+			this.$parent.questname = name;
 			this.$parent.changeQuest();
-		} else this.error = `ERRORE: La missione ${result} non è disponibile!`;
+		} else this.error = `ERRORE: La missione ${name} non è disponibile!`;
     },
 	async onDetect (promise) {
       try {
         const { content } = await promise
-
+		var name = content.pathname.substring(1);
 		console.log(content);
 		console.log(this.questlist);
-		if(questlist.filter(el => el.name === content).length > 0) {
+		console.log(name);
+		if(questlist.filter(el => el.name === name).length > 0) {
 			this.error = "Loading quest!";
-			this.$parent.questname = content;
+			this.$parent.questname = name;
 			this.$parent.changeQuest();
 		} else this.error = `ERRORE: La missione ${content} non è disponibile!`
       } catch (error) {
@@ -67,8 +70,8 @@ var qrload = Vue.component('qrload', {
 		try {
 			await promise
 		} catch (error) {
-			this.$refs.qrstream.remove();
-			this.$refs.qrdrop.removeAttribute("hidden");
+			if(document.getElementById("qrstream")) document.getElementById("qrstream").remove();
+			if(document.getElementById("qrdrop")) document.getElementById("qrdrop").removeAttribute("hidden");
 			if (error.name === 'NotAllowedError') {
 			  this.error = "ERRORE: Per continuare devi garantire i permessi alla fotocamera"
 			} else if (error.name === 'NotFoundError') {
@@ -103,8 +106,8 @@ var qrload = Vue.component('qrload', {
 
 	<p class="alert alert-info" role="alert">Scansiona o carica un QR Code compatibile per iniziare una missione!</p>
 
-    <div id="qrstream" ref="qrstream" v-on:click="clicked"><qrcode-stream @decode="check" @init="init"></qrcode-stream></div>
-	<div id="qrdrop" ref="qrdrop" hidden>
+    <div id="qrstream" v-on:click="clicked"><qrcode-stream @decode="check" @init="init"></qrcode-stream></div>
+	<div id="qrdrop" hidden>
 		<qrcode-drop-zone @detect="onDetect" @dragover="updateStatus" @init="consoleLog">
 		<div class="drop-area" :class="{ 'dragover': dragover }">
 			<br>
@@ -119,19 +122,3 @@ var qrload = Vue.component('qrload', {
   </div>
   `
 });
-/*
-<style>
-.drop-area {
-  height: 300px;
-  color: #fff;
-  text-align: center;
-  font-weight: bold;
-  padding: 10px;
-  background-color: rgba(0,0,0,.5);
-}
-
-.dragover {
-  background-color: rgba(0,0,0,.8);
-}
-</style>
-*/

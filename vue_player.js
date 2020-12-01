@@ -318,7 +318,7 @@ var app = new Vue({
         },
         logoutconfirm: function() {
             this.deleteCookies();
-            location.reload();
+            window.location.href="./";
         },
         logoutdecline: function() {
             this.$refs.logoutcontainer.style.display = "none";
