@@ -100,10 +100,6 @@ var app = new Vue({
             if (this.players_chat) {
                 this.current_chat_id = id;
                 this.chat_notify[id] = false;
-                //set scroll of the chat to bottom
-                /*let el = this.$refs.chatmessagecontainer;
-                if (el.scrollHeight > el.clientHeight);
-                  */  //el.scrollTo(0,500);
             }
         },
         sendChatMsg: function() {
@@ -292,6 +288,11 @@ var app = new Vue({
                 }
             }
             return res;
+        },
+        current_chat_messages: function() {
+            if (this.players_chat)
+                if (this.players_chat[this.current_chat_id])
+                    return this.players_chat[this.current_chat_id].length;
         },
         waitingForFeedback: function() {
             waiting_list = [];
@@ -492,5 +493,14 @@ var app = new Vue({
            //stylistic choices lead us not to add this feature if there is a background image
            return styles;
        },
+    },
+    watch: {
+        current_chat_messages: function(val) {
+            setTimeout(function() {
+                let el = document.getElementById("chatmessagecontainer");
+                //effettua lo scroll della chat ad ogni messaggio ricevuto
+                el.scrollTop = el.scrollHeight;
+            }, 1);
+        }
     }
 });
