@@ -387,6 +387,10 @@ var app = new Vue({
                   name: this.currentStory
                   };
        },
+       previewdata_change: function() {
+           let p = this.previewdata;
+           return (p.in_mainquest && ((p.currentQuest + p.currentSub + p.completedSubs.length)) %2 == 0);
+       },
 
        //oggetti di stile per la preview
        previewStyle: function() {
@@ -501,6 +505,9 @@ var app = new Vue({
                 //effettua lo scroll della chat ad ogni messaggio ricevuto
                 el.scrollTop = el.scrollHeight;
             }, 1);
+        },
+        previewdata_change: function() {
+            this.previewdata.picked = null;
         }
     }
 });

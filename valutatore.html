@@ -99,7 +99,7 @@
                                             </div>
                                         </td>
                                         <!-- banner di avvertimento -->
-                                        <td v-if="players_data[player.user_id].finished === false">
+                                        <td v-if="players_data[player.user_id] && players_data[player.user_id].finished === false">
                                             <div class="container-fluid p-0">
                                                 <div class="col-11 p-0" v-if="players_data[player.user_id].time_inactive > 60">
                                                     <button class="btn color-warning border btn-block pre-button p-1">Bloccato da tempo</button>
@@ -111,10 +111,10 @@
                                         </td>
                                         <!-- serve per la tabulazione corretta-->
                                         <td v-else></td>
-                                        <td v-if="players_data[player.user_id].finished === false">
+                                        <td v-if="players_data[player.user_id] && players_data[player.user_id].finished === false">
                                             <button class="btn color-interact" @click="sendHelp(player.user_id)">Aiuta il giocatore</button>
                                         </td>
-                                        <td v-else>
+                                        <td v-if="players_data[player.user_id] && players_data[player.user_id].finished === true">
                                             <button class="btn pre-button color-ended">Ha finito! Voto {{ computeGrade(player.user_id) }}</button>
                                         </td>
                                     </tr>
