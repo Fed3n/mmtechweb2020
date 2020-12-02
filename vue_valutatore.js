@@ -96,6 +96,19 @@ var app = new Vue({
                 });
             }
         },
+        switchStory: function(story){
+            //poichè dopo la chiamata alla funzione nella preview cambia la storia controllo che non vengano richiesta numeri di quest non presenti
+            let maxQuest = this.ongoing_stories[story].mainQuest.length -1 ;
+            let maxSub = this.ongoing_stories[story].subQuests.length -1 ;
+            if (this.previewdata.currentQuest > maxQuest)
+                this.previewdata.currentQuest = maxQuest;
+            if (this.previewdata.currentSub > maxSub)
+                this.previewdata.currentSub = maxSub;
+            //inizializzo le variabili
+            this.currentStory = story;
+            this.current_chat_id = null;
+            this.switchIndex(null);
+        },
         switchIndex: function(id) {
             if (this.players_chat) {
                 this.current_chat_id = id;
@@ -226,6 +239,21 @@ var app = new Vue({
             if (this.previewdata.in_mainquest) return this.ongoing_stories[this.currentStory].mainQuest[number];
             else return this.ongoing_stories[this.currentStory].subQuests[number];
         },
+        resetSelection: function() {
+            if (this.getCurrentQuestData){
+                let questType = this.getCurrentQuestData.type;
+                if (questType != "human"){
+                    if (questType == "keys")
+                        this.$refs.inputComponent.text = "";
+                    if (questType == "choice" || questType == "input")
+                        this.$refs.inputForm.reset();
+                    if ( questType == "draw")
+                        this.previewdata.picked = null;
+                }
+            }
+        },
+
+
         //style METHODS
         overwriteMainStyle: function(styles) {
             var main_style = this.ongoing_stories[this.currentStory].css_style.mainStyle;
