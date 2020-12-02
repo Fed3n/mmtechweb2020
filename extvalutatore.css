@@ -25,6 +25,10 @@
     height: 100%;
 }
 
+#preview-menu {
+    height: 667px;
+}
+
 #solutions-container {
     height: 50%;
     overflow-y: auto;

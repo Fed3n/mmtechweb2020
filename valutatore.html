@@ -197,8 +197,7 @@
                                 <div v-if="( getCurrentQuestData.type == 'input' || getCurrentQuestData.type == 'keys' || getCurrentQuestData.type == 'draw' )">
                                     <label class="font-weight-bold">Soluzioni</label>
                                     <ul>
-                                        <li v-if=" getCurrentQuestData.type != 'draw' " v-for="sol in getCurrentQuestData.solution">{{ sol }}
-                                            <label v-if="sol[2] != ''">Punteggio: {{ sol[2] }}<label></li>
+                                        <li v-if=" getCurrentQuestData.type != 'draw' " v-for="sol in getCurrentQuestData.solution">{{ sol }}</li>
                                         <li v-if=" getCurrentQuestData.type == 'draw' " v-for="sol in getCurrentQuestData.solution">tutti i punti all'interno della circonferenza con centro in
                                             <span class="principal">({{ sol[0] }},{{ sol[1] }})</span> e raggio <span class="principal">{{ sol[2] }}</span></li>
                                     </ul>
