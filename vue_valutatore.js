@@ -164,17 +164,22 @@ var app = new Vue({
                 });
         },
         saveJson: function() {
-            var data = JSON.stringify(this.players_data, null, 4);
+            var data = this.getStatistics();
             var blob = new Blob([data], {
-                type: 'application/json'
+                type: 'text/plain;charset=utf-8'
             });
             var a = document.createElement("a");
-            a.download = "stats.json";
-            a.innerHTML = "Download JSON";
+            a.download = "statistiche.txt";
+            a.innerHTML = "Download FILE";
             //Funzione createObjectURL cross-browser
             var createObjectURL = (window.URL || window.webkitURL || {}).createObjectURL || function() {};
             a.href = createObjectURL(blob);
             a.click();
+        },
+        getStatistics: function() {
+            let text = " ";
+            text = "aaaaaaaaaaa dkkkkkkk    kkkkkkd \n\n;fffffffffk";
+            return text;
         },
         sendHelp: function(id) {
             this.players_data_changing[id] = this.players_data_changing[id] || {};
@@ -247,7 +252,7 @@ var app = new Vue({
                         this.$refs.inputComponent.text = "";
                     if (questType == "choice" || questType == "input")
                         this.$refs.inputForm.reset();
-                    if ( questType == "draw") 
+                    if ( questType == "draw")
                         this.previewdata.picked = null;
                 }
             }
