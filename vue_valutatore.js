@@ -247,7 +247,7 @@ var app = new Vue({
                         this.$refs.inputComponent.text = "";
                     if (questType == "choice" || questType == "input")
                         this.$refs.inputForm.reset();
-                    if ( questType == "draw")
+                    if ( questType == "draw") 
                         this.previewdata.picked = null;
                 }
             }
