@@ -177,8 +177,33 @@ var app = new Vue({
             a.click();
         },
         getStatistics: function() {
-            let text = " ";
-            text = "aaaaaaaaaaa dkkkkkkk    kkkkkkd \n\n;fffffffffk";
+            let text = "";
+            if (this.players_data_from_story)
+                text += "Storie Utilizzate:\n";
+            for (const [key,value] of Object.entries(this.players_data_from_story)){
+                text += "- "+key+"\n";
+            }
+            text += "\n";
+            for (const [key,value] of Object.entries(this.players_data_from_story)){
+                text += "Giocatori in "+key+":\n";
+                for (const [index,player] of Object.entries(value)){
+                    text += "\t"+player.user_name+(player.finished ? "" : " non")+" ha finito il gioco\n";
+                    text += "\t\t punteggio ottenuto: "+player.score+",\n";
+                    text += "\t\t tempo di gioco: "+this.getStringTime(player.time_played)+",\n";
+                    text += "\t\t tempo di inattività: "+this.getStringTime(player.time_inactive)+",\n";
+                    text += "\t\t ha completato "+player.completedSubs.length+" subquest.\n";
+                }
+                text += "\n";
+            }
+            text += "\n";
+            return text;
+        },
+        getStringTime: function(time) {
+            let text = "";
+            let hours = time / 3600;
+            let minutes = (time % 3600) / 60;
+            let seconds = (time % 3600) % 60;
+            text += Math.floor(hours)+" ore "+Math.floor(minutes)+" minuti "+seconds+" secondi";
             return text;
         },
         sendHelp: function(id) {
@@ -228,11 +253,14 @@ var app = new Vue({
             if(this.computeJson(id)){
                 let grading = this.computeJson(id).scoretier;
                 let player = this.players_data[id];
-
-                if(player.score >= grading.a) return "A";
-                else if(player.score >= grading.b) return "B";
-                else if(player.score >= grading.c) return "C";
-                else return "D";
+                if (grading){
+                    if(player.score >= grading.a) return "A";
+                    else if(player.score >= grading.b) return "B";
+                    else if(player.score >= grading.c) return "C";
+                    else return "D";
+                } else {
+                    console.log("grading non definito. ComputeGrade - vue_valutatore");
+                }
             }
             else return "";
         },
@@ -317,6 +345,18 @@ var app = new Vue({
                 for (let player in this.players_chat) {
                     if (player.split('$')[0] == story) {
                         res[story][player] = this.players_chat[player];
+                    }
+                }
+            }
+            return res;
+        },
+        players_data_from_story: function() {
+            var res = {};
+            for (let story of this.activeStories) {
+                res[story] = {};
+                for (let player in this.players_data) {
+                    if (player.split('$')[0] == story) {
+                        res[story][player] = this.players_data[player];
                     }
                 }
             }
