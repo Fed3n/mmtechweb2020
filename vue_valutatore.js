@@ -67,7 +67,7 @@ var app = new Vue({
                     if (!(story in this.ongoing_stories)) {
                         axios.get(`/stories/${story}/`).then((res) => {
                             this.ongoing_stories[story] = res.data.json;
-                        });
+                        }).catch(err => {return});
                     }
                     //Controllo sugli aiuti
                     if (this.players_data[id].help_received && this.players_data[id].help_message != "") {
@@ -75,15 +75,15 @@ var app = new Vue({
                         this.players_data_changing[id].help_sent = false;
                         this.players_data_changing[id].help_message = "";
                     }
-                    // Se un giocatore ha finito, faccio partire un timer che lo rimuove dopo 2 minuti
+                    // Se un giocatore ha finito, faccio partire un timer che lo rimuove dopo 10 minuti
                     if (this.players_data[id].finished === true) {
                         setTimeout(function() {
-                            axios.delete(`/players/${id}`);
-                        }, 2 * 60 * 1000);
+                            axios.delete(`/players/${id}`).catch(err => console.log(err));
+                        }, 10 * 60 * 1000);
                     }
-                    // Giocatori inattivi per oltre 10 minuti vengono rimossi
-                    if (this.players_data[id].time_inactive > 10 * 60 * 1000) {
-                        axios.delete(`/players/${id}`);
+                    // Giocatori inattivi per oltre 20 minuti vengono rimossi
+                    if (this.players_data[id].time_inactive > 20 * 60 * 1000) {
+                        axios.delete(`/players/${id}`).catch(err => {return});
                     }
                 }
             });
@@ -93,7 +93,7 @@ var app = new Vue({
             if (choice) {
                 axios.post("/clear/").then(response => {
                     location.reload();
-                });
+                }).catch(err => {return});
             }
         },
         switchStory: function(story){
@@ -121,7 +121,7 @@ var app = new Vue({
                     sender: "Valutatore",
                     text: this.chat_msg[this.current_chat_id]
                 };
-                axios.post(`chat/${this.current_chat_id}`, msg);
+                axios.post(`chat/${this.current_chat_id}`, msg).catch(err => {return});
                 this.players_chat[this.current_chat_id].push(msg);
                 this.chat_msg[this.current_chat_id] = "";
             }
@@ -144,7 +144,7 @@ var app = new Vue({
                         this.chat_notify[id] = true;
                     }
                 }
-            });
+            }).catch(err => {return});
         },
         getPlayerAnswers: function() {
             axios.get('/answers/').then(response => {
@@ -153,7 +153,7 @@ var app = new Vue({
                     this.$set(this.players_ans, id, answers[id]);
                 }
             })
-            .catch(err => {});
+            .catch(err => {return});
         },
         patchPlayersData: function() {
             axios.patch('/players/', this.players_data_changing)
@@ -161,6 +161,7 @@ var app = new Vue({
                     this.players_data_changing = {};
                 })
                 .catch(err => {
+                    return;
                 });
         },
         saveJson: function() {
@@ -221,7 +222,7 @@ var app = new Vue({
                 }
             }).then((res) => {
                 this.$delete(this.players_ans, id);
-            });
+            }).catch(err => {return});
         },
         selectInterfaceFields: function({
             user_id,

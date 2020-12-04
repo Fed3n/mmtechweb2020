@@ -140,6 +140,7 @@ app.delete('/players/:player_id', (req, res) => {
     players_deleted.push(id);
     pnames.push(players_data[id]);
     delete players_data[id];
+    return res.status(200).send("Delete successfully.");
 });
 
 //valutatore fa get di risposte, restituite solo se ci sono
@@ -242,6 +243,7 @@ app.get('/stories/:storyName', (req, res) => {
     json = JSON.parse(json);
     let meta = fs.readFileSync(metapath);
     meta = JSON.parse(meta);
+    if(!meta.active) return res.status(403).send("Story is not active so access has been forbidden.");
     let load = {
         json: json,
         meta: meta

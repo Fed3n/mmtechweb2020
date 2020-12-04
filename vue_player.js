@@ -782,7 +782,7 @@ var app = new Vue({
         submitDisabled: function() {
             let disabled = false;
             //Se il tipo è "" (none) è sempre abilitato
-            if (!this.renderQuest.type) disabled = false;
+            if (!this.renderQuest.type) disabled = this.in_mainquest ? false : true;
             //In un type ending è sempre disabilitato (il gioco è finito)
             else if (this.renderQuest.type == "ending") disabled = true;
             //Se siamo in human input allora il submit è abilitato se ho ricevuto feedback dal valutatore
