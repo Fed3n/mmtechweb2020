@@ -345,7 +345,7 @@ app.get('/stories/:storyName/videos', (req, res) => {
 app.post('/stories/:storyName/videos', (req, res) => {
     let viddir = path.join(__dirname + `/story/${req.params.storyName}/videos/`);
     try {
-        fs.writeFile(path.join(viddir + req.files.video.name), req.files.video.data);
+        fs.writeFileSync(path.join(viddir + req.files.video.name), req.files.video.data);
     } catch(err){
         console.log(err);
         return res.status(500).send("File system error.");
