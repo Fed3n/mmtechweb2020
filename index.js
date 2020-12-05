@@ -227,9 +227,14 @@ app.get('/stories', (req, res) => {
     load = [];
     //Per ogni entry mando oggetto con info
     for (entry of entrylist) {
-        let info = fs.readFileSync(path.join(__dirname + "/story/" + entry + "/info.json"));
-        info = JSON.parse(info);
-        load.push(info);
+        try {
+            let info = fs.readFileSync(path.join(__dirname + "/story/" + entry + "/info.json"));
+            info = JSON.parse(info);
+            load.push(info);
+        }
+        catch {
+            console.log(`Invalid directory ${entry}, skipping...`);
+        }
     }
     res.status(200).send(load);
 });
@@ -239,17 +244,21 @@ app.get('/stories/:storyName', (req, res) => {
     var jsonpath = path.join(__dirname + "/story/" + story + "/" + story + ".json")
     var metapath = path.join(__dirname + "/story/" + story + "/" + "info.json")
     console.log("Getting story " + story);
-    let json = fs.readFileSync(jsonpath);
-    json = JSON.parse(json);
-    let meta = fs.readFileSync(metapath);
-    meta = JSON.parse(meta);
-    if(!meta.active) return res.status(403).send("Story is not active so access has been forbidden.");
-    let load = {
-        json: json,
-        meta: meta
-    };
-    res.setHeader('Content-Type', 'application/json');
-    res.status(200).json(load);
+    try {
+        let json = fs.readFileSync(jsonpath);
+        json = JSON.parse(json);
+        let meta = fs.readFileSync(metapath);
+        meta = JSON.parse(meta);
+        if(!meta.active) return res.status(403).send("Story is not active so access has been forbidden.");
+        let load = {
+            json: json,
+            meta: meta
+        };
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).json(load);
+    } catch {
+        res.status(404).send("Story does not exist.")
+    }
 });
 
 app.post('/stories', (req, res) => {
@@ -263,12 +272,12 @@ app.post('/stories', (req, res) => {
     recursiveMkDir(newdir);
     fs.writeFile(path.join(newdir + "/" + storyName + ".json"), JSON.stringify(json), (error) => {
         if (error) {
-            throw error;
+            res.status(500).send("File system error.");
         }
     });
     fs.writeFile(path.join(newdir + "/" + "info.json"), JSON.stringify(meta), (error) => {
         if (error) {
-            throw error;
+            res.status(500).send("File system error.");
         }
     });
     recursiveMkDir(newdir + "/images");
@@ -283,7 +292,9 @@ app.delete('/stories', (req, res) => {
     let dir = path.join(storydir + "/" + story);
     try {
         recursiveRm(dir);
-    } catch(err) { throw err; }
+    } catch(err) { 
+        res.status(500).send("File system error.");
+    }
     console.log("Deleted story " + story);
     res.status(200).send("Story delete successfully.");
 });
@@ -299,7 +310,7 @@ app.get('/stories/:storyName/images', (req, res) => {
 app.post('/stories/:storyName/images', (req, res) => {
     let imgdir = path.join(__dirname + `/story/${req.params.storyName}/images/`);
     fs.writeFile(path.join(imgdir + req.files.image.name), req.files.image.data, (error) => {
-        if (error) throw error;
+        if (error) res.status(500).send("File system error.");
     });
     res.status(201).send("Image created successfully.");
 });
@@ -323,7 +334,7 @@ app.get('/stories/:storyName/videos', (req, res) => {
 app.post('/stories/:storyName/videos', (req, res) => {
     let viddir = path.join(__dirname + `/story/${req.params.storyName}/videos/`);
     fs.writeFile(path.join(viddir + req.files.video.name), req.files.video.data, (error) => {
-        if (error) throw error;
+        if (error) res.status(500).send("File system error.");
     });
     res.status(201).send("Video created successfully.");
 });
@@ -359,7 +370,7 @@ app.post('/styles/interfaces/', (req, res) => {
     let json = req.body.json;
     fs.writeFile(target, JSON.stringify(json), (error) => {
         if (error) {
-            throw error;
+            res.status(500).send("File system error.");
         }
     });
     res.status(201).send("Style created successfully.");
@@ -393,7 +404,7 @@ app.post('/styles/keyboards/', (req, res) => {
     let json = req.body.json;
     fs.writeFile(target, JSON.stringify(json), (error) => {
         if (error) {
-            throw error;
+           res.status(500).send("File system error.");
         }
     });
     res.status(201).send("Keyboard created successfully.");

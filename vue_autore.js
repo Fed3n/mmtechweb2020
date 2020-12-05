@@ -277,16 +277,18 @@
               this.textSizeNotSpecified = false;
           },
           postStory: function() {
-              data = {
-                  storyName: this.metadata.name,
-                  json: this.gamedata,
-                  meta: this.metadata
+              if(this.loadedStory){
+                  data = {
+                      storyName: this.metadata.name,
+                      json: this.gamedata,
+                      meta: this.metadata
+                  }
+                  var _this = this;
+                  axios.post("/stories", data)
+                      .then((res) => {
+                          _this.updateFs();
+                      });
               }
-              var _this = this;
-              axios.post("/stories", data)
-                  .then((res) => {
-                      _this.updateFs();
-                  });
           },
           deleteStory: function() {
               if (this.$refs.selectedStory.value) {
@@ -319,6 +321,8 @@
                       })
                       .then((res) => {
                           _this.getImagesList();
+                          _this.selectedImage = imageFile.name;
+                          _this.$refs.img_upload.value = '';
                       });
               }
           },
@@ -355,6 +359,9 @@
                       })
                       .then((res) => {
                           _this.getVideosList();
+                          _this.selectedVideo = videoFile.name;
+                          _this.$refs.vid_upload.value = '';
+
                       });
               }
           },
