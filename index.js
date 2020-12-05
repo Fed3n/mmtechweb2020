@@ -319,11 +319,11 @@ app.post('/stories/:storyName/images', (req, res) => {
     let imgdir = path.join(__dirname + `/story/${req.params.storyName}/images/`);
     try {
         fs.writeFileSync(path.join(imgdir + req.files.image.name), req.files.image.data);
+        return res.status(201).send("Image created successfully.");
     } catch(err){
         console.log(err);
         return res.status(500).send("File system error.");
     }
-    res.status(201).send("Image created successfully.");
 });
 
 app.delete('/stories/:storyName/images/', (req, res) => {
@@ -346,11 +346,11 @@ app.post('/stories/:storyName/videos', (req, res) => {
     let viddir = path.join(__dirname + `/story/${req.params.storyName}/videos/`);
     try {
         fs.writeFileSync(path.join(viddir + req.files.video.name), req.files.video.data);
+        return res.status(201).send("Video created successfully.");
     } catch(err){
         console.log(err);
         return res.status(500).send("File system error.");
     }
-    res.status(201).send("Video created successfully.");
 });
 
 app.delete('/stories/:storyName/videos/', (req, res) => {
