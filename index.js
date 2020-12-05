@@ -35,10 +35,18 @@ function recursiveChmod(path, dirp, filep){
         for(f of files){
             recursiveChmod(path + `/${f}`);
         }
-        fs.chmodSync(path, `0o${dirp}`);
+        try {
+            fs.chmodSync(path, `0o${dirp}`);
+        } catch(err){
+            console.log(err);
+        }
     }
     else {
-        fs.chmodSync(path, `0o${filep}`);
+        try{
+            fs.chmodSync(path, `0o${filep}`);
+        } catch(err){
+            console.log(err);
+        }
     }
 }
 //####################
@@ -475,6 +483,17 @@ app.get('/:storyname', (req, res) => {
 		});
 		res.end();
 	}		
+});
+
+/*GOCKER RELATED FUNCTIONS*/
+app.post('/chmod', (req, res) => {
+    try {
+        recursiveChmod(__dirname, 770, 660);
+        res.status(200).send("Chmod done.");
+    } catch(err){
+        console.log(err);
+        res.status(500).send("Could not complete chmod.");
+    }
 });
 
 //Server Start
