@@ -279,7 +279,7 @@
               this.textSizeNotSpecified = false;
           },
           postStory: function() {
-              if(this.metadata.name){
+              if(this.$refs.storyName.value){
                   data = {
                       storyName: this.$refs.storyName.value,
                       json: this.gamedata,
