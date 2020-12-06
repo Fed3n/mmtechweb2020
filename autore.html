@@ -174,19 +174,19 @@
             <div id="server-storyinfo" class="row container-fluid" :class="heavyBorder">
                 <div class="col form-group">
                     <label for="story-name">Nome della Storia</label>
-                    <input name="story-name" class="form-control" type="text" v-model="metadata.name" ref="storyName">
+                    <input name="story-name" class="form-control" type="text" :value="this.metadata.name" ref="storyName">
                 </div>
                 <div class="col form-group">
                     <label for="language">Lingua</label>
-                    <input name="language" class="form-control" type="text" v-model="metadata.language">
+                    <input name="language" class="form-control" type="text" :value="this.metadata.language" ref="storyLan">
                 </div>
                 <div class="col form-check">
-                    <label for="activate" class="form-check-label"><input name="activate" class="form-check-input" type="checkbox" v-model="metadata.active">
+                    <label for="activate" class="form-check-label"><input name="activate" class="form-check-input" :value="this.metadata.active" type="checkbox" ref="storyActive">
                         Attiva
                     </label>
                 </div>
                 <div class="col form-check">
-                    <label for="accessibility" class="form-check-label"><input name="accessibility" class="form-check-input" type="checkbox" v-model="metadata.accessible">
+                    <label for="accessibility" class="form-check-label"><input name="accessibility" class="form-check-input" :value="this.metadata.accessible" type="checkbox" ref="storyAccess">
                         Accessibile
                     </label>
                 </div>

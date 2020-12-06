@@ -281,15 +281,20 @@
           postStory: function() {
               if(this.metadata.name){
                   data = {
-                      storyName: this.metadata.name,
+                      storyName: this.$refs.storyName.value,
                       json: this.gamedata,
-                      meta: this.metadata
-                  }
+                      meta: {
+                          "name": this.$refs.storyName.value,
+                          "active": this.$refs.storyActive.value,
+                          "accessible": this.$refs.storyAccess.value,
+                          "language": this.$refs.storyLan.value
+                      }
+                  };
                   var _this = this;
                   axios.post("/stories", data)
                       .then((res) => {
                           _this.updateFs();
-                          _this.getStory(_this.metadata.name);
+                          _this.getStory(data.meta.name);
                       });
               }
           },
