@@ -50,14 +50,14 @@
                         </div>
                         <div class="col-md-2">
                             <div class="btn btn-group">
-                                <button class="btn color-interact" v-on:click="getStory">CARICA</button>
+                                <button class="btn color-interact" v-on:click="getStory(null)">CARICA</button>
                                 <button class="btn btn-danger" v-on:click="deleteStory">RIMUOVI</button>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!--IMMAGINI CARICATE-->
-                <div id="uploadimages" class="container-fluid border-top mt-2">
+                <div id="uploadimages" v-if="loadedStory" class="container-fluid border-top mt-2">
                     <div class="col-12 mt-2 pl-0">
                         <label class="form-headers">Carica Immagini</label>
                     </div>
@@ -90,8 +90,16 @@
                         </div>
                     </div>
                 </div>
+                <div v-else class="container-fluid border-top mt-2">
+                    <div class="col-12 mt-2 pl-0">
+                        <label class="form-headers">Carica Immagini</label>
+                    </div>
+                    <div class="col-12 mt-2 pl-0">
+                        <p class="color-static-light rounded m-1 mb-3 pl-3 p-2">Carica una storia prima di vedere/caricare immagini.</p>
+                    </div> 
+                </div>
                 <!--VIDEO CARICATI-->
-                <div id="uploadvideos" class="container-fluid border-top mt-2">
+                <div id="uploadvideos" v-if="loadedStory" class="container-fluid border-top mt-2">
                   <div class="col-12 mt-2 pl-0">
                       <label class="form-headers">Carica Video</label>
                   </div>
@@ -124,7 +132,16 @@
                       </div>
                    </div>
                 </div>
+                <div v-else class="container-fluid border-top mt-2">
+                    <div class="col-12 mt-2 pl-0">
+                        <label class="form-headers">Carica Video</label>
+                    </div>
+                    <div class="col-12 mt-2 pl-0">
+                        <p class="color-static-light rounded m-1 mb-3 pl-3 p-2">Carica una storia prima di vedere/caricare video.</p>
+                    </div> 
+                </div>
             </div>
+
             <div id="saveload" class="col-md-6 border-left">
                 <div class="container-fluid border-bottom">
                     <h2 class="color-static p-2 text-light rounded">Esporta/Importa file .json della storia</h2>

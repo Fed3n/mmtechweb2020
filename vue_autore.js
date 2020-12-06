@@ -237,10 +237,12 @@
                   _this.keyStylesList = res.data;
               });
           },
-          getStory: function() {
-              if (this.$refs.selectedStory.value) {
+          getStory: function(story) {
+              let storyname = story ? story : this.$refs.selectedStory.value;
+              console.log(storyname);
+              if (storyname) {
                   var _this = this;
-                  axios.get(`/stories/${this.$refs.selectedStory.value}`).then((res) => {
+                  axios.get(`/stories/${storyname}`).then((res) => {
                       _this.resetData();
                       _this.gamedata = res.data.json;
                       _this.metadata = res.data.meta;
@@ -261,14 +263,14 @@
                         }
                       _this.getImagesList();
                       _this.getVideosList();
-                      _this.loadedStory = this.$refs.selectedStory.value;
+                      _this.loadedStory = storyname;
                       _this.updateFs();
                       //è necessario riaggiornare lo stile principale
                       _this.mainStyleColor = (_this.gamedata.css_style.mainStyle['color'] !== "");
                       _this.currentMainStyleColor = (_this.mainStyleColor ? _this.gamedata.css_style.mainStyle['color'] : "#000000");
                       _this.editMainColor();
                       _this.setFontUrl();
-                  })
+                  });
               }
               //inizializzazione di altre variabili di stile
               this.lastAlertBackgroundColor = "#000000";
@@ -277,7 +279,7 @@
               this.textSizeNotSpecified = false;
           },
           postStory: function() {
-              if(this.loadedStory){
+              if(this.metadata.name){
                   data = {
                       storyName: this.metadata.name,
                       json: this.gamedata,
@@ -287,6 +289,7 @@
                   axios.post("/stories", data)
                       .then((res) => {
                           _this.updateFs();
+                          _this.getStory(_this.metadata.name);
                       });
               }
           },
@@ -297,11 +300,12 @@
                           storyName: this.$refs.selectedStory.value
                       }
                   };
-                  ok = confirm("Sei davvero sicuro di voler rimuovere questa storia dal server?");
+                  ok = confirm("Sei davvero sicuro di voler rimuovere questa storia?");
                   if (ok) {
                       var _this = this;
                       axios.delete("/stories", data).then((res) => {
                           _this.updateFs();
+                          if(_this.loadedStory == _this.$refs.selectedStory.value) _this.resetData()
                       });
                   }
               }
@@ -333,16 +337,19 @@
               });
           },
           deleteImg: function() {
-              let _this = this;
-              if (this.selectedImage)
-                  axios.delete(`/stories/${this.metadata.name}/images`, {
-                      params: {
-                          img: this.selectedImage
-                      }
-                  }).then((res) => {
-                      _this.getImagesList();
-                      _this.selectedImage = "";
-                  });
+              let ok = confirm("Sei sicuro di voler rimuovere questa immagine?");
+              if(ok){
+                let _this = this;
+                if (this.selectedImage)
+                    axios.delete(`/stories/${this.metadata.name}/images`, {
+                        params: {
+                            img: this.selectedImage
+                        }
+                    }).then((res) => {
+                        _this.getImagesList();
+                        _this.selectedImage = "";
+                    });
+              }
           },
           uploadVid: function() {
               if (this.$refs.vid_upload.files[0] && this.loadedStory) {
@@ -372,16 +379,19 @@
               });
           },
           deleteVid: function() {
-              let _this = this;
-              if (this.selectedVideo)
-                  axios.delete(`/stories/${this.metadata.name}/videos`, {
-                      params: {
-                          vid: this.selectedVideo
-                      }
-                  }).then((res) => {
-                      _this.getVideosList();
-                      _this.selectedVideo = "";
-                  });
+              let ok = confirm("Sei sicuro di voler rimuovere questa immagine?");
+              if(ok){
+                  let _this = this;
+                  if (this.selectedVideo)
+                      axios.delete(`/stories/${this.metadata.name}/videos`, {
+                          params: {
+                              vid: this.selectedVideo
+                          }
+                      }).then((res) => {
+                          _this.getVideosList();
+                          _this.selectedVideo = "";
+                      });
+              }
           },
           getStyle: function() {
               let _this = this;
@@ -401,15 +411,18 @@
                   });
           },
           deleteStyle: function() {
-              let _this = this;
-              axios.delete('/styles/interfaces', {
-                      params: {
-                          name: this.$refs.select_style.value
-                      }
-                  })
-                  .then(res => {
-                      _this.updateFs();
-                  });
+              let ok = confirm("Sei sicuro di voler rimuovere questo stile?");
+              if(ok){
+                  let _this = this;
+                  axios.delete('/styles/interfaces', {
+                          params: {
+                              name: this.$refs.select_style.value
+                          }
+                      })
+                      .then(res => {
+                          _this.updateFs();
+                      });
+              }
           },
           getKeyStyle: function() {
               let _this = this;
@@ -429,15 +442,18 @@
                   });
           },
           deleteKeyStyle: function() {
-              let _this = this;
-              axios.delete('/styles/keyboards', {
-                      params: {
-                          name: this.$refs.select_key_style.value
-                      }
-                  })
-                  .then(res => {
-                      _this.updateFs();
-                  });
+              let ok = confirm("Sei sicuro di voler rimuovere questo stile?");
+              if(ok){
+                  let _this = this;
+                  axios.delete('/styles/keyboards', {
+                          params: {
+                              name: this.$refs.select_key_style.value
+                          }
+                      })
+                      .then(res => {
+                          _this.updateFs();
+                      });
+              }
           },
           //########################################//
 
