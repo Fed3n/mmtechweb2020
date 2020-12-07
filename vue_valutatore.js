@@ -188,8 +188,9 @@ var app = new Vue({
             for (const [key,value] of Object.entries(this.players_data_from_story)){
                 text += "Giocatori in "+key+":\n";
                 for (const [index,player] of Object.entries(value)){
+                    console.log(player);
                     text += "\t"+player.user_name+(player.finished ? "" : " non")+" ha finito il gioco\n";
-                    text += "\t\t punteggio ottenuto: "+player.score+",\n";
+                    text += "\t\t punteggio ottenuto: "+player.score+(player.finished ? ", Voto:"+this.computeGrade(player.user_id) : "")+",\n";
                     text += "\t\t tempo di gioco: "+this.getStringTime(player.time_played)+",\n";
                     text += "\t\t tempo di inattività: "+this.getStringTime(player.time_inactive)+",\n";
                     text += "\t\t ha completato "+player.completedSubs.length+" subquest.\n";
