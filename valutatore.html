@@ -77,10 +77,10 @@
                                         <!-- informazioni sullo stato del player -->
                                         <td>{{ player.user_name }}</td>
                                         <td>{{ player.in_mainquest ? "mainQuest" : "Subquest"}}</td>
-                                        <td v-if="player.in_mainquest">{{ ongoing_stories[currentStory] ? ongoing_stories[currentStory].mainQuest[player.currentQuest].title : " "}}</td>
+                                        <td v-if="player.in_mainquest">{{ ongoing_stories[currentStory] ? ( ongoing_stories[currentStory].mainQuest[player.currentQuest] ?
+                                              ongoing_stories[currentStory].mainQuest[player.currentQuest].title : " " ) : " " }}</td>
                                         <td v-if="!player.in_mainquest">{{ ongoing_stories[currentStory] ? ( ongoing_stories[currentStory].subQuests[player.currentSub] ?
-                                              ongoing_stories[currentStory].subQuests[player.currentSub].title : " " ) : " " }}
-                                        </td>
+                                              ongoing_stories[currentStory].subQuests[player.currentSub].title : " " ) : " " }}</td>
                                         <td>
                                             <div v-if="player.completedSubs">
                                                 <div v-if="player.completedSubs.length > 0" class="btn-group dropup">
