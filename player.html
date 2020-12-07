@@ -28,7 +28,7 @@
             </div>
         </center>
         <!--Area navbar-->
-        <div id="questrender" ref="questrender" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
+        <div v-if="questname" id="questrender" ref="questrender" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
             <nav class="navbar navbar-expand-md" :class="navbarBootstrapStyle" :style="navbarStyle">
                 <div class="navbar-brand" :style="navbarBrandStyle">Menu
                     <span class="badge willdisabled" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert" aria-label="missioni disponibili nel menù">Subs!</span>
@@ -43,7 +43,7 @@
                             <div class="dropdown-menu willdisabled" id="quest-menu-list" :class="menuBootstrapStyle" :style="menuStyle" style="margin-bottom: 10px">
                                 <a class="dropdown-item willdisabled" :style="menuLinkStyle(0,true)" v-on:mouseover="menuLinkEvent(0,true)" v-on:mouseleave="menuLinkEvent(0,false)" role="menuitem" href="#" v-on:click="goToMainQuest()">
                                     Quest principale: {{ gamedata.mainQuest[currentQuest] ? (gamedata.mainQuest[currentQuest].title || gamedata.mainQuest[currentQuest].number) : "LOADING" }}
-                                </a>
+                                    </a>
                                 <div v-if="getSubquests.length > 0" role="none">
                                     <div class="dropdown-divider willdisabled" :style="dividerStyle"></div>
                                     <a class="dropdown-item willdisabled" role="menuitem" :style="menuLinkStyle(index+1,true)" v-on:mouseover="menuLinkEvent(index+1,true)" v-on:mouseleave="menuLinkEvent(index+1,false)" v-for="(quest,index) in getSubquests" href="#" v-on:click="goToSubQuest(quest)">
@@ -69,8 +69,8 @@
         <div v-if="questname" id="accordion" class="accordion" ref="accordion" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
             <div class="card player-card" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
                 <div class="card-header h-10" :style="cardLimitStyle">
-                    <h3 id="questname" ref="questname" tabindex="-1">
-                        <button type="button" ref="questnamebutton" class="btn btn-lg btn-block border willdisabled" :class="mainquestButtonBootstrapStyle" :style="removePredefinedStylesCard" data-toggle="collapse" data-target="#rendercard" v-on:click="chatAppear(false)">
+                    <h3 id="questheader" ref="questheader" tabindex="-1">
+                        <button type="button" ref="questheaderbutton" class="btn btn-lg btn-block border willdisabled" :class="mainquestButtonBootstrapStyle" :style="removePredefinedStylesCard" data-toggle="collapse" data-target="#rendercard" v-on:click="chatAppear(false)">
                             {{ renderQuest ? (renderQuest.title || "renderQuest.number") : "" }}
                         </button>
                     </h3>

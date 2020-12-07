@@ -321,7 +321,7 @@ app.post('/stories/:storyName/images', (req, res) => {
         fs.writeFileSync(path.join(imgdir + req.files.image.name), req.files.image.data);
         return res.status(201).send("Image created successfully.");
     } catch(err){
-        console.log(err);
+        throw(err);
         return res.status(500).send("File system error.");
     }
 });
@@ -348,7 +348,7 @@ app.post('/stories/:storyName/videos', (req, res) => {
         fs.writeFileSync(path.join(viddir + req.files.video.name), req.files.video.data);
         return res.status(201).send("Video created successfully.");
     } catch(err){
-        console.log(err);
+        throw(err);
         return res.status(500).send("File system error.");
     }
 });

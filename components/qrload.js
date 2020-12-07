@@ -18,13 +18,13 @@ var qrload = Vue.component('qrload', {
   },
   watch: {
 	  questlist: function(newlist, oldlist) {
-		  let name = null;
+		  let name = "";
 		  if(window.location.pathname.indexOf("/") != -1 && window.location.pathname.indexOf("/#") == -1){
 			for(story of this.questlist){
 			  name = window.location.pathname.substring(1,window.location.pathname.length);
 			}
 		  }
-		  if(name != null) {
+		  if(name) {
 			this.$parent.questname = name;
 			this.$parent.changeQuest();
 		  }
