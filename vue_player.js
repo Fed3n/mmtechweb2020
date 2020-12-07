@@ -467,9 +467,6 @@ var app = new Vue({
             }
             options = this.getCurrentGotos;
             for (opt of options) {
-
-                  console.log("A IN MAIN - opt[2]: "+opt[2]+"\n this.score: "+this.score+"\n parseInt(opt[2]): "+parseInt(opt[2]));
-
                 //Le risposte del tipo draw hanno un formato diverso
                 if (this.gamedata.mainQuest[this.currentQuest].type == "draw") {
                     let x = opt[0][0];
@@ -479,14 +476,7 @@ var app = new Vue({
                         this.picked[1] >= y - radius && this.picked[1] <= y + radius) {
                         this.currentQuest = opt[1];
                         //Per ragioni di compatibilità mi assicuro ci sia lo score
-
-
-
                         if (opt[2]) this.score = this.score + parseInt(opt[2]);
-
-                         console.log("B IN MAIN draw - opt[2]: "+opt[2]+"\n this.score: "+this.score+"\n parseInt(opt[2]): "+parseInt(opt[2]));
-
-
                         this.time_inactive = 0;
                         this.$refs.help.classList.remove("disabled");
                         this.help_message = "";
@@ -501,16 +491,7 @@ var app = new Vue({
                         this.$refs.help.classList.remove("disabled");
                     this.currentQuest = opt[1];
                     //Per ragioni di compatibilità mi assicuro ci sia lo score
-
-
-
-                    //if (opt[2]) this.score += parseInt(opt[2]);
                     if (opt[2]) this.score = this.score + parseInt(opt[2]);
-
-                    console.log("B IN MAIN normal - opt[2]: "+opt[2]+"\n this.score: "+this.score+"\n parseInt(opt[2]): "+parseInt(opt[2]));
-
-
-
                     this.help_message = "";
                     this.help_received = false;
                     this.sendGameData();
@@ -522,24 +503,13 @@ var app = new Vue({
                         this.$refs.help.classList.remove("disabled");
                     this.currentQuest = opt[1];
                     //Per ragioni di compatibilità mi assicuro ci sia lo score
-
-
-
-
                     if (opt[2]) this.score = this.score + parseInt(opt[2]);
-
-
-
-
                     this.time_inactive = 0;
                     this.help_message = "";
                     this.help_received = false;
                     this.sendGameData();
                     resetDivScrolling();
                 }
-
-                console.log("B IN MAIN - opt[2]: "+opt[2]+"\n this.score: "+this.score+"\n parseInt(opt[2]): "+parseInt(opt[2]));
-
             }
             this.$refs.inputForm.reset();
             this.picked = null;
@@ -587,18 +557,7 @@ var app = new Vue({
             this.picked = null;
             this.wrong_sub_ans = false;
             //If per ragioni di compatibilità...
-
-
-
-            console.log("A IN SUB - this.renderQuest.sub_score: "+this.renderQuest.sub_score+"\n this.score: "+this.score+"\n parseInt(this.renderQuest.sub_score): "+parseInt(this.renderQuest.sub_score));
-
             if (this.renderQuest.sub_score) this.score = this.score + parseInt(this.renderQuest.sub_score);
-
-            console.log("B IN SUB - this.renderQuest.sub_score: "+this.renderQuest.sub_score+"\n this.score: "+this.score+"\n parseInt(this.renderQuest.sub_score): "+parseInt(this.renderQuest.sub_score)+"\n this.score += parseInt(this.renderQuest.sub_score: "+this.score);
-
-
-
-
             this.$refs.questname.focus();
             this.sendGameData();
             //Aggiorno lo status dei Cookies
