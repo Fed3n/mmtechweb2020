@@ -145,7 +145,7 @@
                     <i class="fas fa-angle-double-down"></i>
                 </button>
 
-                <div id="story-preview" v-if="ongoing_stories[activeStories[0]]" class="container-fluid collapse mt-3 p-2 row">
+                <div id="story-preview" v-if="ongoing_stories[currentStory]" class="container-fluid collapse mt-3 p-2 row">
                     <div id="preview-menu" class="col-md-6 p-3 mt-2 mb-1">
                         <div class="pb-3" id="preview-menu-container" :class=" (!previewdata.in_mainquest && (ongoing_stories[currentStory].subQuests.length == 1 && ongoing_stories[currentStory].subQuests[0].text == ''
                                 && ongoing_stories[currentStory].subQuests[0].title == '') ) ? ' ' : 'border-bottom'+'overflow-auto' ">
@@ -327,7 +327,7 @@
               </div>
               <div class="modal-body">
                 <div>
-                    <p>{{ players_ans[feedback_id].answer.text }}</p> 
+                    <p>{{ players_ans[feedback_id].answer.text }}</p>
                     <img v-if="players_ans[feedback_id].answer.imagedata" class="m-2" width="60%" :src="'tmp/'+players_ans[feedback_id].answer.imagedata">
                     <form v-on:submit.prevent="sendFeedback(feedback_id, $event.target.elements.feedbackans.value)">
                         <div class="form-group" v-for="opt in computeJson(feedback_id).mainQuest[players_data[feedback_id].currentQuest].goto">
