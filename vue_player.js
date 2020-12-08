@@ -264,7 +264,6 @@ var app = new Vue({
                 }
             };
             axios.get('/players/', uid).then(response => {
-                console.log(response.data);
                 for (let key in response.data) {
                     //Se arriva un help msg vuoto non sovrascrivo il vecchio
                     if(key == "help_message" && response.data[key] != "")
@@ -409,6 +408,8 @@ var app = new Vue({
                         this.trackTimeEverySecond();
                     });
                 }
+            }).catch(function(err){
+                throw(err);
             });
         },
         parseStart: function(id) {
