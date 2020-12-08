@@ -569,7 +569,7 @@ var app = new Vue({
             this.wrong_sub_ans = false;
             //If per ragioni di compatibilità...
             if (this.renderQuest.sub_score) this.score = this.score + parseInt(this.renderQuest.sub_score);
-            this.$refs.questname.focus();
+            this.$refs.questheader.focus();
             this.sendGameData();
             //Aggiorno lo status dei Cookies
             /*
