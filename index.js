@@ -12,15 +12,17 @@ const app = express();
 
 //##FUNZIONI AUSILIARIE PER COMPENSARE ALLA VERSIONE VECCHIA DI NODE DEL DIPARTIMENTO//
 function recursiveRm(path){
-    if(fs.lstatSync(path).isDirectory()){
-        files = fs.readdirSync(path);
-        for(f of files){
-            recursiveRm(path + `/${f}`);
+    if(fs.existsSync(path)){
+        if(fs.lstatSync(path).isDirectory()){
+            files = fs.readdirSync(path);
+            for(f of files){
+                recursiveRm(path + `/${f}`);
+            }
+            fs.rmdirSync(path);
         }
-        fs.rmdirSync(path);
-    }
-    else {
-        fs.unlinkSync(path);
+        else {
+            fs.unlinkSync(path);
+        }
     }
 }
 
