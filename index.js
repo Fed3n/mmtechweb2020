@@ -3,6 +3,7 @@ const express = require('express');
 const http = require('http');
 const https = require('https');
 const fs = require('fs');
+const fse = require('fs-extra');
 const path = require('path');
 const nocache = require('nocache');
 const favicon = require('serve-favicon');
@@ -270,26 +271,46 @@ app.get('/stories/:storyName', (req, res) => {
 
 app.post('/stories', (req, res) => {
     console.log("Posting story :)");
+    let clone = req.body.clone;
     let storyName = req.body.storyName;
     let json = req.body.json;
     let meta = req.body.meta;
-    let storydir = path.join(__dirname + "/story");
-    let newdir = path.join(storydir + "/" + storyName);
-    //Se la directory c'è già non la ricrea
-    recursiveMkDir(newdir);
-    fs.writeFile(path.join(newdir + "/" + storyName + ".json"), JSON.stringify(json), (error) => {
-        if (error) {
-            res.status(500).send("File system error.");
+    if(clone){
+        let clonepath = path.join(__dirname + "/story/" + clone);
+        let dstpath = path.join(__dirname + "/story/" + storyName); 
+        try {
+        fse.copySync(clonepath, dstpath);
+        fse.moveSync(`${dstpath}/${clone}.json`, `${dstpath}/${storyName}.json`);
+        let data = fs.readFileSync(`${dstpath}/info.json`);
+        data = JSON.parse(data);
+        data.name = storyName;
+        fs.unlinkSync(`${dstpath}/info.json`);
+        fs.writeFileSync(`${dstpath}/info.json`, JSON.stringify(data));
+        } catch(err) {
+            console.log(err);
+            return res.status(500).send("File system error.");
         }
-    });
-    fs.writeFile(path.join(newdir + "/" + "info.json"), JSON.stringify(meta), (error) => {
-        if (error) {
-            res.status(500).send("File system error.");
+    } else {
+        let storydir = path.join(__dirname + "/story");
+        let newdir = path.join(storydir + "/" + storyName);
+        //Se la directory c'è già non la ricrea
+        recursiveMkDir(newdir);
+        try {
+            fs.writeFileSync(path.join(newdir + "/" + storyName + ".json"), JSON.stringify(json));
+        } catch(err){
+            console.log(err);
+            return res.status(500).send("File system error.");
         }
-    });
-    recursiveMkDir(newdir + "/images");
-    recursiveMkDir(newdir + "/videos");
-    res.status(201).send("Story posted successfully.");
+        try {
+            fs.writeFileSync(path.join(newdir + "/" + "info.json"), JSON.stringify(meta));
+        } catch(err) {
+            console.log(err);
+            return res.status(500).send("File system error.");
+        }
+        recursiveMkDir(newdir + "/images");
+        recursiveMkDir(newdir + "/videos");
+    }
+    return res.status(201).send("Story posted successfully.");
 });
 
 app.delete('/stories', (req, res) => {

@@ -10,8 +10,9 @@ var qrload = Vue.component('qrload', {
   mounted: function() {
 	axios.get('/stories').then(response => {
 		questlist = [];
+			//pusho solo le quest attive, le altre non sono accessibili
 			for(el of response.data) {
-				questlist.push(el);
+				if(el.active) questlist.push(el);
 			}
 		this.questlist = questlist;
 	});

@@ -238,45 +238,47 @@
               });
           },
           getStory: function(story) {
-              let storyname = story ? story : this.$refs.selectedStory.value;
-              console.log(storyname);
-              if (storyname) {
-                  var _this = this;
-                  axios.get(`/stories/${storyname}`).then((res) => {
-                      _this.resetData();
-                      _this.gamedata = res.data.json;
-                      _this.metadata = res.data.meta;
-                      //Ordine di visualizzazione in autore
-                      if(!_this.gamedata.author_order){
-                          _this.gamedata.author_order = {
-                              "main": [],
-                              "sub": []
-                          }
-                          for(let i = 0; i < _this.gamedata.mainQuest.length; i++) _this.gamedata.author_order.main[i] = i;
-                          for(let i = 0; i < _this.gamedata.subQuests.length; i++) _this.gamedata.author_order.sub[i] = i;
-                      }
-                      if(!_this.gamedata.scoretier)
-                        _this.gamedata.scoretier = {
-                              "a": 0,
-                              "b": 0,
-                              "c": 0
+              if(this.$refs.selectedStory.value){
+                let storyname = story ? story : this.$refs.selectedStory.value;
+                console.log(storyname);
+                if (storyname) {
+                    var _this = this;
+                    axios.get(`/stories/${storyname}`).then((res) => {
+                        _this.resetData();
+                        _this.gamedata = res.data.json;
+                        _this.metadata = res.data.meta;
+                        //Ordine di visualizzazione in autore
+                        if(!_this.gamedata.author_order){
+                            _this.gamedata.author_order = {
+                                "main": [],
+                                "sub": []
+                            }
+                            for(let i = 0; i < _this.gamedata.mainQuest.length; i++) _this.gamedata.author_order.main[i] = i;
+                            for(let i = 0; i < _this.gamedata.subQuests.length; i++) _this.gamedata.author_order.sub[i] = i;
                         }
-                      _this.getImagesList();
-                      _this.getVideosList();
-                      _this.loadedStory = storyname;
-                      _this.updateFs();
-                      //è necessario riaggiornare lo stile principale
-                      _this.mainStyleColor = (_this.gamedata.css_style.mainStyle['color'] !== "");
-                      _this.currentMainStyleColor = (_this.mainStyleColor ? _this.gamedata.css_style.mainStyle['color'] : "#000000");
-                      _this.editMainColor();
-                      _this.setFontUrl();
-                  }).catch(err => {throw(err)});
-              }
-              //inizializzazione di altre variabili di stile
-              this.lastAlertBackgroundColor = "#000000";
-              this.lastTextSize = 0;
-              this.alertBackgroundTransparent = false;
-              this.textSizeNotSpecified = false;
+                        if(!_this.gamedata.scoretier)
+                          _this.gamedata.scoretier = {
+                                "a": 0,
+                                "b": 0,
+                                "c": 0
+                          }
+                        _this.getImagesList();
+                        _this.getVideosList();
+                        _this.loadedStory = storyname;
+                        _this.updateFs();
+                        //è necessario riaggiornare lo stile principale
+                        _this.mainStyleColor = (_this.gamedata.css_style.mainStyle['color'] !== "");
+                        _this.currentMainStyleColor = (_this.mainStyleColor ? _this.gamedata.css_style.mainStyle['color'] : "#000000");
+                        _this.editMainColor();
+                        _this.setFontUrl();
+                    }).catch(err => {throw(err)});
+                }
+                //inizializzazione di altre variabili di stile
+                this.lastAlertBackgroundColor = "#000000";
+                this.lastTextSize = 0;
+                this.alertBackgroundTransparent = false;
+                this.textSizeNotSpecified = false;
+              } else alert("Seleziona una storia dall'elenco!");
           },
           postStory: function() {
               if(this.$refs.storyName.value){
@@ -297,6 +299,22 @@
                           _this.getStory(data.meta.name);
                       });
               }
+          },
+          cloneStory: function(){
+              if(this.$refs.selectedStory.value){
+                let src = this.$refs.selectedStory.value;
+                let dst = prompt("Inserisci un nuovo nome per la storia");
+                let data = {
+                  "clone": src,
+                  "storyName": dst
+                }
+                let _this = this;
+                axios.post("/stories", data)
+                    .then((res) => {
+                        _this.updateFs();
+                        _this.getStory(dst);
+                    }).catch((err) => {throw err;});
+              } else alert("Seleziona una storia dall'elenco!");
           },
           deleteStory: function() {
               if (this.$refs.selectedStory.value) {

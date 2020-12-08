@@ -87,7 +87,7 @@ var app = new Vue({
                         axios.delete(`/players/${id}`).catch(err => {return});
                     }
                 }
-            });
+            }).catch(err => {return});
         },
         clearAllData: function() {
             let choice = confirm("Vuoi davvero cancellare tutti i dati di gioco? La pagina sarà ricaricata.");

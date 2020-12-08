@@ -273,7 +273,7 @@ var app = new Vue({
                     this.help_received = true;
                     this.help_requested = false;
                 }
-            }).catch(err => {});
+            }).catch(err => {return});
         },
         sendChatMsg: function() {
             if (this.chat_msg) {

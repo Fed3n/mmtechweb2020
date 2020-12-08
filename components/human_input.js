@@ -54,7 +54,7 @@ var humaninput = Vue.component('human_input', {
       <p>Carica un'immagine e/o inserisci una risposta.</p>
       <form class="form-group" v-on:submit.prevent="submitAnswer">
         <textarea class="form-control willdisabled" ref="textarea"></textarea>
-        <input class="form-control willdisabled" ref="imgarea" type="file" accept="image/*">
+        <input class="form-control willdisabled" ref="imgarea" type="file" accept="image/*" capture="camera">
 	<input type="submit" class="willdisabled" value="Invia" v-on:click="submitAnswer">
       </form>
     </div>
