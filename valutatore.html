@@ -4,8 +4,8 @@
 <head>
     <meta charset='utf-8'>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
@@ -102,10 +102,19 @@
                                         <td v-if="players_data[player.user_id] && players_data[player.user_id].finished === false">
                                             <div class="container-fluid p-0">
                                                 <div class="col-11 p-0" v-if="players_data[player.user_id].time_inactive > 60">
-                                                    <button class="btn color-warning border btn-block pre-button p-1">Bloccato da tempo</button>
+                                                    <button class="btn color-warning border btn-block pre-button p-1" title="Bloccato da tempo" data-toggle="tooltip">
+                                                        <i class="far fa-clock"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="col-11 p-0" v-if="players_ans[player.user_id]" title="Ha bisogno di feedback" data-toggle="tooltip">
+                                                    <button class="btn btn-warning border btn-block p-1" @click="openFeedModal(player.user_id)">
+                                                        <i class="fas fa-envelope"></i>
+                                                    </button>
                                                 </div>
                                                 <div class="col-11 p-0" v-if="players_data[player.user_id].help_requested === true">
-                                                    <button class="btn color-warning border btn-block pre-button p-1">Ha richiesto aiuto</button>
+                                                    <button class="btn color-warning border btn-block pre-button p-1" title="Ha richiesto aiuto" data-toggle="tooltip">
+                                                        <i class="fas fa-exclamation"></i>
+                                                    </button>
                                                 </div>
                                             </div>
                                         </td>
@@ -180,17 +189,17 @@
                                     <ul>
                                         <li v-if="getCurrentQuestData.type != 'draw'" v-for="sol in getCurrentGotos">La risposta <span class="principal">{{ sol[0] }}</span> porta a
                                               <span class="principal">{{ ( getQuest(sol[1]).title || "MainQuest "+sol[1] ) }}</span><br>
-                                              <label v-if="sol[2] != ''">Punteggio: {{ sol[2] }}<label><br>
+                                              <label v-if="sol[2] != ''">Punteggio: {{ sol[2] }}</label><br>
                                         </li>
                                         <li v-if="getCurrentQuestData.type == 'draw'" v-for="sol in getCurrentGotos">
                                               <span v-if="sol[0] != ''">tutti i punti all'interno della circonferenza con centro in <span class="principal">({{ sol[0][0] }},{{ sol[0][1] }})</span> e raggio <span class="principal">{{ sol[0][2] }}</span></span>
                                               <span v-if="sol[0] == ''">tutti gli altri punti</span>
                                               portano a <span class="principal">{{ ( getQuest(sol[1]).title || "MainQuest "+sol[1] ) }}</span><br>
-                                              <label v-if="sol[2] != ''">Punteggio: {{ sol[2] }}<label>
+                                              <label v-if="sol[2] != ''">Punteggio: {{ sol[2] }}</label>
                                         </li>
                                     </ul>
                                     <label v-if="getCurrentQuestData.type == 'draw' && previewdata.picked">La selezione corrente è:
-                                          ({{ previewdata.picked[0] }},{{ previewdata.picked[1] }})<label>
+                                          ({{ previewdata.picked[0] }},{{ previewdata.picked[1] }})</label>
                                 </div>
                             </div>
                             <div class="mx-3" v-if="!previewdata.in_mainquest && ongoing_stories[currentStory].subQuests.length > 1">
@@ -202,7 +211,7 @@
                                             <span class="principal">({{ sol[0] }},{{ sol[1] }})</span> e raggio <span class="principal">{{ sol[2] }}</span></li>
                                     </ul>
                                     <label v-if="getCurrentQuestData.type == 'draw' && previewdata.picked">La selezione corrente è:
-                                          ({{ previewdata.picked[0] }},{{ previewdata.picked[1] }})<label>
+                                          ({{ previewdata.picked[0] }},{{ previewdata.picked[1] }})</label>
                                 </div>
                                 <div v-if="(  getCurrentQuestData.type == 'choice' )">
                                     <label class="font-weight-bold">La soluzione è:</label>
@@ -292,6 +301,7 @@
                             </form>
                         </div>
                     </div>
+                    <!--
                     <div class="container border" id="answers">
                         <div v-for="id in waitingForFeedback">
                             <p>User: {{ id }}</p>
@@ -305,16 +315,42 @@
                                 <input type="submit" value="Submit">
                             </form>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
           </div>
         </div>
+        <div class="modal fade" id="feedbackmodal" tabindex="-1" role="dialog" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content" v-if="feedback_id">
+              <div class="modal-header">
+                  <h5 class="modal-title">Feedback per {{players_data[feedback_id].user_name}}</h5>
+              </div>
+              <div class="modal-body">
+                <div>
+                    <p>{{ players_ans[feedback_id].answer.text }}</p> 
+                    <img class="m-2" width="60%" :src="players_ans[feedback_id].answer.imagedata">
+                    <form v-on:submit.prevent="sendFeedback(feedback_id, $event.target.elements.feedbackans.value)">
+                        <div class="form-group" v-for="opt in computeJson(feedback_id).mainQuest[players_data[feedback_id].currentQuest].goto">
+                            <label>{{ opt[0] }}</label>
+                            <input type="radio" name="feedbackans" :value="opt[0]">
+                        </div>
+                        <input type="submit" value="Submit">
+                    </form>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
     <!--finito il blocco delle tab ------------------------------------------------------------------------------------->
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <script type="text/javascript" src="style_consts.js"></script>
     <script type="text/javascript" src="components/choice_input.js"></script>
     <script type="text/javascript" src="components/text_input.js"></script>
@@ -323,7 +359,7 @@
     <script type="text/javascript" src="components/keyboard_input.js"></script>
     <script type="text/javascript" src="components/qrload.js"></script>
     <script type="text/javascript" src="vue_valutatore.js"></script>
-    <script type="text/javascript" src="utils.js"></script
+    <script type="text/javascript" src="utils.js"></script>
 </body>
 
 </html>

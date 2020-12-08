@@ -35,7 +35,8 @@ var app = new Vue({
             picked: null,
             completedSubs: []
         },
-        currentStory: null
+        currentStory: null,
+        feedback_id: ""
     },
     created: function(){
         this.patchPlayersData();
@@ -74,13 +75,13 @@ var app = new Vue({
                         this.players_data_changing[id] = this.players_data_changing[id] || {};
                         this.players_data_changing[id].help_sent = false;
                         this.players_data_changing[id].help_message = "";
-                    }
+                    }/*
                     // Se un giocatore ha finito, faccio partire un timer che lo rimuove dopo 10 minuti
                     if (this.players_data[id].finished === true) {
                         setTimeout(function() {
                             axios.delete(`/players/${id}`).catch(err => console.log(err));
                         }, 10 * 60 * 1000);
-                    }
+                    }*/
                     // Giocatori inattivi per oltre 20 minuti vengono rimossi
                     if (this.players_data[id].time_inactive > 20 * 60 * 1000) {
                         axios.delete(`/players/${id}`).catch(err => {return});
@@ -116,7 +117,7 @@ var app = new Vue({
             }
         },
         sendChatMsg: function() {
-            if (this.chat_msg[this.current_chat_id]) {
+            if (this.current_chat_id && this.chat_msg[this.current_chat_id]) {
                 msg = {
                     sender: "Valutatore",
                     text: this.chat_msg[this.current_chat_id]
@@ -223,6 +224,8 @@ var app = new Vue({
                 }
             }).then((res) => {
                 this.$delete(this.players_ans, id);
+                this.feedback_id = "";
+                $('#feedbackmodal').modal('hide');
             }).catch(err => {return});
         },
         selectInterfaceFields: function({
@@ -287,7 +290,10 @@ var app = new Vue({
                 }
             }
         },
-
+        openFeedModal: function(id){
+            this.feedback_id = id;
+            $('#feedbackmodal').modal('toggle');
+        },
 
         //style METHODS
         overwriteMainStyle: function(styles) {
@@ -586,3 +592,7 @@ var app = new Vue({
         }
     }
 });
+
+$('#feedbackmodal').on('hidden.bs.modal', function () {
+    app.feedback_id = "";
+})

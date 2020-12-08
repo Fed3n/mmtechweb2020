@@ -264,7 +264,6 @@ var app = new Vue({
                 }
             };
             axios.get('/players/', uid).then(response => {
-                console.log(response.data);
                 for (let key in response.data) {
                     //Se arriva un help msg vuoto non sovrascrivo il vecchio
                     if(key == "help_message" && response.data[key] != "")
@@ -396,10 +395,12 @@ var app = new Vue({
                         this.user_name = res.data.pname;
                         //Creo Cookies sull'utente
                         Cookies.set('logged', true, {
-                            expires: 1
+                            expires: 1,
+							sameSite: 'lax',
                         });
                         Cookies.set('user_id', this.user_id, {
-                            expires: 1
+                            expires: 1,
+							sameSite: 'lax',
                         });
                         //E mi faccio assegnare uno starting point
                         this.changeState(this.parseStart(this.user_id));
@@ -407,6 +408,8 @@ var app = new Vue({
                         this.trackTimeEverySecond();
                     });
                 }
+            }).catch(function(err){
+                throw(err);
             });
         },
         parseStart: function(id) {
@@ -434,10 +437,12 @@ var app = new Vue({
             //Aggiorno status Cookies
             /*
             Cookies.set('in_mainquest', this.in_mainquest, {
-                expires: 1
+                expires: 1,
+				sameSite: 'lax',
             });
             Cookies.set('currentSub', this.currentSub, {
-                expires: 1
+                expires: 1,
+				sameSite: 'lax',
             });*/
             resetDivScrolling();
         },

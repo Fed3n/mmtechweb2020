@@ -257,7 +257,6 @@ app.get('/stories/:storyName', (req, res) => {
         json = JSON.parse(json);
         let meta = fs.readFileSync(metapath);
         meta = JSON.parse(meta);
-        if(!meta.active) return res.status(403).send("Story is not active so access has been forbidden.");
         let load = {
             json: json,
             meta: meta

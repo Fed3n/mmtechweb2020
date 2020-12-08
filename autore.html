@@ -174,19 +174,19 @@
             <div id="server-storyinfo" class="row container-fluid" :class="heavyBorder">
                 <div class="col form-group">
                     <label for="story-name">Nome della Storia</label>
-                    <input name="story-name" class="form-control" type="text" :value="this.metadata.name" ref="storyName">
+                    <input name="story-name" class="form-control" type="text" :value="metadata.name" ref="storyName">
                 </div>
                 <div class="col form-group">
                     <label for="language">Lingua</label>
-                    <input name="language" class="form-control" type="text" :value="this.metadata.language" ref="storyLan">
+                    <input name="language" class="form-control" type="text" :value="metadata.language" ref="storyLan">
                 </div>
                 <div class="col form-check">
-                    <label for="activate" class="form-check-label"><input name="activate" class="form-check-input" :value="this.metadata.active" type="checkbox" ref="storyActive">
+                    <label for="activate" class="form-check-label"><input name="activate" class="form-check-input" :checked="metadata.active" type="checkbox" ref="storyActive">
                         Attiva
                     </label>
                 </div>
                 <div class="col form-check">
-                    <label for="accessibility" class="form-check-label"><input name="accessibility" class="form-check-input" :value="this.metadata.accessible" type="checkbox" ref="storyAccess">
+                    <label for="accessibility" class="form-check-label"><input name="accessibility" class="form-check-input" :checked="metadata.accessible" type="checkbox" ref="storyAccess">
                         Accessibile
                     </label>
                 </div>
@@ -784,28 +784,28 @@
                     <div class="col-md-6 border-right pt-2 pb-2">
                         <!--Quest TITLE-->
                         <div class="form-group row mb-2">
-                            <label for="titlefield" class="col-md-2 col-form-label">Titolo</label>
+                            <label for="titlefield" class="col-md-2 col-form-label font-weight-bold">Titolo</label>
                             <div class="col-md-10">
                                 <input name="titlefield" type="text" class="form-control" v-model="renderQuest.title">
                             </div>
                         </div>
                         <!--Quest TEXT-->
                         <div class="form-group row mb-2">
-                            <label for="textfield" class="col-md-2 col-form-label">Testo</label>
+                            <label for="textfield" class="col-md-2 col-form-label font-weight-bold">Testo</label>
                             <div class="col-md-10">
                                 <textarea name="textfield" class="form-control" type="text" v-model="renderQuest.text"></textarea>
                             </div>
                         </div>
                         <!--Quest STARTING POINT (main quest only)-->
                         <div v-if="previewdata.in_mainquest" class="form-check container mb-2">
-                            <label for="startfield" class="form-check-label">
-                                <input type="checkbox" class="form-check-input" :value="renderQuest.number" v-model="gamedata.starting_points">
+                            <label for="startfield" class="form-check-label" class="font-weight-bold">
+                                <input type="checkbox" class="form-check-input font-weight-bold" :value="renderQuest.number" v-model="gamedata.starting_points">
                                 Quest Iniziale
                             </label>
                         </div>
                         <!--Quest AVAILABLE_ON (subquests only)-->
                         <div>
-                            <label for="availableonfield" v-if="!previewdata.in_mainquest" data-toggle="collapse" data-target="#availableonfield">
+                            <label for="availableonfield" v-if="!previewdata.in_mainquest" data-toggle="collapse" data-target="#availableonfield" class="font-weight-bold">
                                 Disponibile nelle Quest <i class="fas fa-angle-double-down"></i>
                             </label>
                             <div id="availableonfield" name="availableonfield" v-if="!previewdata.in_mainquest" class="collapse">
@@ -817,7 +817,7 @@
                         </div>
                         <!--Quest REQUIRES_SUBQUEST (subquests only)-->
                         <div>
-                            <label for="subreqfield" v-if="!previewdata.in_mainquest" data-toggle="collapse" data-target="#subreqfield">
+                            <label for="subreqfield" v-if="!previewdata.in_mainquest" class="font-weight-bold" data-toggle="collapse" data-target="#subreqfield">
                                 Richiede le Subquest <i class="fas fa-angle-double-down"></i>
                             </label>
                             <div id="subreqfield" name="subreqfield" v-if="!previewdata.in_mainquest" class="collapse">
@@ -829,7 +829,7 @@
                         </div>
                         <!--Quest DESCRIPTION-->
                         <div class="form-group row mb-2">
-                            <label for="descriptionfield" class="col-md-2 col-form-label">Descrizione</label>
+                            <label for="descriptionfield" class="col-md-2 col-form-label font-weight-bold" >Descrizione</label>
                             <div class="col-md-10">
                                 <textarea name="descriptionfield" class="form-control" type="text" v-model="renderQuest.description"></textarea>
                             </div>
@@ -837,14 +837,14 @@
                         <!--Quest SCORE (subquest only)-->
                         <div v-if="!previewdata.in_mainquest">
                             <div class="form-group row mb-2">
-                                <label for="scorefield" class="col-md-2 col-form-label">Punteggio</label>
+                                <label for="scorefield" class="col-md-2 col-form-label font-weight-bold">Punteggio</label>
                                 <div class="col-md-4">
                                     <input type="number" v-model="renderQuest.sub_score">
                                 </div>
                             </div>
                         </div>
                         <!--Quest INPUT TYPE-->
-                        <label name="inputtypefield">Tipo di Input</label>
+                        <label name="inputtypefield" class="font-weight-bold">Tipo di Input</label>
                         <div name="inputtypefield">
                             <div class="form-check form-check-inline">
                                 <input type="radio" id="nonechoice" class="form-check-input" name="typefield" value="" v-model="renderQuest.type">
@@ -875,36 +875,8 @@
                                 <label for="endchoice" class="form-check-label">Finale</label>
                             </div>
                         </div>
-                        <!--Quest INSERT MEDIA-->
-                        <label name="mediafield" class="mt-2">Inserisci Media</label>
-                        <div v-if="renderQuest.media" name="mediafield">
-                            <div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" id="media-type-image" name="choose-media" value="" v-model="renderQuest.media.type">
-                                    <label class="form-check-input" for="media-type-image">Nessuno</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" id="media-type-image" name="choose-media" value="image" v-model="renderQuest.media.type">
-                                    <label class="form-check-input" for="media-type-image">Immagine</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" id="media-type-video" name="choose-media" value="video" v-model="renderQuest.media.type">
-                                    <label class="form-check-input" for="media-type-video">Video</label>
-                                </div>
-                            </div>
-                            <div v-if="renderQuest.media.type">
-                                <label for="select-media">Seleziona il media da utilizzare</label>
-                                <select v-model="renderQuest.media.uri">
-                                    <option v-for="opt in (renderQuest.media.type=='image' ? imagesList : vidsList)" :value="opt">{{ opt }}</option>
-                                </select>
-                                <div class="form-group container row">
-                                    <label for="media-alt" class="mr-2">Descrizione:</label>
-                                    <textarea name="media-alt" v-model="renderQuest.media.alt"></textarea>
-                                </div>
-                            </div>
-                        </div>
                         <!-- Quest OPTIONS (only if type is choice)-->
-                        <label for="optionsfield" v-if="renderQuest.type == 'choice'">Opzioni</label>
+                        <label for="optionsfield" v-if="renderQuest.type == 'choice'" class="font-weight-bold">Opzioni</label>
                         <div name="optionsfield" v-if="renderQuest.type == 'choice'">
                             <div class="form-group" v-for="opt in renderQuest.options">
                                 <input class="form-control" v-model="renderQuest.options[renderQuest.options.indexOf(opt)]">
@@ -920,7 +892,7 @@
                         <!-- Quest CHOOSE IMAGE (only if type is draw)-->
                         <div v-if="renderQuest.type == 'draw'">
                             <div class="form-group">
-                                <label for="select-image">Scegli l'immagine</label>
+                                <label for="select-image" class="font-weight-bold">Scegli l'immagine</label>
                                 <select name="select-image" class="form-control" v-model="renderQuest.image.imguri">
                                     <option v-for="imgname in imagesList" :value="imgname">{{ imgname }}</option>
                                 </select>
@@ -1095,8 +1067,36 @@ Si possono creare tasti che stampano valori diversi dal loro nome:
                                 </div>
                             </div>
                         </div>
+                        <!--Quest INSERT MEDIA-->
+                        <label name="mediafield" class="mt-2 font-weight-bold">Inserisci Media</label>
+                        <div v-if="renderQuest.media" name="mediafield">
+                            <div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" id="media-type-image" name="choose-media" value="" v-model="renderQuest.media.type">
+                                    <label class="form-check-input" for="media-type-image">Nessuno</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" id="media-type-image" name="choose-media" value="image" v-model="renderQuest.media.type">
+                                    <label class="form-check-input" for="media-type-image">Immagine</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" id="media-type-video" name="choose-media" value="video" v-model="renderQuest.media.type">
+                                    <label class="form-check-input" for="media-type-video">Video</label>
+                                </div>
+                            </div>
+                            <div v-if="renderQuest.media.type">
+                                <label for="select-media">Seleziona il media da utilizzare</label>
+                                <select v-model="renderQuest.media.uri">
+                                    <option v-for="opt in (renderQuest.media.type=='image' ? imagesList : vidsList)" :value="opt">{{ opt }}</option>
+                                </select>
+                                <div class="form-group container row">
+                                    <label for="media-alt" class="mr-2">Descrizione:</label>
+                                    <textarea name="media-alt" v-model="renderQuest.media.alt"></textarea>
+                                </div>
+                            </div>
+                        </div>
                         <!-- Quest SUBQUEST REWARDS (main quests only)-->
-                        <label for="subrewardfield" v-if="previewdata.in_mainquest">Ricompense per le Subquest</label>
+                        <label for="subrewardfield" v-if="previewdata.in_mainquest" class="font-weight-bold">Ricompense per le Subquest</label>
                         <div name="subrewardfield" v-if="previewdata.in_mainquest">
                             <div class="btn-group">
                                 <button class="btn color-interact" v-on:click="addSubReward">Aggiungi</button>
@@ -1120,7 +1120,7 @@ Si possono creare tasti che stampano valori diversi dal loro nome:
                                         </div>
                                     </div>
                                     <!--Reward ADDED OPTIONS-->
-                                    <label for="subchoice" v-if="renderQuest.type=='choice'">Opzioni Aggiuntive</label>
+                                    <label for="subchoice" v-if="renderQuest.type=='choice'" class="font-weight-bold">Opzioni Aggiuntive</label>
                                     <div name="subchoice" v-if="renderQuest.type=='choice'">
                                         <div v-for="opt in sub.added_options">
                                             <input v-model="sub.added_options[sub.added_options.indexOf(opt)]">
@@ -1142,7 +1142,7 @@ Si possono creare tasti che stampano valori diversi dal loro nome:
                                         </div>
                                     </div>
                                     <!--Reward ADDED GOTOS-->
-                                    <label for="addedgotosub" class="mt-3">Destinazioni Aggiuntive</label>
+                                    <label for="addedgotosub" class="mt-3" class="font-weight-bold">Destinazioni Aggiuntive</label>
                                     <div name="addedgotosub">
                                         <div class="form-group row" v-for="goto in sub.added_goto">
                                             <input class="form-control col-md-6" type="text" v-model="goto[0]" placeholder="Risposta">

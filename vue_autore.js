@@ -270,7 +270,7 @@
                       _this.currentMainStyleColor = (_this.mainStyleColor ? _this.gamedata.css_style.mainStyle['color'] : "#000000");
                       _this.editMainColor();
                       _this.setFontUrl();
-                  });
+                  }).catch(err => {throw(err)});
               }
               //inizializzazione di altre variabili di stile
               this.lastAlertBackgroundColor = "#000000";
@@ -285,8 +285,8 @@
                       json: this.gamedata,
                       meta: {
                           "name": this.$refs.storyName.value,
-                          "active": this.$refs.storyActive.value,
-                          "accessible": this.$refs.storyAccess.value,
+                          "active": this.$refs.storyActive.checked,
+                          "accessible": this.$refs.storyAccess.checked,
                           "language": this.$refs.storyLan.value
                       }
                   };
