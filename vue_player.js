@@ -372,7 +372,7 @@ var app = new Vue({
             this.$refs.questheader.focus();
         },
         deleteCookies: function() {
-            Cookies.remove('logged'); 
+            Cookies.remove('logged');
             Cookies.remove('user_id');
             console.log("SESSION CLEARED");
         },
@@ -481,7 +481,7 @@ var app = new Vue({
                         this.picked[1] >= y - radius && this.picked[1] <= y + radius) {
                         this.currentQuest = opt[1];
                         //Per ragioni di compatibilità mi assicuro ci sia lo score
-                        if (opt[2]) this.score += parseInt(opt[2]);
+                        if (opt[2]) this.score = this.score + parseInt(opt[2]);
                         this.time_inactive = 0;
                         this.$refs.help.classList.remove("disabled");
                         this.help_message = "";
@@ -496,7 +496,7 @@ var app = new Vue({
                         this.$refs.help.classList.remove("disabled");
                     this.currentQuest = opt[1];
                     //Per ragioni di compatibilità mi assicuro ci sia lo score
-                    if (opt[2]) this.score += parseInt(opt[2]);
+                    if (opt[2]) this.score = this.score + parseInt(opt[2]);
                     this.help_message = "";
                     this.help_received = false;
                     this.sendGameData();
@@ -508,7 +508,7 @@ var app = new Vue({
                         this.$refs.help.classList.remove("disabled");
                     this.currentQuest = opt[1];
                     //Per ragioni di compatibilità mi assicuro ci sia lo score
-                    if (opt[2]) this.score += parseInt(opt[2]);
+                    if (opt[2]) this.score = this.score + parseInt(opt[2]);
                     this.time_inactive = 0;
                     this.help_message = "";
                     this.help_received = false;
@@ -563,8 +563,8 @@ var app = new Vue({
             this.picked = null;
             this.wrong_sub_ans = false;
             //If per ragioni di compatibilità...
-            if (this.renderQuest.sub_score) this.score += parseInt(this.renderQuest.sub_score);
-            this.$refs.questheader.focus();
+            if (this.renderQuest.sub_score) this.score = this.score + parseInt(this.renderQuest.sub_score);
+            this.$refs.questname.focus();
             this.sendGameData();
             //Aggiorno lo status dei Cookies
             /*
@@ -774,7 +774,7 @@ var app = new Vue({
         submitDisabled: function() {
             let disabled = false;
             //Se il tipo è "" (none) è sempre abilitato
-            if (!this.renderQuest.type) disabled = this.in_mainquest ? false : true;
+            if (!this.renderQuest.type) disabled = false;
             //In un type ending è sempre disabilitato (il gioco è finito)
             else if (this.renderQuest.type == "ending") disabled = true;
             //Se siamo in human input allora il submit è abilitato se ho ricevuto feedback dal valutatore
@@ -981,10 +981,12 @@ var app = new Vue({
                         "background-color": menu_background
                     });
                 else {
-                    if (document.getElementById("submit").style.backdropFilter !== "") {
-                        document.getElementById("quest-menu-list").style.background = this.gamedata.css_style.background["url"];
-                        document.getElementById("quest-menu-list").style.mozBackgroundSize = "cover";
-                        document.getElementById("quest-menu-list").style.backgroundSize = "cover";
+                    if (document.getElementById("submit") && document.getElementById("submit").style.backdropFilter !== "") {
+                        if (document.getElementById("quest-menu-list")){
+                            document.getElementById("quest-menu-list").style.background = this.gamedata.css_style.background["url"];
+                            document.getElementById("quest-menu-list").style.mozBackgroundSize = "cover";
+                            document.getElementById("quest-menu-list").style.backgroundSize = "cover";
+                        }
                     } else
                         styles = Object.assign(styles, menu_backgroundImage);
                     styles = Object.assign(styles, {
