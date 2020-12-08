@@ -346,6 +346,18 @@ app.post('/stories/:storyName/images', (req, res) => {
     }
 });
 
+app.post('/tmpimage', (req, res) => {
+    let imgdir = path.join(__dirname + `/tmp/`);
+    try {
+        recursiveMkDir(imgdir);
+        fs.writeFileSync(path.join(imgdir + req.files.image.name), req.files.image.data);
+        return res.status(201).send("Image created successfully.");
+    } catch(err){
+        throw(err);
+        return res.status(500).send("File system error.");
+    }
+});
+
 app.delete('/stories/:storyName/images/', (req, res) => {
     let imgdir = path.join(__dirname + `/story/${req.params.storyName}/images/`);
     let img = req.query.img;
@@ -526,6 +538,6 @@ app.post('/chmod', (req, res) => {
 app.listen(port, (req, res) => {
     //Parse available names from file...
     pnames = fs.readFileSync(path.join(__dirname + "/namelist.txt"), "utf-8").split(',');
-
+    recursiveRm(path.join(__dirname + '/tmp/'));
     console.log(`Listening at ${serverOpened ? 'https' : 'http'}://${serverOpened ? openhost : host}:${port}`)
 });

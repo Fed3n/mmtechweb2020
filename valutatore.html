@@ -328,7 +328,7 @@
               <div class="modal-body">
                 <div>
                     <p>{{ players_ans[feedback_id].answer.text }}</p> 
-                    <img class="m-2" width="60%" :src="players_ans[feedback_id].answer.imagedata">
+                    <img v-if="players_ans[feedback_id].answer.imagedata" class="m-2" width="60%" :src="'tmp/'+players_ans[feedback_id].answer.imagedata">
                     <form v-on:submit.prevent="sendFeedback(feedback_id, $event.target.elements.feedbackans.value)">
                         <div class="form-group" v-for="opt in computeJson(feedback_id).mainQuest[players_data[feedback_id].currentQuest].goto">
                             <label>{{ opt[0] }}</label>
