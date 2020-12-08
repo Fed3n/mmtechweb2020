@@ -382,7 +382,7 @@ var app = new Vue({
             }
             return waiting_list;
         },
-        activeStories: function() {
+        activeStories2: function() {
             var stories = new Set();
             for (let playerID in this.players_data) {
                 stories.add(playerID.split("$")[0]); // playerID = [story, id]
@@ -391,6 +391,21 @@ var app = new Vue({
             if (!this.currentStory) this.currentStory = Array.from(stories)[0];
             return Array.from(stories);
        },
+       activeStories: function() {
+           var stories = new Set();
+           for (let playerID in this.players_data) {
+               stories.add(playerID.split("$")[0]); // playerID = [story, id]
+           }
+           //inizializzo currentStory
+           if (!this.currentStory) this.currentStory = Array.from(stories)[0];
+           //create array of object with name and id
+           let storiesMap = [];
+           Array.from(stories).forEach((id, i) => {
+              storiesMap.push( { 'id': id, "name": id.replaceAll(' ',"--") } );
+           });
+           //console.log("storiesMAp "+storiesMap);
+           return storiesMap;
+      },
        getCurrentQuestData: function() {
          return this.getQuestData(this.currentStory);
        },
