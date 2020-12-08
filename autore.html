@@ -41,8 +41,8 @@
                     <div class="col-12">
                         <label class="form-headers">Storie Registrate</label>
                     </div>
-                    <div class="row ml-1 mb-2">
-                        <div class="col-md-10">
+                    <div class="row ml-1 mb-2 w-100">
+                        <div class="col-md-6">
                             <select name="select-story" class="custom-select" size="6" ref="selectedStory">
                                 <option v-for="story in storyList" :value="story" data-toggle="tooltip" :title="activeStoryList.includes(story) ? 'Attiva' : 'Inattiva'"
                                 :style="{ color: activeStoryList.includes(story) ? 'green' : 'red' }">{{ story }}</option>
@@ -99,7 +99,7 @@
                     </div>
                     <div class="col-12 mt-2 pl-0">
                         <p class="color-static-light rounded m-1 mb-3 pl-3 p-2">Carica una storia prima di vedere/caricare immagini.</p>
-                    </div> 
+                    </div>
                 </div>
                 <!--VIDEO CARICATI-->
                 <div id="uploadvideos" v-if="loadedStory" class="container-fluid border-top mt-2">
@@ -141,7 +141,7 @@
                     </div>
                     <div class="col-12 mt-2 pl-0">
                         <p class="color-static-light rounded m-1 mb-3 pl-3 p-2">Carica una storia prima di vedere/caricare video.</p>
-                    </div> 
+                    </div>
                 </div>
             </div>
 
@@ -166,7 +166,7 @@
                     </div>
                 </div>
                 <div id="qrarea" class="containter-fluid">
-                    <div id="qrcreate" class="mt-3">
+                    <div id="qrcreate" class="mt-3 pl-4">
                         <button class="btn color-interact" v-on:click="createQR">Crea QR Code</button>
                     </div>
                 </div>
