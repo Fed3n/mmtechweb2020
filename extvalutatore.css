@@ -98,3 +98,32 @@
 .pre-button {
     box-shadow: none !important;
 }
+
+.fade-in {
+    --seconds: 1s;
+    animation: fadeIn ease var(--seconds);
+    -webkit-animation: fadeIn ease var(--seconds);
+    -moz-animation: fadeIn ease var(--seconds);
+    -o-animation: fadeIn ease var(--seconds);
+    -ms-animation: fadeIn ease var(--seconds);
+}
+@keyframes fadeIn{
+  0% { opacity:0; }
+  100% { opacity:1; }
+}
+@-moz-keyframes fadeIn {
+  0% { opacity:0; }
+  100% { opacity:1; }
+}
+@-webkit-keyframes fadeIn {
+  0% { opacity:0; }
+  100% { opacity:1; }
+ }
+@-o-keyframes fadeIn {
+  0% { opacity:0; }
+  100% { opacity:1; }
+}
+@-ms-keyframes fadeIn {
+  0% { opacity:0; }
+  100% { opacity:1; }
+ }
