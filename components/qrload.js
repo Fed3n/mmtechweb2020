@@ -16,26 +16,20 @@ var qrload = Vue.component('qrload', {
 			}
 		this.questlist = questlist;
 	});
-  },
-  watch: {
-	  questlist: function(newlist, oldlist) {
-		  let name = "";
-		  if(window.location.pathname.indexOf("/") != -1 && window.location.pathname.indexOf("/#") == -1){
-			for(story of this.questlist){
-			  name = window.location.pathname.substring(1,window.location.pathname.length);
-			}
-		  }
-		  if(name) {
-			this.$parent.questname = name;
-			this.$parent.changeQuest();
-		  }
-	   }
+	let name = "";
+	let index = window.location.href.indexOf("quest=");
+	console.log("AAAAA" + index);
+	console.log(this.checkName(window.location.href));
+	if(index != -1){
+		this.$parent.questname = this.checkName(window.location.href);
+		this.$parent.changeQuest();
+	}
   },
   methods: {
 	checkName (str) {
 		let result = str;
-		if (result.indexOf("/")) {
-			result = result.substring(result.lastIndexOf("/")+1, result.length);
+		if (result.indexOf("quest=")) {
+			result = result.substring(result.lastIndexOf("quest=")+6, result.length);
 			while (result.indexOf("%20") != -1)
 				result = result.replace("%20"," ");
 		}

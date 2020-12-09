@@ -878,8 +878,12 @@
               link.click();
           },
           createQR: function() {
+			  //Nome al file - ci possono essere spazi
               let qrname = this.metadata.name;
-              let qrcontent = window.location.protocol +  "//" + window.location.hostname + ":" + window.location.port + "/" + this.setQrName(this.metadata.name);
+			  //Nome nel contenuto del qr - non ci possono esse spazi
+			  let cname = {quest: this.metadata.name};
+			  cname = $.param(cname);
+              let qrcontent = window.location.protocol +  "//" + window.location.hostname + ":" + window.location.port + "/" + cname;
               qr.clear();
               qr.makeCode(qrcontent);
               var node = this.$refs.qrcode;
@@ -887,13 +891,6 @@
               node.download = `${qrname}.png`;
               node.click();
           },
-		  setQrName: function(str) {
-			  let result = str;
-			  if (result.indexOf(" ") != -1)
-				  return result.replace(" ","%20");
-			  else
-				  return result;
-		  },
           requestHelp: function() {
               this.$refs.requestedHelp.style.display = "inline-block";
               this.$refs.help.classList.add("disabled");

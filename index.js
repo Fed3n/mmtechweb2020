@@ -501,12 +501,21 @@ app.get('/valutatore', (req, res) => {
 });
 
 app.get('/:storyname', (req, res) => {
+	console.log("SONO IN STORYNAME");
 	let storylist = fs.readdirSync(path.join(__dirname + "/story"));
     let found = false;
-    for (story of storylist) {
-        let info = fs.readFileSync(path.join(__dirname + "/story/" + story + "/info.json"));
-        info = JSON.parse(info);
-		if(req.params.storyname == info.name) found = true;
+	let index = req.params.storyname.indexOf("quest=");
+	console.log(req.params.storyname);
+	console.log(index);
+	if (index != -1) {
+		let name = req.params.storyname.substring(index+6,req.params.storyname.length);
+		console.log(name);
+		for (story of storylist) {
+			let info = fs.readFileSync(path.join(__dirname + "/story/" + story + "/info.json"));
+			info = JSON.parse(info);
+			if (name === info.name)
+				found = true;
+		}
     }
 	if(found) {
 		if ((req.protocol == "https" && serverOpened == true) || (serverOpened == false)) {
