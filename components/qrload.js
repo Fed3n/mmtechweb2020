@@ -32,10 +32,19 @@ var qrload = Vue.component('qrload', {
 	   }
   },
   methods: {
+	checkName (str) {
+		let result = str;
+		if (result.indexOf("/")) {
+			result = result.substring(result.lastIndexOf("/")+1, result.length);
+			while (result.indexOf("%20") != -1)
+				result = result.replace("%20"," ");
+		}
+		return result;
+	},
     check (result) {
 		console.log(result);
 		console.log(this.questlist);
-		var name = result.substring(result.lastIndexOf("/")+1,result.length);
+		var name = this.checkName(result);
 		console.log(name);
 		if(questlist.filter(el => el.name === name).length > 0) {
 			this.error = "Loading quest!";
@@ -46,7 +55,7 @@ var qrload = Vue.component('qrload', {
 	async onDetect (promise) {
       try {
         const { content } = await promise
-		var name = content.substring(content.lastIndexOf("/")+1,content.length);
+		var name = this.checkName(content)
 		console.log(content);
 		console.log(this.questlist);
 		console.log(name);
