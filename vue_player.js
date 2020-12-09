@@ -159,20 +159,6 @@ var app = new Vue({
         if (Cookies.get('logged') === 'true' && this.restored == false) {
             this.user_id = Cookies.get('user_id');
             this.questname = this.user_id.split("$")[0];
-            console.log(this.questname);
-            /*
-            this.user_name = Cookies.get('user_name');
-            this.questname = Cookies.get('questname');
-            this.time_played = Cookies.get('time_played');
-            this.time_inactive = Cookies.get('time_inactive');
-            this.score = Cookies.get('score');
-            this.currentQuest = Cookies.get('currentQuest');
-            //I Cookies vengono salvati solo come stringhe, e non come booleani
-            if (Cookies.get('in_mainquest') === 'true') this.in_mainquest = true;
-            else this.in_mainquest = false; //7
-            this.currentSub = Cookies.get('currentSub');
-            if (Cookies.getJSON('completedSubs')) this.completedSubs = Cookies.getJSON('completedSubs'); //9
-            */
             this.changeQuest();
             this.restoreGameData();
             this.updateEverySecond();
@@ -353,7 +339,7 @@ var app = new Vue({
         },
         logoutconfirm: function() {
             this.deleteCookies();
-            window.location.href="./";
+			location.reload();
         },
         logoutdecline: function() {
             this.$refs.logoutcontainer.style.display = "none";
@@ -371,11 +357,17 @@ var app = new Vue({
             this.$refs.questheader.focus();
         },
         deleteCookies: function() {
-            Cookies.remove('logged');
-            Cookies.remove('user_id');
-            console.log("SESSION CLEARED");
+            Cookies.set('logged', false, {
+                expires: 0,
+				sameSite: 'lax',
+            });
+            Cookies.set('user_id', "none", {
+                expires: 0,
+				sameSite: 'lax',
+            });
         },
         changeQuest: function() {
+			let baseurl = window.location.protocol +  "//" + window.location.hostname + ":" + window.location.port + "/";
             //Inizialmente la variabile è a false, ed in tal caso il sistema prova a ripristinare i cookies preesistenti.
             //Se la variabile restored è a true, il sistema non prova a ripristinare i cookies.
             this.restored = true;
@@ -406,6 +398,10 @@ var app = new Vue({
                         this.changeState(this.parseStart(this.user_id));
                         this.updateEverySecond();
                         this.trackTimeEverySecond();
+						//Se è la prima volta che imposto Cookies e il QR è caricato da fotocamera esterna
+						if (window.location.href !== baseurl) {
+							window.location.href = baseurl;
+						}
                     });
                 }
             }).catch(function(err){
@@ -434,16 +430,6 @@ var app = new Vue({
             this.help_message = "";
             this.help_received = false;
             this.sendGameData();
-            //Aggiorno status Cookies
-            /*
-            Cookies.set('in_mainquest', this.in_mainquest, {
-                expires: 1,
-				sameSite: 'lax',
-            });
-            Cookies.set('currentSub', this.currentSub, {
-                expires: 1,
-				sameSite: 'lax',
-            });*/
             resetDivScrolling();
         },
         goToMainQuest: function() {
@@ -457,14 +443,6 @@ var app = new Vue({
             this.help_message = "";
             this.help_received = false;
             this.sendGameData();
-            //Aggiorno lo stato dei cookies
-            /*
-            Cookies.set('in_mainquest', this.in_mainquest, {
-                expires: 1
-            });
-            Cookies.set('currentQuest', this.currentQuest, {
-                expires: 1
-            });*/
             resetDivScrolling();
         },
         submitMain: function() {
@@ -524,14 +502,6 @@ var app = new Vue({
             this.$refs.inputForm.reset();
             this.picked = null;
             if (this.renderQuest.type == "keys") this.$refs.inputComponent.text = "";
-            //Aggiorno lo stato dei cookies
-            /*
-            Cookies.set('in_mainquest', this.in_mainquest, {
-                expires: 1
-            });
-            Cookies.set('currentQuest', this.currentQuest, {
-                expires: 1
-            });*/
             this.$refs.questheader.focus();
         },
         submitSub: function() {
@@ -571,18 +541,6 @@ var app = new Vue({
             if (this.renderQuest.sub_score) this.score = this.score + parseInt(this.renderQuest.sub_score);
             this.$refs.questheader.focus();
             this.sendGameData();
-            //Aggiorno lo status dei Cookies
-            /*
-            Cookies.set('in_mainquest', this.in_mainquest, {
-                expires: 1
-            });
-            Cookies.set('currentSub', this.currentSub, {
-                expires: 1
-            });
-            let obj = JSON.stringify(this.completedSubs);
-            Cookies.set('completedSubs', obj, {
-                expires: 1
-            });*/
             resetDivScrolling();
         },
         overwriteMainStyle: function(styles, color) {

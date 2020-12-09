@@ -18,8 +18,6 @@ var qrload = Vue.component('qrload', {
 	});
 	let name = "";
 	let index = window.location.href.indexOf("quest=");
-	console.log("AAAAA" + index);
-	console.log(this.checkName(window.location.href));
 	if(index != -1){
 		this.$parent.questname = this.checkName(window.location.href);
 		this.$parent.changeQuest();
@@ -36,10 +34,7 @@ var qrload = Vue.component('qrload', {
 		return result;
 	},
     check (result) {
-		console.log(result);
-		console.log(this.questlist);
 		var name = this.checkName(result);
-		console.log(name);
 		if(questlist.filter(el => el.name === name).length > 0) {
 			this.error = "Loading quest!";
 			this.$parent.questname = name;
@@ -50,9 +45,6 @@ var qrload = Vue.component('qrload', {
       try {
         const { content } = await promise
 		var name = this.checkName(content)
-		console.log(content);
-		console.log(this.questlist);
-		console.log(name);
 		if(questlist.filter(el => el.name === name).length > 0) {
 			this.error = "Loading quest!";
 			this.$parent.questname = name;
@@ -100,7 +92,6 @@ var qrload = Vue.component('qrload', {
 		this.dragover = isDraggingOver;
 	},
 	clicked: function() {
-		console.log(document.getElementsByName("image")[0]);
 		document.getElementsByName("image")[0].click();
 	}
   },
