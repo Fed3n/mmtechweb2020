@@ -878,8 +878,12 @@
               link.click();
           },
           createQR: function() {
+			  //Nome al file - ci possono essere spazi
               let qrname = this.metadata.name;
-              let qrcontent = window.location.protocol + "//" + window.location.hostname + "/" + this.metadata.name;
+			  //Nome nel contenuto del qr - non ci possono esse spazi
+			  let cname = {quest: this.metadata.name};
+			  cname = $.param(cname);
+              let qrcontent = window.location.protocol +  "//" + window.location.hostname + ":" + window.location.port + "/" + cname;
               qr.clear();
               qr.makeCode(qrcontent);
               var node = this.$refs.qrcode;

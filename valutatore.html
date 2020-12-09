@@ -35,20 +35,15 @@
                     <h2 class="font-weight-bold">Storie in gioco</h2>
                 </div>
                 <ul class="nav nav-pills col-12 d-flex justify-content-center p-0" v-if="activeStories.length > 0" role="tablist">
-                    <li class="nav-item col-12 m-0 p-0">
-                        <button class="nav-link active btn color-interact border btn-block" @click="switchStory(activeStories[0])"
-                        :id="activeStories[0] + 'tab'" :href="'#' + activeStories[0]" data-toggle="tab" role="tab" :aria-controls="activeStories[0]" aria-selected="true">
-                        {{ activeStories[0] }}</button>
-                    </li>
-                    <li v-for="story in activeStories.slice(1)" class="nav-item col-12 m-0 p-0">
-                        <button class="nav-link btn color-interact border btn-block" @click="switchStory(story)"
-                        :id="story + 'tab'" :href="'#'+story" data-toggle="tab" role="tab" :aria-controls="story" aria-selected="false">{{ story }}</button>
+                    <li v-for="story in activeStories" class="nav-item col-12 m-0 p-0">
+                        <button class="nav-link btn color-interact border btn-block pre-button" :aria-controls="story" aria-selected="( story == activeStories[0] )"
+                        :class="( story == activeStories[0] ? 'active' : '' )" :disabled="( story == currentStory )" @click="switchStory(story)">{{ story }}</button>
                     </li>
                 </ul>
             </div>
             <div class="col-md-9 tab-content pl-3 pr-0">
                 <!-- Tab con le informazioni dei giocatori------------------------------------------------------------------------------------------------------------------>
-                <div v-for="story in activeStories" :class="(story == activeStories[0]) ? 'show active' : ' '" class="tab-pane" :id="story" :aria-labelledby="story + 'tab'" role="tabpanel">
+                <div v-for="story in activeStories" v-show="( story == currentStory )" :aria-labelledby="story + 'tab'">
                     <div class="container container-fluid col-12 p-0">
                         <div class="table-responsive table-wrapper">
                             <div class="jumbotron jumbotron-fluid color-static text-light rounded py-2">
@@ -61,7 +56,7 @@
                                         il giocatore cliccando sul bottone "Chat" in basso.</p>
                                 </div>
                             </div>
-                            <table v-if="players_data" class="table table-striped border-bottom">
+                            <table v-if="players_data" class="table table-striped border-bottom fade-in">
                                 <thead>
                                     <tr>
                                         <th>Nome del Giocatore</th>
@@ -145,7 +140,7 @@
                     <i class="fas fa-angle-double-down"></i>
                 </button>
 
-                <div id="story-preview" v-if="ongoing_stories[activeStories[0]]" class="container-fluid collapse mt-3 p-2 row">
+                <div id="story-preview" v-if="ongoing_stories[currentStory]" class="container-fluid collapse mt-3 p-2 row">
                     <div id="preview-menu" class="col-md-6 p-3 mt-2 mb-1">
                         <div class="pb-3" id="preview-menu-container" :class=" (!previewdata.in_mainquest && (ongoing_stories[currentStory].subQuests.length == 1 && ongoing_stories[currentStory].subQuests[0].text == ''
                                 && ongoing_stories[currentStory].subQuests[0].title == '') ) ? ' ' : 'border-bottom'+'overflow-auto' ">
@@ -327,7 +322,7 @@
               </div>
               <div class="modal-body">
                 <div>
-                    <p>{{ players_ans[feedback_id].answer.text }}</p> 
+                    <p>{{ players_ans[feedback_id].answer.text }}</p>
                     <img v-if="players_ans[feedback_id].answer.imagedata" class="m-2" width="60%" :src="'tmp/'+players_ans[feedback_id].answer.imagedata">
                     <form v-on:submit.prevent="sendFeedback(feedback_id, $event.target.elements.feedbackans.value)">
                         <div class="form-group" v-for="opt in computeJson(feedback_id).mainQuest[players_data[feedback_id].currentQuest].goto">

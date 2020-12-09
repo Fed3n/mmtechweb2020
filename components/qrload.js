@@ -16,27 +16,25 @@ var qrload = Vue.component('qrload', {
 			}
 		this.questlist = questlist;
 	});
-  },
-  watch: {
-	  questlist: function(newlist, oldlist) {
-		  let name = "";
-		  if(window.location.pathname.indexOf("/") != -1 && window.location.pathname.indexOf("/#") == -1){
-			for(story of this.questlist){
-			  name = window.location.pathname.substring(1,window.location.pathname.length);
-			}
-		  }
-		  if(name) {
-			this.$parent.questname = name;
-			this.$parent.changeQuest();
-		  }
-	   }
+	let name = "";
+	let index = window.location.href.indexOf("quest=");
+	if(index != -1){
+		this.$parent.questname = this.checkName(window.location.href);
+		this.$parent.changeQuest();
+	}
   },
   methods: {
+	checkName (str) {
+		let result = str;
+		if (result.indexOf("quest=")) {
+			result = result.substring(result.lastIndexOf("quest=")+6, result.length);
+			while (result.indexOf("%20") != -1)
+				result = result.replace("%20"," ");
+		}
+		return result;
+	},
     check (result) {
-		console.log(result);
-		console.log(this.questlist);
-		var name = result.substring(result.lastIndexOf("/")+1,result.length);
-		console.log(name);
+		var name = this.checkName(result);
 		if(questlist.filter(el => el.name === name).length > 0) {
 			this.error = "Loading quest!";
 			this.$parent.questname = name;
@@ -46,10 +44,7 @@ var qrload = Vue.component('qrload', {
 	async onDetect (promise) {
       try {
         const { content } = await promise
-		var name = content.substring(content.lastIndexOf("/")+1,content.length);
-		console.log(content);
-		console.log(this.questlist);
-		console.log(name);
+		var name = this.checkName(content)
 		if(questlist.filter(el => el.name === name).length > 0) {
 			this.error = "Loading quest!";
 			this.$parent.questname = name;
@@ -97,7 +92,6 @@ var qrload = Vue.component('qrload', {
 		this.dragover = isDraggingOver;
 	},
 	clicked: function() {
-		console.log(document.getElementsByName("image")[0]);
 		document.getElementsByName("image")[0].click();
 	}
   },
