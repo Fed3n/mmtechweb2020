@@ -35,22 +35,10 @@
                     <h2 class="font-weight-bold">Storie in gioco</h2>
                 </div>
                 <ul class="nav nav-pills col-12 d-flex justify-content-center p-0" v-if="activeStories.length > 0" role="tablist">
-
                     <li v-for="story in activeStories" class="nav-item col-12 m-0 p-0">
-                        <button class="nav-link btn color-interact border btn-block" :aria-controls="story" aria-selected="( story == activeStories[0] )"
+                        <button class="nav-link btn color-interact border btn-block pre-button" :aria-controls="story" aria-selected="( story == activeStories[0] )"
                         :class="( story == activeStories[0] ? 'active' : '' )" :disabled="( story == currentStory )" @click="switchStory(story)">{{ story }}</button>
                     </li>
-
-                    <!--li class="nav-item col-12 m-0 p-0">
-                        <button class="nav-link active btn color-interact border btn-block" @click="switchStory(activeStories[0])"
-                        :id="activeStories[0] + 'tab'" :href="'#' + activeStories[0]" data-toggle="tab" role="tab" :aria-controls="activeStories[0]" aria-selected="true">
-                        {{ activeStories[0] }}</button>
-                    </li>
-                    <li v-for="story in activeStories.slice(1)" class="nav-item col-12 m-0 p-0">
-                        <button class="nav-link btn color-interact border btn-block" @click="switchStory(story)"
-                        :id="story + 'tab'" :href="'#'+story" data-toggle="tab" role="tab" :aria-controls="story" aria-selected="false">{{ story }}</button>
-                    </li-->
-
                 </ul>
             </div>
             <div class="col-md-9 tab-content pl-3 pr-0">
@@ -68,7 +56,7 @@
                                         il giocatore cliccando sul bottone "Chat" in basso.</p>
                                 </div>
                             </div>
-                            <table v-if="players_data" class="table table-striped border-bottom">
+                            <table v-if="players_data" class="table table-striped border-bottom fade-in">
                                 <thead>
                                     <tr>
                                         <th>Nome del Giocatore</th>
