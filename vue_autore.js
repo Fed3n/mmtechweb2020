@@ -1130,13 +1130,15 @@
               //very bad hack vv
               this.force_recompute;
               let arr = [];
-              if (this.previewdata.in_mainquest) {
-                  for(let i = 0; i < this.gamedata.author_order.main.length; i++) arr[i] = this.gamedata.mainQuest[this.gamedata.author_order.main[i]];
-              }
-              else {
-                  for(let i = 0; i < this.gamedata.author_order.sub.length; i++) arr[i] = this.gamedata.subQuests[this.gamedata.author_order.sub[i]];
-              }
-            return arr;
+              for(let i = 0; i < this.gamedata.author_order.main.length; i++) arr[i] = this.gamedata.mainQuest[this.gamedata.author_order.main[i]];
+              return arr;
+          },
+          subquestList: function() {
+              //very bad hack vv
+              this.force_recompute;
+              let arr = [];
+              for(let i = 0; i < this.gamedata.author_order.sub.length; i++) arr[i] = this.gamedata.subQuests[this.gamedata.author_order.sub[i]];
+              return arr;
           },
           //Restituisco una coppia [index,goto], l'index serve per accedere al v-model
           getAddedGotos: function() {

@@ -239,7 +239,7 @@
                                     <button class="btn btn-sm btn-warning" data-toggle="tooltip" title="Scambia" v-on:click="swapQuests(0,false)"><i class="fas fa-arrow-right"></i></button>
                                 </div>
                             </div>
-                            <div v-for="(quest,pos) in questList" class="container-fluid pb-3">
+                            <div v-for="(quest,pos) in (previewdata.in_mainquest ? questList : subquestList)" class="container-fluid pb-3">
                                 <div class="row pb-2">
                                     <div class="btn-group col-10">
                                         <button class="btn btn-block border border-dark" :class="swap_selected==pos ? 'btn-warning' : 'btn-light'"
@@ -812,7 +812,7 @@
                                 Disponibile nelle Quest <i class="fas fa-angle-double-down"></i>
                             </label>
                             <div id="availableonfield" name="availableonfield" v-if="!previewdata.in_mainquest" class="collapse">
-                                <div v-for="quest in gamedata.mainQuest" class="form-check form-check" data-toggle="tooltip" :title="quest.title">
+                                <div v-for="quest in questList" class="form-check form-check" data-toggle="tooltip" :title="quest.title">
                                     <input type="checkbox" class="form-check-input" :name="'quest' + quest.number" :value="quest.number" v-model="renderQuest.available_on">
                                     <label for="'quest' + quest.number" class="form-check-label"> {{ quest.title || 'Quest'+quest.number }}</label>
                                 </div>
@@ -824,7 +824,7 @@
                                 Richiede le Subquest <i class="fas fa-angle-double-down"></i>
                             </label>
                             <div id="subreqfield" name="subreqfield" v-if="!previewdata.in_mainquest" class="collapse">
-                                <div v-for="sub in gamedata.subQuests" class="form-check" data-toggle="tooltip" :title="sub.title">
+                                <div v-for="sub in subquestList" class="form-check" data-toggle="tooltip" :title="sub.title">
                                     <input type="checkbox" class="form-check-input" :name="'sub' + sub.number" :value="sub.number" v-model="renderQuest.requires_sub">
                                     <label :for="'quest' + sub.number">{{ sub.title || 'Subquest'+sub.number }}</label>
                                 </div>
