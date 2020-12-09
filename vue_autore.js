@@ -879,7 +879,7 @@
           },
           createQR: function() {
               let qrname = this.metadata.name;
-              let qrcontent = window.location.protocol + "//" + window.location.hostname + "/" + this.metadata.name;
+              let qrcontent = window.location.protocol +  "//" + window.location.hostname + ":" + window.location.port + "/" + this.setQrName(this.metadata.name);
               qr.clear();
               qr.makeCode(qrcontent);
               var node = this.$refs.qrcode;
@@ -887,6 +887,13 @@
               node.download = `${qrname}.png`;
               node.click();
           },
+		  setQrName: function(str) {
+			  let result = str;
+			  if (result.indexOf(" ") != -1)
+				  return result.replace(" ","%20");
+			  else
+				  return result;
+		  },
           requestHelp: function() {
               this.$refs.requestedHelp.style.display = "inline-block";
               this.$refs.help.classList.add("disabled");
