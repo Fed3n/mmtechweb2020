@@ -217,6 +217,9 @@ var app = new Vue({
                     score: this.score,
                     help_requested: this.help_requested,
                     help_received: this.help_received,
+                    ans_feedback: this.ans_feedback,
+                    waiting_feedback: this.waiting_feedback,
+                    received_feedback: this.received_feedback,
                     finished: this.renderQuest.type == 'ending',
                     time_inactive: this.time_inactive,
                     time_played: this.time_played,
@@ -240,6 +243,7 @@ var app = new Vue({
                     //Se arriva un help msg vuoto non sovrascrivo il vecchio
                     if(key != "help_message")
                         this[key] = response.data[key];
+                    if (key == "waiting_feedback") console.log(response.data[key]);
                 }
             }).catch(err => {});
         },
@@ -358,11 +362,11 @@ var app = new Vue({
         },
         deleteCookies: function() {
             Cookies.set('logged', false, {
-                expires: -1,
+                expires: 0,
 				sameSite: 'lax',
             });
             Cookies.set('user_id', "", {
-                expires: -1,
+                expires: 0,
 				sameSite: 'lax',
             });
         },
@@ -376,18 +380,13 @@ var app = new Vue({
                 this.metadata = response.data.meta;
                 document.getElementById("questheader").focus();
                 this.setFontUrl();
-                console.log(Cookies.get('logged'));
                 if (!(Cookies.get('logged') === 'true')) {
-                    console.log("WE");
                     //Chiedo al server il mio user id che è in formato nome_storia$numero
                     axios.get("/uid", {
                         params: {
                             story_name: this.metadata.name
                         }
                     }).then(res => {
-                        console.log(res.data);
-                        console.log(res.data.id);
-                        console.log(res.data.pname);
                         this.user_id = res.data.id;
                         this.user_name = res.data.pname;
                         //Creo Cookies sull'utente
