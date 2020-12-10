@@ -28,7 +28,7 @@
             </div>
         </center>
         <!--Area navbar-->
-        <div v-if="questname" id="questrender" ref="questrender" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
+        <div v-if="questname && restored" id="questrender" ref="questrender" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
             <nav class="navbar navbar-expand-md" :class="navbarBootstrapStyle" :style="navbarStyle">
                 <div class="navbar-brand" :style="navbarBrandStyle">Menu
                     <span class="badge willdisabled" :class="badgeBootstrapStyle" :style="badgeStyle" v-if="getSubquests.length > 0" role="alert" aria-label="missioni disponibili nel menù">Subs!</span>
@@ -66,7 +66,7 @@
             </nav>
         </div>
         <!--Area quest-->
-        <div v-if="questname" id="accordion" class="accordion" ref="accordion" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
+        <div v-if="questname && restored" id="accordion" class="accordion" ref="accordion" v-bind:style="questname ? 'visibility: visible' : 'visibility: hidden'">
             <div class="card player-card" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
                 <div class="card-header h-10" :style="cardLimitStyle">
                     <h3 id="questheader" ref="questheader" tabindex="-1">
