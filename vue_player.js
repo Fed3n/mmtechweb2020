@@ -159,8 +159,8 @@ var app = new Vue({
         if (Cookies.get('logged') === 'true' && this.restored == false) {
             this.user_id = Cookies.get('user_id');
             this.questname = this.user_id.split("$")[0];
-            this.changeQuest();
             this.restoreGameData();
+            this.changeQuest();
             this.updateEverySecond();
             this.trackTimeEverySecond();
         }
