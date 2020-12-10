@@ -91,18 +91,20 @@ var app = new Vue({
             }).catch(err => {return});
         },
         deletePlayer: function(id){
-            let _this = this;
-            axios.delete(`/players/${id}`).then(function() {
-                delete _this.players_data[id];
-                delete _this.players_data_changing[id];
-                delete _this.players_chat[id];
-                delete _this.players_ans[id];
-            })
-            .catch(err => {
-                alert("Failed to delete player, try again.");
-                console.log(err);
-            });
-            
+            let ok = confirm("Vuoi davvero cancellare questo giocatore? I suoi dati verranno rimossi definitivamente.")
+            if(ok){
+                let _this = this;
+                axios.delete(`/players/${id}`).then(function() {
+                    delete _this.players_data[id];
+                    delete _this.players_data_changing[id];
+                    delete _this.players_chat[id];
+                    delete _this.players_ans[id];
+                })
+                .catch(err => {
+                    alert("Failed to delete player, try again.");
+                    console.log(err);
+                });
+            }
         },
         clearAllData: function() {
             let choice = confirm("Vuoi davvero cancellare tutti i dati di gioco? La pagina sarà ricaricata.");
@@ -132,7 +134,7 @@ var app = new Vue({
             }
         },
         sendChatMsg: function() {
-            if (this.current_chat_id && this.chat_msg[this.current_chat_id]) {
+            if (this.current_chat_id && this.chat_msg[this.current_chat_id] && this.players_chat[this.current_chat_id]) {
                 msg = {
                     sender: "Valutatore",
                     text: this.chat_msg[this.current_chat_id]

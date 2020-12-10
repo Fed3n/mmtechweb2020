@@ -65,6 +65,7 @@
                                         <th>Subquest completate</th>
                                         <th>Segnalazioni</th>
                                         <th></th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -120,6 +121,9 @@
                                         </td>
                                         <td v-if="players_data[player.user_id] && players_data[player.user_id].finished === true">
                                             <button class="btn pre-button color-ended">Ha finito! Voto {{ computeGrade(player.user_id) }}</button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-danger" @click="deletePlayer(player.user_id)">X</button>
                                         </td>
                                     </tr>
                                 </tbody>

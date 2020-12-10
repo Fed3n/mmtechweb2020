@@ -283,12 +283,12 @@ var app = new Vue({
                     sender: this.user_name,
                     text: this.chat_msg
                 };
-                axios.post(`chat/${this.user_id}`, msg);
                 this.chat.push(msg);
                 this.chat_msg = "";
                 this.$nextTick(() => {
                     scrollToBottom("chatbox");
                 });
+                axios.post(`chat/${this.user_id}`, msg).catch(err => { return; });
             }
         },
         getCurrentChats: function() {
@@ -297,12 +297,14 @@ var app = new Vue({
                     user_id: this.user_id
                 }
             }).then(response => {
-                old_chat = this.chat;
-                this.chat = response.data;
-                if (this.chat.length > old_chat.length) {
-                    this.$nextTick(() => {
-                        scrollToBottom("chatbox");
-                    });
+                if(response.data){
+                    let old_chat = this.chat;
+                    this.chat = response.data;
+                    if (this.chat.length > old_chat.length) {
+                        this.$nextTick(() => {
+                            scrollToBottom("chatbox");
+                        });
+                    }
                 }
             });
         },

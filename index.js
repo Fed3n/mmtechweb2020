@@ -150,6 +150,8 @@ app.delete('/players/:player_id', (req, res) => {
     var id = req.params.player_id;
     players_deleted.push(id);
     pnames.push(players_data[id]);
+    delete players_ans[id];
+    delete players_chat[id];
     delete players_data[id];
     return res.status(200).send("Delete successfully.");
 });
