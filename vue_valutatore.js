@@ -45,13 +45,13 @@ var app = new Vue({
         this.getPlayerAnswers();
     },
     mounted: function() {
-        this.updatesEvery5Seconds();
+        this.updatesEverySecond();
     },
     destroyed: function() {
         players_data = {};
     },
     methods: {
-        updatesEvery5Seconds: function() {
+        updatesEverySecond: function() {
             let timerId = setInterval(() => {
                 this.getPlayersData();
                 this.patchPlayersData();
@@ -82,12 +82,27 @@ var app = new Vue({
                             axios.delete(`/players/${id}`).catch(err => console.log(err));
                         }, 10 * 60 * 1000);
                     }*/
+                    /*
                     // Giocatori inattivi per oltre 20 minuti vengono rimossi
                     if (this.players_data[id].time_inactive > 20 * 60 * 1000) {
                         axios.delete(`/players/${id}`).catch(err => {return});
-                    }
+                    }*/
                 }
             }).catch(err => {return});
+        },
+        deletePlayer: function(id){
+            let _this = this;
+            axios.delete(`/players/${id}`).then(function() {
+                delete _this.players_data[id];
+                delete _this.players_data_changing[id];
+                delete _this.players_chat[id];
+                delete _this.players_ans[id];
+            })
+            .catch(err => {
+                alert("Failed to delete player, try again.");
+                console.log(err);
+            });
+            
         },
         clearAllData: function() {
             let choice = confirm("Vuoi davvero cancellare tutti i dati di gioco? La pagina sarà ricaricata.");

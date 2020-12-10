@@ -137,7 +137,7 @@ app.patch('/players/', (req, res) => {
 app.get('/players/', (req, res) => {
     var id = req.query.user_id;
     if (id) {
-        if (!players_deleted.includes(id))
+        if (players_data[id] && !players_deleted.includes(id))
             return res.status(200).send(players_data[req.query.user_id]);
         else
             return res.status(404).send("Player data not available anymore");

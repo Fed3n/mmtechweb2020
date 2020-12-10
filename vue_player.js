@@ -226,9 +226,13 @@ var app = new Vue({
                     newPlayerMsgs: this.newPlayerMsgs
                 })
                 .catch(err => {
+                    //Qua cosa si fa? far disconnettere il player alla prima mancanza
+                    //di connessione forse e' eccessivo, lo lascio giocare
+                    /*
                     alert("Disconnesso dalla partita!");
                     this.deleteCookies();
-                    location.reload();
+                    location.reload();*/
+                    return;
                 });
         },
         restoreGameData: function() {
@@ -238,14 +242,21 @@ var app = new Vue({
                 }
             };
             axios.get('/players/', uid).then(response => {
-                console.log(response.data);
                 for (let key in response.data) {
                     //Se arriva un help msg vuoto non sovrascrivo il vecchio
                     if(key != "help_message")
                         this[key] = response.data[key];
                     if (key == "waiting_feedback") console.log(response.data[key]);
                 }
-            }).catch(err => {});
+            }).catch(err => {
+                let ok = confirm("Impossibile recuperare la partita precedente! Riprovare?");
+                if(ok){
+                    location.reload();
+                } else{
+                    this.deleteCookies();
+                    location.reload();
+                }
+            });
         },
         getGameData: function() {
             let uid = {
