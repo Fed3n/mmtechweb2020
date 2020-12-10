@@ -358,11 +358,11 @@ var app = new Vue({
         },
         deleteCookies: function() {
             Cookies.set('logged', false, {
-                expires: 0,
+                expires: -1,
 				sameSite: 'lax',
             });
-            Cookies.set('user_id', "none", {
-                expires: 0,
+            Cookies.set('user_id', "", {
+                expires: -1,
 				sameSite: 'lax',
             });
         },
@@ -376,13 +376,18 @@ var app = new Vue({
                 this.metadata = response.data.meta;
                 document.getElementById("questheader").focus();
                 this.setFontUrl();
-                if (!Cookies.get('logged')) {
+                console.log(Cookies.get('logged'));
+                if (!(Cookies.get('logged') === 'true')) {
+                    console.log("WE");
                     //Chiedo al server il mio user id che è in formato nome_storia$numero
                     axios.get("/uid", {
                         params: {
                             story_name: this.metadata.name
                         }
                     }).then(res => {
+                        console.log(res.data);
+                        console.log(res.data.id);
+                        console.log(res.data.pname);
                         this.user_id = res.data.id;
                         this.user_name = res.data.pname;
                         //Creo Cookies sull'utente
@@ -398,10 +403,11 @@ var app = new Vue({
                         this.changeState(this.parseStart(this.user_id));
                         this.updateEverySecond();
                         this.trackTimeEverySecond();
+                        /*
 						//Se è la prima volta che imposto Cookies e il QR è caricato da fotocamera esterna
 						if (window.location.href !== baseurl) {
 							window.location.href = baseurl;
-						}
+                        }*/
                     });
                 }
             }).catch(function(err){
