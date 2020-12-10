@@ -877,20 +877,6 @@
               link.href = createObjectURL(blob);
               link.click();
           },
-          createQR: function() {
-			  //Nome al file - ci possono essere spazi
-              let qrname = this.metadata.name;
-			  //Nome nel contenuto del qr - non ci possono esse spazi
-			  let cname = {quest: this.metadata.name};
-			  cname = $.param(cname);
-              let qrcontent = window.location.protocol +  "//" + window.location.hostname + ":" + window.location.port + "/" + cname;
-              qr.clear();
-              qr.makeCode(qrcontent);
-              var node = this.$refs.qrcode;
-              node.href = `${qr._el.getElementsByTagName("img")[0].src}`;
-              node.download = `${qrname}.png`;
-              node.click();
-          },
           requestHelp: function() {
               this.$refs.requestedHelp.style.display = "inline-block";
               this.$refs.help.classList.add("disabled");
@@ -1712,5 +1698,30 @@
               ;
               return styles;
           }
-      }
+      },
+	  watch: {
+		  loadedStory(newstory, oldstory) {
+			  let node = this.$refs.qrarea;
+			  if (this.loadedStory != "") {
+				  node.hidden = false;
+				  //Nome al file - ci possono essere spazi
+				  let qrname = this.loadedStory;
+				  //Nome nel contenuto del qr - non ci possono esse spazi
+				  let cname = {quest: this.loadedStory};
+				  cname = $.param(cname);
+				  let qrcontent = window.location.protocol +  "//" + window.location.hostname + ":" + window.location.port + "/?" + cname;
+				  //creo il QR
+				  qr.clear();
+				  qr.makeCode(qrcontent);
+				  node = this.$refs.qrcode;
+				  node.src = `${qr._el.getElementsByTagName("img")[0].src}`;
+				  node.alt = qrname + " QR Code";
+				  //Creo un link di download al QR
+				  node = this.$refs.qrdownload;
+				  node.href = `${qr._el.getElementsByTagName("img")[0].src}`;
+				  node.download = `${qrname}.png`;
+			  } else 
+				  node.hidden = true;
+		  }
+	  }
   });

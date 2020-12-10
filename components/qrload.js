@@ -16,9 +16,9 @@ var qrload = Vue.component('qrload', {
 			}
 		this.questlist = questlist;
 	});
-	let name = "";
 	let index = window.location.href.indexOf("quest=");
 	if(index != -1){
+		let name = "";
 		this.$parent.questname = this.checkName(window.location.href);
 		this.$parent.changeQuest();
 	}
