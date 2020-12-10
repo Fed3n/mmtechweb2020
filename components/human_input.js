@@ -84,7 +84,7 @@ var humaninput = Vue.component('human_input', {
       <form class="form-group p-1" v-on:submit.prevent="submitAnswer">
         <textarea class="form-control willdisabled m-2" ref="textarea"></textarea>
         <input class="form-control willdisabled m-2" ref="imgarea" type="file" accept="image/*">
-	<input type="submit" class="willdisabled m-1" value="Invia" v-on:click="submitAnswer">
+	<input type="submit" class="willdisabled m-1" value="Invia">
       </form>
     </div>
     <p v-if="waitingFeedback">Risposta inviata! In attesa della valutazione...</p>
