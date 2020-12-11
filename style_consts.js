@@ -72,6 +72,10 @@ var input_backgroundImage = {
     "backdrop-filter": "blur(15px)"
 };
 
+var input_backgroundNone = {
+    "background-color": "rgba(0,0,0,0.05)",
+};
+
 //default image settings
 //default setting of all this "default image styles" is "black" or "white" depending on the darkness of the image
 var default_image_togglerButton_color = "black";

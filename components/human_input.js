@@ -1,4 +1,10 @@
 var humaninput = Vue.component('human_input', {
+  data () {
+    return {
+     pickText: "",
+     pickImg: false
+   }
+ },
   props: ["gamedata", "current", "value", "metadata","styles","buttonstyle"],
   methods: {
 	//metodo alternativo per evitare overload sul server unibo tenendo in ram immagini grandi
@@ -29,7 +35,7 @@ var humaninput = Vue.component('human_input', {
 				this.$parent.waiting_feedback = true;
 			});
 		}
-	}
+	},
 	/*
     //Un po' complicato, mando l'immagine in base64 così che il valutatore la possa caricare
     //senza che venga salvata sul server come uri permanente
@@ -68,29 +74,35 @@ var humaninput = Vue.component('human_input', {
 		});
 	}
 	}*/
+    imageChange: function(e) {
+      this.pickImg = (this.$refs.imgarea.files[0]);
+    }
   },
   computed: {
-	waitingFeedback: function(){
-		return this.$parent.waiting_feedback;
-	},
-	canProceed: function(){
-		return this.$parent.received_feedback;
-	},
-  inputStyle: function() {
-    return this.styles;
-  },
-  buttonStyle: function() {
-    return this.buttonstyle;
-  }
+  	waitingFeedback: function(){
+  		return this.$parent.waiting_feedback;
+  	},
+  	canProceed: function(){
+  		return this.$parent.received_feedback;
+  	},
+    inputStyle: function() {
+      return this.styles;
+    },
+    buttonStyle: function() {
+      return this.buttonstyle;
+    },
+    disableButton: function() {
+      return !(this.pickText || this.pickImg);
+    }
   },
   template: `
-  <div class="container border p-2">
+  <div class="container m-0 p-0">
     <div v-if="!waitingFeedback & !canProceed">
       <p>Metti un'immagine e/o inserisci una risposta.</p>
-      <form class="form-group p-1" v-on:submit.prevent="submitAnswer">
-        <textarea class="form-control willdisabled m-2" ref="textarea" :style="inputStyle"></textarea>
-        <input class="form-control willdisabled m-2" ref="imgarea" type="file" accept="image/*">
-	      <input type="submit" class="btn willdisabled m-1" value="Invia" :style="buttonStyle">
+      <form class="form-group m-3" v-on:submit.prevent="submitAnswer">
+        <textarea class="form-control willdisabled my-2" ref="textarea" :style="inputStyle" v-model="pickText"></textarea>
+        <input class="form-control willdisabled my-2" ref="imgarea" type="file" accept="image/*" v-on:change="imageChange" :style="inputStyle" style="overflow: hidden">
+	      <input type="submit" class="btn willdisabled my-1" value="Invia" :disabled="disableButton" :style="buttonStyle">
       </form>
     </div>
     <p v-if="waitingFeedback">Risposta inviata! In attesa della valutazione...</p>
