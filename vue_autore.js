@@ -49,7 +49,7 @@
       "scoretier": {
           "a": 0,
           "b": 0,
-          "c": 0 
+          "c": 0
       },
       "starting_points": [],
       "author_order": {
@@ -1222,6 +1222,7 @@
               else if (type == "input") return "textinput";
               else if (type == "draw") return "imginput";
               else if (type == "keys") return "keyboardinput";
+              else if (type == "human") return "humaninput";
               else return "";
           },
           renderQuest: function() {
@@ -1687,15 +1688,20 @@
               if (this.currentComponent == "choiceinput")
               ;
               if (this.currentComponent == "textinput")
-                  style = this.overwriteMainStyle(styles);
-              style = Object.assign(styles, input_backgroundImage);
+                  style = this.overwriteMainStyle(styles, true);
+              if (this.currentComponent == "humaninput")
+                  style = this.overwriteMainStyle(styles, true);
+              if (this.currentComponent == "imginput")
+                  ;
+              if (this.gamedata.css_style.background.image){
+                  style = Object.assign(styles, input_backgroundImage);
+              }
+              style = Object.assign(styles, input_backgroundNone);
               if (!this.gamedata.css_style.background.image)
                   if (!this.gamedata.css_style.mainStyle["color"])
                       styles = Object.assign(styles, {
                           "color": "inherit"
                       });
-              if (this.currentComponent == "imginput")
-              ;
               return styles;
           }
       },
@@ -1720,7 +1726,7 @@
 				  node = this.$refs.qrdownload;
 				  node.href = `${qr._el.getElementsByTagName("img")[0].src}`;
 				  node.download = `${qrname}.png`;
-			  } else 
+			  } else
 				  node.hidden = true;
 		  }
 	  }

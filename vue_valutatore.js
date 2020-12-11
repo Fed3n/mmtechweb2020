@@ -426,6 +426,7 @@ var app = new Vue({
            else if (type == "input") return "textinput";
            else if (type == "draw") return "imginput";
            else if (type == "keys") return "keyboardinput";
+           else if (type == "human") return "humaninput";
            else return "";
        },
        getCurrentOptions: function() {
@@ -552,6 +553,8 @@ var app = new Vue({
            ;
            if (this.currentComponent == "textinput")
                style = this.overwriteMainStyle(styles);
+           if (this.currentComponent == "humaninput")
+               style = this.overwriteMainStyle(styles, true);
            style = Object.assign(styles, input_backgroundImage);
            if (!this.ongoing_stories[this.currentStory].css_style.background.image)
                if (!this.ongoing_stories[this.currentStory].css_style.mainStyle["color"])
