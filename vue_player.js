@@ -159,11 +159,10 @@ var app = new Vue({
         if (Cookies.get('logged') === 'true' && this.restored == false) {
             this.user_id = Cookies.get('user_id');
             this.questname = this.user_id.split("$")[0];
-            if(this.restoreGameData()){
-                this.changeQuest();
-                this.updateEverySecond();
-                this.trackTimeEverySecond();
-            }
+            this.restoreGameData();
+            this.changeQuest();
+            this.updateEverySecond();
+            this.trackTimeEverySecond();
         }
     },
     methods: {
@@ -249,7 +248,6 @@ var app = new Vue({
                         this[key] = response.data[key];
                     if (key == "waiting_feedback") console.log(response.data[key]);
                 }
-                return true;
             }).catch(err => {
                 let ok = confirm("Impossibile recuperare la partita precedente! Riprovare?");
                 if(ok){
@@ -393,6 +391,7 @@ var app = new Vue({
             //Se la variabile restored è a true, il sistema non prova a ripristinare i cookies.
             this.restored = true;
             axios.get(`/stories/${this.questname}`).then(response => {
+                console.log("changequest");
                 this.gamedata = response.data.json;
                 this.metadata = response.data.meta;
                 document.getElementById("questheader").focus();
