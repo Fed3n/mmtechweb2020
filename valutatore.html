@@ -123,7 +123,9 @@
                                             <button class="btn pre-button color-ended">Ha finito! Voto {{ computeGrade(player.user_id) }}</button>
                                         </td>
                                         <td>
-                                            <button class="btn btn-danger" @click="deletePlayer(player.user_id)">X</button>
+                                            <button class="btn btn-danger" @click="deletePlayer(player.user_id)" title="rimuovi il giocatore" data-toggle="tooltip">
+                                                <i class="fas fa-times fa-lg"></i>
+                                            </button>
                                         </td>
                                     </tr>
                                 </tbody>
