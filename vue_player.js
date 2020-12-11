@@ -155,14 +155,15 @@ var app = new Vue({
             }
         }
     },
-    mounted: function() {
+    mounted: async function() {
         if (Cookies.get('logged') === 'true' && this.restored == false) {
             this.user_id = Cookies.get('user_id');
             this.questname = this.user_id.split("$")[0];
-            this.restoreGameData();
-            this.changeQuest();
-            this.updateEverySecond();
-            this.trackTimeEverySecond();
+            if(await this.restoreGameData()){
+                this.changeQuest();
+                this.updateEverySecond();
+                this.trackTimeEverySecond();
+            }
         }
     },
     methods: {
@@ -235,20 +236,23 @@ var app = new Vue({
                     return;
                 });
         },
-        restoreGameData: function() {
+        restoreGameData: async function() {
             let uid = {
                 params: {
                     user_id: this.user_id
                 }
             };
-            axios.get('/players/', uid).then(response => {
+            try {
+                let response = await axios.get('/players/', uid);
                 for (let key in response.data) {
                     //Se arriva un help msg vuoto non sovrascrivo il vecchio
                     if(key != "help_message")
                         this[key] = response.data[key];
                     if (key == "waiting_feedback") console.log(response.data[key]);
                 }
-            }).catch(err => {
+                return true;
+            }
+            catch {
                 let ok = confirm("Impossibile recuperare la partita precedente! Riprovare?");
                 if(ok){
                     location.reload();
@@ -258,7 +262,7 @@ var app = new Vue({
                     location.reload();
                     return false;
                 }
-            });
+            }
         },
         getGameData: function() {
             let uid = {

@@ -8,33 +8,41 @@ var humaninput = Vue.component('human_input', {
   props: ["gamedata", "current", "value", "metadata","styles","buttonstyle","preview"],
   methods: {
 	//metodo alternativo per evitare overload sul server unibo tenendo in ram immagini grandi
-	submitAnswer: function() {
+	submitAnswer: async function() {
     if (!this.preview){
   		let form = new FormData();
           let uid = this.$parent.user_id;
           let image = this.$refs.imgarea.files[0] || "";
           let text = this.$refs.textarea.value;
   		if(image){
-  			let form = new FormData();
-  			form.append('image', image);
-  			axios.post(`/tmpimage`, form, {
-  				headers: {
-  					'Content-Type': 'multipart/form-data'
-  				}
-  			})
-  			.then((res) => {
-  				axios.post('/answers', {'text': text, 'imagedata': image.name}, {params: { 'user_id': this.$parent.user_id }}).then((res) => {
-  					console.log("sent answer");
-  					this.submitted = true;
-  					this.$parent.waiting_feedback = true;
+  			try{
+  				let form = new FormData();
+  				form.append('image', image);
+  				await axios.post(`/tmpimage`, form, {
+  					headers: {
+  						'Content-Type': 'multipart/form-data'
+  					}
   				});
-  			}).catch((err) => {throw(err); return;});
-  		} else {
-  			axios.post('/answers', {'text': text, 'imagedata': ""}, {params: { 'user_id': this.$parent.user_id }}).then((res) => {
+  				await axios.post('/answers', {'text': text, 'imagedata': image.name}, {params: { 'user_id': this.$parent.user_id }});
   				console.log("sent answer");
   				this.submitted = true;
   				this.$parent.waiting_feedback = true;
-  			});
+  			}
+  			catch {
+  				alert("Impossibile mandare la risposta, riprova più tardi");
+  				return;
+  			}
+  		} else {
+  			try {
+  				await axios.post('/answers', {'text': text, 'imagedata': ""}, {params: { 'user_id': this.$parent.user_id }});
+  				console.log("sent answer");
+  				this.submitted = true;
+  				this.$parent.waiting_feedback = true;
+  			}
+  			catch {
+  				alert("Impossibile mandare la risposta, riprova più tardi");
+  				return;
+  			}
   		}
     }
 	},
