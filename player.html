@@ -88,7 +88,7 @@
                             <div v-if="renderQuest" id="gameinput">
                                 <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :wrong="(!in_mainquest) && wrong_sub_ans"
                                 :current="in_mainquest ? currentQuest : currentSub" :options="in_mainquest ? getCurrentOptions : renderQuest.options" v-model="picked"
-                                ref="inputComponent" :styles="componentStyle"></component>
+                                ref="inputComponent" :styles="componentStyle" :buttonstyle="submitStyle"></component>
                             </div>
                         </form>
                         <!--EVENTUALI MEDIA-->

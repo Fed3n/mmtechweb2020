@@ -1149,6 +1149,9 @@ var app = new Vue({
             ;
             if (this.currentComponent == "textinput")
                 style = this.overwriteMainStyle(styles, true);
+            if (this.currentComponent == "humaninput")
+                style = this.overwriteMainStyle(styles, true);
+            ;
             style = Object.assign(styles, input_backgroundImage);
             if (!this.gamedata.css_style.background.image)
                 if (!this.gamedata.css_style.mainStyle["color"])

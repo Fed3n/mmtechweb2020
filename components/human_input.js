@@ -1,5 +1,5 @@
 var humaninput = Vue.component('human_input', {
-  props: ["gamedata", "current", "value", "metadata","styles"],
+  props: ["gamedata", "current", "value", "metadata","styles","buttonstyle"],
   methods: {
 	//metodo alternativo per evitare overload sul server unibo tenendo in ram immagini grandi
 	submitAnswer: function() {
@@ -21,7 +21,7 @@ var humaninput = Vue.component('human_input', {
 					this.submitted = true;
 					this.$parent.waiting_feedback = true;
 				});
-			}).catch((err) => {throw(err); return;});	
+			}).catch((err) => {throw(err); return;});
 		} else {
 			axios.post('/answers', {'text': text, 'imagedata': ""}, {params: { 'user_id': this.$parent.user_id }}).then((res) => {
 				console.log("sent answer");
@@ -53,7 +53,7 @@ var humaninput = Vue.component('human_input', {
 			      'user_id': _this.$parent.user_id
 			  }
 			})
-			.then((res) => { 
+			.then((res) => {
 			  _this.submitted = true;
 			  _this.$parent.waiting_feedback = true;
 			});
@@ -75,16 +75,22 @@ var humaninput = Vue.component('human_input', {
 	},
 	canProceed: function(){
 		return this.$parent.received_feedback;
-	}
+	},
+  inputStyle: function() {
+    return this.styles;
+  },
+  buttonStyle: function() {
+    return this.buttonstyle;
+  }
   },
   template: `
   <div class="container border p-2">
     <div v-if="!waitingFeedback & !canProceed">
       <p>Metti un'immagine e/o inserisci una risposta.</p>
       <form class="form-group p-1" v-on:submit.prevent="submitAnswer">
-        <textarea class="form-control willdisabled m-2" ref="textarea"></textarea>
+        <textarea class="form-control willdisabled m-2" ref="textarea" :style="inputStyle"></textarea>
         <input class="form-control willdisabled m-2" ref="imgarea" type="file" accept="image/*">
-	<input type="submit" class="willdisabled m-1" value="Invia">
+	      <input type="submit" class="btn willdisabled m-1" value="Invia" :style="buttonStyle">
       </form>
     </div>
     <p v-if="waitingFeedback">Risposta inviata! In attesa della valutazione...</p>

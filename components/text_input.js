@@ -1,5 +1,5 @@
 var textinput = Vue.component('text_input.js', {
-  props: ["gamedata", "current", "value", "metadata","styles","wrong"],
+  props: ["gamedata", "current", "value", "metadata","styles","wrong","buttonstyle"],
   methods: {
     updateAns: function(picked){
       this.$emit('input', picked);
