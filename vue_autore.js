@@ -185,7 +185,8 @@
           lastAlertBackgroundColor: "#000000",
           textSizeNotSpecified: false,
           lastTextSize: 0,
-          force_recompute: 0
+          force_recompute: 0,
+          googleFontsError: false
       },
       created: function() {
           this.updateFs();
