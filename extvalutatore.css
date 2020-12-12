@@ -57,6 +57,7 @@
 #chatmessagecontainer {
     height: 90%;
     overflow-y: scroll;
+    scroll-behavior: smooth;
 }
 
 .chatmessage {

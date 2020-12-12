@@ -35,9 +35,16 @@ var app = new Vue({
             picked: null,
             completedSubs: []
         },
+        emptyPlayerFilter: {
+            in_mainquest: true,
+            currentQuest: 0,
+            currentSub: 0,
+            completedSubs: []
+        },
         currentStory: null,
         feedback_id: "",
-        windowDimension: ""
+        windowDimension: "",
+        gotoPlayer: ""
     },
     created: function(){
         this.patchPlayersData();
@@ -332,6 +339,15 @@ var app = new Vue({
             this.feedback_id = id;
             $('#feedbackmodal').modal('toggle');
         },
+        playerFiltered: function(player) {
+            let playerFilter = {
+              in_mainquest: player.in_mainquest,
+              currentQuest: player.currentQuest,
+              currentSub: player.currentSub,
+              completedSubs: player.completedSubs
+            };
+            return playerFilter;
+        },
 
         //style METHODS
         overwriteMainStyle: function(styles) {
@@ -517,6 +533,15 @@ var app = new Vue({
        previewdata_change: function() {
            let p = this.previewdata;
            return (p.in_mainquest && ((p.currentQuest + p.currentSub + p.completedSubs.length)) %2 == 0);
+       },
+       previewdataFiltered: function() {
+           let filteredPreviewdata = {
+               in_mainquest: this.previewdata.in_mainquest,
+               currentQuest: this.previewdata.currentQuest,
+               currentSub: this.previewdata.currentSub,
+               completedSubs: this.previewdata.completedSubs
+           };
+           return filteredPreviewdata;
        },
        /*
        get_current_grid_option: function(){
