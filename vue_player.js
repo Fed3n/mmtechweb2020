@@ -192,9 +192,9 @@ var app = new Vue({
             }
         },
         updateEverySecond: function() {
-            let timerId = setInterval(() => {
-                this.sendGameData();
-                this.getGameData();
+            let timerId = setInterval( async () => {
+                await this.sendGameData();
+                await this.getGameData();
                 this.getCurrentChats();
                 if (this.waiting_feedback) this.checkAnsFeedback();
                 if (this.currentComponent && this.help_received)
@@ -207,26 +207,28 @@ var app = new Vue({
                 this.time_inactive++;
             }, 1000);
         },
-        sendGameData: function() {
-            axios.patch(`/players/${this.user_id}`, {
-                    user_id: this.user_id,
-                    user_name: this.user_name,
-                    in_mainquest: this.in_mainquest,
-                    currentQuest: this.currentQuest,
-                    currentSub: this.currentSub,
-                    completedSubs: this.completedSubs,
-                    score: this.score,
-                    help_requested: this.help_requested,
-                    help_received: this.help_received,
-                    ans_feedback: this.ans_feedback,
-                    waiting_feedback: this.waiting_feedback,
-                    received_feedback: this.received_feedback,
-                    finished: this.renderQuest.type == 'ending',
-                    time_inactive: this.time_inactive,
-                    time_played: this.time_played,
-                    newPlayerMsgs: this.newPlayerMsgs
-                })
-                .catch(err => {
+        sendGameData: async function() {
+            try {
+                await axios.patch(`/players/${this.user_id}`, {
+                        user_id: this.user_id,
+                        user_name: this.user_name,
+                        in_mainquest: this.in_mainquest,
+                        currentQuest: this.currentQuest,
+                        currentSub: this.currentSub,
+                        completedSubs: this.completedSubs,
+                        score: this.score,
+                        help_requested: this.help_requested,
+                        help_received: this.help_received,
+                        ans_feedback: this.ans_feedback,
+                        waiting_feedback: this.waiting_feedback,
+                        received_feedback: this.received_feedback,
+                        finished: this.renderQuest.type == 'ending',
+                        time_inactive: this.time_inactive,
+                        time_played: this.time_played,
+                        newPlayerMsgs: this.newPlayerMsgs
+                    });
+            }
+            catch {
                     //Qua cosa si fa? far disconnettere il player alla prima mancanza
                     //di connessione forse e' eccessivo, lo lascio giocare
                     /*
@@ -234,7 +236,7 @@ var app = new Vue({
                     this.deleteCookies();
                     location.reload();*/
                     return;
-                });
+            }
         },
         restoreGameData: async function() {
             let uid = {
@@ -264,23 +266,28 @@ var app = new Vue({
                 }
             }
         },
-        getGameData: function() {
+        getGameData: async function() {
             let uid = {
                 params: {
                     user_id: this.user_id
                 }
             };
-            axios.get('/players/', uid).then(response => {
+            try {
+                let response = await axios.get('/players/', uid);
                 for (let key in response.data) {
                     //Se arriva un help msg vuoto non sovrascrivo il vecchio
-                    if(key == "help_message" && response.data[key] != "")
+                    if(key == "help_message" && response.data[key] != ""){
                         this[key] = response.data[key];
+                    }
                 }
                 if (this.help_message !== "") {
                     this.help_received = true;
                     this.help_requested = false;
                 }
-            }).catch(err => {return});
+            }
+            catch {
+                return;
+            }
         },
         sendChatMsg: function() {
             if (this.chat_msg) {
@@ -312,7 +319,7 @@ var app = new Vue({
                         });
                     }
                 }
-            });
+            }).catch((err) => {return;});
         },
         checkAnsFeedback: function() {
             axios.get(`/feedback/`, {
@@ -507,6 +514,7 @@ var app = new Vue({
                     if (opt[2]) this.score = this.score + parseInt(opt[2]);
                     this.help_message = "";
                     this.help_received = false;
+                    this.time_inactive = 0;
                     this.sendGameData();
                     break;
                 }
@@ -520,6 +528,7 @@ var app = new Vue({
                     this.time_inactive = 0;
                     this.help_message = "";
                     this.help_received = false;
+                    this.time_inactive = 0;
                     this.sendGameData();
                     resetDivScrolling();
                 }
