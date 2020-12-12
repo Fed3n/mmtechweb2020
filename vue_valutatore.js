@@ -659,6 +659,27 @@ var app = new Vue({
              return "p-3 mt-2 mb-1";
          }
        },
+       mainSubSwitchStyle: function() {
+         if (this.windowDimension == "sm" || this.windowDimension == "xs"){
+             return "mb-3 mt-2";
+         } else {
+             return "mx-3 mb-3 mt-2";
+         }
+       },
+       mainSubSelectorStyle: function() {
+         if (this.windowDimension == "sm" || this.windowDimension == "xs"){
+             return "m-3 mb-4 px-2";
+         } else {
+             return "form-group m-3 mb-4 px-3";
+         }
+       },
+       inputMainSubSelectorStyle: function() {
+         if (this.windowDimension == "sm" || this.windowDimension == "xs"){
+             return "col-10";
+         } else {
+             return "";
+         }
+       },
        previewContainerStyle: function() {
          if (this.windowDimension == "sm" || this.windowDimension == "xs"){
              return "mt-2 pt-2";
