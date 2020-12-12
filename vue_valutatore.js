@@ -36,7 +36,8 @@ var app = new Vue({
             completedSubs: []
         },
         currentStory: null,
-        feedback_id: ""
+        feedback_id: "",
+        windowDimension: ""
     },
     created: function(){
         this.patchPlayersData();
@@ -337,7 +338,14 @@ var app = new Vue({
                         });
             }
             this.submitStyleObject = styles;
-        }
+        },
+        //method that returns witch div is visible now (divs are based on bootstrap parameters)
+        bootstrapVisibility: function(isVisible, entry) {
+            if (isVisible){
+                console.log("entry: "+ entry);
+                this.windowDimension = entry.target.getAttribute("data-device");
+            }
+        },
     },
     computed: {
         firstPlayer: function() {
@@ -490,6 +498,23 @@ var app = new Vue({
            let p = this.previewdata;
            return (p.in_mainquest && ((p.currentQuest + p.currentSub + p.completedSubs.length)) %2 == 0);
        },
+       /*
+       get_current_grid_option: function(){
+           //returns bootstrap parameters applied (sm, md, lg, xs, xl)
+           let elements = document.querySelectorAll(".device-check");
+           let visible;
+
+           elements.forEach((el, i) => {
+              let style = window.getComputedStyle(el);
+              console.log("dddd: "+ style.display);
+              if (style.display === 'none'){
+                  visible = el;
+              }
+           });
+           return visible.getAttribute("data-device");
+           //return $('.device-check:visible').attr('data-device');
+       },
+       */
 
        //oggetti di stile per la preview
        previewStyle: function() {
@@ -598,6 +623,56 @@ var app = new Vue({
            //stylistic choices lead us not to add this feature if there is a background image
            return styles;
        },
+       //PROPRIETA' DI STILE UTILIZZATE PER RENDERE GRADEVOLE ANCHE LA VISUALIZZAZIONE DA MOBILE
+       storiesSelectorStyle: function() {
+          if (this.windowDimension == "sm" || this.windowDimension == "xs"){
+              return "border-bottom";
+          } else {
+              return "border-right pl-2 pr-3";
+          }
+       },
+       tabContentStyle: function() {
+          if (this.windowDimension == "sm" || this.windowDimension == "xs"){
+              return "";
+          } else {
+              return "pl-3 pr-0";
+          }
+       },
+       dataButtonStyle: function() {
+         if (this.windowDimension == "sm" || this.windowDimension == "xs"){
+             return "mt-4 justify-content-center";
+         } else {
+             return "mr-4 justify-content-end";
+         }
+       },
+       storyPreviewStyle: function() {
+         if (this.windowDimension == "sm" || this.windowDimension == "xs"){
+             return "mt-2";
+         } else {
+             return "container-fluid mt-3";
+         }
+       },
+       previewMenuStyle: function() {
+         if (this.windowDimension == "sm" || this.windowDimension == "xs"){
+             return "";
+         } else {
+             return "p-3 mt-2 mb-1";
+         }
+       },
+       previewContainerStyle: function() {
+         if (this.windowDimension == "sm" || this.windowDimension == "xs"){
+             return "mt-2 pt-2";
+         } else {
+             return "py-3";
+         }
+       },
+       listGroupStyle: function() {
+         if (this.windowDimension == "sm" || this.windowDimension == "xs"){
+             return "border-bottom pl-2 pr-0 pb-3";
+         } else {
+             return "border-right pl-2 pr-0";
+         }
+       }
     },
     watch: {
         current_chat_messages: function(val) {
