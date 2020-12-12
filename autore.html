@@ -588,7 +588,7 @@
                                             <input name="fontUrlField" class="form-control row" type="text" readyonly v-model="gamedata.css_style.mainStyle['font-url']"
                                             @input="setFontUrl()" data-toggle="tooltip" title="se il font non è disponibile inserire il link a google fonts">
                                         </div>
-                                        <small v-if="gamedata.css_style.mainStyle['font-url'] === ' '" class="row text-muted mt-2">
+                                        <small v-if="gamedata.css_style.mainStyle['font-url'] === ' ' || googleFontsError" class="row text-muted mt-2">
                                             se il font non è disponibile inserire il link a google fonts
                                         </small>
                                     </div>
@@ -717,7 +717,10 @@
                                         </ul>
                                         <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
                                         <div id="gameinput">
-                                            <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata" :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub" :options="previewdata.in_mainquest ? getCurrentOptions : renderQuest.options" v-model="previewdata.picked" @change="upgradeSubmitStyle(false)" ref="inputComponent" :styles="componentStyle"></component>
+                                            <component v-bind:is="currentComponent" :gamedata="renderQuest" :metadata="metadata"
+                                            :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub"
+                                            :options="previewdata.in_mainquest ? getCurrentOptions : renderQuest.options" v-model="previewdata.picked"
+                                            @change="upgradeSubmitStyle(false)" ref="inputComponent" :styles="componentStyle" :buttonstyle="submitStyle" :preview="true"></component>
                                         </div>
                                     </form>
                                     <!--EVENTUALI MEDIA-->

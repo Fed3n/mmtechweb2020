@@ -123,7 +123,9 @@
                                             <button class="btn pre-button color-ended">Ha finito! Voto {{ computeGrade(player.user_id) }}</button>
                                         </td>
                                         <td>
-                                            <button class="btn btn-danger" @click="deletePlayer(player.user_id)">X</button>
+                                            <button class="btn btn-danger" @click="deletePlayer(player.user_id)" title="rimuovi il giocatore" data-toggle="tooltip">
+                                                <i class="fas fa-times fa-lg"></i>
+                                            </button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -245,7 +247,7 @@
                                             <component v-bind:is="currentComponent" :gamedata="getCurrentQuestData" :metadata="metadata"
                                               :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub"
                                               :options="previewdata.in_mainquest ? getCurrentOptions : getCurrentQuestData.options" v-model="previewdata.picked"
-                                              @change="upgradeSubmitStyle(false)" ref="inputComponent" :styles="componentStyle"></component>
+                                              @change="upgradeSubmitStyle(false)" ref="inputComponent" :styles="componentStyle" :buttonstyle="submitStyle" :preview="true"></component>
                                         </div>
                                     </form>
                                     <!--EVENTUALI MEDIA-->

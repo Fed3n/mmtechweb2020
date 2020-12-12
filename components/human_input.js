@@ -5,44 +5,46 @@ var humaninput = Vue.component('human_input', {
      pickImg: false
    }
  },
-  props: ["gamedata", "current", "value", "metadata","styles","buttonstyle"],
+  props: ["gamedata", "current", "value", "metadata","styles","buttonstyle","preview"],
   methods: {
 	//metodo alternativo per evitare overload sul server unibo tenendo in ram immagini grandi
 	submitAnswer: async function() {
-		let form = new FormData();
-        let uid = this.$parent.user_id;
-        let image = this.$refs.imgarea.files[0] || "";
-        let text = this.$refs.textarea.value;
-		if(image){
-			try{
-				let form = new FormData();
-				form.append('image', image);
-				await axios.post(`/tmpimage`, form, {
-					headers: {
-						'Content-Type': 'multipart/form-data'
-					}
-				});
-				await axios.post('/answers', {'text': text, 'imagedata': image.name}, {params: { 'user_id': this.$parent.user_id }});
-				console.log("sent answer");
-				this.submitted = true;
-				this.$parent.waiting_feedback = true;
-			}
-			catch { 
-				alert("Impossibile mandare la risposta, riprova più tardi"); 
-				return;
-			}
-		} else {
-			try {
-				await axios.post('/answers', {'text': text, 'imagedata': ""}, {params: { 'user_id': this.$parent.user_id }});
-				console.log("sent answer");
-				this.submitted = true;
-				this.$parent.waiting_feedback = true;
-			}
-			catch {
-				alert("Impossibile mandare la risposta, riprova più tardi"); 
-				return;
-			}
-		}
+    if (!this.preview){
+  		let form = new FormData();
+          let uid = this.$parent.user_id;
+          let image = this.$refs.imgarea.files[0] || "";
+          let text = this.$refs.textarea.value;
+  		if(image){
+  			try{
+  				let form = new FormData();
+  				form.append('image', image);
+  				await axios.post(`/tmpimage`, form, {
+  					headers: {
+  						'Content-Type': 'multipart/form-data'
+  					}
+  				});
+  				await axios.post('/answers', {'text': text, 'imagedata': image.name}, {params: { 'user_id': this.$parent.user_id }});
+  				console.log("sent answer");
+  				this.submitted = true;
+  				this.$parent.waiting_feedback = true;
+  			}
+  			catch {
+  				alert("Impossibile mandare la risposta, riprova più tardi");
+  				return;
+  			}
+  		} else {
+  			try {
+  				await axios.post('/answers', {'text': text, 'imagedata': ""}, {params: { 'user_id': this.$parent.user_id }});
+  				console.log("sent answer");
+  				this.submitted = true;
+  				this.$parent.waiting_feedback = true;
+  			}
+  			catch {
+  				alert("Impossibile mandare la risposta, riprova più tardi");
+  				return;
+  			}
+  		}
+    }
 	},
 	/*
     //Un po' complicato, mando l'immagine in base64 così che il valutatore la possa caricare
