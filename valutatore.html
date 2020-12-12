@@ -149,50 +149,49 @@
                 </button>
                 <div id="story-preview" v-if="ongoing_stories[currentStory]" class="collapse row p-2" :class="storyPreviewStyle">
                     <div id="preview-menu" class="col-md-6" :class="previewMenuStyle">
-                        <div class="pb-3" id="preview-menu-container" :class=" (!previewdata.in_mainquest && (ongoing_stories[currentStory].subQuests.length == 1 && ongoing_stories[currentStory].subQuests[0].text == ''
+                        <div class="pb-3" id="preview-menu-container" :class=" (!previewdata.position.in_mainquest && (ongoing_stories[currentStory].subQuests.length == 1 && ongoing_stories[currentStory].subQuests[0].text == ''
                                 && ongoing_stories[currentStory].subQuests[0].title == '') ) ? ' ' : 'border-bottom '+'overflow-y-auto' ">
                             <!-- raggiungi il giocatore -->
-                            <div v-if="players_data_shown_from_story[currentStory] && Object.keys(players_data_shown_from_story[currentStory]).length > 0">
+                            <div v-if="players_data_shown_from_story_filtered[currentStory] && Object.keys(players_data_shown_from_story_filtered[currentStory]).length > 0">
                                 <label for="mainselect" class="font-weight-bold">Vai alla posizione del Giocatore</label>
-                                <select class="form-control" v-model="previewdataFiltered" :class="inputMainSubSelectorStyle">
-                                    <option value="emptyPlayerFilter">Nessun giocatore</option>
-                                    <option v-for="player in players_data_shown_from_story[currentStory]" :value="playerFiltered(player)">{{ player.user_name }}</option>
+                                <select class="form-control" v-model="previewdata.position" :class="inputMainSubSelectorStyle">
+                                    <option v-for="player in players_data_shown_from_story_filtered[currentStory]" :value="player.position">{{ player.user_name }}</option>
                                 </select>
                             </div>
                             <!-- selettori per il previewdata -->
                             <div class="btn-group container-fluid col-md-8 col-xs-10" :class="mainSubSwitchStyle">
-                                <button class="btn color-interact border" v-on:click="previewdata.in_mainquest = true" :disabled="previewdata.in_mainquest">MainQuests</button>
-                                <button class="btn color-interact border" v-on:click="previewdata.in_mainquest = false" :disabled="!previewdata.in_mainquest">SubQuests</button>
+                                <button class="btn color-interact border" v-on:click="previewdata.position.in_mainquest = true" :disabled="previewdata.position.in_mainquest">MainQuests</button>
+                                <button class="btn color-interact border" v-on:click="previewdata.position.in_mainquest = false" :disabled="!previewdata.position.in_mainquest">SubQuests</button>
                             </div>
                             <div class="col-md-8 col-xs-10" :class="mainSubSelectorStyle">
-                                <div v-if="previewdata.in_mainquest">
+                                <div v-if="previewdata.position.in_mainquest">
                                     <label for="mainselect" class="font-weight-bold">Seleziona MainQuest</label>
-                                    <select class="form-control" v-model="previewdata.currentQuest" :class="inputMainSubSelectorStyle">
+                                    <select class="form-control" v-model="previewdata.position.currentQuest" :class="inputMainSubSelectorStyle">
                                         <option v-for="quest in ongoing_stories[currentStory].mainQuest" :value="quest.number">{{ quest.number }}: {{ ( quest.title || "" ) }}</option>
                                     </select>
                                 </div>
-                                <div v-if="!previewdata.in_mainquest && ongoing_stories[currentStory].subQuests.length > 1">
+                                <div v-if="!previewdata.position.in_mainquest && ongoing_stories[currentStory].subQuests.length > 1">
                                     <label for="mainselect" class="font-weight-bold">Seleziona SubQuest</label>
-                                    <select class="form-control" v-model="previewdata.currentSub" :class="inputMainSubSelectorStyle">
+                                    <select class="form-control" v-model="previewdata.position.currentSub" :class="inputMainSubSelectorStyle">
                                         <option v-for="quest in ongoing_stories[currentStory].subQuests" :value="quest.number">{{ quest.number }}: {{ ( quest.title || "" ) }}</option>
                                     </select>
                                 </div>
-                                <div v-if="!previewdata.in_mainquest && (ongoing_stories[currentStory].subQuests.length == 1 && ongoing_stories[currentStory].subQuests[0].text == ''
+                                <div v-if="!previewdata.position.in_mainquest && (ongoing_stories[currentStory].subQuests.length == 1 && ongoing_stories[currentStory].subQuests[0].text == ''
                                     && ongoing_stories[currentStory].subQuests[0].title == '')" class="d-flex justify-content-center">
                                     <label class="font-weight-bold">Non sono presenti Subquests</label>
                                 </div>
                             </div>
-                            <div v-if="previewdata.in_mainquest && getCurrentQuestData.subquest_rewards.length > 0" class="form-group mx-3 mb-0 px-3">
+                            <div v-if="previewdata.position.in_mainquest && getCurrentQuestData.subquest_rewards.length > 0" class="form-group mx-3 mb-0 px-3">
                                 <label for="subquestsCompletate" class="font-weight-bold">SubQuest Completate</label>
                                 <div id="subquestsCompletate" v-for="sub in getCurrentQuestData.subquest_rewards" class="form-check">
-                                    <input type="checkbox" class="form-check-input" :name="'sub' + sub.number" :value="sub.number" v-model="previewdata.completedSubs">
+                                    <input type="checkbox" class="form-check-input" :name="'sub' + sub.number" :value="sub.number" v-model="previewdata.position.completedSubs">
                                     <label for="'sub' + sub.number" class="form-check-label"> {{ sub.title || "Subquest "+sub.number }}</label>
                                 </div>
                             </div>
                         </div>
                         <!-- mostra soluzioni e destinazioni delle quests -->
                         <div class="p-3 my-1" id="solutions-container">
-                            <div class="mx-3" v-if="previewdata.in_mainquest && !(getCurrentQuestData.goto.length == 1 && getCurrentQuestData.goto[0][0] == '')">
+                            <div class="mx-3" v-if="previewdata.position.in_mainquest && !(getCurrentQuestData.goto.length == 1 && getCurrentQuestData.goto[0][0] == '')">
                                 <div v-if="( getCurrentQuestData.type == 'input' || getCurrentQuestData.type == 'keys' || getCurrentQuestData.type == 'draw'
                                             || getCurrentQuestData.type == 'choice' ) && getCurrentGotos.length > 0">
                                     <label class="font-weight-bold">Destinazioni</label>
@@ -212,7 +211,7 @@
                                           ({{ previewdata.picked[0] }},{{ previewdata.picked[1] }})</label>
                                 </div>
                             </div>
-                            <div class="mx-3" v-if="!previewdata.in_mainquest && ongoing_stories[currentStory].subQuests.length > 1">
+                            <div class="mx-3" v-if="!previewdata.position.in_mainquest && ongoing_stories[currentStory].subQuests.length > 1">
                                 <div v-if="( getCurrentQuestData.type == 'input' || getCurrentQuestData.type == 'keys' || getCurrentQuestData.type == 'draw' )">
                                     <label class="font-weight-bold">Soluzioni</label>
                                     <ul>
@@ -234,28 +233,28 @@
                     </div>
                     <!-- PREVIEW -->
                     <div id="preview-container" class="col-md-5 d-flex justify-content-center" :class="previewContainerStyle"
-                        v-if="previewdata.in_mainquest || (!previewdata.in_mainquest && ongoing_stories[currentStory].subQuests.length > 1)">
+                        v-if="previewdata.position.in_mainquest || (!previewdata.position.in_mainquest && ongoing_stories[currentStory].subQuests.length > 1)">
                         <div id="preview" class="p-0" v-cover :style="previewStyle">
                             <!--Area quest-->
                             <div ref="questrender" class="card player-card-author overflow-auto" :class="cardBootstrapStyle" :style="cardStyle" aria-live="polite">
                                 <div class="card-header" :style="cardLimitStyle">
                                     <h3 id="questname" ref="questname" tabindex="-1" :style="removePredefinedStylesCard">
-                                        {{previewdata.in_mainquest ? "Quest" : "Subquest"}}
-                                        {{ previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub }}: {{ getCurrentQuestData.title || "Senza nome" }}
+                                        {{previewdata.position.in_mainquest ? "Quest" : "Subquest"}}
+                                        {{ previewdata.position.in_mainquest ? previewdata.position.currentQuest : previewdata.position.currentSub }}: {{ getCurrentQuestData.title || "Senza nome" }}
                                     </h3>
                                 </div>
                                 <div ref="cardbody" class="card-body overflow-auto" :style="removePredefinedStylesCard">
                                     <form ref="inputForm" v-on:submit.prevent="previewdata.picked = null">
                                         <p style="white-space: pre-line;">{{ getCurrentQuestData.text }}</p>
                                         <p style="white-space: pre-line;">{{ getCurrentQuestData.description || "" }}</p>
-                                        <ul v-if="previewdata.in_mainquest && getCurrentClues.length > 0">
+                                        <ul v-if="previewdata.position.in_mainquest && getCurrentClues.length > 0">
                                             <li v-for="clue in getCurrentClues" v-if="clue">{{ clue }}</li>
                                         </ul>
                                         <!--Qua sotto div in cui caricare box per dare input usando components, cambia a seconda del tipo di quest-->
                                         <div id="gameinput">
                                             <component v-bind:is="currentComponent" :gamedata="getCurrentQuestData" :metadata="metadata"
-                                              :current="previewdata.in_mainquest ? previewdata.currentQuest : previewdata.currentSub"
-                                              :options="previewdata.in_mainquest ? getCurrentOptions : getCurrentQuestData.options" v-model="previewdata.picked"
+                                              :current="previewdata.position.in_mainquest ? previewdata.position.currentQuest : previewdata.position.currentSub"
+                                              :options="previewdata.position.in_mainquest ? getCurrentOptions : getCurrentQuestData.options" v-model="previewdata.picked"
                                               @change="upgradeSubmitStyle(false)" ref="inputComponent" :styles="componentStyle" :buttonstyle="submitStyle" :preview="true"></component>
                                         </div>
                                     </form>

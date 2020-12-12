@@ -29,17 +29,13 @@ var app = new Vue({
         chat_msg: {},
         chat_notify: {},
         previewdata: {
-            in_mainquest: true,
-            currentQuest: 0,
-            currentSub: 0,
-            picked: null,
-            completedSubs: []
-        },
-        emptyPlayerFilter: {
-            in_mainquest: true,
-            currentQuest: 0,
-            currentSub: 0,
-            completedSubs: []
+            position: {
+              in_mainquest: true,
+              currentQuest: 0,
+              currentSub: 0,
+              completedSubs: []
+            },
+            picked: null
         },
         currentStory: null,
         feedback_id: "",
@@ -146,10 +142,10 @@ var app = new Vue({
             //poichè dopo la chiamata alla funzione nella preview cambia la storia controllo che non vengano richiesta numeri di quest non presenti
             let maxQuest = this.ongoing_stories[story].mainQuest.length -1 ;
             let maxSub = this.ongoing_stories[story].subQuests.length -1 ;
-            if (this.previewdata.currentQuest > maxQuest)
-                this.previewdata.currentQuest = maxQuest;
-            if (this.previewdata.currentSub > maxSub)
-                this.previewdata.currentSub = maxSub;
+            if (this.previewdata.position.currentQuest > maxQuest)
+                this.previewdata.position.currentQuest = maxQuest;
+            if (this.previewdata.position.currentSub > maxSub)
+                this.previewdata.position.currentSub = maxSub;
             //inizializzo le variabili
             this.currentStory = story;
             this.current_chat_id = null;
@@ -292,6 +288,25 @@ var app = new Vue({
                 completedSubs
             };
         },
+        filterPlayersData: function({
+            user_id,
+            user_name,
+            in_mainquest,
+            currentQuest,
+            currentSub,
+            completedSubs
+        }) {
+            return {
+                user_id,
+                user_name,
+                position: {
+                  in_mainquest,
+                  currentQuest,
+                  currentSub,
+                  completedSubs
+                }
+            };
+        },
         computeStory: function(id) {
             return id.substring(0, id.indexOf("$"));
         },
@@ -315,11 +330,11 @@ var app = new Vue({
             else return "";
         },
         getQuestData: function(story) {
-            if (this.previewdata.in_mainquest) return this.ongoing_stories[story].mainQuest[this.previewdata.currentQuest];
-            else return this.ongoing_stories[story].subQuests[this.previewdata.currentSub];
+            if (this.previewdata.position.in_mainquest) return this.ongoing_stories[story].mainQuest[this.previewdata.position.currentQuest];
+            else return this.ongoing_stories[story].subQuests[this.previewdata.position.currentSub];
         },
         getQuest: function(number){
-            if (this.previewdata.in_mainquest) return this.ongoing_stories[this.currentStory].mainQuest[number];
+            if (this.previewdata.position.in_mainquest) return this.ongoing_stories[this.currentStory].mainQuest[number];
             else return this.ongoing_stories[this.currentStory].subQuests[number];
         },
         resetSelection: function() {
@@ -395,6 +410,13 @@ var app = new Vue({
             }
             return filtered_data;
         },
+        players_data_shown_filtered: function() {
+            var filtered_data = {};
+            for (const key in this.players_data) {
+                filtered_data[key] = this.filterPlayersData(this.players_data[key]);
+            }
+            return filtered_data;
+        },
         players_data_shown_from_story: function() {
             var res = {};
             for (let story of this.activeStories) {
@@ -402,6 +424,18 @@ var app = new Vue({
                 for (let player in this.players_data_shown) {
                     if (player.split('$')[0] == story) {
                         res[story][player] = this.players_data_shown[player];
+                    }
+                }
+            }
+            return res;
+        },
+        players_data_shown_from_story_filtered: function() {
+            var res = {};
+            for (let story of this.activeStories) {
+                res[story] = {};
+                for (let player in this.players_data_shown_filtered) {
+                    if (player.split('$')[0] == story) {
+                        res[story][player] = this.players_data_shown_filtered[player];
                     }
                 }
             }
@@ -459,7 +493,7 @@ var app = new Vue({
        getCurrentClues: function() {
            clues = [];
            for (reward of this.getCurrentQuestData.subquest_rewards) {
-               if (this.previewdata.completedSubs.includes(reward.number))
+               if (this.previewdata.position.completedSubs.includes(reward.number))
                    clues.push(reward.clue);
            }
            return clues;
@@ -479,7 +513,7 @@ var app = new Vue({
                for (opt of this.getCurrentQuestData.options)
                    options.push(opt);
                for (reward of this.getCurrentQuestData.subquest_rewards) {
-                   if (this.previewdata.completedSubs.includes(reward.number)) {
+                   if (this.previewdata.position.completedSubs.includes(reward.number)) {
                        for (opt of reward.added_options)
                            options.push(opt);
                        for (opt of reward.removed_options) {
@@ -497,7 +531,7 @@ var app = new Vue({
            for (goto of this.getCurrentQuestData.goto)
                gotos.push(goto);
            for (reward of this.getCurrentQuestData.subquest_rewards) {
-               if (this.previewdata.completedSubs.includes(reward.number)) {
+               if (this.previewdata.position.completedSubs.includes(reward.number)) {
                    for (goto of reward.added_goto)
                        //Aggiungo in penultima posizione
                        gotos.splice(gotos.length - 1, 0, goto);
@@ -534,7 +568,7 @@ var app = new Vue({
            let p = this.previewdata;
            return (p.in_mainquest && ((p.currentQuest + p.currentSub + p.completedSubs.length)) %2 == 0);
        },
-       previewdataFiltered: function() {
+      /* previewdataFiltered: function() {
            let filteredPreviewdata = {
                in_mainquest: this.previewdata.in_mainquest,
                currentQuest: this.previewdata.currentQuest,
@@ -542,7 +576,7 @@ var app = new Vue({
                completedSubs: this.previewdata.completedSubs
            };
            return filteredPreviewdata;
-       },
+       },*/
        /*
        get_current_grid_option: function(){
            //returns bootstrap parameters applied (sm, md, lg, xs, xl)
