@@ -113,8 +113,11 @@ app.get('/uid', (req, res) => {
 app.patch('/players/:player_id', (req, res) => {
     var id = req.params.player_id;
     if (players_data[id] && !players_deleted.includes(id)) {
-        for (let key in req.body)
+        for (let key in req.body){
             players_data[id][key] = req.body[key];
+            if(key == "help_received" && players_data[id][key] == true)
+                players_data[id]["help_message"] = "";
+        }
         return res.send("Player sent data successfully");
     } else {
         return res.status(404).send({
