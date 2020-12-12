@@ -31,13 +31,6 @@
                 <h4 v-if="!(activeStories.length > 0)">Ancora nessun giocatore ha iniziato il gioco scannerizzando il QR Code</h4>
             </div>
         </div>
-        <!-- uso data-device per determinare la dimensione dello schermo con i parametri di bootstrap -->
-        <div class='device-check d-block d-sm-none' data-device='xs' v-observe-visibility="bootstrapVisibility"></div>
-        <div class='device-check d-none d-sm-block d-md-none' data-device='sm' v-observe-visibility="bootstrapVisibility"></div>
-        <div class='device-check d-none d-md-block d-lg-none' data-device='md' v-observe-visibility="bootstrapVisibility"></div>
-        <div class='device-check d-none d-lg-block d-xl-none' data-device='lg' v-observe-visibility="bootstrapVisibility"></div>
-        <div class='device-check d-none d-xl-block' data-device='xl' v-observe-visibility="bootstrapVisibility"></div>
-        <!-- storie in gioco -->
         <div class="row container-fluid mt-3 mx-0 p-0" v-if="activeStories.length > 0">
             <div class="container-fluid col-md-3 mb-3 pb-3" :class="storiesSelectorStyle">
                 <div class="d-flex justify-content-center my-2">
@@ -327,6 +320,12 @@
                 </div>
             </div>
         </div>
+        <!-- uso data-device per determinare la dimensione dello schermo con i parametri di bootstrap -->
+        <div class='device-check d-block d-sm-none' data-device='xs' v-observe-visibility="bootstrapVisibility" style=""></div>
+        <div class='device-check d-none d-sm-block d-md-none' data-device='sm' v-observe-visibility="bootstrapVisibility"></div>
+        <div class='device-check d-none d-md-block d-lg-none' data-device='md' v-observe-visibility="bootstrapVisibility"></div>
+        <div class='device-check d-none d-lg-block d-xl-none' data-device='lg' v-observe-visibility="bootstrapVisibility"></div>
+        <div class='device-check d-none d-xl-block' data-device='xl' v-observe-visibility="bootstrapVisibility"></div>
         <!-- modal -->
         <div class="modal fade" id="feedbackmodal" tabindex="-1" role="dialog" aria-hidden="true">
           <div class="modal-dialog" role="document">
