@@ -92,8 +92,27 @@ var app = new Vue({
             }).catch(err => {return});
         },
         deletePlayer: function(id){
-            let ok = confirm("Vuoi davvero cancellare questo giocatore? I suoi dati verranno rimossi definitivamente.")
+            let ok = confirm("Vuoi davvero cancellare questo giocatore? I suoi dati verranno rimossi definitivamente.");
             if(ok){
+                let lastPlayer = false;
+                let nextStory = "";
+                //controllo lo stato dell'interfaccia
+                console.log("this.players_data_shown_from_story[this.currentStory]: "); console.log(this.players_data_shown_from_story[this.currentStory]);
+                if (this.players_data_shown_from_story[this.currentStory] && this.players_data_shown_from_story[this.currentStory].length == 1){
+                  //non sono più presenti giocatori per quella storia, devo cambiare currentStory
+                  lastPlayer = true;
+                  console.log("this.currentStory "+ this.currentStory);
+                  //console.log("this.currentStory[0] "+ this.currentStory[0]);
+                  let index = this.activeStories.indexOf(this.currentStory);
+                  console.log("index "+ index);
+                  console.log("this.activeStories "); console.log(this.activeStories);
+                  let temp = this.activeStories;
+                  console.log("temp: "); console.log(temp);
+                  temp.splice(index,1);
+                  console.log("temp: "); console.log(temp);
+                  nextStory = temp.slice(-1);
+                }
+                //mando il segnale di rimozione del player
                 let _this = this;
                 axios.delete(`/players/${id}`).then(function() {
                     delete _this.players_data[id];
@@ -105,6 +124,11 @@ var app = new Vue({
                     alert("Failed to delete player, try again.");
                     console.log(err);
                 });
+                //cambio currentStory nel caso in cui vengano eliminati tutti i players della storia, altrimenti sparisce la tabella
+                if (lastPlayer){
+                    this.currentStory = nextStory;
+                    console.log("nextStory"+ nextStory);
+                }
             }
         },
         clearAllData: function() {
