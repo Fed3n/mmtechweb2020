@@ -149,7 +149,7 @@
                 </button>
                 <div id="story-preview" v-if="ongoing_stories[currentStory]" class="collapse row p-2" :class="storyPreviewStyle">
                     <div id="preview-menu" class="col-md-6" :class="previewMenuStyle">
-                        <div class="row pl-3 pb-3" id="preview-menu-container" :class=" (!previewdata.position.in_mainquest && (ongoing_stories[currentStory].subQuests.length == 1 && ongoing_stories[currentStory].subQuests[0].text == ''
+                        <div class="pl-3 pb-3" id="preview-menu-container" :class=" (!previewdata.position.in_mainquest && (ongoing_stories[currentStory].subQuests.length == 1 && ongoing_stories[currentStory].subQuests[0].text == ''
                                 && ongoing_stories[currentStory].subQuests[0].title == '') ) ? ' ' : 'border-bottom '+'overflow-y-auto' ">
                             <!-- raggiungi il giocatore -->
                             <div v-if="players_data_shown_from_story_filtered[currentStory] && Object.keys(players_data_shown_from_story_filtered[currentStory]).length > 0"
@@ -160,11 +160,11 @@
                                 </select>
                             </div>
                             <!-- selettori per il previewdata -->
-                            <div class="btn-group container-fluid col-md-8 col-sm-10" :class="mainSubSwitchStyle">
+                            <div class="btn-group container-fluid col-md-8 col-sm-9 col-xs-9" :class="mainSubSwitchStyle">
                                 <button class="btn color-interact border" v-on:click="switchMainSub(true)" :disabled="previewdata.position.in_mainquest">MainQuests</button>
                                 <button class="btn color-interact border" v-on:click="switchMainSub(false)" :disabled="!previewdata.position.in_mainquest">SubQuests</button>
                             </div>
-                            <div class="col-md-8 col-sm-10" :class="mainSubSelectorStyle">
+                            <div class="col-md-8 col-sm-10 col-xs-10" :class="mainSubSelectorStyle">
                                 <div v-if="previewdata.position.in_mainquest">
                                     <label for="mainselect" class="font-weight-bold">Seleziona MainQuest</label>
                                     <select class="form-control" v-model="previewdata.position.selectedCurrentQuest" :class="inputMainSubSelectorStyle">
@@ -182,7 +182,7 @@
                                     <label class="font-weight-bold">Non sono presenti Subquests</label>
                                 </div>
                             </div>
-                            <div v-if="previewdata.position.in_mainquest && getCurrentQuestData.subquest_rewards.length > 0" class="form-group mx-3 mb-0 px-3">
+                            <div v-if="previewdata.position.in_mainquest && getCurrentQuestData.subquest_rewards.length > 0" class="form-group mb-0 px-3">
                                 <label for="subquestsCompletate" class="font-weight-bold">SubQuest Completate</label>
                                 <div id="subquestsCompletate" v-for="sub in getCurrentQuestData.subquest_rewards" class="form-check">
                                     <input type="checkbox" class="form-check-input" :name="'sub' + sub.number" :value="sub.number" v-model="previewdata.position.completedSubs">
@@ -198,14 +198,14 @@
                                     <label class="font-weight-bold">Destinazioni</label>
                                     <ul>
                                         <li v-if="getCurrentQuestData.type != 'draw'" v-for="sol in getCurrentGotos">La risposta <span class="principal">{{ sol[0] }}</span> porta a
-                                              <span class="principal">{{ ( getQuest(sol[1]).title || "MainQuest "+sol[1] ) }}</span><br>
+                                              <span class="principal">{{ ( getQuest(sol[1]).title || "MainQuest "+sol[1] ) }}</span><br v-if="sol[2] != ''">
                                               <label v-if="sol[2] != ''">Punteggio: {{ sol[2] }}</label><br>
                                         </li>
                                         <li v-if="getCurrentQuestData.type == 'draw'" v-for="sol in getCurrentGotos">
                                               <span v-if="sol[0] != ''">tutti i punti all'interno della circonferenza con centro in <span class="principal">({{ sol[0][0] }},{{ sol[0][1] }})</span> e raggio <span class="principal">{{ sol[0][2] }}</span></span>
                                               <span v-if="sol[0] == ''">tutti gli altri punti</span>
-                                              portano a <span class="principal">{{ ( getQuest(sol[1]).title || "MainQuest "+sol[1] ) }}</span><br>
-                                              <label v-if="sol[2] != ''">Punteggio: {{ sol[2] }}</label>
+                                              portano a <span class="principal">{{ ( getQuest(sol[1]).title || "MainQuest "+sol[1] ) }}</span><br v-if="sol[2] != ''">
+                                              <label v-if="sol[2] != ''">Punteggio: {{ sol[2] }}</label><br>
                                         </li>
                                     </ul>
                                     <label v-if="getCurrentQuestData.type == 'draw' && previewdata.picked">La selezione corrente è:
@@ -233,7 +233,7 @@
                         </div>
                     </div>
                     <!-- PREVIEW -->
-                    <div id="preview-container" class="col-md-5 d-flex justify-content-center" :class="previewContainerStyle"
+                    <div id="preview-container" class="col-md-6 d-flex justify-content-center" :class="previewContainerStyle"
                         v-if="previewdata.position.in_mainquest || (!previewdata.position.in_mainquest && ongoing_stories[currentStory].subQuests.length > 1)">
                         <div id="preview" class="p-0" v-cover :style="previewStyle">
                             <!--Area quest-->

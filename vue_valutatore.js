@@ -314,7 +314,9 @@ var app = new Vue({
             completedSubs
         }) {
             //ordino tutti gli array per permettere al v-model di riconoscerne l'ugualianza
-            completedSubs.sort(function(a, b) { return a - b; });
+            if (this.previewdata.position.completedSubs){
+                completedSubs.sort(function(a, b) { return a - b; });
+            }
             if (in_mainquest) {
                 let selectedCurrentQuest = currentQuest;
                 return {
@@ -416,7 +418,6 @@ var app = new Vue({
         //method that returns witch div is visible now (divs are based on bootstrap parameters)
         bootstrapVisibility: function(isVisible, entry) {
             if (isVisible){
-                console.log("entry: "+ entry);
                 this.windowDimension = entry.target.getAttribute("data-device");
             }
         },
@@ -592,7 +593,9 @@ var app = new Vue({
           return (p.in_mainquest && ((p.currentQuest + p.currentSub + p.completedSubs.length)) %2 == 0);
        },
        completedSubsReorder: function() {
-          this.previewdata.position.completedSubs.sort(function(a, b) { return a - b; });
+          if (this.previewdata.position.completedSubs){
+              this.previewdata.position.completedSubs.sort(function(a, b) { return a - b; });
+          }
        },
        completedSubs_change: function() {
           return this.previewdata.position.completedSubs;
@@ -743,7 +746,7 @@ var app = new Vue({
          if (this.windowDimension == "sm" || this.windowDimension == "xs"){
              return "mt-4 justify-content-center";
          } else {
-             return "mr-4 justify-content-end";
+             return "mt-1 mr-4 justify-content-end";
          }
        },
        storyPreviewStyle: function() {
@@ -764,14 +767,14 @@ var app = new Vue({
          if (this.windowDimension == "sm" || this.windowDimension == "xs"){
              return "mb-3 mt-2";
          } else {
-             return "mx-3 mb-3 mt-2";
+             return "mb-3 mt-2";
          }
        },
        mainSubSelectorStyle: function() {
          if (this.windowDimension == "sm" || this.windowDimension == "xs"){
-             return "m-3 mb-4 px-2";
+             return "mb-4 px-3";
          } else {
-             return "form-group m-3 mb-4 px-3";
+             return "form-group mb-4 px-3";
          }
        },
        inputMainSubSelectorStyle: function() {
@@ -808,8 +811,10 @@ var app = new Vue({
             this.previewdata.picked = null;
         },
         completedSubs_change: function() {
-          if ( !(sort = arraySorted(this.previewdata.position.completedSubs)) ){
-              this.completedSubsReorder;
+          if (this.previewdata.position.completedSubs){
+              if ( !(sort = arraySorted(this.previewdata.position.completedSubs)) ){
+                  this.completedSubsReorder;
+              }
           }
         }
     }
