@@ -139,13 +139,15 @@ var app = new Vue({
             }
         },
         switchStory: function(story){
-            //poichè dopo la chiamata alla funzione nella preview cambia la storia controllo che non vengano richiesta numeri di quest non presenti
+            //poichè dopo la chiamata alla funzione nella preview cambia la storia controllo che non vengano richiesti numeri di quest non presenti
             let maxQuest = this.ongoing_stories[story].mainQuest.length -1 ;
             let maxSub = this.ongoing_stories[story].subQuests.length -1 ;
             if (this.previewdata.position.currentQuest > maxQuest)
                 this.previewdata.position.currentQuest = maxQuest;
             if (this.previewdata.position.currentSub > maxSub)
                 this.previewdata.position.currentSub = maxSub;
+            //svuoto anche le subquests Completate
+            this.previewdata.position.completedSubs = [];
             //inizializzo le variabili
             this.currentStory = story;
             this.current_chat_id = null;
