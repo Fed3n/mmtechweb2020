@@ -149,21 +149,22 @@
                 </button>
                 <div id="story-preview" v-if="ongoing_stories[currentStory]" class="collapse row p-2" :class="storyPreviewStyle">
                     <div id="preview-menu" class="col-md-6" :class="previewMenuStyle">
-                        <div class="pb-3" id="preview-menu-container" :class=" (!previewdata.position.in_mainquest && (ongoing_stories[currentStory].subQuests.length == 1 && ongoing_stories[currentStory].subQuests[0].text == ''
+                        <div class="row pl-3 pb-3" id="preview-menu-container" :class=" (!previewdata.position.in_mainquest && (ongoing_stories[currentStory].subQuests.length == 1 && ongoing_stories[currentStory].subQuests[0].text == ''
                                 && ongoing_stories[currentStory].subQuests[0].title == '') ) ? ' ' : 'border-bottom '+'overflow-y-auto' ">
                             <!-- raggiungi il giocatore -->
-                            <div v-if="players_data_shown_from_story_filtered[currentStory] && Object.keys(players_data_shown_from_story_filtered[currentStory]).length > 0">
+                            <div v-if="players_data_shown_from_story_filtered[currentStory] && Object.keys(players_data_shown_from_story_filtered[currentStory]).length > 0"
+                                  class="col-md-8 col-sm-10" :class="mainSubSelectorStyle">
                                 <label for="mainselect" class="font-weight-bold">Vai alla posizione del Giocatore</label>
                                 <select class="form-control" v-model="previewdata.position" :class="inputMainSubSelectorStyle">
                                     <option v-for="player in players_data_shown_from_story_filtered[currentStory]" :value="player.position">{{ player.user_name }}</option>
                                 </select>
                             </div>
                             <!-- selettori per il previewdata -->
-                            <div class="btn-group container-fluid col-md-8 col-xs-10" :class="mainSubSwitchStyle">
+                            <div class="btn-group container-fluid col-md-8 col-sm-10" :class="mainSubSwitchStyle">
                                 <button class="btn color-interact border" v-on:click="switchMainSub(true)" :disabled="previewdata.position.in_mainquest">MainQuests</button>
                                 <button class="btn color-interact border" v-on:click="switchMainSub(false)" :disabled="!previewdata.position.in_mainquest">SubQuests</button>
                             </div>
-                            <div class="col-md-8 col-xs-10" :class="mainSubSelectorStyle">
+                            <div class="col-md-8 col-sm-10" :class="mainSubSelectorStyle">
                                 <div v-if="previewdata.position.in_mainquest">
                                     <label for="mainselect" class="font-weight-bold">Seleziona MainQuest</label>
                                     <select class="form-control" v-model="previewdata.position.selectedCurrentQuest" :class="inputMainSubSelectorStyle">

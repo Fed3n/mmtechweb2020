@@ -757,7 +757,7 @@ var app = new Vue({
          if (this.windowDimension == "sm" || this.windowDimension == "xs"){
              return "";
          } else {
-             return "p-3 mt-2 mb-1";
+             return "p-3 mt-0 mb-1";
          }
        },
        mainSubSwitchStyle: function() {
