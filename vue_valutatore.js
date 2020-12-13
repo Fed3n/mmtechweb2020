@@ -31,10 +31,10 @@ var app = new Vue({
         previewdata: {
             position: {
               in_mainquest: true,
-              currentQuest: 0,
-              currentSub: 0,
+              selectedCurrentQuest: 0,
               completedSubs: []
             },
+            notSelectedCurrentQuest: 0,
             picked: null
         },
         currentStory: null,
@@ -142,16 +142,31 @@ var app = new Vue({
             //poichè dopo la chiamata alla funzione nella preview cambia la storia controllo che non vengano richiesti numeri di quest non presenti
             let maxQuest = this.ongoing_stories[story].mainQuest.length -1 ;
             let maxSub = this.ongoing_stories[story].subQuests.length -1 ;
-            if (this.previewdata.position.currentQuest > maxQuest)
-                this.previewdata.position.currentQuest = maxQuest;
-            if (this.previewdata.position.currentSub > maxSub)
-                this.previewdata.position.currentSub = maxSub;
+            if (this.previewdata.position.in_mainquest){
+                if (this.previewdata.position.selectedCurrentQuest > maxQuest)
+                    this.previewdata.position.selectedCurrentQuest = maxQuest;
+                if (this.previewdata.notSelectedCurrentQuest > maxSub)
+                    this.previewdata.notSelectedCurrentQuest = maxSub;
+            }
+            if (!this.previewdata.position.in_mainquest){
+                if (this.previewdata.position.selectedCurrentQuest > maxSub)
+                    this.previewdata.position.selectedCurrentQuest = maxSub;
+                if (this.previewdata.notSelectedCurrentQuest > maxQuest)
+                    this.previewdata.notSelectedCurrentQuest = maxQuest;
+            }
             //svuoto anche le subquests Completate
             this.previewdata.position.completedSubs = [];
             //inizializzo le variabili
             this.currentStory = story;
             this.current_chat_id = null;
             this.switchIndex(null);
+        },
+        switchMainSub: function(in_mainquest) {
+            this.previewdata.position.in_mainquest = in_mainquest;
+            //pass from mainQuest to SubQuest
+            let temp = this.previewdata.position.selectedCurrentQuest;
+            this.previewdata.position.selectedCurrentQuest = this.previewdata.notSelectedCurrentQuest;
+            this.previewdata.notSelectedCurrentQuest = temp;
         },
         switchIndex: function(id) {
             if (this.players_chat) {
@@ -298,16 +313,31 @@ var app = new Vue({
             currentSub,
             completedSubs
         }) {
-            return {
-                user_id,
-                user_name,
-                position: {
-                  in_mainquest,
-                  currentQuest,
-                  currentSub,
-                  completedSubs
-                }
-            };
+            //ordino tutti gli array per permettere al v-model di riconoscerne l'ugualianza
+            completedSubs.sort(function(a, b) { return a - b; });
+            if (in_mainquest) {
+                let selectedCurrentQuest = currentQuest;
+                return {
+                    user_id,
+                    user_name,
+                    position: {
+                      in_mainquest,
+                      selectedCurrentQuest,
+                      completedSubs
+                    }
+                  };
+           } else {
+             let selectedCurrentQuest = currentSub;
+             return {
+                 user_id,
+                 user_name,
+                 position: {
+                   in_mainquest,
+                   selectedCurrentQuest,
+                   completedSubs
+                 }
+               };
+           }
         },
         computeStory: function(id) {
             return id.substring(0, id.indexOf("$"));
@@ -332,8 +362,8 @@ var app = new Vue({
             else return "";
         },
         getQuestData: function(story) {
-            if (this.previewdata.position.in_mainquest) return this.ongoing_stories[story].mainQuest[this.previewdata.position.currentQuest];
-            else return this.ongoing_stories[story].subQuests[this.previewdata.position.currentSub];
+            if (this.previewdata.position.in_mainquest) return this.ongoing_stories[story].mainQuest[this.previewdata.position.selectedCurrentQuest];
+            else return this.ongoing_stories[story].subQuests[this.previewdata.position.selectedCurrentQuest];
         },
         getQuest: function(number){
             if (this.previewdata.position.in_mainquest) return this.ongoing_stories[this.currentStory].mainQuest[number];
@@ -355,15 +385,6 @@ var app = new Vue({
         openFeedModal: function(id){
             this.feedback_id = id;
             $('#feedbackmodal').modal('toggle');
-        },
-        playerFiltered: function(player) {
-            let playerFilter = {
-              in_mainquest: player.in_mainquest,
-              currentQuest: player.currentQuest,
-              currentSub: player.currentSub,
-              completedSubs: player.completedSubs
-            };
-            return playerFilter;
         },
 
         //style METHODS
@@ -567,18 +588,17 @@ var app = new Vue({
                   };
        },
        previewdata_change: function() {
-           let p = this.previewdata;
-           return (p.in_mainquest && ((p.currentQuest + p.currentSub + p.completedSubs.length)) %2 == 0);
+          let p = this.previewdata;
+          return (p.in_mainquest && ((p.currentQuest + p.currentSub + p.completedSubs.length)) %2 == 0);
        },
-      /* previewdataFiltered: function() {
-           let filteredPreviewdata = {
-               in_mainquest: this.previewdata.in_mainquest,
-               currentQuest: this.previewdata.currentQuest,
-               currentSub: this.previewdata.currentSub,
-               completedSubs: this.previewdata.completedSubs
-           };
-           return filteredPreviewdata;
-       },*/
+       completedSubsReorder: function() {
+          this.previewdata.position.completedSubs.sort(function(a, b) { return a - b; });
+       },
+       completedSubs_change: function() {
+          return this.previewdata.position.completedSubs;
+       },
+
+
        /*
        get_current_grid_option: function(){
            //returns bootstrap parameters applied (sm, md, lg, xs, xl)
@@ -786,6 +806,11 @@ var app = new Vue({
         },
         previewdata_change: function() {
             this.previewdata.picked = null;
+        },
+        completedSubs_change: function() {
+          if ( !(sort = arraySorted(this.previewdata.position.completedSubs)) ){
+              this.completedSubsReorder;
+          }
         }
     }
 });
