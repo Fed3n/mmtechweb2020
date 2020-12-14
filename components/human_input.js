@@ -116,7 +116,7 @@ var humaninput = Vue.component('human_input', {
       </form>
     </div>
     <p v-if="waitingFeedback">Risposta inviata! In attesa della valutazione...</p>
-    <p v-if="canProceed">Valutazione ricevuta, premi submit!</p>
+    <p v-if="canProceed">Valutazione ricevuta, premi Conferma!</p>
   </div>
   `
 });
