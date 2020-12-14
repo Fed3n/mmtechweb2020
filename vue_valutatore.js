@@ -40,8 +40,7 @@ var app = new Vue({
         currentStory: null,
         feedback_id: "",
         windowDimension: "",
-        gotoPlayer: "",
-        showSubNames: false
+        gotoPlayer: ""
     },
     created: function(){
         this.patchPlayersData();
