@@ -514,7 +514,7 @@ app.get('/:storyname', (req, res) => {
 		for (story of storylist) {
 			let info = fs.readFileSync(path.join(__dirname + "/story/" + story + "/info.json"));
 			info = JSON.parse(info);
-			if (name === info.name)
+			if (name === info.name && info.active)
 				found = true;
 		}
     }
