@@ -1,26 +1,61 @@
 (function() {
   // hold onto the drop down menu
-  var dropdownMenu;
+  var dropdownMenuList;
   // and when you show it, move it to the body
   $(window).on('show.bs.dropdown', function(e) {
     // grab the menu
-    dropdownMenu = $(e.target).find('.dropdown-menu');
+    dropdownMenuList = $(e.target).find('.dropdown-menu');
+
+    let print = document.getElementById("subs-dropdown-menu");
+
+    console.log(print.style.willChange);
+    console.log(print.style.transform);
+
     // detach it and append it to the body
-    $('body').append(dropdownMenu.detach());
+    $('body').append(dropdownMenuList.detach());
+
+    console.log(print.style.willChange);
+    console.log(print.style.transform);
+
     // grab the new offset position
     var eOffset = $(e.target).offset();
     // make sure to place it where it would normally go
     console.log(eOffset);
 
-    dropdownMenu.css('display','block');
-    dropdownMenu.css('top','95px');
-    dropdownMenu.css('left','0');
+    console.log(print.style.willChange);
+    console.log(print.style.transform);
+
+
+    dropdownMenuList.css({
+        'display': 'block',
+        'top': eOffset.top + $(e.target).outerHeight(),
+        'left': eOffset.left
+    });
+
+    console.log("cicio");
+    console.log(print.style);
+    print.stile.willChange = "unset !important";
+    print.style.transform = "none !important";
+
+    console.log(print.style.willChange);
+    console.log(print.style.transform);
 
   });
   // and when you hide it, reattach the drop down, and hide it normally
   $(window).on('hide.bs.dropdown', function(e) {
-    $(e.target).append(dropdownMenu.detach());
-    dropdownMenu.hide();
+
+    console.log("outclick");
+    let print = document.getElementById("subs-dropdown-menu");
+    console.log(print.style.willChange);
+    console.log(print.style.transform);
+
+    $(e.target).append(dropdownMenuList.detach());
+    dropdownMenuList.hide();
+
+    console.log("outclick");
+    console.log(print.style.willChange);
+    console.log(print.style.transform);
+
   });
 })();
 
