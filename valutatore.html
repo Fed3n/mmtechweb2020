@@ -46,7 +46,7 @@
             <div class="col-md-9 tab-content" :class="tabContentStyle">
                 <!-- Tab con le informazioni dei giocatori------------------------------------------------------------------------------------------------------------------>
                 <div v-for="story in activeStories" v-show="( story == currentStory )" :aria-labelledby="story + 'tab'">
-                    <div class="container container-fluid col-12 p-0">
+                    <div class="container container-fluid col-12 p-0" id="table-container">
                         <div class="jumbotron jumbotron-fluid color-static text-light rounded py-2">
                             <div class="container-fluid border-bottom">
                                 <h2 class="ml-2 my-3">Giocatori attivi</h2>
@@ -81,11 +81,11 @@
                                               ongoing_stories[currentStory].subQuests[player.currentSub].title : " " ) : " " }}</td>
                                         <td>
                                             <div v-if="player.completedSubs">
-                                                <div v-if="player.completedSubs.length > 0" class="btn-group dropup">
-                                                    <button type="button" class="btn btn-default dropdown-toggle pre-button" data-toggle="dropdown">
+                                                <div v-if="player.completedSubs.length > 0" class="btn-group">
+                                                    <button type="button" class="btn btn-default pre-button" @click="showSubNames = true">
                                                         {{ player.completedSubs.length }}&nbsp</button>
-                                                    <ul class="dropdown-menu">
-                                                        <li v-for="sub in player.completedSubs" class="dropdown-item pre">
+                                                    <ul v-if="showSubNames" class="" id="completedsubs-name-container">
+                                                        <li v-for="sub in player.completedSubs" class="">
                                                             {{ ongoing_stories[currentStory] ? ( ongoing_stories[currentStory].subQuests[sub] ?
                                                               ongoing_stories[currentStory].subQuests[sub].title : " " ) : " " }}
                                                         </li>
