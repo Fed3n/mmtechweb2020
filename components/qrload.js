@@ -8,19 +8,22 @@ var qrload = Vue.component('qrload', {
   },
   props: ["questname"],
   mounted: function() {
-	axios.get('/stories').then(response => {
-		questlist = [];
-			//pusho solo le quest attive, le altre non sono accessibili
-			for(el of response.data) {
-				if(el.active) questlist.push(el);
-			}
-		this.questlist = questlist;
-	});
-	let index = window.location.href.indexOf("quest=");
-	if(index != -1){
-		let name = "";
-		this.$parent.questname = this.checkName(window.location.href);
-		this.$parent.changeQuest();
+    if (Cookies.get('logged') !== 'true'){ 
+		console.log("qrload mounted");
+		axios.get('/stories').then(response => {
+			questlist = [];
+				//pusho solo le quest attive, le altre non sono accessibili
+				for(el of response.data) {
+					if(el.active) questlist.push(el);
+				}
+			this.questlist = questlist;
+		});
+		let index = window.location.href.indexOf("quest=");
+		if(index != -1){
+			let name = "";
+			this.$parent.questname = this.checkName(window.location.href);
+			this.$parent.changeQuest();
+		}
 	}
   },
   methods: {

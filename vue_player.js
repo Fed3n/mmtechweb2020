@@ -156,6 +156,7 @@ var app = new Vue({
         }
     },
     mounted: async function() {
+        console.log("vue mounted");
         if (Cookies.get('logged') === 'true' && this.restored == false) {
             this.user_id = Cookies.get('user_id');
             this.questname = this.user_id.split("$")[0];
