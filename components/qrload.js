@@ -3,7 +3,8 @@ var qrload = Vue.component('qrload', {
     return {
       error: '',
 	  dragover: false,
-	  questlist: null
+	  questlist: null,
+	  loadcamera: true,
     }
   },
   props: ["questname"],
@@ -18,12 +19,6 @@ var qrload = Vue.component('qrload', {
 				}
 			this.questlist = questlist;
 		});
-		let index = window.location.href.indexOf("quest=");
-		if(index != -1){
-			let name = "";
-			this.$parent.questname = this.checkName(window.location.href);
-			this.$parent.changeQuest();
-		}
 	}
   },
   methods: {
@@ -98,8 +93,19 @@ var qrload = Vue.component('qrload', {
 		document.getElementsByName("image")[0].click();
 	}
   },
+  beforeMount: function() {
+	if (Cookies.get('logged') === 'true')
+		this.loadcamera = false;
+	let index = window.location.href.indexOf("quest=");
+	if(index != -1){
+		this.loadcamera = false;
+		let name = "";
+		this.$parent.questname = this.checkName(window.location.href);
+		this.$parent.changeQuest();
+	}
+  },
   template:`
-  <div class="qrload">
+  <div v-if="loadcamera" class="qrload">
     <p class="alert alert-danger" role="alert" ref="texterror" style="font-weight: bold; color: red;">{{ error }}</p>
 
 	<p class="alert alert-info" role="alert">Scansiona o carica un QR Code compatibile per iniziare una missione!</p>
