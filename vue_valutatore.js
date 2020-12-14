@@ -315,7 +315,9 @@ var app = new Vue({
         }) {
             //ordino tutti gli array per permettere al v-model di riconoscerne l'ugualianza
             if (this.previewdata.position.completedSubs){
-                completedSubs.sort(function(a, b) { return a - b; });
+                if (this.previewdata.position.completedSubs){
+                    completedSubs.sort(function(a, b) { return a - b; });
+                }
             }
             if (in_mainquest) {
                 let selectedCurrentQuest = currentQuest;
