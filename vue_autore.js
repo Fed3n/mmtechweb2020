@@ -240,7 +240,6 @@
           getStory: function(story) {
               if(this.$refs.selectedStory.value){
                 let storyname = story ? story : this.$refs.selectedStory.value;
-                console.log(storyname);
                 if (storyname) {
                     var _this = this;
                     axios.get(`/stories/${storyname}`).then((res) => {
