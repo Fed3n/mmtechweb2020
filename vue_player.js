@@ -1177,31 +1177,6 @@ var app = new Vue({
                     });
                 }
             return styles;
-
-
-            /*componentStyle: function() {
-                var styles = {}
-                if (this.currentComponent == "choiceinput")
-                ;
-                if (this.currentComponent == "textinput")
-                    style = this.overwriteMainStyle(styles, true);
-                if (this.currentComponent == "humaninput")
-                    style = this.overwriteMainStyle(styles, true);
-                if (this.currentComponent == "imginput")
-                    ;
-                if (this.gamedata.css_style.background.image){
-                    style = Object.assign(styles, input_backgroundImage);
-                }
-                style = Object.assign(styles, input_backgroundNone);
-                if (!this.gamedata.css_style.background.image)
-                    if (!this.gamedata.css_style.mainStyle["color"])
-                        styles = Object.assign(styles, {
-                            "color": "inherit"
-                        });
-                return styles;
-            }
-              */
-
         },
         //if there is no image in background the default background color is white. This method adds proper chat background color
         //@global param: navbar_color (style_consts.js)

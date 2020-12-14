@@ -16,6 +16,19 @@ function myIndexOf(arg1, arg2, fun) {
     }
     return -1;
 }
+
+//returns if the array is sorted
+function arraySorted(arr) {
+    let sorted = true;
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i+1]) {
+            sorted = false;
+            break;
+        }
+    }
+    return sorted;
+}
+
 //converts from hex to rgba format
 //non hex color code are ignored
 function HextoRgb(color) {

@@ -57,6 +57,7 @@
 #chatmessagecontainer {
     height: 90%;
     overflow-y: scroll;
+    scroll-behavior: smooth;
 }
 
 .chatmessage {
@@ -131,4 +132,10 @@
 .overflow-y-auto {
   overflow: hidden;
   overflow-y: auto;
+}
+
+.device-check {
+  position: fixed;
+  bottom: 0;
+  right: 0;
 }
