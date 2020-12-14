@@ -5,57 +5,21 @@
   $(window).on('show.bs.dropdown', function(e) {
     // grab the menu
     dropdownMenuList = $(e.target).find('.dropdown-menu');
-
-    let print = document.getElementById("subs-dropdown-menu");
-
-    console.log(print.style.willChange);
-    console.log(print.style.transform);
-
     // detach it and append it to the body
     $('body').append(dropdownMenuList.detach());
-
-    console.log(print.style.willChange);
-    console.log(print.style.transform);
-
     // grab the new offset position
     var eOffset = $(e.target).offset();
     // make sure to place it where it would normally go
-    console.log(eOffset);
-
-    console.log(print.style.willChange);
-    console.log(print.style.transform);
-
-
     dropdownMenuList.css({
         'display': 'block',
         'top': eOffset.top + $(e.target).outerHeight(),
         'left': eOffset.left
     });
-
-    console.log("cicio");
-    console.log(print.style);
-    print.stile.willChange = "unset !important";
-    print.style.transform = "none !important";
-
-    console.log(print.style.willChange);
-    console.log(print.style.transform);
-
   });
   // and when you hide it, reattach the drop down, and hide it normally
   $(window).on('hide.bs.dropdown', function(e) {
-
-    console.log("outclick");
-    let print = document.getElementById("subs-dropdown-menu");
-    console.log(print.style.willChange);
-    console.log(print.style.transform);
-
     $(e.target).append(dropdownMenuList.detach());
     dropdownMenuList.hide();
-
-    console.log("outclick");
-    console.log(print.style.willChange);
-    console.log(print.style.transform);
-
   });
 })();
 
