@@ -9,17 +9,14 @@ var qrload = Vue.component('qrload', {
   },
   props: ["questname"],
   mounted: function() {
-    if (Cookies.get('logged') !== 'true'){ 
-		console.log("qrload mounted");
-		axios.get('/stories').then(response => {
-			questlist = [];
-				//pusho solo le quest attive, le altre non sono accessibili
-				for(el of response.data) {
-					if(el.active) questlist.push(el);
-				}
-			this.questlist = questlist;
-		});
-	}
+	axios.get('/stories').then(response => {
+		questlist = [];
+			//pusho solo le quest attive, le altre non sono accessibili
+			for(el of response.data) {
+				if(el.active) questlist.push(el);
+			}
+		this.questlist = questlist;
+	});
   },
   methods: {
 	checkName (str) {
@@ -94,14 +91,14 @@ var qrload = Vue.component('qrload', {
 	}
   },
   beforeMount: function() {
-	if (Cookies.get('logged') === 'true')
-		this.loadcamera = false;
 	let index = window.location.href.indexOf("quest=");
-	if(index != -1){
+	if (Cookies.get('logged') === 'true'  || index != -1) {
 		this.loadcamera = false;
-		let name = "";
-		this.$parent.questname = this.checkName(window.location.href);
-		this.$parent.changeQuest();
+		if(index != -1){
+			let name = "";
+			this.$parent.questname = this.checkName(window.location.href);
+			this.$parent.changeQuest();
+		}
 	}
   },
   template:`
