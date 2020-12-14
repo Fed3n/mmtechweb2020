@@ -8,7 +8,6 @@ var imginput = Vue.component('img_input', {
       ctx.clearRect(0,0,canvas.width,canvas.height);
       const x = parseInt(event.clientX-canvas.getBoundingClientRect().x);
       const y = parseInt(event.clientY-canvas.getBoundingClientRect().y);
-      console.log("Clicked on: " + x + "," + y);
       ctx.font = "20px bold";
       ctx.fillStyle = "white";
       ctx.shadowColor = "black";

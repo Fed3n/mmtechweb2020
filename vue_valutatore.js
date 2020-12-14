@@ -313,10 +313,8 @@ var app = new Vue({
             completedSubs
         }) {
             //ordino tutti gli array per permettere al v-model di riconoscerne l'ugualianza
-            if (this.previewdata.position.completedSubs){
-                if (this.previewdata.position.completedSubs){
-                    completedSubs.sort(function(a, b) { return a - b; });
-                }
+            if (completedSubs){
+               completedSubs.sort(function(a, b) { return a - b; });
             }
             if (in_mainquest) {
                 let selectedCurrentQuest = currentQuest;
@@ -507,6 +505,12 @@ var app = new Vue({
             for (let playerID in this.players_data) {
                 stories.add(playerID.split("$")[0]); // playerID = [story, id]
             }
+            //escludo le storie eliminate ma con giocatori ancora memorizzati
+            stories.forEach((story) => {
+                if (! this.ongoing_stories[story]){
+                    stories.delete(story);
+                }
+            });
             //inizializzo currentStory
             if (!this.currentStory) this.currentStory = Array.from(stories)[0];
             return Array.from(stories);

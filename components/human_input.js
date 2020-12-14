@@ -24,7 +24,6 @@ var humaninput = Vue.component('human_input', {
   					}
   				});
   				await axios.post('/answers', {'text': text, 'imagedata': image.name}, {params: { 'user_id': this.$parent.user_id }});
-  				console.log("sent answer");
   				this.submitted = true;
   				this.$parent.waiting_feedback = true;
   			}
@@ -35,7 +34,6 @@ var humaninput = Vue.component('human_input', {
   		} else {
   			try {
   				await axios.post('/answers', {'text': text, 'imagedata': ""}, {params: { 'user_id': this.$parent.user_id }});
-  				console.log("sent answer");
   				this.submitted = true;
   				this.$parent.waiting_feedback = true;
   			}
