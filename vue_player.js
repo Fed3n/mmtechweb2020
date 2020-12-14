@@ -156,7 +156,6 @@ var app = new Vue({
         }
     },
     mounted: async function() {
-        console.log("vue mounted");
         if (Cookies.get('logged') === 'true' && this.restored == false) {
             this.user_id = Cookies.get('user_id');
             this.questname = this.user_id.split("$")[0];
@@ -403,7 +402,6 @@ var app = new Vue({
             //Se la variabile restored è a true, il sistema non prova a ripristinare i cookies.
             this.restored = true;
             axios.get(`/stories/${this.questname}`).then(response => {
-                console.log("changequest");
                 this.gamedata = response.data.json;
                 this.metadata = response.data.meta;
                 document.getElementById("questheader").focus();
