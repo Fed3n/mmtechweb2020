@@ -185,6 +185,8 @@ var app = new Vue({
             //inizializzo le variabili
             this.currentStory = story;
             this.current_chat_id = null;
+            if (this.chat_msg && this.chat_msg["null"])
+                this.chat_msg["null"] = "";
             this.switchIndex(null);
         },
         switchMainSub: function(in_mainquest) {
