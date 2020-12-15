@@ -436,7 +436,9 @@ var app = new Vue({
                     });
                 }
             }).catch(function(err){
-                throw(err);
+                alert("Impossibile caricare questa storia.");
+		app.deleteCookies();
+		window.location.href = location.origin;
             });
         },
         parseStart: function(id) {

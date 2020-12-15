@@ -55,7 +55,7 @@ function recursiveChmod(path, dirp, filep){
 //####################
 
 //##HOST SETTINGS##//
-const serverOpened = false;
+const serverOpened = true;
 const host = "localhost";
 const openhost = "site181991.tw.cs.unibo.it";
 const port = 8000;
@@ -96,7 +96,7 @@ app.get('/uid', (req, res) => {
     if (uid_generator[name] !== undefined) uid_generator[name]++;
     else uid_generator[name] = 0;
     uid = name + "$" + uid_generator[name];
-    let nindex = Math.floor(Math.random() * pnames.length);
+    let nindex = Math.floor(Math.random() * (pnames.length-1));
     let pname = pnames[nindex];
     pnames.slice(nindex,1);
     players_data[uid] = {};
@@ -514,8 +514,10 @@ app.get('/:storyname', (req, res) => {
 		for (story of storylist) {
 			let info = fs.readFileSync(path.join(__dirname + "/story/" + story + "/info.json"));
 			info = JSON.parse(info);
-			if (name === info.name && info.active)
+			if (name === info.name && info.active === true){
+				console.log(info);
 				found = true;
+			}
 		}
     }
 	if(found) {
