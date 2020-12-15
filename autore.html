@@ -234,7 +234,7 @@
                         <div name="questlistcontainer" class="container border-top pl-2 pr-0 pt-2 mx-25 overflow-auto">
                             <div class="pb-2">
                                 <button class="btn btn-secondary border-dark" data-toggle="tooltip" title="Aggiungi" :disabled="swapping" v-on:click="addNode(0)">+</button>
-                                <button class="btn border-dark" data-toggle="tooltip" title="Scambia" :class="swapping ? 'btn-danger' : 'color-interact'"  v-on:click="swapping = !swapping">
+                                <button class="btn border-dark" data-toggle="tooltip" title="Scambia" :class="swapping ? 'btn-danger' : 'color-interact'"  v-on:click="switchSwap">
                                     <i v-if="!swapping" class="fas fa-arrows-alt-h"></i>
                                     <i v-else class="fas fa-times"></i>
                                 </button>

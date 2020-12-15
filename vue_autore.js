@@ -511,12 +511,12 @@
               this.swap_selected = null;
           },
           switchSwap: function(){
-              if(swapping){
-                  swap_selected = null;
-                  swapping = false;
+              if(this.swapping){
+                  this.swap_selected = null;
+                  this.swapping = false;
               }
               else {
-                  swapping = true;
+                  this.swapping = true;
               }
           },
           swapQuests: function(pos, is_quest) {
