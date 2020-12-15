@@ -784,7 +784,10 @@ var app = new Vue({
         loadImage: function() {
             var temp = this.gamedata.css_style.background;
             if (temp.image) {
-                document.getElementsByTagName("body")[0].style.background = temp["url"];
+                document.getElementsByTagName("body")[0].style.backgroundImage = temp["url"];
+                document.getElementsByTagName("body")[0].style.backgroundPosition = "center center";
+                document.getElementsByTagName("body")[0].style.backgroundRepeat = "no-repeat";
+                document.getElementsByTagName("body")[0].style.backgroundAttachment = "fixed";
                 document.getElementsByTagName("body")[0].style.webkitBackgroundSize = "cover";
                 document.getElementsByTagName("body")[0].style.mozBackgroundSize = "cover";
                 document.getElementsByTagName("body")[0].style.oBackgroundSize = "cover";
@@ -980,8 +983,10 @@ var app = new Vue({
                     if (document.getElementById("submit") && document.getElementById("submit").style.backdropFilter !== "") {
                         if (document.getElementById("quest-menu-list")){
                             document.getElementById("quest-menu-list").style.background = this.gamedata.css_style.background["url"];
+                            document.getElementById("quest-menu-list").style.webkitBackgroundSize = "cover";
                             document.getElementById("quest-menu-list").style.mozBackgroundSize = "cover";
                             document.getElementById("quest-menu-list").style.backgroundSize = "cover";
+                            document.getElementById("quest-menu-list").style.oBackgroundSize = "cover";
                         }
                     } else
                         styles = Object.assign(styles, menu_backgroundImage);

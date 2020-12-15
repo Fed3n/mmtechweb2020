@@ -588,7 +588,7 @@
                                             <input name="fontUrlField" class="form-control row" type="text" readyonly v-model="gamedata.css_style.mainStyle['font-url']"
                                             @input="setFontUrl()" data-toggle="tooltip" title="se il font non è disponibile inserire il link a google fonts">
                                         </div>
-                                        <small v-if="(gamedata.css_style.mainStyle['font-url'] !== '') && (gamedata.css_style.mainStyle['font-url'].slice(0,20) != 'https://fonts.google')" class="row text-muted mt-2">
+                                        <small v-if="(gamedata.css_style.mainStyle['font-url']) && (gamedata.css_style.mainStyle['font-url'].slice(0,20) != 'https://fonts.google')" class="row text-muted mt-2">
                                             se il font non è disponibile inserire il link a google fonts
                                         </small>
                                     </div>
