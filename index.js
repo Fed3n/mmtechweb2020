@@ -55,7 +55,7 @@ function recursiveChmod(path, dirp, filep){
 //####################
 
 //##HOST SETTINGS##//
-const serverOpened = true;
+const serverOpened = false;
 const host = "localhost";
 const openhost = "site181991.tw.cs.unibo.it";
 const port = 8000;
@@ -284,7 +284,7 @@ app.post('/stories', (req, res) => {
     let meta = req.body.meta;
     if(clone){
         let clonepath = path.join(__dirname + "/story/" + clone);
-        let dstpath = path.join(__dirname + "/story/" + storyName); 
+        let dstpath = path.join(__dirname + "/story/" + storyName);
         try {
         fse.copySync(clonepath, dstpath);
         fse.moveSync(`${dstpath}/${clone}.json`, `${dstpath}/${storyName}.json`);
@@ -327,7 +327,7 @@ app.delete('/stories', (req, res) => {
     let dir = path.join(storydir + "/" + story);
     try {
         recursiveRm(dir);
-    } catch(err) { 
+    } catch(err) {
         res.status(500).send("File system error.");
     }
     console.log("Deleted story " + story);
@@ -534,7 +534,7 @@ app.get('/:storyname', (req, res) => {
 			"Location": "http://" + req.headers['host']
 		});
 		res.end();
-	}		
+	}
 });
 
 /*GOCKER RELATED FUNCTIONS*/

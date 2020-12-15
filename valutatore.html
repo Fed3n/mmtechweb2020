@@ -194,7 +194,7 @@
                         <div class="p-3 my-1" id="solutions-container">
                             <div class="mx-3" v-if="previewdata.position.in_mainquest && !(getCurrentQuestData.goto.length == 1 && getCurrentQuestData.goto[0][0] == '')">
                                 <div v-if="( getCurrentQuestData.type == 'input' || getCurrentQuestData.type == 'keys' || getCurrentQuestData.type == 'draw'
-                                            || getCurrentQuestData.type == 'choice' ) && getCurrentGotos.length > 0">
+                                            || getCurrentQuestData.type == 'choice' || getCurrentQuestData.type == 'human' ) && getCurrentGotos.length > 0">
                                     <label class="font-weight-bold">Destinazioni</label>
                                     <ul>
                                         <li v-if="getCurrentQuestData.type != 'draw'" v-for="sol in getCurrentGotos">La risposta <span class="principal">{{ sol[0] }}</span> porta a
